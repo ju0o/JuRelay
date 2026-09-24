@@ -3947,6 +3947,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 02시 (2): README '처음 쓰는 법' whose commands are exactly what works; 2026-09-24 오후: obvious next action for a non-developer. At df1a2fd, README step 3 takes `<registry.json>` but never shows its format",
           "title": "처음 쓸 때 프로젝트 등록 예시 보여주기"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-KO-SUMMARY",
+          "scope": "After a successful run, scripts/status-board.mjs also writes one plain-Korean line to stderr (for example '프로젝트 6개 중 1개는 상태를 알 수 없어요: missing', or '프로젝트 6개 모두 상태를 읽었어요' when none is UNKNOWN or stale); stdout keeps exactly the canonical JSON and the exit code stays 0; add assertions for both cases in tests/status-board-cli.test.mjs.",
+          "files": [
+            "scripts/status-board.mjs",
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = plain Korean, obvious next action, inline feedback, no raw codes; README.md at base: '`UNKNOWN`은 그 파일이 없거나 읽을 수 없어서 상태를 알 수 없다는 뜻입니다.'"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-REASON-GLOSSARY",
+          "scope": "Add a short plain-Korean table to README '처음 쓰는 법' that explains each `reason` value the status board can print (unavailable, invalid-request, malformed, project-mismatch, invalid-stale, missing-status, missing-lane, missing-state, invalid-holds, human-gate, hold, missing-runner, missing-runner-mode, stale, source-stale, plus the JuCeipt receipt reasons) as one line each of what it means and what to do next, using only the values listed in docs/integration/PROJECT_STATUS_CONTRACT.md.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "git diff --check",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): no raw codes, plain Korean, obvious next action; docs/integration/PROJECT_STATUS_CONTRACT.md:22 '`reason` ... Short machine-readable reason for `UNKNOWN` or `stale`'"
         }
       ],
       "qaRuntime": [
