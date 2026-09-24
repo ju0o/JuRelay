@@ -1249,6 +1249,139 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24: 'launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean … no raw codes'; src/frontend/dogfooding.tsx:207 '<option value=\"ALL\">All Types</option>', :228 'Type', :234 'Priority', :293 'OPEN → FIXED → HOLD'",
           "title": "피드백 화면 문구를 한국어로"
+        },
+        {
+          "taskId": "AGENTRELAY-HOLD-CHOICE-REAL",
+          "scope": "R2-1: 보류 카드 선택지가 실제 선택을 보내도록: normalizeHoldEntry reads options from explain.options [{id,label,detail}] and recommended from explain.recommended (fallback to record.options, then HOLD_OPTION_LABELS); add backend op controlRoom:holdChoose {taskId, option} that runs ssh asus night hold choose <taskId> <retry|narrow|skip> (option allow-listed, taskId validated like project ids); HoldOptionButtons sends the chosen option id instead of controlRoom:resume when there is no gate, confirm text '‘<작업 제목>’을 ‘<선택지 label>’로 진행할게요', and the 현재 작업 [다시 시작] is hidden while a visible hold exists. Test: explain.options labels are used; each option maps to its id; skip/narrow are sendable; no resume call from hold buttons.",
+          "files": [
+            "src/shared/projectLabels.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/backend/controlRoom.ts",
+            "src/backend/main.ts",
+            "src/shared/types.ts",
+            "test/hold-choice-real.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/hold-choice-real.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "R2-1: 보류 카드 선택지가 실제 선택을 보내도록: normalizeHoldEntry reads optio"
+        },
+        {
+          "taskId": "AGENTRELAY-TODAY-DONE-HONEST",
+          "scope": "R2-2: 관제실 '오늘 끝난 일' is always '아직 없어요' because the board sends only lanes[].counts (VERIFIED_DONE totals) with no dated done list. In controlRoomTodayDone/controlRoomTodayCount and TodayCard: when a lane carries done[{taskId,title,finishedAt}] use it (local date match); when no lane has any dated done data, do not claim zero — show '오늘 기록은 아직 안 왔어요 · 지금까지 끝난 작업 N개' where N = sum of counts.VERIFIED_DONE. Test with the real board shape (counts only) → honest line with total, and with a dated done list → '오늘 N개 끝났어요'.",
+          "files": [
+            "src/shared/types.ts",
+            "src/frontend/controlRoom.tsx",
+            "test/today-done-honest.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/today-done-honest.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "R2-2: 관제실 '오늘 끝난 일' is always '아직 없어요' because the board sen"
+        },
+        {
+          "taskId": "AGENTRELAY-WHO-WORKS-ROUTING",
+          "scope": "R2-3: 관제실 '지금 일하는 AI' shows the wrong AI and raw lane ids ('agent-relay · 검수 · opencode' while qa=cline). controlRoomWorkingRows: stage >= 3 uses current.qa ?? qaChain[0], else current.worker ?? workerChain[0]; lane name via PROJECT_LABELS; append the Korean task title. Add one line under it from board.routing: '쉬는 AI: cline(20:28까지) · opencode(20:20까지)' from routing.cooling, and '배정 순서: 구독 AI 먼저, 무료 모델은 예비' when routing.pool exists; nothing when routing is missing. Test rows for worker stage, qa stage, unknown lane, cooling line.",
+          "files": [
+            "src/shared/types.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/shared/projectLabels.ts",
+            "test/who-works-routing.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/who-works-routing.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "R2-3: 관제실 '지금 일하는 AI' shows the wrong AI and raw lane ids ('"
+        },
+        {
+          "taskId": "AGENTRELAY-PLAN-SAVE-SHAPE",
+          "scope": "R2-5: 계획 [제목 저장]/[삭제] corrupt the roadmap: persist() sends {goal, tasks:[{id,title,stage,agents,…}], runPolicy} but night roadmap save stores tasks as-is (needs taskId, keeps max 12) and reads policy, so the next roadmap get fails with KeyError and the screen says '작업 PC(ASUS)에 연결할 수 없습니다' forever, and '각 작업 후 중단' resets to continue. Add a pure toRoadmapPayload(draft) that sends {goal, policy, tasks: only unregistered draft tasks as {taskId, title, scope}}; hide 제목 저장/삭제 for registered tasks. When planStudio:get fails show '이 계획을 읽지 못했어요' with [다시 불러오기] instead of inventing a lane-id row. In backend runSshJson, exit code 255 → connection sentence, other non-zero → '작업 PC가 요청을 처리하지 못했어요'. Tests for payload shape and error split.",
+          "files": [
+            "src/frontend/planStudio.tsx",
+            "src/backend/controlRoom.ts",
+            "test/plan-save-shape.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/plan-save-shape.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "R2-5: 계획 [제목 저장]/[삭제] corrupt the roadmap: persist() sends {"
+        },
+        {
+          "taskId": "AGENTRELAY-PLAN-CONFIRM-RESET",
+          "scope": "R2-4: 계획: an open inline confirm (계획 승인, 삭제, 진행 방식) stays open after switching project, so 승인 would approve the newly selected project. Reset pendingApprove, pendingDeleteId and pendingPolicy when project changes. When roadmap phase is approved and 남은 작업 is 0, replace the [계획 승인 → 자동 진행] button with the line '승인됨 · 모두 끝났어요'. Default 선택한 작업 = first unfinished task. Test the reset helper and the approved-all-done state.",
+          "files": [
+            "src/frontend/planStudio.tsx",
+            "test/plan-confirm-reset.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/plan-confirm-reset.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "R2-4: 계획: an open inline confirm (계획 승인, 삭제, 진행 방식) stays op"
+        },
+        {
+          "taskId": "AGENTRELAY-FOUNDER-TASK-TITLE",
+          "scope": "R2-6 + R2-8: English scope text and raw ids are shown as task names (계획 rows 'On the web board in src/actl/serve.py…', 관제실 현재 작업 'AGENTRELAY-ERROR-SCREEN-PLAIN' followed by the same ID line, 'Agents: codex → codex'). Add one shared founderTaskTitle(task) in src/shared/types.ts: a title containing Hangul is used, otherwise '이름 준비 중인 작업'; use it in 관제실 현재 작업, 보류 카드, 오늘 끝난 일, working rows and 계획 rows, with ID and scope moved into the closed 원문 보기 details; rename 'Agents:' to '담당 AI:'. When a lane has a visible hold but no current, 현재 작업 shows the hold title with '멈춤 · <단계>' and that flow step is blocked. Tests for the helper and the hold-as-current case.",
+          "files": [
+            "src/shared/types.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/planStudio.tsx",
+            "test/founder-task-title.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/founder-task-title.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "R2-6 + R2-8: English scope text and raw ids are shown as tas"
+        },
+        {
+          "taskId": "AGENTRELAY-APPROVALS-READABLE",
+          "scope": "R2-7: 승인 규칙 lists 29 raw rule sentences with developer words (SSOT NOW, HEAD, fast-forward, worktree, OmniRoute, push merge, E2E) and repeats '아직 자동 적용된 적 없음' 25 times. Sort rules by usedCount, fold usedCount 0 rules into one closed <details> '아직 안 쓰인 규칙 N개', and apply a small plain-word map for display only (SSOT→기준 문서, fast-forward 병합→그대로 합치기, worktree→작업용 복사본, E2E→실제 사용 시험) with the original text in a closed 원문 보기. Also raise light-mode active top tab contrast to >= 4.5:1. Source-guard test for the fold, the map and the light token.",
+          "files": [
+            "src/frontend/approvals.tsx",
+            "src/frontend/style.css",
+            "test/approvals-readable.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/approvals-readable.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "R2-7: 승인 규칙 lists 29 raw rule sentences with developer words"
+        },
+        {
+          "taskId": "AGENTRELAY-SMALL-POLISH-3",
+          "scope": "R2-9: add jutell to PROJECT_LABELS ('JuTell', '짧고 쉬운 작업 보고서'); AI 순서 저장 result text uses '만드는 AI'/'검수하는 AI' instead of worker/qa and the chain editor offers opencode-free labelled '무료 모델(예비)'; 기록 screen header gets the same side padding as other screens. Test labels, result text and presence of opencode-free.",
+          "files": [
+            "src/shared/projectLabels.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/style.css",
+            "test/small-polish-3.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/small-polish-3.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "R2-9: add jutell to PROJECT_LABELS ('JuTell', '짧고 쉬운 작업 보고서'"
         }
       ],
       "qaRuntime": [
