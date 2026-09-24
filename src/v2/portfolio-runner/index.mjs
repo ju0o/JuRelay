@@ -195,7 +195,7 @@ export class WorktreeManager {
     const scratch = join(this.root, `${project.id}-integrate-${task.taskId.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`);
     await exec("git", ["-C", project.path, "worktree", "add", "--detach", scratch, tip]);
     try {
-      try { await exec("git", ["-C", scratch, "-c", "user.name=Agent Relay", "-c", "user.email=agent-relay@localhost", "cherry-pick", "--allow-empty", `${base}..${commit}`]); }
+      try { await exec("git", ["-C", scratch, "-c", "user.name=Agent Relay", "-c", "user.email=agent-relay@localhost", "cherry-pick", "--allow-empty", "--empty=drop", `${base}..${commit}`]); }
       catch (error) { await exec("git", ["-C", scratch, "cherry-pick", "--abort"]).catch(() => {}); return { state: "CONFLICT", reason: String(error.message || error).slice(0, 500), tip }; }
       await linkDeps(project.path, scratch);
       const result = await gate(scratch, task.tests);

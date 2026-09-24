@@ -446,3 +446,21 @@ test("worktreeSetup runs lane setup and hides the files it touches from git", as
   assert.deepEqual(await worktreeSetup({}, repo), []);
   await rm(repo, { recursive: true, force: true });
 });
+
+test("integrate drops a commit that is already present at the integration tip instead of failing", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const repo = await mkdtemp(join(process.env.TMPDIR || "/tmp", "ar-empty-"));
+  const git = (...a) => execFileSync("git", ["-C", repo, "-c", "user.name=t", "-c", "user.email=t@t", ...a], { encoding: "utf8" }).trim();
+  git("init", "-q", "-b", "main"); await writeFile(join(repo, "a.txt"), "1\n"); git("add", "."); git("commit", "-qm", "base");
+  const base = git("rev-parse", "HEAD");
+  await writeFile(join(repo, "b.txt"), "new\n"); git("add", "."); git("commit", "-qm", "adds b");
+  await writeFile(join(repo, "a.txt"), "2\n"); git("add", "."); git("commit", "-qm", "a=2");
+  const commit = git("rev-parse", "HEAD");
+  git("checkout", "-q", "-b", "tipline", base); await writeFile(join(repo, "a.txt"), "2\n"); git("add", "."); git("commit", "-qm", "tip already has a=2");
+  git("update-ref", "refs/heads/agent-relay/integration", "HEAD"); git("checkout", "-q", "main");
+  const wm = new WorktreeManager(join(repo, "..", `wt-${Date.now()}`));
+  const r = await wm.integrate({ path: repo, id: "p" }, { taskId: "T", result: { commitSha: commit }, builderEvidence: { base }, tests: [] }, { gate: async () => ({ ok: true, results: [] }) });
+  assert.notEqual(r.state, "CONFLICT", JSON.stringify(r));
+  assert.equal(git("show", "refs/heads/agent-relay/integration:b.txt"), "new");
+  await rm(repo, { recursive: true, force: true });
+});
