@@ -2167,6 +2167,101 @@
           ],
           "ssotEvidence": "src/actl/serve.py:430/434/445 error=\"unknown endpoint\" / f\"{type(exc).__name__}: {exc}\" / \"invalid JSON\" and serve.py:155 'HTTP '+r.status, shown via log('전송 실패: '+e.message); README.md:57 '## MainPC에서 실행 (웹 보드)'; Founder direction 2026-09-24 'no raw codes'",
           "title": "웹 보드 오류를 쉬운 안내로 바꾸기"
+        },
+        {
+          "taskId": "ACTL-SEND-BLOCK-WAITING-APPROVAL",
+          "scope": "A-N1: sending into a pane whose activity is WAITING_INPUT (Codex 'Would you like to run … Press enter to confirm') pastes text and presses Enter, which can accept the highlighted '1. Yes, proceed'. gui.on_send only guards RUNNING; cli send and tui send check nothing. Add one shared helper send_blocked_reason(target) in core/activity.py that calls observe_activity and returns a Korean line ('<이름>가 승인을 기다리고 있어요. 보내면 승인 창에 들어가요 — ASUS 화면에서 직접 확인하세요') for WAITING_INPUT, else None. Call it before any keys in gui.on_send (notify warn, no send), cli send (print, exit 2) and tui send. Test with a fake pane text containing the approval phrase: zero keys sent on all three paths.",
+          "files": [
+            "src/actl/core/activity.py",
+            "src/actl/gui.py",
+            "src/actl/cli.py",
+            "src/actl/tui.py",
+            "tests/test_send_block_waiting_approval.py"
+          ],
+          "tests": [
+            "PYTHONPATH=src python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "A-N1: sending into a pane whose activity is WAITING_INPUT (C"
+        },
+        {
+          "taskId": "ACTL-ACTIVITY-FRESH-SAMPLE",
+          "scope": "A-N2 + A-N3: observe_activity averages CPU since the previous refresh, so tui/Tk lag one refresh (answer done + prompt visible still shows 작업 중; just-started work shows 대기), and one-shot `actl status` always has no baseline so working panes read 미확인. In observe_activity: when there is no previous sample or it is older than 1.5s, take a second sample 0.4s later and classify on that delta; in classify_activity, when the last line ends with a prompt glyph and no working token, return IDLE even if the averaged CPU was high. Add 'WAITING_INPUT': '승인 기다림' to cli._activity_label, show UP/DOWN/UNMAPPED as 켜짐/꺼짐/연결 안 됨 in status, and make `actl copy` print the adapter detail on a second line when the failure is not 'answer still in progress'. Tests: fake ps/capture sequences for stale-high-CPU+prompt → IDLE, first sample busy → RUNNING, status label for WAITING_INPUT.",
+          "files": [
+            "src/actl/core/activity.py",
+            "src/actl/cli.py",
+            "tests/test_activity_fresh_sample.py"
+          ],
+          "tests": [
+            "PYTHONPATH=src python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "A-N2 + A-N3: observe_activity averages CPU since the previou"
+        },
+        {
+          "taskId": "ACTL-TK-UI-THREAD-HANDOFF",
+          "scope": "A-N4: in the Tk board the composer text is never cleared after a successful send (spy: _clear_prompt_at_submitted never called) because on_send's worker thread schedules mark_staged_submitted/mark_submitted/mark_sending via self.root.after(0, …), which Tk does not run when called from a non-main thread, and the except: pass hides it; pressing 보내기 again resends the same text. Replace every root.after(0, fn) issued from worker threads in gui.py (5 sites) with the existing thread-safe queue: self.jobs.put((lambda _r, f=fn: f(), None)) drained by _drain. Test that a send driven through a fake send_prompt_staged ends with the composer empty and _clear_prompt_at_submitted called once.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_thread_handoff.py"
+          ],
+          "tests": [
+            "PYTHONPATH=src python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "A-N4: in the Tk board the composer text is never cleared aft"
+        },
+        {
+          "taskId": "ACTL-TK-CARD-PLAIN-HEADER",
+          "scope": "A-N5 + A-N7: Tk agent cards show raw English in the header ('CommandCode · UNKNOWN   IDLE', 'Codex · UNKNOWN   BLOCKED', WORKING) and the body shows adapter diagnostics ('No Codex rollout in this pane directory was active during th') or 'no text'; right after a new send the card still says '결과 도착' with the old answer. In _render_cards drop the role when UNKNOWN and map runtime_state via one Korean table (쉬는 중/일하는 중/승인 기다림/연결 끊김/확인 중); in _card_line never use row['detail'], fall back to '아직 답 없음', filter 'no text'; and when a send is in flight or the key is in _post_send_running_keys, ignore result READY and show '작업 중'. Pure-function tests for _card_line and the header text.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_card_plain_header.py"
+          ],
+          "tests": [
+            "PYTHONPATH=src python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "A-N5 + A-N7: Tk agent cards show raw English in the header ("
+        },
+        {
+          "taskId": "ACTL-TK-PREVIEW-HOLD-PER-AGENT",
+          "scope": "A-N6: after 결과 복사 on agent A, clicking agent B shows B's title/status ('Codex · %1 — LIVE PANE / 상태: 승인 기다림') above A's copied text and pane for up to 8s, because preview_hold_until is one global timestamp that makes _request_preview.done drop updates, and on_select never clears the body. Store the hold as (runtime_key, until) and honor it only for that key; in on_select, when the selected key changes, immediately replace the preview body with '<이름> 화면 불러오는 중…'. Test: hold set for A, select B, preview done for B is applied and body never contains A's text.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_preview_hold_per_agent.py"
+          ],
+          "tests": [
+            "PYTHONPATH=src python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "A-N6: after 결과 복사 on agent A, clicking agent B shows B's tit"
+        },
+        {
+          "taskId": "ACTL-TUI-WAITING-ONE-STATE",
+          "scope": "A-N8: tui rows read 'Codex %1 정상 승인 기다림 ○대기' and 'CommandCode 대기 유휴' / '작업 중 실행중' — WAITING_INPUT leaves state UP (정상) and two columns repeat the same meaning; the result column word '○대기' collides with the idle state word. In tui._rows set state BLOCKED for WAITING_INPUT; render a single Korean state column (쉬는 중/일하는 중/승인 기다림/연결 끊김/미확인) and result as '답 없음' / '답 N자'. Update the tui row formatting tests.",
+          "files": [
+            "src/actl/tui.py",
+            "tests/test_tui_one_state.py"
+          ],
+          "tests": [
+            "PYTHONPATH=src python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "A-N8: tui rows read 'Codex %1 정상 승인 기다림 ○대기' and 'CommandCod"
+        },
+        {
+          "taskId": "ACTL-DISCOVER-APPLY-KOREAN",
+          "scope": "A-N9: `actl discover --apply` prints 'Discovery is read-only; config was not modified.' and then 'Backup: … Mappings changed: codex: %1', contradicting itself, all in English; `actl help` lines are still English (REPL, Agent board, List live pane detections). In cli._discover print the read-only line only without --apply, as '보기만 했어요 — 연결하려면 actl discover --apply'; with --apply print '연결했어요: Codex → %1, CommandCode → %0 (이전 설정은 백업해 뒀어요)'. Translate the help text lines to plain Korean keeping command names. Tests capture stdout for both modes and assert no 'read-only' after apply.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_discover_apply_korean.py"
+          ],
+          "tests": [
+            "PYTHONPATH=src python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "A-N9: `actl discover --apply` prints 'Discovery is read-only"
         }
       ],
       "qaRuntime": [
