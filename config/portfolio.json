@@ -6310,6 +6310,17 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:5 'Scope: integrated 10-task Daily Value summary' and §7 'Ten-task corpus complete | YES — commit 402d3ee includes 10/10 receipts' vs docs/planning/BUSINESS_PRODUCT_WBS.md:43 '**ACTIVE — 7-task evidence register complete; decision pending**' and :142 'the integrated 7-task register is complete'",
           "title": "검증 자료를 열 건으로 통일"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-PER-TASK-DECISION-UTILITY",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md, add a per-task decision-utility subsection after Section 3 that scores each register row (t01–t10). For each row, record whether the day-level summary shows an actionable signal the Receipt-by-Receipt view does not surface as easily: a recorded human action, a material impact, or an unknown/unverified gap. Use only facts already in the register. Add a one-line tally and state which Section 6 mapping the tally supports. Keep the M3 milestone decision as NOT RECORDED HERE and do not change Sections 2.1, 4, 5 or 7.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 'Complete the seven-task Receipt-versus-summary register, score decision utility per task, and issue M3 GO only if the day-level view adds clear actionable value'; docs/operations/PM_STATUS_BOARD.md:58 'M3 ... Exit Gate: daily value summary adds decision/value utility'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:123 'Clearly useful: adds actionable day-level context beyond individual Receipts | GO'"
         }
       ]
     },
