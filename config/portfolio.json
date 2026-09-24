@@ -4661,6 +4661,18 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:127-133 quote: 단순 작업 보고서는 각 기본 항목을 최대 1~2문장으로 작성하고 전체 보고서는 기본적으로 12문장 이내를 우선한다.",
           "title": "간단한 변경 결과를 쉽게 확인"
+        },
+        {
+          "taskId": "JUTELL-ENFORCE-SIX-REPORT-FIELDS",
+          "scope": "최종 보고서에서 6개 기본 항목을 항상 유지하도록 Skill 규칙과 Feature Registry의 예외를 정렬한다.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            ".agents/skills/beginner-bridge/references/feature-registry.md"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-a/concise-report.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:180-189 \"모든 코드 변경 작업의 최종 보고에는 다음 6개 항목을 기본으로 포함한다.\""
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
