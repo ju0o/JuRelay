@@ -3960,7 +3960,8 @@
             "node --test tests/*.test.mjs",
             "bash scripts/e2e.sh"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = plain Korean, obvious next action, inline feedback, no raw codes; README.md at base: '`UNKNOWN`은 그 파일이 없거나 읽을 수 없어서 상태를 알 수 없다는 뜻입니다.'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = plain Korean, obvious next action, inline feedback, no raw codes; README.md at base: '`UNKNOWN`은 그 파일이 없거나 읽을 수 없어서 상태를 알 수 없다는 뜻입니다.'",
+          "title": "상태 확인 뒤 한 줄 요약 보여주기"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-REASON-GLOSSARY",
@@ -3973,7 +3974,8 @@
             "node --test tests/*.test.mjs",
             "bash scripts/e2e.sh"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): no raw codes, plain Korean, obvious next action; docs/integration/PROJECT_STATUS_CONTRACT.md:22 '`reason` ... Short machine-readable reason for `UNKNOWN` or `stale`'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): no raw codes, plain Korean, obvious next action; docs/integration/PROJECT_STATUS_CONTRACT.md:22 '`reason` ... Short machine-readable reason for `UNKNOWN` or `stale`'",
+          "title": "상태 이유를 쉬운 말로 풀이하기"
         }
       ],
       "qaRuntime": [
@@ -5771,7 +5773,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:30 'Corpus note: no committed seven-task set was found. The committed daily files contain 5 + 5 = 10 tasks'; Founder direction 2026-09-24 'Complete the seven-task summary-versus-Receipt evidence register, then record the M3 GO, DEFER, or KILL decision.'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:30 'Corpus note: no committed seven-task set was found. The committed daily files contain 5 + 5 = 10 tasks'; Founder direction 2026-09-24 'Complete the seven-task summary-versus-Receipt evidence register, then record the M3 GO, DEFER, or KILL decision.'",
+          "title": "일상 가치 검증표를 실제 영수증 10건으로 채우기"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-DECISION-STATUS-SYNC",
@@ -5784,7 +5787,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:263 '| 4 | Record M3 GO / DEFER / KILL from daily-value validation | M3 |'; docs/operations/PM_STATUS_BOARD.md:36 '| M3 integration | daily value summary integrated for 7 tasks |'; Founder direction 2026-09-24"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:263 '| 4 | Record M3 GO / DEFER / KILL from daily-value validation | M3 |'; docs/operations/PM_STATUS_BOARD.md:36 '| M3 integration | daily value summary integrated for 7 tasks |'; Founder direction 2026-09-24",
+          "title": "일상 가치 실험 계속 결정을 계획표에 기록"
         }
       ]
     },
