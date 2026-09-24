@@ -6020,6 +6020,20 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "필요한 용어만 알맞게 안내"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-10-2-INTERNAL-CHANGE-CHECKS-R2",
+          "scope": "I checked both the base (2a7f8d1) and the integration branch (3f0c23f), and neither has tests/results/scenario-b/internal-change.fixture.md or internal-change.test.mjs, and the scenario-b, PRODUCT_SCOPE and risk-level-guide paths are the same in both, so the earlier empty cherry-pick was not a sign the work had already landed; create just these two new files, following the pattern in general-report.test.mjs (node:test + node:assert/strict + readFile on the fixture next to it), and commit them as one commit that is not empty (never use --allow-empty); the fixture is a report for 'block the search button when the search box is empty', and the test must check all six §10.2 items: (1) screen change and input-validation change are separate headings, (2) the phrase '입력 검증(' is followed by a plain explanation in parentheses, (3) the fix is limited to the one search-run condition and both 결과 처리 and 로그인 are stated as out of scope, (4) the report says whether related tests were run and has a '확인하지 못함' item, (5) the effect on the existing search feature is described, (6) the risk is '중간' and its reason mentions the 빈 검색어 check condition from risk-level-guide.md:28; the new test fails before the fixture exists and passes after; do not change general-report.*, other scenario-b files, or any product code.",
+          "files": [
+            "tests/results/scenario-b/internal-change.fixture.md",
+            "tests/results/scenario-b/internal-change.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-b/internal-change.test.mjs",
+            "node --test tests/results/scenario-b/general-report.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:603 '### 10.2 보조 시나리오 — 내부 기능 변경' + :611-616 '화면 변화와 입력 검증 기능 변화를 구분하는가 … 기존 검색 기능에 미칠 수 있는 영향을 설명하는가 / 위험도와 근거를 일관되게 작성하는가'; .agents/skills/beginner-bridge/references/risk-level-guide.md:28 '예: 검색 실행 전에 빈 검색어인지 확인하는 조건을 추가한 경우.'; Founder request 2026-09-24 20:25; Founder retry choice: re-add only the internal-change fixture and test on integration branch 3f0c23f"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
