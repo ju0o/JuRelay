@@ -3422,6 +3422,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "빈 영수증도 원인과 다음 행동 안내"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-SUMMARY-NO-RAW-CODES",
+          "scope": "In koreanSummary (src/daily/index.ts), replace the raw codes the Founder still sees with plain Korean labels: evidence_status values (observed/verified/reported/inferred/unknown), evidence source_type values (e.g. git_check, hook), impact severity values (info/attention/high/critical), and the English 'material impact' heading. Keep the counts and the unknown states unchanged, and update the exact-string expectation in tests/daily.test.ts.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, no raw codes; base tests/daily.test.ts:45-47 currently expects '[근거 observed]', '(git_check 1건)', 'material impact: task-1(attention)'"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-L2-NO-RAW-CODES",
+          "scope": "In renderLevel2 (src/render/index.ts), show request-item confidence (high/medium/low/unknown) and failed-action types (e.g. file.modify) as plain Korean labels instead of raw enum values. Leave Level 3 technical evidence as it is, and add a tests/pipeline.test.ts assertion that the Level 1–2 visible text contains none of these raw codes.",
+          "files": [
+            "src/render/index.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, obvious next action, no raw codes; base src/render/index.ts renderLevel2 emits esc(it.confidence) and esc(a.type) raw into the user-facing Level 2"
         }
       ]
     },
