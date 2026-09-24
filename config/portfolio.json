@@ -1413,7 +1413,8 @@
             "node --test test/planstudio-founder-view.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24: launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, no raw codes; base src/frontend/planStudio.tsx:469,505,545,658,666,677"
+          "ssotEvidence": "Founder direction 2026-09-24: launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, no raw codes; base src/frontend/planStudio.tsx:469,505,545,658,666,677",
+          "title": "계획 화면 남은 문구 쉬운 말로"
         },
         {
           "taskId": "AGENTRELAY-CONTROLROOM-RAW-CODES-KO",
@@ -1429,7 +1430,8 @@
             "node --test test/controlroom-plain-2.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, no raw codes; independent QA hold cards with raw QA finding collapsed; base src/frontend/App.tsx:1248,1258 and src/frontend/controlRoom.tsx:413,606"
+          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, no raw codes; independent QA hold cards with raw QA finding collapsed; base src/frontend/App.tsx:1248,1258 and src/frontend/controlRoom.tsx:413,606",
+          "title": "관제실 안내 문구 쉬운 말로"
         }
       ],
       "qaRuntime": [
@@ -2322,7 +2324,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; serve.py:500-503 passes str(ValueError) through raw and swallows the Korean RuntimeError reason from activity.py:75 send_blocked_reason into a generic 500"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; serve.py:500-503 passes str(ValueError) through raw and swallows the Korean RuntimeError reason from activity.py:75 send_blocked_reason into a generic 500",
+          "title": "보내기 실패 이유를 쉬운 말로 안내"
         },
         {
           "taskId": "ACTL-WEB-BUSY-SEND-INLINE",
@@ -2335,7 +2338,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: actl busy-send guard (collision audit 2026-09-24) and inline feedback; the Tk board already asks inline (ACTL-BUSY-SEND-STALE-GUARD, no native dialog), but serve.py:246 still uses native confirm() with no busy check"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: actl busy-send guard (collision audit 2026-09-24) and inline feedback; the Tk board already asks inline (ACTL-BUSY-SEND-STALE-GUARD, no native dialog), but serve.py:246 still uses native confirm() with no busy check",
+          "title": "작업 중일 때 보내기 전 한 번 더 확인"
         },
         {
           "taskId": "ACTL-TK-PANE-BOARD-ERRORS-PLAIN",
@@ -2348,7 +2352,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, obvious next action, no raw codes; gui.py:1670/1685/1710/1727/1776 call messagebox.showerror(..., str(exc)/str(result)), which shows raw tmux error text"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, obvious next action, no raw codes; gui.py:1670/1685/1710/1727/1776 call messagebox.showerror(..., str(exc)/str(result)), which shows raw tmux error text",
+          "title": "창 정리 실패를 쉬운 말로 안내"
         }
       ],
       "qaRuntime": [
@@ -4148,7 +4153,8 @@
           "tests": [
             "node --test tests/e2e-script.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: real end-to-end script that runs the main user flow offline and prints {ok, steps[], ms}"
+          "ssotEvidence": "Founder direction 2026-09-23: real end-to-end script that runs the main user flow offline and prints {ok, steps[], ms}",
+          "title": "전체 점검 결과가 맞는지 자동 확인"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-KO-BAD-JSON",
@@ -4162,7 +4168,8 @@
             "node --test tests/*.test.mjs",
             "bash scripts/e2e.sh"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes",
+          "title": "목록 파일이 깨졌을 때 정확히 알려주기"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-TEST-COUNT",
@@ -4174,7 +4181,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e/test flow runs]; base 6bcbc669 tests/ lists 8 *.test.mjs files while README.md says '테스트 파일 일곱 개'"
+          "ssotEvidence": "Founder direction 2026-09-23: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e/test flow runs]; base 6bcbc669 tests/ lists 8 *.test.mjs files while README.md says '테스트 파일 일곱 개'",
+          "title": "처음 쓰는 법의 검사 개수 바로잡기"
         }
       ],
       "qaRuntime": [
@@ -6023,7 +6031,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27-28 '| Active product milestone | **M3 — Daily Agent Value Decision** |' / '| Product decision | **M2 GO** |' vs docs/planning/BUSINESS_PRODUCT_WBS.md:41 '| M2 | Core Value Proof | ... | **PM REVIEW** |'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27-28 '| Active product milestone | **M3 — Daily Agent Value Decision** |' / '| Product decision | **M2 GO** |' vs docs/planning/BUSINESS_PRODUCT_WBS.md:41 '| M2 | Core Value Proof | ... | **PM REVIEW** |'",
+          "title": "사업 계획표의 2단계 승인 상태 맞추기"
         },
         {
           "taskId": "JUCEIPTPLAN-CANONICAL-HTML-M2-GO-STATUS-SYNC",
@@ -6034,7 +6043,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:183 'M2 is closed by the A-14 GO decision; the scorecard remains the evidence record.' vs docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 '<span class=\"pill now\">CURRENT · M2 PM REVIEW</span>'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:183 'M2 is closed by the A-14 GO decision; the scorecard remains the evidence record.' vs docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 '<span class=\"pill now\">CURRENT · M2 PM REVIEW</span>'",
+          "title": "사업 전체 지도에 2단계 승인 반영하기"
         }
       ]
     },
@@ -6275,7 +6285,8 @@
           "tests": [
             "node --test tests/results/scenario-e/main-files-cap.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:271 '기본적으로 최대 5개의 주요 파일을 설명한다. … 주요 파일 최대 5개: 역할과 변경 이유를 설명 / 나머지 파일: 경로 목록 또는 개수만 표시'; docs/BEGINNER_REPORT_SPEC.md:614 '기본적으로 최대 5개의 주요 파일만 설명한다.'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:271 '기본적으로 최대 5개의 주요 파일을 설명한다. … 주요 파일 최대 5개: 역할과 변경 이유를 설명 / 나머지 파일: 경로 목록 또는 개수만 표시'; docs/BEGINNER_REPORT_SPEC.md:614 '기본적으로 최대 5개의 주요 파일만 설명한다.'",
+          "title": "많은 파일이 바뀐 보고서 간결화 점검"
         },
         {
           "taskId": "JUTELL-FIXTURE-TERM-NO-REPEAT",
@@ -6286,7 +6297,8 @@
           "tests": [
             "node --test tests/fixture-term-no-repeat.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:296 '같은 보고서에서 동일한 용어를 반복 설명하지 않는다.'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:296 '같은 보고서에서 동일한 용어를 반복 설명하지 않는다.'",
+          "title": "보고서 용어 설명 중복 방지 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
