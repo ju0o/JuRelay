@@ -6061,7 +6061,51 @@
         "codex",
         "cline"
       ],
-      "tasks": [],
+      "tasks": [
+        {
+          "taskId": "JUAI-CHECK-QUOTA-MSG",
+          "scope": "Add check.mjs assertions for quotaMessage covering the global, daily (total and bonusMax shown) and gap (waitSec shown) reasons, plus a peekQuota assertion that a brand-new user gets {used:0,total:LIMITS.daily,left:LIMITS.daily,bonus:0}, without changing lib.mjs.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node --check bot.mjs",
+            "node check.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: (1) check.mjs에 quotaMessage(global/daily/gap)와 peekQuota(새 사용자) 검증 추가"
+        },
+        {
+          "taskId": "JUAI-PRUNE-STATE",
+          "scope": "Add pruneState(db, now) to lib.mjs. It deletes kv rows whose key starts with subsent:/mentor:/done:/tries:/boot:/topics:/summary: and contains a YYYY-MM-DD date more than 45 days old, and deletes usage rows whose day is YYYY-MM-DD and more than 60 days old. Add check.mjs assertions on an in-memory SCHEMA db (old rows removed; recent rows, undated keys and other prefixes kept), and call it from bot.mjs tick() once a day via job(`prune:${today}`, ...).",
+          "files": [
+            "lib.mjs",
+            "check.mjs",
+            "bot.mjs"
+          ],
+          "tests": [
+            "node --check bot.mjs",
+            "node check.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: (3) lib.mjs에 pruneState(db, now) 추가 ... 45일 ... 60일 지나면 삭제, check.mjs에 검증, bot.mjs tick에서 하루 한 번 job으로 호출"
+        },
+        {
+          "taskId": "JUAI-HELP-CMD",
+          "scope": "Add HELP_TEXT(c) to layout.mjs as a short summary of member commands (including !남은횟수 and !봇수다), in the same (c) channel-mention style as GUIDE. bot.mjs replies with it when the message is '!도움말', and check.mjs asserts that HELP_TEXT(k=>`#${k}`) is under 1900 characters and contains '!남은횟수'.",
+          "files": [
+            "layout.mjs",
+            "bot.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node --check bot.mjs",
+            "node check.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: (4) layout.mjs에 HELP_TEXT(c) 추가하고 bot.mjs에서 '!도움말' 입력 시 명령어 요약 답장, check.mjs에서 길이<1900과 '!남은횟수' 포함 검증"
+        }
+      ],
       "note": "lane added by night plan request 2026-09-25"
     },
     {
