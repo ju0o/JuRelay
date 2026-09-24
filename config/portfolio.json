@@ -6063,6 +6063,25 @@
       ],
       "tasks": [],
       "note": "lane added by night plan request 2026-09-25"
+    },
+    {
+      "id": "ai-agent-marketplace",
+      "active": true,
+      "pmState": "NIGHT_PLAN_PM",
+      "path": "/home/skkse12/Desktop/Projects/Team/AI-Agent-marketplace",
+      "ssot": "/home/skkse12/Desktop/Projects/Team/AI-Agent-marketplace/README.md",
+      "owner": "codex",
+      "runtime": [
+        "codex",
+        "claude-team"
+      ],
+      "qaRuntime": [
+        "opencode",
+        "codex",
+        "cline"
+      ],
+      "tasks": [],
+      "note": "lane added by night plan request 2026-09-25"
     }
   ],
   "pool": {
