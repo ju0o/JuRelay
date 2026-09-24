@@ -6124,7 +6124,35 @@
         "codex",
         "cline"
       ],
-      "tasks": [],
+      "tasks": [
+        {
+          "taskId": "AIAGENTMARKE-P2-WORKER-POLICY-GUARD",
+          "scope": "Add a pure domain module src/domain/worker-policy.ts with no DB. It validates capability selection against a fixed capability list and validates a policy shaped like worker_policies (daily_cost_limit_minor, task_cost_limit_minor, max_runtime_minutes, allowed_tasks, available_hours) using integer minor units. It also provides checkTask(policy, task, spentTodayMinor, now), which rejects with reason codes when the task is over the task cost limit, over the daily limit, over max runtime, not an allowed task, or outside available hours. Add unit tests with one case per rejection reason plus an accept case.",
+          "files": [
+            "src/domain/worker-policy.ts",
+            "tests/unit/worker-policy.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "AI-Agent-marketplace-private/docs/WBS_v0.4.md:10 'capability, 비용/안전 정책 ... 정책 초과 작업 거부 테스트'; ERD_v0.4.dbml:266-275 'Table worker_policies { daily_cost_limit_minor bigint, task_cost_limit_minor bigint, max_runtime_minutes int, available_hours jsonb, allowed_tasks jsonb ... }'"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-OWNER-MOBILE-SCREENS",
+          "scope": "Add Owner mobile screens as static local-state UI in src/web/Owner.tsx: O00 홈, O06 AI 연결, O08 할 수 있는 일, O09 안전과 비용. Reuse the existing Shell, Primary, Choice and PilotBadge patterns from App.tsx and the prototype.css classes. Add hash routes #/owner, #/owner/connect, #/owner/abilities and #/owner/safety in App.tsx, exporting the shared components if needed. Any earnings number must sit next to the PilotBadge 시범 운영 label. There is no job search or bidding UI, no payout or withdrawal action, and no new node:fs or IndexedDB usage. Client routes stay unchanged.",
+          "files": [
+            "src/web/Owner.tsx",
+            "src/web/App.tsx"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm test",
+            "npm run build"
+          ],
+          "ssotEvidence": "AI-Agent-marketplace-private/docs/WBS_v0.4.md:10 'Owner 홈/활동, 검색·입찰 UI 없음 | ... | PRE_BUSINESS'; PRODUCT_SSOT_v0.4.md:68 'PRE_BUSINESS에서는 출금 버튼 비활성 + 시범 라벨'"
+        }
+      ],
       "note": "lane added by night plan request 2026-09-25"
     }
   ],
