@@ -6151,9 +6151,26 @@
             "npm run build"
           ],
           "ssotEvidence": "AI-Agent-marketplace-private/docs/WBS_v0.4.md:10 'Owner 홈/활동, 검색·입찰 UI 없음 | ... | PRE_BUSINESS'; PRODUCT_SSOT_v0.4.md:68 'PRE_BUSINESS에서는 출금 버튼 비활성 + 시범 라벨'"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-CONNECTOR-CORE",
+          "scope": "Add migrations/0002_owner_connector.sql with the ERD_v0.4 tables agent_connectors, worker_policies, worker_profiles using the exact ERD names (plain PostgreSQL, bigint *_minor limits, owner_user_id uuid without FK because users arrive in Phase 9, plus owner_access_token_hash like jobs.access_token_hash). Store only the ERD vault reference column for runtime login material, never raw values. Add src/server/owner.ts with Hono routes wired from createApp in src/server/app.ts: POST /api/owner/connectors registers a connector (runtime, auth_mode, connector_version) and returns id + one-time owner token (hash stored); POST /api/owner/connectors/:id/heartbeat updates last_heartbeat_at; GET /api/owner/connectors/:id returns status ONLINE when the last heartbeat is within 90 seconds else OFFLINE. Wrong or missing owner token returns 404 like the job link token. Keep existing /api/owner/payouts gate route unchanged (403). Add tests/integration/owner-connector.test.ts using openTestDb so it runs on PGlite and on real PostgreSQL (TEST_DB=postgres).",
+          "files": [
+            "migrations/0002_owner_connector.sql",
+            "src/server/owner.ts",
+            "src/server/app.ts",
+            "tests/integration/owner-connector.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2 (connector 계약, heartbeat); ERD_v0.4.dbml agent_connectors/worker_policies/worker_profiles; Founder request 2026-09-25 00:04",
+          "title": "Owner connector 테이블 + 등록/heartbeat API"
         }
       ],
-      "note": "lane added by night plan request 2026-09-25"
+      "note": "lane added by night plan request 2026-09-25",
+      "autoContinue": true
     }
   ],
   "pool": {
