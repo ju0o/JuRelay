@@ -3580,6 +3580,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28) all agent records → receipts; 'ㄱㄱ'",
           "title": "하루치 영수증을 한눈에 요약하기"
+        },
+        {
+          "taskId": "JUCEIPT-IMPORT-CODEX-ROLLOUTS-R2",
+          "scope": "A-28 step 3 retry: first run `npm ci` in the fresh worktree so its own node_modules has zod@^4.5.4 (package.json and package-lock.json at base already declare it, so change neither; the last failure happened because the shared node_modules had no zod, which broke tests/receipt-schema.test.ts), then add src/sources/codex.ts, which converts one Codex rollout .jsonl (session_meta with session_id/cwd/timestamp, plus response_item and event_msg entries for user/assistant messages, function/tool calls and outputs) into the same evidence shape and token masking as the Claude importer, tested by tests/sources-codex.test.ts against the synthetic fixture tests/fixtures/sources/codex/rollout.jsonl, and the full `npm test` including tests/receipt-schema.test.ts must pass.",
+          "files": [
+            "src/sources/codex.ts",
+            "tests/sources-codex.test.ts",
+            "tests/fixtures/sources/codex/rollout.jsonl"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'"
         }
       ]
     },
