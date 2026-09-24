@@ -5486,6 +5486,21 @@
           ],
           "ssotEvidence": "Dogfood round 2 J2 (적용한 변경을 대화에서 되돌릴 수 없음); engine night juplan undo verified on a plan copy",
           "title": "JuPlan 기획 대화: after 적용 show a [되돌리기] button on that plan car"
+        },
+        {
+          "taskId": "JCAPP-JUCEIPT-SCAN-VIEW",
+          "scope": "A-28 in the hub: JuCeipt tab reads the scan output of JuCeipt (`<JuCeipt repo or data dir>/.juceipt/scan/index.json` and SUMMARY.md; path from an env/config with the current JuCeipt location as default) through lib/juceiptReceipts.mjs (read-only, never throws): top line '오늘 AI 작업 N건 · 받아도 됨 A · 확인 후 받기 B · 문제 있음 C', a per-agent row (Claude · Codex · OpenCode · Cursor · Grok · Cline · Agent Relay: sessions and receipts), then the receipt list newest first with agent name, project folder, one plain sentence and verdict chip, opening the receipt detail. Missing scan → '아직 기록을 모으지 않았어요 (오늘 밤 자동으로 모아요)'. Keep the existing receipt list as a fallback. Test test/juceipt-scan-view.test.mjs with a fixture index.json.",
+          "files": [
+            "lib/juceiptReceipts.mjs",
+            "operator/public/app.js",
+            "test/juceipt-scan-view.test.mjs"
+          ],
+          "tests": [
+            "node --test test/juceipt-scan-view.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 A-28 (all agent records → receipts), hub shows the scan",
+          "title": "A-28 in the hub: JuCeipt tab reads the scan output of JuCeip"
         }
       ]
     },
