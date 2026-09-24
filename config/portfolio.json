@@ -5261,6 +5261,22 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
           "title": "H-N16: lib/relayBoard.mjs hardcodes BOARD_CMD to the real ni"
+        },
+        {
+          "taskId": "JCAPP-JUPLAN-CHAT-UNDO",
+          "scope": "JuPlan 기획 대화: after 적용 show a [되돌리기] button on that plan card. Server: POST /api/juplan/undo {project, confirm} — project validated against the discovered JuPlan list (never a raw path), confirm === '방금 적용한 변경을 되돌릴게요.' → execFile night ['juplan','undo',planDir] (no shell) and return its JSON {ok, output}. UI: inline confirm, then '되돌렸어요 · 그림이 곧 바뀌어요' and refresh; error as one Korean line. Extend test/juplan-chat.test.mjs with injected exec (bad project, wrong confirm, success).",
+          "files": [
+            "operator/server.mjs",
+            "lib/juplanChat.mjs",
+            "operator/public/app.js",
+            "test/juplan-chat.test.mjs"
+          ],
+          "tests": [
+            "node --test test/juplan-chat.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Dogfood round 2 J2 (적용한 변경을 대화에서 되돌릴 수 없음); engine night juplan undo verified on a plan copy",
+          "title": "JuPlan 기획 대화: after 적용 show a [되돌리기] button on that plan car"
         }
       ]
     },
