@@ -2971,6 +2971,30 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 19:4x: '그거 전부 진행' + ran the JuCeipt WIP merge (2 conflicts)",
           "title": "최신 영수증과 정산 기능 반영"
+        },
+        {
+          "taskId": "JUCEIPT-CLI-KOREAN-NEXT-ACTION",
+          "scope": "Translate CLI help, success, and failure output into plain Korean with one obvious next action while retaining copyable paths and fail-closed exit codes.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-PLAIN-KOREAN-STATUS",
+          "scope": "Replace end-user Level 1 and Level 2 status/action wording that exposes delivered, partial, not evidenced, and unknown with plain Korean labels and an obvious next action, keeping technical evidence behind Level 3.",
+          "files": [
+            "src/render/index.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ]
     },
