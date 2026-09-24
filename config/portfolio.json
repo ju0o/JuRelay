@@ -2421,6 +2421,47 @@
             "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder direction 2026-09-23: actl: no interleaved sends across boards/processes, busy-send guard, ambiguous-delivery honesty, result-ready CTA (collision audit 2026-09-24)"
+        },
+        {
+          "taskId": "ACTL-E2E-KOREAN-SEND-CHECK",
+          "scope": "Fix scripts/e2e_disposable.sh so the offline run passes again: its send check still looks for 'sent to' or the session name, but `actl send` now prints '<이름>에게 보냈어요 · 답이 오면: actl copy <agent>' (src/actl/cli.py:1516), so the real run stops before printing its JSON line. Change the check to look for '에게 보냈어요', change the fake remote actl in tests/test_e2e_disposable_script.py to print the real Korean line, and on any failed step print one line {\"ok\":false,\"steps\":[finished steps],\"failed\":\"<step>\",\"ms\":N} while keeping the cleanup trap and the success line as they are.",
+          "files": [
+            "scripts/e2e_disposable.sh",
+            "tests/test_e2e_disposable_script.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "bash scripts/e2e_disposable.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): 'a real end-to-end script ... runs the product's main user flow offline in a temp dir using only existing commands and prints one JSON line {ok, steps[], ms}'; scripts/e2e_disposable.sh@2bc798a: '[[ \"$send_output\" == *\"sent to\"* || \"$send_output\" == *\"$session\"* ]]' vs src/actl/cli.py:1516 'print(f\"{AGENTS[agent].display_name}에게 보냈어요 · 답이 오면: actl copy {agent}\")'"
+        },
+        {
+          "taskId": "ACTL-CLI-COPY-RESULT-KOREAN",
+          "scope": "In src/actl/cli.py _copy, replace the remaining English and raw text with plain Korean: '✓ Last response copied via {backend}[source, confidence=…]' becomes '답을 복사했어요 — 붙여넣기 하세要' without the backend or confidence text, and '✗ Clipboard delivery failed: {exc}' plus 'Use /copy --print…' becomes '복사하지 못했어요 — actl copy <agent> --print 로 답을 화면에 띄워 복사하세요' without the exception text. Keep the audit record fields and the OSC52 wording as they are, and update tests/test_clipboard.py (the 'copied via wl-copy' check) and tests/test_cli_korean_messages.py to match.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_clipboard.py",
+            "tests/test_cli_korean_messages.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: 'launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes'; src/actl/cli.py:278-287@2bc798a: 'print(f\"✗ Clipboard delivery failed: {exc}\")' / 'print(f\"✓ Last response copied via {backend}{note}\")'"
+        },
+        {
+          "taskId": "ACTL-CLI-SEND-FAIL-PLAIN",
+          "scope": "In the `actl send AGENT` path of src/actl/cli.py main(), stop printing the raw exception text (for example 'WRITER_DENIED: …' or 'Selected runtime is STALE; sending blocked: …') and the English 'empty prompt' to stderr. Print plain Korean with a next step instead ('보내지 못했어요 — 잠시 후 다시 보내 주세요', and '보낼 내용이 비어 있어요 — echo \"질문\" | actl send AGENT'). Keep messages that are already Korean, such as the approval-wait one, and keep exit codes 2 and 1 as they are. Add one test file covering these cases.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_send_fail_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: 'plain Korean, obvious next action, inline feedback, no raw codes'; src/actl/cli.py:1507-1515@2bc798a: 'print(\"empty prompt\", file=sys.stderr)' / 'print(str(exc), file=sys.stderr)'; src/actl/cli.py:278 guard_direct_writer: 'raise RuntimeError(f\"{denied.code}: {denied.detail}\")'"
         }
       ],
       "qaRuntime": [
