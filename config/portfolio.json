@@ -4039,7 +4039,8 @@
             "bash scripts/e2e.sh",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes"
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes",
+          "title": "프로젝트 목록이 비었어요"
         },
         {
           "taskId": "JUCONTROLER-E2E-KO-SUMMARY-CHECK",
@@ -4052,7 +4053,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: (1) a real end-to-end script (scripts/e2e.sh) that runs the product's main user flow offline ... prints one JSON line {ok, steps[], ms}; launch bar = plain Korean, inline feedback, no raw codes"
+          "ssotEvidence": "Founder direction 2026-09-23: (1) a real end-to-end script (scripts/e2e.sh) that runs the product's main user flow offline ... prints one JSON line {ok, steps[], ms}; launch bar = plain Korean, inline feedback, no raw codes",
+          "title": "상태 요약을 정확히 확인해요"
         }
       ],
       "qaRuntime": [
@@ -5876,7 +5878,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:105-110 all six Section 5 rows read `UNKNOWN`, :135-136 'Completed by | `UNKNOWN`' / 'Validation date | `UNKNOWN`', and :126 'Evidence missing, contradictory, or `UNKNOWN` | `UNDECIDED`' contradicts :139 'Proposed mapping ... `GO`'; Founder direction 2026-09-24: 'Complete the seven-task summary-versus-Receipt evidence register, then record the M3 GO, DEFER, or KILL decision.'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:105-110 all six Section 5 rows read `UNKNOWN`, :135-136 'Completed by | `UNKNOWN`' / 'Validation date | `UNKNOWN`', and :126 'Evidence missing, contradictory, or `UNKNOWN` | `UNDECIDED`' contradicts :139 'Proposed mapping ... `GO`'; Founder direction 2026-09-24: 'Complete the seven-task summary-versus-Receipt evidence register, then record the M3 GO, DEFER, or KILL decision.'",
+          "title": "매일 업무 결과를 한눈에 확인"
         },
         {
           "taskId": "JUCEIPTPLAN-P0-REPORT-M3-EVIDENCE-REFRESH",
@@ -5887,7 +5890,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:136-142 quote: 'Ten-task corpus complete | YES — commit `402d3ee` includes 10/10 receipts' and 'Proposed mapping from Section 6 | `GO — continue the bounded daily-value experiment only; source scorecard decision`', which the older docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:29 contradicts: 'M3 daily value summary is integrated for 7 tasks; validation and GO / DEFER / KILL decision are next.'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:136-142 quote: 'Ten-task corpus complete | YES — commit `402d3ee` includes 10/10 receipts' and 'Proposed mapping from Section 6 | `GO — continue the bounded daily-value experiment only; source scorecard decision`', which the older docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:29 contradicts: 'M3 daily value summary is integrated for 7 tasks; validation and GO / DEFER / KILL decision are next.'",
+          "title": "10건 검증 결과와 다음 단계 확인"
         }
       ]
     },
