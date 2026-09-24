@@ -3434,7 +3434,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, no raw codes; base tests/daily.test.ts:45-47 currently expects '[근거 observed]', '(git_check 1건)', 'material impact: task-1(attention)'"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, no raw codes; base tests/daily.test.ts:45-47 currently expects '[근거 observed]', '(git_check 1건)', 'material impact: task-1(attention)'",
+          "title": "하루 요약을 쉬운 우리말로 보여주기"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-L2-NO-RAW-CODES",
@@ -3447,7 +3448,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, obvious next action, no raw codes; base src/render/index.ts renderLevel2 emits esc(it.confidence) and esc(a.type) raw into the user-facing Level 2"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, obvious next action, no raw codes; base src/render/index.ts renderLevel2 emits esc(it.confidence) and esc(a.type) raw into the user-facing Level 2",
+          "title": "영수증의 어려운 표시를 우리말로 바꾸기"
         },
         {
           "taskId": "JUCEIPT-SOURCES-DISCOVERY",
@@ -3461,7 +3463,7 @@
             "npm test"
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
-          "title": "A-28 step 1. New src/sources/discover.ts + CLI `juceipt sour"
+          "title": "이 컴퓨터에 남은 에이전트 작업 기록 찾기"
         },
         {
           "taskId": "JUCEIPT-IMPORT-CLAUDE-TRANSCRIPTS",
@@ -3475,7 +3477,7 @@
             "npm test"
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
-          "title": "A-28 step 2. New src/sources/claude.ts: convert one Claude C"
+          "title": "클로드 코드 작업 기록을 영수증으로 만들기"
         },
         {
           "taskId": "JUCEIPT-IMPORT-CODEX-ROLLOUTS",
@@ -3489,7 +3491,7 @@
             "npm test"
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
-          "title": "A-28 step 3. New src/sources/codex.ts: convert one Codex rol"
+          "title": "코덱스 작업 기록을 영수증으로 만들기"
         },
         {
           "taskId": "JUCEIPT-IMPORT-AGENT-RELAY",
@@ -3503,7 +3505,7 @@
             "npm test"
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
-          "title": "A-28 step 4. New src/sources/agentRelay.ts: turn each Agent "
+          "title": "Agent Relay 작업마다 영수증 만들기"
         },
         {
           "taskId": "JUCEIPT-SCAN-COMMAND",
@@ -3517,7 +3519,7 @@
             "npm test"
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
-          "title": "A-28 step 5. CLI `juceipt scan [--since 24h] [--out .juceipt"
+          "title": "최근 작업을 한 번에 모아 영수증 만들기"
         },
         {
           "taskId": "JUCEIPT-IMPORT-OPENCODE",
@@ -3531,7 +3533,7 @@
             "npm test"
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28) all agent records → receipts; 'ㄱㄱ'",
-          "title": "A-28 step 6. New src/sources/opencode.ts: read OpenCode sess"
+          "title": "오픈코드 작업 기록을 영수증으로 만들기"
         },
         {
           "taskId": "JUCEIPT-IMPORT-CLINE-CURSOR-GROK",
@@ -3545,7 +3547,7 @@
             "npm test"
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28) all agent records → receipts; 'ㄱㄱ'",
-          "title": "A-28 step 7. New src/sources/others.ts: importers for Cline "
+          "title": "클라인·커서·그록 작업 기록 가져오기"
         },
         {
           "taskId": "JUCEIPT-SCAN-DAILY-SUMMARY",
@@ -3559,7 +3561,7 @@
             "npm test"
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28) all agent records → receipts; 'ㄱㄱ'",
-          "title": "A-28 step 8. After `juceipt scan`, write a Korean daily summ"
+          "title": "하루치 영수증을 한눈에 요약하기"
         }
       ]
     },
@@ -3929,7 +3931,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; README.md '처음 쓰는 법' currently explains only the raw fields ok/steps/ms"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; README.md '처음 쓰는 법' currently explains only the raw fields ok/steps/ms",
+          "title": "전체 점검 결과를 한국어로 알려주기"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-REGISTRY-EXAMPLE",
@@ -3942,7 +3945,8 @@
             "bash scripts/e2e.sh",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 02시 (2): README '처음 쓰는 법' whose commands are exactly what works; 2026-09-24 오후: obvious next action for a non-developer. At df1a2fd, README step 3 takes `<registry.json>` but never shows its format"
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (2): README '처음 쓰는 법' whose commands are exactly what works; 2026-09-24 오후: obvious next action for a non-developer. At df1a2fd, README step 3 takes `<registry.json>` but never shows its format",
+          "title": "처음 쓸 때 프로젝트 등록 예시 보여주기"
         }
       ],
       "qaRuntime": [
@@ -5500,7 +5504,7 @@
             "node --test test/*.test.mjs"
           ],
           "ssotEvidence": "Founder 2026-09-24 A-28 (all agent records → receipts), hub shows the scan",
-          "title": "A-28 in the hub: JuCeipt tab reads the scan output of JuCeip"
+          "title": "JuCeipt 오늘 작업 영수증 한눈에 보기"
         }
       ]
     },
