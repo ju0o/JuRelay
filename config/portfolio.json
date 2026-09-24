@@ -4804,6 +4804,17 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 13:4x: 'WBS PRD 전부 기획문서들 그리고 소스들 전부 복기한다는 생각으로 전부 정리'; supervisor retrospective reports/retro/*.md",
           "title": "실제 진행상태로 계획판 바로잡기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-VALIDATION-EVIDENCE",
+          "scope": "Create a planning-only M3 validation artifact for the integrated 7-task Daily Value summary, with evidence fields and GO/DEFER/KILL mapping but no milestone decision.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:162-171 'M3 daily value summary is integrated for 7 tasks; validate and record GO / DEFER / KILL'"
         }
       ]
     },
