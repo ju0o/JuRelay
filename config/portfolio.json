@@ -5761,6 +5761,30 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md §3: 'Complete one row per integrated task. Do not fill a blank with a guess.'; docs/operations/PM_STATUS_BOARD.md:260 '| 1 | Validate the integrated 7-task Daily Value summary | M3 NOW |'; Founder direction 2026-09-24: complete the seven-task summary-versus-Receipt evidence register",
           "title": "매일 지출 내역을 믿고 확인"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-REGISTER-CORPUS-RECONCILE",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md, replace the UNKNOWN seven-task rows with the committed 10-receipt corpus that the product M3 scorecard used (read-only from ../JuCeipt at commit 402d3ee: docs/qa/M3_DAILY_VALUE_SCORECARD.md, daily/2026-09-05.json, daily/2026-09-06.json, receipts/t01..t10). Label the corpus as 10 tasks rather than 7 and fill the Section 4 checks and Section 7 closeout from that evidence. Keep Section 5 human answers UNKNOWN unless a real user answer exists. Do not change the JuCeipt repo.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:30 'Corpus note: no committed seven-task set was found. The committed daily files contain 5 + 5 = 10 tasks'; Founder direction 2026-09-24 'Complete the seven-task summary-versus-Receipt evidence register, then record the M3 GO, DEFER, or KILL decision.'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-DECISION-STATUS-SYNC",
+          "scope": "Record in PM_STATUS_BOARD, MASTER_ROADMAP and DECISION_LOG the M3 decision already committed in the product repo: 'GO — continue the bounded daily-value experiment only', from ../JuCeipt commit 402d3ee docs/qa/M3_DAILY_VALUE_SCORECARD.md, read-only. Cite that commit, keep its limits (no dashboard, analytics or schema, revisit on a larger sample), and fix the '7 tasks' wording to the evidenced 10-task receipt corpus. Do not open M4 and do not change the M2 or P0 decisions.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md",
+            "docs/product/MASTER_ROADMAP.md",
+            "docs/decisions/DECISION_LOG.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:263 '| 4 | Record M3 GO / DEFER / KILL from daily-value validation | M3 |'; docs/operations/PM_STATUS_BOARD.md:36 '| M3 integration | daily value summary integrated for 7 tasks |'; Founder direction 2026-09-24"
         }
       ]
     },
