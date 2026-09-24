@@ -6452,6 +6452,33 @@
           ],
           "ssotEvidence": "AI-Agent-marketplace-private docs/PRODUCT_SSOT_v0.4.md O-10 Cost / Safety Policy; docs/source/v0.4/index.html O09; WBS_v0.4 Phase 2 policy/cost/safety settings",
           "title": "안전과 비용 화면에 실제 한도 입력 + Owner 화면 E2E"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-POLICY-API-REJECT",
+          "scope": "Add a new src/server/owner-policy.ts, registered in src/server/app.ts next to registerOwnerRoutes. It exposes POST /api/owner/policies, which checks the body with validatePolicy from src/domain/worker-policy.ts, stores a row in worker_policies (400 INVALID_POLICY with the error list when invalid), and GET /api/owner/policies/:id. It also adds POST /api/owner/policies/:id/check, which runs checkTask with the stored policy and returns 200 {allowed:true} or 422 {allowed:false, reason} when a task is over its limits. Add integration tests in the same style as tests/integration/owner-connector.test.ts.",
+          "files": [
+            "src/server/owner-policy.ts",
+            "src/server/app.ts",
+            "tests/integration/owner-policy.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: (3) capability 선택과 비용/안전 한도 정책 API, 한도 초과 작업 거부 로직 + 테스트"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-CAPABILITY-PROFILE-API",
+          "scope": "Inside registerOwnerRoutes in src/server/owner.ts, add PUT and GET /api/owner/connectors/:id/profile, reusing the existing connector lookup helper. PUT validates display_name as non-empty and capabilities with validateCapabilities from src/domain/worker-policy.ts (400 INVALID_CAPABILITIES listing the unknown values), then upserts one worker_profiles row linked by agent_connector_id. GET returns {display_name, capabilities}, and both return 404 for an unknown connector. Add tests to tests/integration/owner-connector.test.ts.",
+          "files": [
+            "src/server/owner.ts",
+            "tests/integration/owner-connector.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: (3) capability 선택과 비용/안전 한도 정책 API ... + 테스트; ERD_v0.4 worker_profiles (migrations/0002_owner_connector.sql: agent_connector_id, capabilities jsonb)"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
