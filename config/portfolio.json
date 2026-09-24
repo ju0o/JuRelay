@@ -1988,6 +1988,45 @@
           ],
           "ssotEvidence": "Supervisor retrospective 2026-09-24 추천 다음 단계; Founder standing order A-27",
           "title": "화면에서 정확한 버전 확인"
+        },
+        {
+          "taskId": "ACTL-WEB-BOARD-PLAIN-CARDS",
+          "scope": "On the web board in src/actl/serve.py, show agent cards and the header in plain Korean: add \"state_ko\" to each agent in _board_data using the STATE_KO table that serve.py already imports from actl.tui; make the card pill show state_ko instead of the raw runtime_state ('WORKING'/'UNKNOWN'); leave out project/role/model_profile/current_task from the card sub-line when they are empty, UNKNOWN or UNASSIGNED; change the auto-watch label from ADAPTIVE/OFF to 켜짐/꺼짐 and 'live pane — 에이전트 클릭' to '에이전트를 누르면 화면이 보여요'; add an offline test that proves _board_data returns state_ko and that BOARD_HTML no longer contains 'ADAPTIVE' or the runtime_state pill.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "BACKLOG.md:14 '웹 보드와 TUI 보드 모두 한국어 상태 라벨을 사용한다' vs serve.py:189 pill `${esc(a.runtime_state||'UNKNOWN')}` and serve.py:99 'ADAPTIVE'; Founder direction 2026-09-24 launch bar 'plain Korean … no raw codes'"
+        },
+        {
+          "taskId": "ACTL-TK-SEND-FAIL-PLAIN",
+          "scope": "When a send fails on the Tk board, show a plain Korean message with a clear next step instead of the raw error text: in src/actl/gui.py add a pure helper _send_failure_text(detail, contention=False) that returns '보내지 못했어요 — 잠시 후 다시 보내기를 눌러 주세요' (or, for transport contention, 'ASUS가 다른 작업 중이라 보내지 못했어요 — 잠시 후 다시 보내 주세요'); use it for both 전송 실패 notify calls in the send done() callback; keep the raw detail only in self.log; keep the existing prompt-preservation and ambiguous-delivery behaviour unchanged; add an offline test that the helper output never contains the raw detail strings ('send failed', 'paste/enter evidence missing', 'TmuxError', '매핑 DOWN').",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_send_fail_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "src/actl/gui.py:2108/2130 notify(f\"전송 실패: {detail[:120]}\") shows raw exception text such as 'paste/enter evidence missing'; Founder direction 2026-09-24 launch bar 'obvious next action, inline feedback, no raw codes'"
+        },
+        {
+          "taskId": "ACTL-WEB-ERRORS-PLAIN",
+          "scope": "Stop the web board API (actl serve) from showing raw error codes to the user: in src/actl/serve.py replace 'unknown endpoint', 'invalid JSON' and the f\"{type(exc).__name__}: {exc}\" 500 body with plain Korean messages that say what to do next (for example '문제가 생겼어요 — 새로고침 후 다시 시도해 주세요'), keep the 400 validation messages that are already Korean, and keep HTTP status codes and the 401 token message unchanged; make the JS fetch helper fall back to '연결이 끊겼어요 — 새로고침해 주세요' instead of 'HTTP <status>'; add an offline test that the handler's error bodies contain no exception class names or English code strings.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_errors_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "src/actl/serve.py:430/434/445 error=\"unknown endpoint\" / f\"{type(exc).__name__}: {exc}\" / \"invalid JSON\" and serve.py:155 'HTTP '+r.status, shown via log('전송 실패: '+e.message); README.md:57 '## MainPC에서 실행 (웹 보드)'; Founder direction 2026-09-24 'no raw codes'"
         }
       ],
       "qaRuntime": [
