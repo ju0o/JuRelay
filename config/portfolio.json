@@ -5659,6 +5659,41 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:427 \"| 필요한 테스트를 실행하지 않음 | 추가 확인 필요 |\"; docs/PRODUCT_SCOPE.md §11.3 \"실행하지 않은 테스트를 통과했다고 쓰지 않는다.\"",
           "title": "확인 못 한 작업 보고서 점검"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-TIER-CASES-RECORD",
+          "scope": "Add docs/dogfood/context-tier-cases.md, which records that packages/cli/tests/context.test.ts already has classifyTier cases for trivial/minimal/8, standard/balanced/12 and risky/detailed/18, and add an offline node:test that reads both files and asserts all three expectations exist in the test file and are stated in the doc.",
+          "files": [
+            "docs/dogfood/context-tier-cases.md",
+            "tests/context-tier-cases.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-tier-cases.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-24 20:51): packages/cli/tests/context.test.ts에 tier 분류 케이스 존재 확인과 결과 기록 — 완료 기준: 문서에 확인 결과 명시; docs/DECISIONS.md:3 'Token Diet T1+T2+T3 (jutell context, MCP tiered rules, smart 작업등급)'"
+        },
+        {
+          "taskId": "JUTELL-MCP-TIER-STATIC-CHECK",
+          "scope": "Add docs/dogfood/mcp-tier-check.md and an offline node:test that reads apps/mcp-server/src/index.ts and apps/mcp-server/tests/bridge-tools.test.ts, then asserts get_beginner_report_rules takes tier z.enum(['core','full']), defaults to 'full', and that the existing test checks core rules are shorter than full; the doc records these results.",
+          "files": [
+            "docs/dogfood/mcp-tier-check.md",
+            "tests/mcp-tier-check.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/mcp-tier-check.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-24 20:50): tier 분류 3종과 MCP core/full 바이트 비교를 오프라인 테스트로 검증 — 완료 기준: 테스트 통과; apps/mcp-server/src/index.ts:44 'Use tier \"core\" for small tasks to save tokens (1 call per session), \"full\" (default)'"
+        },
+        {
+          "taskId": "JUTELL-TOKEN-DIET-GUIDANCE-PARITY",
+          "scope": "Add an offline node:test that checks the Token Diet guidance matches in three places: .agents/skills/beginner-bridge/SKILL.md step 1, packages/cli/src/commands/context.ts tokenNote, and docs/DECISIONS.md. All three must say to run `jutell context` first, call get_beginner_report_rules once per session, and use tier core for simple tasks.",
+          "files": [
+            "tests/token-diet-guidance-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/token-diet-guidance-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/DECISIONS.md:10 'Skill 실행 절차 1항에 `jutell context` 우선 실행 + MCP 세션당 1회 + 단순 작업 `tier: core` 규칙을 추가한다.'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
