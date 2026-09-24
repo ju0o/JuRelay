@@ -4685,6 +4685,19 @@
             "node --test tests/results/scenario-b/general-report.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUTELL-TOKEN-DIET-MEASURE",
+          "scope": "대표 요청 3종(단순·일반·위험)에 대해 core/full 보고 규칙 바이트와 보고서 길이·절감률을 오프라인 측정하고 결과 표를 문서화한다.",
+          "files": [
+            "scripts/measure-token-diet.mjs",
+            "tests/token-diet-measure.test.mjs",
+            "docs/dogfood/token-diet-measure.md"
+          ],
+          "tests": [
+            "node --test tests/token-diet-measure.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
