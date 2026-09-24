@@ -1444,7 +1444,8 @@
             "npm run build:win",
             "npm run typecheck"
           ],
-          "ssotEvidence": "BACKLOG.md:33 '- [ ] 앱 아이콘 미설정 — electron-builder 기본 Electron 아이콘 사용 중'"
+          "ssotEvidence": "BACKLOG.md:33 '- [ ] 앱 아이콘 미설정 — electron-builder 기본 Electron 아이콘 사용 중'",
+          "title": "Agent Relay 앱을 쉽게 찾기"
         }
       ],
       "qaRuntime": [
@@ -3300,7 +3301,8 @@
             "pnpm --filter @juplan/runtime exec vitest run test/dogfood-jucontroler.test.ts",
             "pnpm --filter @juplan/runtime run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 'Next: dogfood the five portfolio projects as JuPlan plans.' (juplan and agent-relay already done)"
+          "ssotEvidence": "Founder direction 2026-09-23: 'Next: dogfood the five portfolio projects as JuPlan plans.' (juplan and agent-relay already done)",
+          "title": "JuControler 진행상황 한눈에 보기"
         },
         {
           "taskId": "JUPLAN-DOGFOOD-JUCEIPT",
@@ -3314,7 +3316,8 @@
             "pnpm --filter @juplan/runtime exec vitest run test/dogfood-juceipt.test.ts",
             "pnpm --filter @juplan/runtime run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 'Next: dogfood the five portfolio projects as JuPlan plans.' (juplan and agent-relay already done)"
+          "ssotEvidence": "Founder direction 2026-09-23: 'Next: dogfood the five portfolio projects as JuPlan plans.' (juplan and agent-relay already done)",
+          "title": "JuCeipt 진행상황 한눈에 보기"
         },
         {
           "taskId": "JUPLAN-DOGFOOD-ACTL",
@@ -3328,7 +3331,8 @@
             "pnpm --filter @juplan/runtime exec vitest run test/dogfood-actl.test.ts",
             "pnpm --filter @juplan/runtime run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 'Next: dogfood the five portfolio projects as JuPlan plans.' (juplan and agent-relay already done)"
+          "ssotEvidence": "Founder direction 2026-09-23: 'Next: dogfood the five portfolio projects as JuPlan plans.' (juplan and agent-relay already done)",
+          "title": "actl 작업상태 한눈에 보기"
         }
       ],
       "qaRuntime": [
@@ -4250,7 +4254,8 @@
           "tests": [
             "node --test tests/skill-attachment-contract.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: A-25 Skills attach per project×role"
+          "ssotEvidence": "Founder direction 2026-09-23: A-25 Skills attach per project×role",
+          "title": "역할별 작업 도구를 명확히 선택"
         },
         {
           "taskId": "JUCONTROLER-APPROVED-MEMORY-CONTRACT",
@@ -4263,7 +4268,8 @@
           "tests": [
             "node --test tests/approved-memory-contract.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: A-26 approved memories go to every agent; QA lessons are proposed"
+          "ssotEvidence": "Founder direction 2026-09-23: A-26 approved memories go to every agent; QA lessons are proposed",
+          "title": "승인된 정보만 모든 작업자에게 전달"
         }
       ],
       "qaRuntime": [
@@ -6136,7 +6142,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:5 'Scope: integrated 10-task Daily Value summary' and §7 'Ten-task corpus complete | YES — commit 402d3ee includes 10/10 receipts' vs docs/planning/BUSINESS_PRODUCT_WBS.md:43 '**ACTIVE — 7-task evidence register complete; decision pending**' and :142 'the integrated 7-task register is complete'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:5 'Scope: integrated 10-task Daily Value summary' and §7 'Ten-task corpus complete | YES — commit 402d3ee includes 10/10 receipts' vs docs/planning/BUSINESS_PRODUCT_WBS.md:43 '**ACTIVE — 7-task evidence register complete; decision pending**' and :142 'the integrated 7-task register is complete'",
+          "title": "검증 자료를 열 건으로 통일"
         }
       ]
     },
@@ -6402,7 +6409,8 @@
             "node --test tests/verify-result-labels-parity.test.mjs",
             "node --test tests/skill-report-contract.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:378-402 '## 10. 검증 결과 … ### 10.1 통과 … ### 10.6 검증 수단 없음'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:378-402 '## 10. 검증 결과 … ### 10.1 통과 … ### 10.6 검증 수단 없음'",
+          "title": "검증 결과를 같은 기준으로 맞춤"
         },
         {
           "taskId": "JUTELL-REPORT-STATE-PRIORITY-PARITY",
@@ -6415,7 +6423,8 @@
             "node --test tests/report-state-priority-parity.test.mjs",
             "node --test tests/skill-report-contract.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:470-479 '### 11.4 우선순위 여러 상태에 동시에 해당하면 다음 순서로 더 보수적인 상태를 적용한다. 1. 작업 보류 2. 일부 확인 3. 추가 확인 필요 4. 확인 완료 … `범위 밖`은 작업 자체가 대상이 아닐 때 별도로 사용한다.'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:470-479 '### 11.4 우선순위 여러 상태에 동시에 해당하면 다음 순서로 더 보수적인 상태를 적용한다. 1. 작업 보류 2. 일부 확인 3. 추가 확인 필요 4. 확인 완료 … `범위 밖`은 작업 자체가 대상이 아닐 때 별도로 사용한다.'",
+          "title": "보고서 상태를 일관되게 안내"
         },
         {
           "taskId": "JUTELL-GLOSSARY-POLICY-SPEC-PARITY",
@@ -6427,7 +6436,8 @@
             "node --test tests/glossary-policy-spec-parity.test.mjs",
             "node --test tests/glossary-signal-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:747-758 '## 17. 개발 용어 설명 … * 작업 이해에 필요한 용어만 설명 * 처음 등장할 때만 설명 * 원래 용어를 유지 … * 같은 설명을 반복하지 않음'; docs/PRODUCT_SCOPE.md §6.6 '같은 보고서에서 동일한 용어를 반복 설명하지 않는다.'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:747-758 '## 17. 개발 용어 설명 … * 작업 이해에 필요한 용어만 설명 * 처음 등장할 때만 설명 * 원래 용어를 유지 … * 같은 설명을 반복하지 않음'; docs/PRODUCT_SCOPE.md §6.6 '같은 보고서에서 동일한 용어를 반복 설명하지 않는다.'",
+          "title": "어려운 용어를 필요한 만큼 설명"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -6512,7 +6522,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: README says members get 15 AI chats per day, but code allows 5 plus up to 3 feedback bonuses; update that one README line and mention !도움말 and !남은횟수."
+          "ssotEvidence": "Founder direction 2026-09-23: README says members get 15 AI chats per day, but code allows 5 plus up to 3 feedback bonuses; update that one README line and mention !도움말 and !남은횟수.",
+          "title": "기본·보너스 대화 횟수 안내"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
@@ -6606,7 +6617,8 @@
             "npm test",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: (3) capability 선택과 비용/안전 한도 정책 API, 한도 초과 작업 거부 로직 + 테스트"
+          "ssotEvidence": "Founder direction 2026-09-23: (3) capability 선택과 비용/안전 한도 정책 API, 한도 초과 작업 거부 로직 + 테스트",
+          "title": "작업 규칙을 등록하고 확인해요"
         },
         {
           "taskId": "AIAGENTMARKE-P2-CAPABILITY-PROFILE-API",
@@ -6619,7 +6631,8 @@
             "npm test",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: (3) capability 선택과 비용/안전 한도 정책 API ... + 테스트; ERD_v0.4 worker_profiles (migrations/0002_owner_connector.sql: agent_connector_id, capabilities jsonb)"
+          "ssotEvidence": "Founder direction 2026-09-23: (3) capability 선택과 비용/안전 한도 정책 API ... + 테스트; ERD_v0.4 worker_profiles (migrations/0002_owner_connector.sql: agent_connector_id, capabilities jsonb)",
+          "title": "연결된 작업자의 정보와 능력을 관리해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
