@@ -1348,7 +1348,7 @@
             "node --test test/founder-task-title.test.mjs"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
-          "title": "R2-6 + R2-8: English scope text and raw ids are shown as tas"
+          "title": "작업 이름을 쉽게 보여주기"
         },
         {
           "taskId": "AGENTRELAY-APPROVALS-READABLE",
@@ -2182,7 +2182,7 @@
             "PYTHONPATH=src python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
-          "title": "A-N1: sending into a pane whose activity is WAITING_INPUT (C"
+          "title": "승인 대기 중인 작업을 보호해요"
         },
         {
           "taskId": "ACTL-ACTIVITY-FRESH-SAMPLE",
@@ -2196,7 +2196,7 @@
             "PYTHONPATH=src python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
-          "title": "A-N2 + A-N3: observe_activity averages CPU since the previou"
+          "title": "작업 상태를 더 정확히 보여줘요"
         },
         {
           "taskId": "ACTL-TK-UI-THREAD-HANDOFF",
@@ -2209,7 +2209,7 @@
             "PYTHONPATH=src python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
-          "title": "A-N4: in the Tk board the composer text is never cleared aft"
+          "title": "보낸 글을 지우고 중복 전송을 막아요"
         },
         {
           "taskId": "ACTL-TK-CARD-PLAIN-HEADER",
@@ -2222,7 +2222,7 @@
             "PYTHONPATH=src python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
-          "title": "A-N5 + A-N7: Tk agent cards show raw English in the header ("
+          "title": "작업 카드를 쉽게 이해하게 보여줘요"
         },
         {
           "taskId": "ACTL-TK-PREVIEW-HOLD-PER-AGENT",
@@ -2261,7 +2261,7 @@
             "PYTHONPATH=src python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
-          "title": "A-N9: `actl discover --apply` prints 'Discovery is read-only"
+          "title": "연결 상태를 한국어로 안내해요"
         }
       ],
       "qaRuntime": [
@@ -3083,7 +3083,7 @@
             "pnpm --filter @juplan/runtime test:run"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
-          "title": "J2: `juplan undo` prints only 'EDIT_UNDONE', so the planning"
+          "title": "되돌린 내용을 바로 확인하기"
         },
         {
           "taskId": "JUPLAN-STUDIO-LIVE-ALL-SECTIONS",
@@ -3153,7 +3153,7 @@
             "pnpm --filter @juplan/runtime test:run"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
-          "title": "J7: nodes applied from a planning conversation keep AI-inven"
+          "title": "계획 내용을 현재 시각으로 기록"
         },
         {
           "taskId": "JUPLAN-NODE-TYPE-LABELS-ALL",
@@ -3167,7 +3167,7 @@
             "pnpm --filter @juplan/runtime test:run"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
-          "title": "J8: the plan map and item list show English type names such "
+          "title": "계획 종류를 쉬운 우리말로 표시"
         },
         {
           "taskId": "JUPLAN-STUDIO-FOUNDER-BANNER",
@@ -3747,7 +3747,8 @@
             "bash scripts/e2e.sh",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base scripts/status-board.mjs:14 prints 'Usage: status-board.mjs <registry.json> [--project-id <id>]' and :21 prints raw error.message"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base scripts/status-board.mjs:14 prints 'Usage: status-board.mjs <registry.json> [--project-id <id>]' and :21 prints raw error.message",
+          "title": "오류를 쉽게 안내받기"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-FULL-TESTS",
@@ -3760,7 +3761,8 @@
             "bash scripts/e2e.sh",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 02시: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e/tester entry runs]; JuControler-Private/CURRENT.md: '검증: node --test test/*.test.mjs, 오프라인 E2E scripts/e2e.sh. 처음 쓰는 법은 README.md'; base README.md lists only tests/project-registry.test.mjs tests/status-board-cli.test.mjs of 7 test files"
+          "ssotEvidence": "Founder direction 2026-09-24 02시: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e/tester entry runs]; JuControler-Private/CURRENT.md: '검증: node --test test/*.test.mjs, 오프라인 E2E scripts/e2e.sh. 처음 쓰는 법은 README.md'; base README.md lists only tests/project-registry.test.mjs tests/status-board-cli.test.mjs of 7 test files",
+          "title": "처음부터 전체 점검하기"
         }
       ],
       "qaRuntime": [
@@ -5287,7 +5289,7 @@
             "node --test test/*.test.mjs"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
-          "title": "H-N16: lib/relayBoard.mjs hardcodes BOARD_CMD to the real ni"
+          "title": "안전하게 야간 작업을 미리 확인"
         },
         {
           "taskId": "JCAPP-JUPLAN-CHAT-UNDO",
@@ -5670,7 +5672,8 @@
           "tests": [
             "node --test tests/context-tier-cases.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-24 20:51): packages/cli/tests/context.test.ts에 tier 분류 케이스 존재 확인과 결과 기록 — 완료 기준: 문서에 확인 결과 명시; docs/DECISIONS.md:3 'Token Diet T1+T2+T3 (jutell context, MCP tiered rules, smart 작업등급)'"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-24 20:51): packages/cli/tests/context.test.ts에 tier 분류 케이스 존재 확인과 결과 기록 — 완료 기준: 문서에 확인 결과 명시; docs/DECISIONS.md:3 'Token Diet T1+T2+T3 (jutell context, MCP tiered rules, smart 작업등급)'",
+          "title": "일의 어려움에 맞춰 안내"
         },
         {
           "taskId": "JUTELL-MCP-TIER-STATIC-CHECK",
@@ -5682,7 +5685,8 @@
           "tests": [
             "node --test tests/mcp-tier-check.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-24 20:50): tier 분류 3종과 MCP core/full 바이트 비교를 오프라인 테스트로 검증 — 완료 기준: 테스트 통과; apps/mcp-server/src/index.ts:44 'Use tier \"core\" for small tasks to save tokens (1 call per session), \"full\" (default)'"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-24 20:50): tier 분류 3종과 MCP core/full 바이트 비교를 오프라인 테스트로 검증 — 완료 기준: 테스트 통과; apps/mcp-server/src/index.ts:44 'Use tier \"core\" for small tasks to save tokens (1 call per session), \"full\" (default)'",
+          "title": "필요한 만큼만 안내받기"
         },
         {
           "taskId": "JUTELL-TOKEN-DIET-GUIDANCE-PARITY",
@@ -5693,7 +5697,8 @@
           "tests": [
             "node --test tests/token-diet-guidance-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/DECISIONS.md:10 'Skill 실행 절차 1항에 `jutell context` 우선 실행 + MCP 세션당 1회 + 단순 작업 `tier: core` 규칙을 추가한다.'"
+          "ssotEvidence": "docs/DECISIONS.md:10 'Skill 실행 절차 1항에 `jutell context` 우선 실행 + MCP 세션당 1회 + 단순 작업 `tier: core` 규칙을 추가한다.'",
+          "title": "간단한 일은 짧게 안내"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
