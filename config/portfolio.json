@@ -3420,7 +3420,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "빈 영수증도 원인과 다음 행동 안내"
         }
       ]
     },
@@ -5533,7 +5534,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "다음 할 일을 쉽게 알려주기"
         }
       ]
     },
