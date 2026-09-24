@@ -4588,6 +4588,30 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 20:2x: '우리만의 PM<->Agent 소통 창구 만들고'; engine: pool PM (codex→claude-team→cursor→grok→claude-pro→free) + per-lane channel on the board",
           "title": "PM ↔ Agent 소통 창구 (Founder 2026-09-24: 우리만의 PM↔Agent 소통 창구). "
+        },
+        {
+          "taskId": "JCAPP-JUPLAN-STATUS-KOREAN",
+          "scope": "JuPlan 계획 상태와 게이트의 raw enum/status 값이 화면에 노출되지 않도록 모든 표시를 평이한 한국어로 바꾸고 기존 truthful fallback을 유지한다.",
+          "files": [
+            "operator/public/app.js",
+            "test/juplan-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/juplan-module.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes"
+        },
+        {
+          "taskId": "JCAPP-SKILL-AGENT-NAMES",
+          "scope": "Skill 카드의 사용 에이전트 식별자를 Founder가 이해할 수 있는 한국어 역할명으로 표시하고 알 수 없는 값은 정직한 확인 필요 문구로 표시한다.",
+          "files": [
+            "operator/public/app.js",
+            "test/skill-categories.test.mjs"
+          ],
+          "tests": [
+            "node --test test/skill-categories.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes"
         }
       ]
     },
