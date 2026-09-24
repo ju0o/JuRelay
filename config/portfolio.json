@@ -3592,7 +3592,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'"
+          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
+          "title": "다른 도구의 작업 기록도 JuCeipt로 불러오기"
         }
       ]
     },
@@ -6132,7 +6133,8 @@
           "tests": [
             "node --test tests/glossary-signal-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:290-296 \"다음 조건에 해당하는 용어만 쉬운 설명을 제공한다 ... 같은 보고서에서 동일한 용어를 반복 설명하지 않는다.\""
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:290-296 \"다음 조건에 해당하는 용어만 쉬운 설명을 제공한다 ... 같은 보고서에서 동일한 용어를 반복 설명하지 않는다.\"",
+          "title": "쉬운 용어 설명 빠짐·중복 자동 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
