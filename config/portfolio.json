@@ -1432,6 +1432,19 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24: plain Korean, no raw codes; independent QA hold cards with raw QA finding collapsed; base src/frontend/App.tsx:1248,1258 and src/frontend/controlRoom.tsx:413,606",
           "title": "관제실 안내 문구 쉬운 말로"
+        },
+        {
+          "taskId": "AGENTRELAY-V1-APP-ICON",
+          "scope": "전자 앱 패키지에 Agent Relay 아이콘을 연결해 기본 Electron 아이콘을 사용하지 않도록 한다.",
+          "files": [
+            "electron.builder.yml",
+            "build/icon.ico"
+          ],
+          "tests": [
+            "npm run build:win",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "BACKLOG.md:33 '- [ ] 앱 아이콘 미설정 — electron-builder 기본 Electron 아이콘 사용 중'"
         }
       ],
       "qaRuntime": [
