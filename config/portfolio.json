@@ -6109,6 +6109,17 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:603 '### 10.2 보조 시나리오 — 내부 기능 변경' + :611-616 '화면 변화와 입력 검증 기능 변화를 구분하는가 … 기존 검색 기능에 미칠 수 있는 영향을 설명하는가 / 위험도와 근거를 일관되게 작성하는가'; .agents/skills/beginner-bridge/references/risk-level-guide.md:28 '예: 검색 실행 전에 빈 검색어인지 확인하는 조건을 추가한 경우.'; Founder request 2026-09-24 20:25; Founder retry choice: re-add only the internal-change fixture and test on integration branch 3f0c23f",
           "title": "내부 변경 보고가 쉽게 읽히는지 확인"
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-SIGNAL-PARITY",
+          "scope": "Add an offline node:test that reads packages/cli/src/commands/context.ts and .agents/skills/beginner-bridge/references/glossary-ko.md, then checks two things: every term listed in TERM_SIGNALS has a matching `### <term>` heading in the glossary (so buildContext's byTerm lookup never quietly drops a matched term), and the glossary has no duplicate `###` term headings (case-insensitive).",
+          "files": [
+            "tests/glossary-signal-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-signal-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:290-296 \"다음 조건에 해당하는 용어만 쉬운 설명을 제공한다 ... 같은 보고서에서 동일한 용어를 반복 설명하지 않는다.\""
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
