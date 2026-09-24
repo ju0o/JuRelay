@@ -3305,6 +3305,20 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24",
           "title": "오프라인에서 전체 상태 확인하기"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-STEPS-KO-QUICKSTART",
+          "scope": "Change the final JSON line printed by scripts/e2e.sh to the Founder's {ok, steps[], ms} shape. Keep schema jucontroler.e2e.v1 and the existing checks. Each step records its name and ok, covering: build the registry, run status-board, check the projections, and run --project-id on one project. ms is the total run time. Then replace the README Quickstart with a plain-Korean '처음 쓰는 법' section whose commands and sample output match the new script exactly.",
+          "files": [
+            "scripts/e2e.sh",
+            "README.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/project-registry.test.mjs tests/status-board-cli.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23/24: '(1) a real end-to-end script (scripts/e2e.sh ...) ... prints one JSON line {ok, steps[], ms}; (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that'. At b107b7c, scripts/e2e.sh prints {schema, ok, projects, statuses}, with no steps[] or ms, and README.md has only an English '## Quickstart'. JuControler-Private/CURRENT.md: '처음 쓰는 법은 `README.md`'"
         }
       ],
       "qaRuntime": [
