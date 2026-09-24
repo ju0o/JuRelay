@@ -6535,7 +6535,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25"
+          "ssotEvidence": "Founder direction 2026-09-25",
+          "title": "개인정보를 안전하게 가려요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
@@ -6656,7 +6657,8 @@
             "npm test",
             "npm run typecheck"
           ],
-          "ssotEvidence": "WBS_v0.4.md:10 \"heartbeat\" and \"실제 연결 1개 heartbeat 증거\""
+          "ssotEvidence": "WBS_v0.4.md:10 \"heartbeat\" and \"실제 연결 1개 heartbeat 증거\"",
+          "title": "연결 끊김을 바로 알려줘"
         },
         {
           "taskId": "AIAGENTMARKE-P2-POLICY-REJECTION-MATRIX",
@@ -6668,7 +6670,8 @@
             "npm test",
             "npm run typecheck"
           ],
-          "ssotEvidence": "WBS_v0.4.md:10 \"정책 초과 작업 거부 테스트\""
+          "ssotEvidence": "WBS_v0.4.md:10 \"정책 초과 작업 거부 테스트\"",
+          "title": "사용 제한 이유를 알려줘"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
