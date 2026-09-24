@@ -2858,7 +2858,7 @@
             "npm test"
           ],
           "ssotEvidence": "Founder 2026-09-24 19:4x: '그거 전부 진행' + ran the JuCeipt WIP merge (2 conflicts)",
-          "title": "Founder decision 2026-09-24 (A-16 follow-up, he ran the merg"
+          "title": "최신 영수증과 정산 기능 반영"
         }
       ]
     },
@@ -4672,7 +4672,8 @@
           "tests": [
             "node --test tests/results/scenario-a/concise-report.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:180-189 \"모든 코드 변경 작업의 최종 보고에는 다음 6개 항목을 기본으로 포함한다.\""
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:180-189 \"모든 코드 변경 작업의 최종 보고에는 다음 6개 항목을 기본으로 포함한다.\"",
+          "title": "보고서 기본 항목을 항상 지켜요"
         },
         {
           "taskId": "JUTELL-SCENARIO-B-GENERAL-REPORT",
@@ -4684,7 +4685,8 @@
           "tests": [
             "node --test tests/results/scenario-b/general-report.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "기능 변경 내용을 쉽게 확인해요"
         },
         {
           "taskId": "JUTELL-TOKEN-DIET-MEASURE",
@@ -4697,7 +4699,8 @@
           "tests": [
             "node --test tests/token-diet-measure.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "보고서를 더 짧고 알기 쉽게 해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
