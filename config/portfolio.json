@@ -3054,6 +3054,134 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: \"launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes\"",
           "title": "잘못 입력했을 때 한국어로 안내"
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-REMOVE-NODES",
+          "scope": "J1: a Founder request to take something out ('터미널 보드 화면은 빼줘') becomes an added FounderDecision node because GraphChangeProposal only has addNodes/addEdges and applyProposal is additions-only. Add optional removeNodes: string[] (existing ids) to the proposal schema; applyProposal/evaluateProposal drop those nodes and every edge touching them, write one history entry first (so undo restores them), refuse unknown ids with a Korean blocker, and return removed:{nodes,edges} next to added in both preview and apply. Tests: remove one Screen with two edges → counts, undo restores, unknown id blocked.",
+          "files": [
+            "packages/plan-core/src/plan.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/proposal-remove.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test:run"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "J1: a Founder request to take something out ('터미널 보드 화면은 빼줘'"
+        },
+        {
+          "taskId": "JUPLAN-UNDO-JSON-RESULT",
+          "scope": "J2: `juplan undo` prints only 'EDIT_UNDONE', so the planning chat cannot report what was taken back. Print one JSON line {ok:true, restored:{nodes,edges}} after undo, and {ok:false, reason:'되돌릴 변경이 없어요'} with exit 1 when history is empty, so a chat bridge can show a Korean [되돌리기] result. Test both cases through the cli entry.",
+          "files": [
+            "packages/runtime/src/cli.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/undo-json.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test:run"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "J2: `juplan undo` prints only 'EDIT_UNDONE', so the planning"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-LIVE-ALL-SECTIONS",
+          "scope": "J3: after apply the live stream swaps only .plan-map, so 계획 요약 '항목 33개 · 연결 42개', 마지막 수정, 검증 결과, 게이트 and the 계획 항목 list ('33 / 33개 항목') stay stale until reload. Give those articles a data-live key and make the live script replace each keyed section from the same fetched page (keeping the search input value and re-applying its filter), updating the aria-live line once. Test the rendered page has data-live on each section and that the script replaces by key.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-live-sections.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test:run"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "J3: after apply the live stream swaps only .plan-map, so 계획 "
+        },
+        {
+          "taskId": "JUPLAN-WBS-DOC-EDGE-DIRECTION",
+          "scope": "J4: /view/docs/wbs shows '아직 없음' for 완료 기준 and QA on every task of a real plan because documents.ts looks for satisfies edges from the task to the criterion, while real plans and the TRACEABILITY_WBS validator use AcceptanceCriterion → WbsTask. Accept both directions when collecting a task's criteria and their verifiedBy QA cases (no duplicates). Test with a fixture using AC→task satisfies edges and one using task→AC.",
+          "files": [
+            "packages/runtime/src/documents.ts",
+            "packages/runtime/test/wbs-doc-direction.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test:run"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "J4: /view/docs/wbs shows '아직 없음' for 완료 기준 and QA on every t"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-DOC-TABLES",
+          "scope": "J5: wbs, api and qa-plan documents render as raw '| 작업 | ... |' and '| --- |' paragraphs because renderExportMarkdown has no table support. Turn consecutive lines starting with '|' into a <table> (first row <th>, separator row dropped, every cell through inlineExportMarkdown so labels stay escaped), wrapped in a horizontally scrollable container for 390px screens. Test a two-row table and that a label containing <script> stays escaped.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-doc-tables.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test:run"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "J5: wbs, api and qa-plan documents render as raw '| 작업 | ..."
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-DOC-LIST-KOREAN",
+          "scope": "J6: Studio 홈 '문서 (8)' lists only the English domain docs; prd, wbs, api and qa-plan exist but are unreachable without typing a URL, and doc pages are titled 'prd'/'wbs'. Add one DOC_TITLE_LABELS map (prd 기획서, wbs 작업 목록, api API, qa-plan QA 계획, product 제품, ux 화면, system 시스템, data-api 데이터·API, delivery 진행, qa 품질, critical-review 검토, evidence 근거), list prd/wbs/api/qa-plan first when present, use the Korean name in the list and as the doc page title, map PRD priority headings must/should/could/wont to 꼭/가능하면/여유 되면/이번엔 안 함, and hide the 'Generated from' line in the view. Tests on the rendered home and a doc page.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-doc-list.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test:run"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "J6: Studio 홈 '문서 (8)' lists only the English domain docs; pr"
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-STAMP-TIME",
+          "scope": "J7: nodes applied from a planning conversation keep AI-invented timestamps (created 20:11, stored 2026-09-24T15:00:00+09:00 and T00:00:00). stampPlanningConversation, which every apply path goes through, must set createdAt and updatedAt of each added node to the current time along with provenance. Test that an applied node with a fake createdAt gets a timestamp within the test run window.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/proposal-stamp-time.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test:run"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "J7: nodes applied from a planning conversation keep AI-inven"
+        },
+        {
+          "taskId": "JUPLAN-NODE-TYPE-LABELS-ALL",
+          "scope": "J8: the plan map and item list show English type names such as 'Risk' because NODE_TYPE_LABELS lacks about 30 plan-core node types (Risk, FounderDecision, Decision, Assumption, RoadmapItem, SuccessCriterion, State, Event, ApiEndpoint, DataField, Pipeline, HumanGate, FailureMode, RecoveryPath, …). Add a plain Korean label for every node type exported by plan-core, and a test that iterates the plan-core type list and fails on any type without a label.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/node-type-labels.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test:run"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "J8: the plan map and item list show English type names such "
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-FOUNDER-BANNER",
+          "scope": "J9: the Studio banner tells the Founder '아직 계획을 만드는 중이에요. 다음 단계: juplan plan --offline' (review stage: 'juplan snapshot --approval founder-review'), and every item row ends with '직접 입력' (e.g. '결제 화면 화면 직접 입력'). Banner text becomes '기획 중이에요. JuControler 계획 탭에서 말로 고칠 수 있어요' (review stage: '검토가 끝나면 확정해 주세요') with the command inside a closed <details><summary>기술 정보</summary>; item rows omit the knowledge tag when DECLARED and show it only for 추정/미확인. Tests on rendered banner and one DECLARED + one ASSUMED row.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-founder-banner.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test:run"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "J9: the Studio banner tells the Founder '아직 계획을 만드는 중이에요. 다음"
         }
       ],
       "qaRuntime": [
