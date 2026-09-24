@@ -4149,6 +4149,32 @@
             "node --test tests/e2e-script.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-23: real end-to-end script that runs the main user flow offline and prints {ok, steps[], ms}"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-KO-BAD-JSON",
+          "scope": "When registry.json exists but is not valid JSON (the error cause is a SyntaxError), make the first stderr line of scripts/status-board.mjs say in plain Korean '프로젝트 목록 파일이 올바른 JSON이 아니에요 — 쉼표·따옴표·괄호를 확인하세요' instead of the misleading '경로를 확인하세요'; keep exit 1, the English second line, and the missing-file message unchanged, and add one offline test case for a broken-JSON registry.",
+          "files": [
+            "scripts/status-board.mjs",
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-TEST-COUNT",
+          "scope": "Fix README '처음 쓰는 법' step 2, which says `node --test tests/*.test.mjs` runs '자동 테스트 파일 일곱 개' although tests/ now has eight files (e2e-script.test.mjs was added), so it says 여덟 개 and names the e2e 결과 줄 contract check in the parenthetical; docs only.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e/test flow runs]; base 6bcbc669 tests/ lists 8 *.test.mjs files while README.md says '테스트 파일 일곱 개'"
         }
       ],
       "qaRuntime": [
