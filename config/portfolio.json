@@ -3274,6 +3274,48 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
           "title": "J9: the Studio banner tells the Founder '아직 계획을 만드는 중이에요. 다음"
+        },
+        {
+          "taskId": "JUPLAN-DOGFOOD-JUCONTROLER",
+          "scope": "Add an examples/jucontroler offline dogfood plan (init --name JuControler → plan --offline → validate) with a committed .juplan/exports/project-status.v1.json, a README that follows the examples/agent-relay pattern, and a new runtime test that regenerates the export twice and checks it matches byte for byte, keeping V1 semantics.",
+          "files": [
+            "examples/jucontroler/README.md",
+            "examples/jucontroler/.juplan/exports/project-status.v1.json",
+            "packages/runtime/test/dogfood-jucontroler.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime exec vitest run test/dogfood-jucontroler.test.ts",
+            "pnpm --filter @juplan/runtime run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 'Next: dogfood the five portfolio projects as JuPlan plans.' (juplan and agent-relay already done)"
+        },
+        {
+          "taskId": "JUPLAN-DOGFOOD-JUCEIPT",
+          "scope": "Add an examples/juceipt offline dogfood plan (init --name JuCeipt → plan --offline → validate) with a committed .juplan/exports/project-status.v1.json, a README that follows the examples/agent-relay pattern, and a new runtime test that regenerates the export twice and checks it matches byte for byte, keeping V1 semantics.",
+          "files": [
+            "examples/juceipt/README.md",
+            "examples/juceipt/.juplan/exports/project-status.v1.json",
+            "packages/runtime/test/dogfood-juceipt.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime exec vitest run test/dogfood-juceipt.test.ts",
+            "pnpm --filter @juplan/runtime run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 'Next: dogfood the five portfolio projects as JuPlan plans.' (juplan and agent-relay already done)"
+        },
+        {
+          "taskId": "JUPLAN-DOGFOOD-ACTL",
+          "scope": "Add an examples/actl offline dogfood plan (init --name actl → plan --offline → validate) with a committed .juplan/exports/project-status.v1.json, a README that follows the examples/agent-relay pattern, and a new runtime test that regenerates the export twice and checks it matches byte for byte, keeping V1 semantics.",
+          "files": [
+            "examples/actl/README.md",
+            "examples/actl/.juplan/exports/project-status.v1.json",
+            "packages/runtime/test/dogfood-actl.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime exec vitest run test/dogfood-actl.test.ts",
+            "pnpm --filter @juplan/runtime run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 'Next: dogfood the five portfolio projects as JuPlan plans.' (juplan and agent-relay already done)"
         }
       ],
       "qaRuntime": [
