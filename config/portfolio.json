@@ -4673,6 +4673,18 @@
             "node --test tests/results/scenario-a/concise-report.test.mjs"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:180-189 \"모든 코드 변경 작업의 최종 보고에는 다음 6개 항목을 기본으로 포함한다.\""
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-B-GENERAL-REPORT",
+          "scope": "시나리오 B 내부 기능 변경에 대한 일반 작업 보고서 fixture와 오프라인 테스트를 추가해 §4 기본 6개 항목, §5.2 길이 기준, 근거 출처·확인 상태·사용자 행동·보고서 상태의 분리를 검증한다.",
+          "files": [
+            "tests/results/scenario-b/general-report.fixture.md",
+            "tests/results/scenario-b/general-report.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-b/general-report.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
