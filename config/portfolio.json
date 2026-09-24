@@ -3776,6 +3776,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 02시: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e/tester entry runs]; JuControler-Private/CURRENT.md: '검증: node --test test/*.test.mjs, 오프라인 E2E scripts/e2e.sh. 처음 쓰는 법은 README.md'; base README.md lists only tests/project-registry.test.mjs tests/status-board-cli.test.mjs of 7 test files",
           "title": "처음부터 전체 점검하기"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-KO-MESSAGE",
+          "scope": "Add a plain-Korean `message` field to the one JSON line that scripts/e2e.sh prints: '모두 정상이에요' when ok, or a sentence naming the first failed step in Korean (for example '상태판 실행 단계에서 멈췄어요 — 아래 명령을 직접 실행해 보세요'). Keep schema jucontroler.e2e.v1, the {ok, steps[], ms} shape, the existing checks, the exit codes and temp-dir cleanup as they are, and add a test assertion and a README reading-guide line for the new field.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/status-board-cli.test.mjs",
+            "README.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; README.md '처음 쓰는 법' currently explains only the raw fields ok/steps/ms"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-REGISTRY-EXAMPLE",
+          "scope": "Add a short plain-Korean part to README '처음 쓰는 법' that shows a copy-ready registry.json with a single entry (projectId, absolute workspaceRoot, absolute dataRoot, sourceRef, optional sourceKind), matching the rules in src/project-registry.mjs: absolute paths, no unknown fields, and the four sourceKind values. Explain in one line each where current.json goes and what an UNKNOWN status means, and change no code.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (2): README '처음 쓰는 법' whose commands are exactly what works; 2026-09-24 오후: obvious next action for a non-developer. At df1a2fd, README step 3 takes `<registry.json>` but never shows its format"
         }
       ],
       "qaRuntime": [
