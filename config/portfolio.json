@@ -6087,6 +6087,17 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:183 'M2 is closed by the A-14 GO decision; the scorecard remains the evidence record.' vs docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 '<span class=\"pill now\">CURRENT · M2 PM REVIEW</span>'",
           "title": "사업 전체 지도에 2단계 승인 반영하기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-CORPUS-COUNT-SYNC",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md, change the outdated '7-task evidence register' wording in the §1 M3 row (line 43) and the §4.3 evidence-register line (line 142) to the reconciled 10-task corpus. Use the wording already in docs/validation/M3_DAILY_VALUE_VALIDATION.md (Scope: integrated 10-task Daily Value summary; 10/10 receipts at 402d3ee). Leave the §4.3 checkboxes and the 'decision pending' state as they are, and record no M3 decision.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:5 'Scope: integrated 10-task Daily Value summary' and §7 'Ten-task corpus complete | YES — commit 402d3ee includes 10/10 receipts' vs docs/planning/BUSINESS_PRODUCT_WBS.md:43 '**ACTIVE — 7-task evidence register complete; decision pending**' and :142 'the integrated 7-task register is complete'"
         }
       ]
     },
