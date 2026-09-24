@@ -1185,6 +1185,66 @@
           ],
           "ssotEvidence": "Supervisor retrospective 2026-09-24; Founder standing order A-27",
           "title": "빌드마다 Agent Relay 버전 구분"
+        },
+        {
+          "taskId": "AGENTRELAY-ERROR-SCREEN-PLAIN",
+          "scope": "In src/frontend/App.tsx, change the ErrorBoundary screen (~line 168-180) and the initError splash (~line 1176-1186) to show one plain Korean sentence ('문제가 생겼어요. 앱을 다시 시작해 보세요. 계속되면 이 화면을 캡처해 알려주세요.') with a '다시 시작' button that calls window.location.reload(), and put the raw error text inside a collapsed <details><summary>원문 보기</summary>. Remove the 'DevTools (F12) → Console' hints, because DevTools only opens in development builds. Add a source-guard test.",
+          "files": [
+            "src/frontend/App.tsx",
+            "test/error-screen-plain.test.mjs"
+          ],
+          "tests": [
+            "node --test test/error-screen-plain.test.mjs",
+            "node --test test/topbar-founder-first.test.mjs",
+            "npx tsc -p tsconfig.client.json"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: launch bar = non-developer, plain Korean, obvious next action, no raw codes; BACKLOG.md DevTools item: 'development 전용으로 제한 (src/backend/main.ts:462-473 if (!app.isPackaged))' while App.tsx:176 and App.tsx:1182 still say 'DevTools (F12) → Console에서 자세한 내용을 확인하세요.'"
+        },
+        {
+          "taskId": "AGENTRELAY-CONTROLROOM-INVALID-INPUT-KO",
+          "scope": "In src/backend/controlRoom.ts, replace the English invalidInput messages at lines 142-184 ('Invalid project id: …', 'Invalid gate id', 'Invalid option index', 'Invalid role', 'Invalid runtimes', 'Invalid category', 'Invalid summary', 'expected a non-empty string') with short plain Korean sentences that contain no raw values or codes. Keep the ControlRoomError code 'INVALID_INPUT' and the operation unchanged, and add assertions to test/controlRoom.test.mjs that one invalid input for each op rejects with code INVALID_INPUT and a Korean message.",
+          "files": [
+            "src/backend/controlRoom.ts",
+            "test/controlRoom.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/controlRoom.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, inline feedback, no raw codes; src/backend/controlRoom.ts:142 `Invalid project id: ${String(project)}` reaches the UI via main.ts:421-422 and controlRoom.tsx:289/343/398/468 setStatus(err.message)"
+        },
+        {
+          "taskId": "AGENTRELAY-IPC-ERRNO-KO",
+          "scope": "Add a pure exported helper friendlyErrorMessage(err) in src/shared/types.ts. It maps Node fs errno codes (ENOENT, EACCES, EPERM, EEXIST, ENOSPC, EBUSY) to one plain Korean sentence with no raw code or path, and returns every other message unchanged. Use it in the src/backend/main.ts registerIpc catch (~line 420-422) so raw 'ENOENT: no such file or directory…' text never reaches the UI, and add a unit test against dist/server/shared/types.js.",
+          "files": [
+            "src/shared/types.ts",
+            "src/backend/main.ts",
+            "test/friendly-error.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/friendly-error.test.mjs",
+            "npm run test:fs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: 'plain Korean, obvious next action, inline feedback, no raw codes'; src/backend/main.ts:421-422 returns err.message verbatim as { ok: false, error: message }, and the frontend shows it via bridge.ts:33 must() → notify('err', e.message)"
+        },
+        {
+          "taskId": "AGENTRELAY-DOGFOODING-LABELS-KO",
+          "scope": "In the Dogfooding panel and the Quick Capture popover, change display-only labels to plain Korean: 'Type'→'종류', 'Priority'→'중요도', 'All Types'→'모든 종류', 'Context'/'자동 첨부 Context'→'함께 기록된 정보', aria-label 'Quick Dogfooding'→'빠른 피드백'. Show status chips and counts as 열림/고침/보류 instead of OPEN/FIXED/HOLD, and write the cycle title in Korean. Keep the stored DfType/status values and the file tokens ('Status: OPEN', 'Type: UX / Friction', 'Priority: …') exactly as they are. Add a source-guard test.",
+          "files": [
+            "src/frontend/dogfooding.tsx",
+            "src/frontend/quickdf.tsx",
+            "test/dogfooding-labels-ko.test.mjs"
+          ],
+          "tests": [
+            "node --test test/dogfooding-labels-ko.test.mjs",
+            "npm run test:vnext",
+            "npm run test:v03",
+            "npx tsc -p tsconfig.client.json"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: 'launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean … no raw codes'; src/frontend/dogfooding.tsx:207 '<option value=\"ALL\">All Types</option>', :228 'Type', :234 'Priority', :293 'OPEN → FIXED → HOLD'"
         }
       ],
       "qaRuntime": [
