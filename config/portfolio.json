@@ -3990,7 +3990,8 @@
             "bash scripts/e2e.sh",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; scripts/status-board.mjs@0d91731 currently prints only '…상태를 알 수 없어요: <ids>' with no reason or next step"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; scripts/status-board.mjs@0d91731 currently prints only '…상태를 알 수 없어요: <ids>' with no reason or next step",
+          "title": "상태 모를 때 이유도 함께 보여주기"
         },
         {
           "taskId": "JUCONTROLER-E2E-KO-NEXT-COMMAND",
@@ -4004,7 +4005,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: obvious next action, inline feedback, plain Korean; scripts/e2e.sh@0d91731 failure message says '아래 명령을 직접 실행해 보세요' but the JSON line contains no command"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: obvious next action, inline feedback, plain Korean; scripts/e2e.sh@0d91731 failure message says '아래 명령을 직접 실행해 보세요' but the JSON line contains no command",
+          "title": "실패하면 다음에 할 명령 알려주기"
         }
       ],
       "qaRuntime": [
@@ -6033,7 +6035,8 @@
             "node --test tests/results/scenario-b/general-report.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:603 '### 10.2 보조 시나리오 — 내부 기능 변경' + :611-616 '화면 변화와 입력 검증 기능 변화를 구분하는가 … 기존 검색 기능에 미칠 수 있는 영향을 설명하는가 / 위험도와 근거를 일관되게 작성하는가'; .agents/skills/beginner-bridge/references/risk-level-guide.md:28 '예: 검색 실행 전에 빈 검색어인지 확인하는 조건을 추가한 경우.'; Founder request 2026-09-24 20:25; Founder retry choice: re-add only the internal-change fixture and test on integration branch 3f0c23f"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:603 '### 10.2 보조 시나리오 — 내부 기능 변경' + :611-616 '화면 변화와 입력 검증 기능 변화를 구분하는가 … 기존 검색 기능에 미칠 수 있는 영향을 설명하는가 / 위험도와 근거를 일관되게 작성하는가'; .agents/skills/beginner-bridge/references/risk-level-guide.md:28 '예: 검색 실행 전에 빈 검색어인지 확인하는 조건을 추가한 경우.'; Founder request 2026-09-24 20:25; Founder retry choice: re-add only the internal-change fixture and test on integration branch 3f0c23f",
+          "title": "내부 변경 보고가 쉽게 읽히는지 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -6073,7 +6076,8 @@
             "node check.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: (1) check.mjs에 quotaMessage(global/daily/gap)와 peekQuota(새 사용자) 검증 추가"
+          "ssotEvidence": "Founder direction 2026-09-23: (1) check.mjs에 quotaMessage(global/daily/gap)와 peekQuota(새 사용자) 검증 추가",
+          "title": "남은 사용 횟수 안내 문구 점검"
         },
         {
           "taskId": "JUAI-PRUNE-STATE",
@@ -6088,7 +6092,8 @@
             "node check.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: (3) lib.mjs에 pruneState(db, now) 추가 ... 45일 ... 60일 지나면 삭제, check.mjs에 검증, bot.mjs tick에서 하루 한 번 job으로 호출"
+          "ssotEvidence": "Founder direction 2026-09-23: (3) lib.mjs에 pruneState(db, now) 추가 ... 45일 ... 60일 지나면 삭제, check.mjs에 검증, bot.mjs tick에서 하루 한 번 job으로 호출",
+          "title": "오래된 봇 기록 자동 정리"
         },
         {
           "taskId": "JUAI-HELP-CMD",
@@ -6103,7 +6108,8 @@
             "node check.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: (4) layout.mjs에 HELP_TEXT(c) 추가하고 bot.mjs에서 '!도움말' 입력 시 명령어 요약 답장, check.mjs에서 길이<1900과 '!남은횟수' 포함 검증"
+          "ssotEvidence": "Founder direction 2026-09-23: (4) layout.mjs에 HELP_TEXT(c) 추가하고 bot.mjs에서 '!도움말' 입력 시 명령어 요약 답장, check.mjs에서 길이<1900과 '!남은횟수' 포함 검증",
+          "title": "명령어 도움말 안내 추가"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
@@ -6136,7 +6142,8 @@
             "npm test",
             "npm run typecheck"
           ],
-          "ssotEvidence": "AI-Agent-marketplace-private/docs/WBS_v0.4.md:10 'capability, 비용/안전 정책 ... 정책 초과 작업 거부 테스트'; ERD_v0.4.dbml:266-275 'Table worker_policies { daily_cost_limit_minor bigint, task_cost_limit_minor bigint, max_runtime_minutes int, available_hours jsonb, allowed_tasks jsonb ... }'"
+          "ssotEvidence": "AI-Agent-marketplace-private/docs/WBS_v0.4.md:10 'capability, 비용/안전 정책 ... 정책 초과 작업 거부 테스트'; ERD_v0.4.dbml:266-275 'Table worker_policies { daily_cost_limit_minor bigint, task_cost_limit_minor bigint, max_runtime_minutes int, available_hours jsonb, allowed_tasks jsonb ... }'",
+          "title": "AI 일꾼 비용·시간 한도 지키기"
         },
         {
           "taskId": "AIAGENTMARKE-P2-OWNER-MOBILE-SCREENS",
@@ -6150,7 +6157,8 @@
             "npm test",
             "npm run build"
           ],
-          "ssotEvidence": "AI-Agent-marketplace-private/docs/WBS_v0.4.md:10 'Owner 홈/활동, 검색·입찰 UI 없음 | ... | PRE_BUSINESS'; PRODUCT_SSOT_v0.4.md:68 'PRE_BUSINESS에서는 출금 버튼 비활성 + 시범 라벨'"
+          "ssotEvidence": "AI-Agent-marketplace-private/docs/WBS_v0.4.md:10 'Owner 홈/활동, 검색·입찰 UI 없음 | ... | PRE_BUSINESS'; PRODUCT_SSOT_v0.4.md:68 'PRE_BUSINESS에서는 출금 버튼 비활성 + 시범 라벨'",
+          "title": "주인용 휴대폰 화면 4종 만들기"
         },
         {
           "taskId": "AIAGENTMARKE-P2-CONNECTOR-CORE",
