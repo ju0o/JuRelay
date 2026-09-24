@@ -1446,6 +1446,48 @@
           ],
           "ssotEvidence": "BACKLOG.md:33 '- [ ] 앱 아이콘 미설정 — electron-builder 기본 Electron 아이콘 사용 중'",
           "title": "Agent Relay 앱을 쉽게 찾기"
+        },
+        {
+          "taskId": "AGENTRELAY-UPDATER-PLAIN-KO",
+          "scope": "In the UpdateSection of src/frontend/App.tsx (~2140-2175), keep status.errorMessage in state (test/v03.test.mjs U-tests depend on it) but change only what is shown: idle becomes '새 버전이 있는지 확인할 수 있어요.', and the error line becomes one plain Korean sentence ('업데이트를 확인하지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.') with the raw errorMessage and the 'Private 저장소' hint moved inside a collapsed <details><summary>원문 보기</summary>.",
+          "files": [
+            "src/frontend/App.tsx"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run test:v03",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = plain Korean, inline feedback, no raw codes; App.tsx:2153 'GitHub Releases에서 최신 버전을 확인할 수 있습니다.' and App.tsx:2166 raw errorMessage.slice(0,160) shown to the user"
+        },
+        {
+          "taskId": "AGENTRELAY-ARIA-LABELS-KO",
+          "scope": "Replace the English screen-reader aria-labels with plain Korean, display-only and with no layout or logic change: in src/frontend/planStudio.tsx 'goal and task chain'→'목표와 작업 순서', 'task chain'→'작업 순서', `${task.title} progress`→`${task.title} 진행 단계`, 'chat detail gate'→'PM 요청과 작업 상세', 'human gate'→'사람 확인'; in src/frontend/controlRoom.tsx 'lane lifecycle'→'진행 단계'.",
+          "files": [
+            "src/frontend/planStudio.tsx",
+            "src/frontend/controlRoom.tsx"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "node --test test/a11y-guard.test.mjs",
+            "node --test test/planstudio-founder-view.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean everywhere, no raw codes; planStudio.tsx:488/502/519/637/671 and controlRoom.tsx:572 still carry English aria-labels"
+        },
+        {
+          "taskId": "AGENTRELAY-RUNNER-QA-RUNTIME-SEPARATE",
+          "scope": "In src/v2/portfolio-runner/index.mjs runOne, run QA through this.runtimeAdapters[project.qaRuntime] when project.qaRuntime is configured (fail closed to BLOCKED_RUNTIME_ADAPTER with a TASK_FAILED lifecycle reason if that adapter is missing or unavailable). Otherwise keep the current worker adapter. Record qaEvidence.runtime. Add one offline test in test/v2/portfolio-runner.test.mjs proving that the QA prompt goes to the qaRuntime adapter and not to the worker adapter.",
+          "files": [
+            "src/v2/portfolio-runner/index.mjs",
+            "test/v2/portfolio-runner.test.mjs"
+          ],
+          "tests": [
+            "npm run test:v2:runner",
+            "git diff --check",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: 'Agent Relay: independent QA (never self-review)'; portfolio-runner/index.mjs:396 runs QA with the same `adapter` as the worker while snapshot line 110 already reports project.qaRuntime"
         }
       ],
       "qaRuntime": [
