@@ -2310,6 +2310,45 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
           "title": "연결 상태를 한국어로 안내해요"
+        },
+        {
+          "taskId": "ACTL-WEB-SEND-FAIL-PLAIN",
+          "scope": "In the web board's POST /api/send handler in src/actl/serve.py, catch errors from _send_to_selected and turn them into plain Korean with a next step. The Korean approval-waiting reason from send_blocked_reason should reach the user as it is, not as the generic 500 '문제가 생겼어요'. WriterDenied-style 'CODE: detail' errors become '다른 곳에서 보내는 중이에요 — 잠시 후 다시 보내 주세요'. The English 'Selected runtime is …; sending blocked' ValueError becomes '에이전트 화면을 찾지 못했어요 — 새로고침 후 다시 시도해 주세요'. The raw detail goes to audit/log only. Add offline tests that monkeypatch _send_to_selected to raise each of these errors and check that no English code or exception name reaches the response body.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_errors_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; serve.py:500-503 passes str(ValueError) through raw and swallows the Korean RuntimeError reason from activity.py:75 send_blocked_reason into a generic 500"
+        },
+        {
+          "taskId": "ACTL-WEB-BUSY-SEND-INLINE",
+          "scope": "In src/actl/serve.py BOARD_HTML, replace the native confirm() in doSend with an inline confirm bar under the composer that has '보내기' and '취소' buttons. When the selected row's activity_state is 'RUNNING', the bar says '작업 중이에요 — 지금 보내면 하던 일에 끼어들 수 있어요' and the button reads '지금 보내기'. Add offline string-level tests on BOARD_HTML: confirm( is gone, the busy wording is present, and the inline bar and its buttons exist.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: actl busy-send guard (collision audit 2026-09-24) and inline feedback; the Tk board already asks inline (ACTL-BUSY-SEND-STALE-GUARD, no native dialog), but serve.py:246 still uses native confirm() with no busy check"
+        },
+        {
+          "taskId": "ACTL-TK-PANE-BOARD-ERRORS-PLAIN",
+          "scope": "In src/actl/gui.py, add a pure helper _pane_action_failure_text(action) that returns plain Korean with a next step for the pane-board actions: rename, session create, window create, pane split and pane move (e.g. '창을 만들지 못했어요 — 새로고침 후 다시 시도해 주세요'). Use it in the pane-board messagebox.showerror calls that currently show raw str(exc)/str(result) tmux errors, and send the raw detail to self.log only. The already-Korean alias ValueError message stays as it is. Add an offline test for the helper's output and a source check that no pane-board showerror call passes str(exc) or str(result).",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_pane_board_errors_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, obvious next action, no raw codes; gui.py:1670/1685/1710/1727/1776 call messagebox.showerror(..., str(exc)/str(result)), which shows raw tmux error text"
         }
       ],
       "qaRuntime": [
