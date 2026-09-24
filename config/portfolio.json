@@ -4238,6 +4238,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e/test flow runs]; base 6bcbc669 tests/ lists 8 *.test.mjs files while README.md says '테스트 파일 일곱 개'",
           "title": "처음 쓰는 법의 검사 개수 바로잡기"
+        },
+        {
+          "taskId": "JUCONTROLER-SKILL-ATTACHMENT-CONTRACT",
+          "scope": "Add a read-only project×role Skill attachment contract and fixture so PM, Worker, and QA Skill selections are explicit without installing, dispatching, or overwriting Skills.",
+          "files": [
+            "docs/integration/skill-attachment.schema.json",
+            "docs/integration/skill-attachment.v1.json",
+            "tests/skill-attachment-contract.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/skill-attachment-contract.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: A-25 Skills attach per project×role"
+        },
+        {
+          "taskId": "JUCONTROLER-APPROVED-MEMORY-CONTRACT",
+          "scope": "Add a read-only approved-memory projection contract that delivers active Founder-approved global/project memories to every agent while excluding proposed QA lessons until approval.",
+          "files": [
+            "docs/integration/approved-memory.schema.json",
+            "docs/integration/approved-memory.v1.json",
+            "tests/approved-memory-contract.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/approved-memory-contract.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: A-26 approved memories go to every agent; QA lessons are proposed"
         }
       ],
       "qaRuntime": [
