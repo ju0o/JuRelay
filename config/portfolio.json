@@ -4025,6 +4025,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 오후: obvious next action, inline feedback, plain Korean; scripts/e2e.sh@0d91731 failure message says '아래 명령을 직접 실행해 보세요' but the JSON line contains no command",
           "title": "실패하면 다음에 할 명령 알려주기"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-KO-EMPTY-REGISTRY",
+          "scope": "When scripts/status-board.mjs loads a valid registry whose projects array is empty, write the plain-Korean stderr line '목록에 프로젝트가 없어요 — registry.json의 projects에 항목을 넣으세요 (README 처음 쓰는 법 예시 참고)' instead of the misleading '프로젝트 0개 모두 상태를 읽었어요'. Keep stdout as the canonical '[]' JSON and exit 0, leave all other summary lines unchanged, and add one case for this to tests/status-board-cli.test.mjs.",
+          "files": [
+            "scripts/status-board.mjs",
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-KO-SUMMARY-CHECK",
+          "scope": "In scripts/e2e.sh, save the status-board stderr in the run-status-board step and make that step fail unless the saved stderr is exactly the plain-Korean summary line '프로젝트 6개 중 1개는 상태를 알 수 없어요: missing(unavailable) — README 처음 쓰는 법의 reason 표를 보세요'. Keep the step names, the one-line {schema, ok, message, next, steps[], ms, projects, statuses} output, and the exit codes the same.",
+          "files": [
+            "scripts/e2e.sh"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: (1) a real end-to-end script (scripts/e2e.sh) that runs the product's main user flow offline ... prints one JSON line {ok, steps[], ms}; launch bar = plain Korean, inline feedback, no raw codes"
         }
       ],
       "qaRuntime": [
