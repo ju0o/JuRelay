@@ -2770,6 +2770,51 @@
             "pnpm typecheck"
           ],
           "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; Hermes style everywhere (A-21)."
+        },
+        {
+          "taskId": "JUPLAN-DOGFOOD-JUPLAN-SELF",
+          "scope": "Add an examples/juplan offline dogfood plan (init --name JuPlan → plan --offline → validate) with a committed .juplan/exports/project-status.v1.json and a new test file that regenerates it byte for byte twice, following the existing founder-portfolio test pattern and keeping V1 semantics.",
+          "files": [
+            "examples/juplan/README.md",
+            "examples/juplan/.juplan/exports/project-status.v1.json",
+            "packages/runtime/test/dogfood-juplan.test.ts"
+          ],
+          "tests": [
+            "pnpm build",
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: \"Next: dogfood the five portfolio projects as JuPlan plans.\""
+        },
+        {
+          "taskId": "JUPLAN-DOGFOOD-AGENT-RELAY",
+          "scope": "Add an examples/agent-relay offline dogfood plan (init --name \"Agent Relay\" → plan --offline → validate) with a committed .juplan/exports/project-status.v1.json and a new test file that regenerates it byte for byte twice, following the existing founder-portfolio test pattern and keeping V1 semantics.",
+          "files": [
+            "examples/agent-relay/README.md",
+            "examples/agent-relay/.juplan/exports/project-status.v1.json",
+            "packages/runtime/test/dogfood-agent-relay.test.ts"
+          ],
+          "tests": [
+            "pnpm build",
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: \"Next: dogfood the five portfolio projects as JuPlan plans.\""
+        },
+        {
+          "taskId": "JUPLAN-CLI-KOREAN-ERRORS",
+          "scope": "In packages/runtime/src/cli.ts, replace the English usage errors and the unknown-command help line on stderr with plain Korean messages that name the next action. Keep the stdout success tokens (NEW_PROJECT_READY and the rest), the exit codes and the scripts/e2e.sh behavior unchanged, and update the one CLI stderr assertion in runtime.test.ts.",
+          "files": [
+            "packages/runtime/src/cli.ts",
+            "packages/runtime/test/runtime.test.ts"
+          ],
+          "tests": [
+            "pnpm build",
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: \"launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes\""
         }
       ],
       "qaRuntime": [
