@@ -3734,6 +3734,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23/24: '(1) a real end-to-end script (scripts/e2e.sh ...) ... prints one JSON line {ok, steps[], ms}; (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that'. At b107b7c, scripts/e2e.sh prints {schema, ok, projects, statuses}, with no steps[] or ms, and README.md has only an English '## Quickstart'. JuControler-Private/CURRENT.md: '처음 쓰는 법은 `README.md`'",
           "title": "점검 결과 정리와 처음 쓰는 법 안내"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-KO-ERRORS",
+          "scope": "Make scripts/status-board.mjs print plain-Korean stderr: a Korean usage line for bad arguments (exit 2), and for load failures (exit 1) a first line saying in Korean what went wrong and what to do next (e.g. 프로젝트 목록 파일을 열 수 없어요 — 경로를 확인하세요), then the original English detail on the next line so the existing regex asserts keep passing; stdout stays empty on failure and successful JSON output is unchanged; add Korean-message asserts to the existing failure subtests.",
+          "files": [
+            "scripts/status-board.mjs",
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs tests/project-registry.test.mjs",
+            "bash scripts/e2e.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base scripts/status-board.mjs:14 prints 'Usage: status-board.mjs <registry.json> [--project-id <id>]' and :21 prints raw error.message"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-FULL-TESTS",
+          "scope": "Change the README '처음 쓰는 법' test command from the two-file list to `node --test tests/*.test.mjs`, so the Quickstart runs all seven existing offline test files (adapters, tester harness, and create-skill contracts included), and update its plain-Korean step 2 explanation to match; no other README sections change.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 02시: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e/tester entry runs]; JuControler-Private/CURRENT.md: '검증: node --test test/*.test.mjs, 오프라인 E2E scripts/e2e.sh. 처음 쓰는 법은 README.md'; base README.md lists only tests/project-registry.test.mjs tests/status-board-cli.test.mjs of 7 test files"
         }
       ],
       "qaRuntime": [
