@@ -4367,6 +4367,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: A-26 approved memories go to every agent; QA lessons are proposed",
           "title": "승인된 정보만 모든 작업자에게 전달"
+        },
+        {
+          "taskId": "JUCONTROLER-AI-ASSIGNMENT-CONTRACT",
+          "scope": "Add a read-only AI auto-assignment contract (docs/integration/ai-assignment.schema.json plus the ai-assignment.v1.json fixture) that gives each role (pm, worker, qa, tester) an ordered list of runtime choices: subscribed runtimes first, then free models from tools already installed as the backup used when a limit or failure is hit or the work is light. Use a closed schema and const-false permissions {dispatch, install, createAccount}, and add one offline node:test that follows tests/skill-attachment-contract.test.mjs and checks the schema is closed, every role is covered, and no free entry comes before a subscribed one.",
+          "files": [
+            "docs/integration/ai-assignment.schema.json",
+            "docs/integration/ai-assignment.v1.json",
+            "tests/ai-assignment-contract.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/ai-assignment-contract.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "JuControler-Private/founder/DECISION_LOG.md:4151 'A-22 ... AI 자동 배정 — 모든 역할(PM·Worker·QA·Tester)에 구독 AI 먼저, 한도·실패 시와 가벼운 일에 무료 모델 보조. 무료 모델은 이미 설치된 도구(opencode·Hermes 등)부터, 새 계정·키는 대표님이 직접.'; founder/VERSION_WBS.md:12"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-TEST-LIST-NO-COUNT",
+          "scope": "Fix README '처음 쓰는 법' step 2. It says `node --test tests/*.test.mjs` runs '자동 테스트 파일 여덟 개', but tests/ now has ten files at base. Change it to plain Korean with no fixed number (for example 'tests 폴더의 자동 테스트 파일을 모두 돌립니다'), and add Skill 장착 약속 확인 and 승인한 기억 약속 확인 to the list in parentheses, so the text stays true as tests are added.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (launch bar: a non-developer uses it as easily as KakaoTalk/Toss, in plain Korean; Quickstart commands must be exactly what works); README.md at c232b5a step 2 says '자동 테스트 파일 여덟 개' while git ls-tree lists 10 tests/*.test.mjs, including skill-attachment-contract and approved-memory-contract"
         }
       ],
       "qaRuntime": [
