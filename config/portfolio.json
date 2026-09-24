@@ -6462,6 +6462,18 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: (4) layout.mjs에 HELP_TEXT(c) 추가하고 bot.mjs에서 '!도움말' 입력 시 명령어 요약 답장, check.mjs에서 길이<1900과 '!남은횟수' 포함 검증",
           "title": "명령어 도움말 안내 추가"
+        },
+        {
+          "taskId": "JUAI-README-QUOTA",
+          "scope": "README의 AI 대화 횟수 안내를 LIMITS 기준인 기본 5회와 피드백 보너스 최대 3회로 수정하고 !도움말 및 !남은횟수를 언급한다.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: README says members get 15 AI chats per day, but code allows 5 plus up to 3 feedback bonuses; update that one README line and mention !도움말 and !남은횟수."
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
