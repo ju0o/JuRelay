@@ -5732,7 +5732,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md §3: 'Complete one row per integrated task. Do not fill a blank with a guess.'; docs/operations/PM_STATUS_BOARD.md:260 '| 1 | Validate the integrated 7-task Daily Value summary | M3 NOW |'; Founder direction 2026-09-24: complete the seven-task summary-versus-Receipt evidence register"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md §3: 'Complete one row per integrated task. Do not fill a blank with a guess.'; docs/operations/PM_STATUS_BOARD.md:260 '| 1 | Validate the integrated 7-task Daily Value summary | M3 NOW |'; Founder direction 2026-09-24: complete the seven-task summary-versus-Receipt evidence register",
+          "title": "매일 지출 내역을 믿고 확인"
         }
       ]
     },
