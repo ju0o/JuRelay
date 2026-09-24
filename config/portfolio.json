@@ -6633,6 +6633,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: (3) capability 선택과 비용/안전 한도 정책 API ... + 테스트; ERD_v0.4 worker_profiles (migrations/0002_owner_connector.sql: agent_connector_id, capabilities jsonb)",
           "title": "연결된 작업자의 정보와 능력을 관리해요"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-HEARTBEAT-OFFLINE",
+          "scope": "Add integration coverage proving a connector becomes OFFLINE when its heartbeat is older than the 90-second threshold.",
+          "files": [
+            "tests/integration/owner-connector.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "WBS_v0.4.md:10 \"heartbeat\" and \"실제 연결 1개 heartbeat 증거\""
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-POLICY-REJECTION-MATRIX",
+          "scope": "Add focused integration coverage for daily-cost, runtime, disallowed-task, and available-hours policy rejection responses through the existing policy check API.",
+          "files": [
+            "tests/integration/owner-policy.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "WBS_v0.4.md:10 \"정책 초과 작업 거부 테스트\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
