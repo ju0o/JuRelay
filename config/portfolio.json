@@ -6563,6 +6563,30 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:747-758 '## 17. 개발 용어 설명 … * 작업 이해에 필요한 용어만 설명 * 처음 등장할 때만 설명 * 원래 용어를 유지 … * 같은 설명을 반복하지 않음'; docs/PRODUCT_SCOPE.md §6.6 '같은 보고서에서 동일한 용어를 반복 설명하지 않는다.'",
           "title": "어려운 용어를 필요한 만큼 설명"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-RISK-LEVEL-SCOPE-PARITY",
+          "scope": "Add an offline node:test that reads PRODUCT_SCOPE §6.7 and packages/cli/src/commands/context.ts as text, then checks three things: the §6.7 높음 items (로그인과 인증, 사용자 권한, 결제, 데이터베이스 구조, 비밀정보 처리, 배포 설정) each map to a HIGH_PATTERNS reason label (로그인·인증 영역, 권한 영역, 결제·주문 영역, 데이터 저장 구조, 비밀정보 영역, 배포·운영 설정); the §6.7 중간 items 폼 검증 and 파일 업로드 map to the MEDIUM reason 입력·업로드 동작; and the §6.7 낮음 items 문서, 색상 and 테스트 설명 map to the LOW reasons 문서, 스타일·정적 자원 and 테스트. It also checks that every pattern reason is non-empty, because §6.7 says each risk level needs a short reason. Do not change context.ts.",
+          "files": [
+            "tests/context-risk-level-scope-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-risk-level-scope-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:330 '#### 높음 … 로그인과 인증 / 사용자 권한 / 결제 / 데이터베이스 구조 / 비밀정보 처리 / 배포 설정'; docs/PRODUCT_SCOPE.md:349 '위험도에는 반드시 짧은 근거를 함께 작성한다.'"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-MAIN-FILES-CAP-PARITY",
+          "scope": "Add an offline node:test that reads packages/cli/src/commands/context.ts and PRODUCT_SCOPE §6.5 as text, then checks two things: §6.5 still says 기본적으로 최대 5개의 주요 파일을 설명한다; and gitSummary in context.ts lists at most 5 files (output.git.files.slice(0, 5)) and shows the rest only as a count (`그 외 ${output.git.files.length - 5}개`). Do not change context.ts.",
+          "files": [
+            "tests/context-main-files-cap-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-main-files-cap-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:271 '기본적으로 최대 5개의 주요 파일을 설명한다.' + :276 '나머지 파일: 경로 목록 또는 개수만 표시'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
