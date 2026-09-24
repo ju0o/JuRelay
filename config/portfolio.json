@@ -5510,6 +5510,18 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:162-171 'M3 daily value summary is integrated for 7 tasks; validate and record GO / DEFER / KILL'",
           "title": "하루 가치 요약 3단계 검증 근거표 준비"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M4-HERMES-LAUNCH-BAR",
+          "scope": "Add a planning-only M4 launch-bar acceptance slice requiring plain Korean, an obvious next action, inline feedback, and no raw internal codes, without authorizing product implementation.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md",
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ]
     },
