@@ -1400,6 +1400,36 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
           "title": "담당자와 검수 진행 상황을 보여줌"
+        },
+        {
+          "taskId": "AGENTRELAY-PLANSTUDIO-LEFTOVER-KO",
+          "scope": "In src/frontend/planStudio.tsx, change the remaining developer text to plain Korean ('board에 lane이 없습니다.'→'아직 표시할 프로젝트가 없어요.', '표시할 task가 없습니다.'→'아직 작업이 없어요.', 'task를 선택하세요.'→'왼쪽에서 작업을 골라 주세요.', 'Blocker:'→'막힌 이유:', title '시작 전 task 삭제'→'시작 전 작업 삭제'), move the raw gate.gateId line in the 사람 확인 card inside a collapsed '원문 보기' details, and extend test/planstudio-founder-view.test.mjs to assert the old strings are gone and gateId only renders inside details.",
+          "files": [
+            "src/frontend/planStudio.tsx",
+            "test/planstudio-founder-view.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/planstudio-founder-view.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, no raw codes; base src/frontend/planStudio.tsx:469,505,545,658,666,677"
+        },
+        {
+          "taskId": "AGENTRELAY-CONTROLROOM-RAW-CODES-KO",
+          "scope": "Replace the English topbar tooltips in src/frontend/App.tsx ('관제실 — lane 상태 보기'→'관제실 — 프로젝트별 진행 상황 보기', '계획 — Goal · Task chain · PM chat'→'계획 — 목표와 작업 순서 보고 PM에게 요청'), and in src/frontend/controlRoom.tsx rename the '원문 QA finding' summary to '원문 검수 의견' and move the raw GateForm gateId line (className 'muted mono gate-id') inside a collapsed '원문 보기' details, with assertions added to test/topbar-founder-first.test.mjs covering both files.",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/frontend/controlRoom.tsx",
+            "test/topbar-founder-first.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/topbar-founder-first.test.mjs",
+            "node --test test/controlroom-plain-2.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, no raw codes; independent QA hold cards with raw QA finding collapsed; base src/frontend/App.tsx:1248,1258 and src/frontend/controlRoom.tsx:413,606"
         }
       ],
       "qaRuntime": [
