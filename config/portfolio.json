@@ -5718,6 +5718,17 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "다음 할 일을 쉽게 알려주기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-EVIDENCE-REGISTER-FILL",
+          "scope": "Fill the seven-task evidence register, the summary-vs-Receipt checks and the closeout fields in docs/validation/M3_DAILY_VALUE_VALIDATION.md, using only a read-only look at the separate checkout /home/skkse12/Desktop/Projects/Team/JuCeipt (daily/2026-09-05.json and daily/2026-09-06.json, receipts/t01..t10, m2/tasks/m2-001..014/receipt.json, docs/qa/M3_DAILY_VALUE_SCORECARD.md on branch agent-relay/integration); write UNKNOWN wherever the sources don't prove a value, and add a note that no committed 7-task set was found (the committed daily files hold 5+5=10 tasks and the M2 corpus holds 14), so the Section 6 mapping stays UNDECIDED and no M3 decision is written.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md §3: 'Complete one row per integrated task. Do not fill a blank with a guess.'; docs/operations/PM_STATUS_BOARD.md:260 '| 1 | Validate the integrated 7-task Daily Value summary | M3 NOW |'; Founder direction 2026-09-24: complete the seven-task summary-versus-Receipt evidence register"
         }
       ]
     },
