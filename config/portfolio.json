@@ -3448,6 +3448,76 @@
             "npm test"
           ],
           "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, obvious next action, no raw codes; base src/render/index.ts renderLevel2 emits esc(it.confidence) and esc(a.type) raw into the user-facing Level 2"
+        },
+        {
+          "taskId": "JUCEIPT-SOURCES-DISCOVERY",
+          "scope": "A-28 step 1. New src/sources/discover.ts + CLI `juceipt sources [--json]`: find agent work records on this machine (read-only) — Claude Code transcripts ~/.claude/projects, ~/.claude-team/projects, ~/.claude-pro/projects (**/*.jsonl), Codex ~/.codex/sessions/**/rollout-*.jsonl, OpenCode ~/.local/share/opencode/opencode.db, Cline ~/.cline/data/tasks, Cursor ~/.cursor/chats, Grok ~/.grok, Agent Relay ~/.local/share/AgentRelay/data/portfolio-execution/state.json — and print per source: agent, path, session count, last activity (local time), total size. Never open files named auth.json or anything under a path containing 'auth'/'login'; only stat/list (no content reads) in this step. Home dir injectable for tests. Test tests/sources-discover.test.ts with a temp fake home containing sample files (including an auth.json that must be skipped).",
+          "files": [
+            "src/sources/discover.ts",
+            "src/cli/main.ts",
+            "tests/sources-discover.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
+          "title": "A-28 step 1. New src/sources/discover.ts + CLI `juceipt sour"
+        },
+        {
+          "taskId": "JUCEIPT-IMPORT-CLAUDE-TRANSCRIPTS",
+          "scope": "A-28 step 2. New src/sources/claude.ts: convert one Claude Code transcript .jsonl (lines with type user/assistant/system, sessionId, cwd, timestamp, message.content with text/tool_use/tool_result parts) into JuCeipt RawHookEvent-compatible evidence (UserPromptSubmit for user text, PreToolUse/PostToolUse for tool_use/tool_result pairs, Stop for the last assistant text), so the existing reconciler can build a receipt per session. Mask token-like strings (sk-…, ghp_…, xox…, long base64/hex runs ≥32 chars) in all text fields. Test tests/sources-claude.test.ts with a small synthetic transcript fixture modeled on the real shape (commit it under tests/fixtures/sources/claude/).",
+          "files": [
+            "src/sources/claude.ts",
+            "tests/sources-claude.test.ts",
+            "tests/fixtures/sources/claude/session.jsonl"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
+          "title": "A-28 step 2. New src/sources/claude.ts: convert one Claude C"
+        },
+        {
+          "taskId": "JUCEIPT-IMPORT-CODEX-ROLLOUTS",
+          "scope": "A-28 step 3. New src/sources/codex.ts: convert one Codex rollout .jsonl (session_meta with session_id/cwd/timestamp, response_item and event_msg entries for user/assistant messages, function/tool calls and outputs) into the same evidence shape as the Claude importer, with the same token masking. Test tests/sources-codex.test.ts with a synthetic rollout fixture under tests/fixtures/sources/codex/.",
+          "files": [
+            "src/sources/codex.ts",
+            "tests/sources-codex.test.ts",
+            "tests/fixtures/sources/codex/rollout.jsonl"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
+          "title": "A-28 step 3. New src/sources/codex.ts: convert one Codex rol"
+        },
+        {
+          "taskId": "JUCEIPT-IMPORT-AGENT-RELAY",
+          "scope": "A-28 step 4. New src/sources/agentRelay.ts: turn each Agent Relay task in state.json (taskId, projectId, scope, builderEvidence.runtime, result.summary/changedFiles/commitSha, qa.verdict/findings, testGate, integration.state, doneAt) into a JuCeipt receipt input — request = scope, work = builder result, checks = QA verdict + test gate, outcome = integrated or held — so every relay task gets a receipt. Test tests/sources-agent-relay.test.ts with a synthetic state.json fixture (one done, one held).",
+          "files": [
+            "src/sources/agentRelay.ts",
+            "tests/sources-agent-relay.test.ts",
+            "tests/fixtures/sources/agent-relay/state.json"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
+          "title": "A-28 step 4. New src/sources/agentRelay.ts: turn each Agent "
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-COMMAND",
+          "scope": "A-28 step 5. CLI `juceipt scan [--since 24h] [--out .juceipt/scan]`: run discovery, import Claude/Codex/Agent Relay sessions active in the window with the importers, build receipts with the existing reconciler/renderer (receipt.json + receipt.html per session), and write an index.json {source, agent, sessionId, cwd, startedAt, receiptPath, verdict}. Skip sources that fail with one Korean line each; never read auth/login files; everything local. Test tests/scan-command.test.ts using the fixtures from the importer tasks in a temp home.",
+          "files": [
+            "src/cli/main.ts",
+            "src/sources/scan.ts",
+            "tests/scan-command.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
+          "title": "A-28 step 5. CLI `juceipt scan [--since 24h] [--out .juceipt"
         }
       ]
     },
