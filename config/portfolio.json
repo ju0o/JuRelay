@@ -3518,6 +3518,48 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
           "title": "A-28 step 5. CLI `juceipt scan [--since 24h] [--out .juceipt"
+        },
+        {
+          "taskId": "JUCEIPT-IMPORT-OPENCODE",
+          "scope": "A-28 step 6. New src/sources/opencode.ts: read OpenCode sessions from its local sqlite store (~/.local/share/opencode/opencode.db, opened READ-ONLY; inspect the schema at runtime and map session/message/part rows: user text, assistant text, tool calls and outputs, timestamps, directory) into the same evidence shape as the Claude/Codex importers, with token masking; never read auth.json. Wire it into `juceipt sources` and `juceipt scan`. Test tests/sources-opencode.test.ts with a tiny synthetic sqlite fixture created in the test (node:sqlite or better-sqlite3 if already a dependency; otherwise skip-with-reason when sqlite is unavailable).",
+          "files": [
+            "src/sources/opencode.ts",
+            "src/sources/scan.ts",
+            "tests/sources-opencode.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28) all agent records → receipts; 'ㄱㄱ'",
+          "title": "A-28 step 6. New src/sources/opencode.ts: read OpenCode sess"
+        },
+        {
+          "taskId": "JUCEIPT-IMPORT-CLINE-CURSOR-GROK",
+          "scope": "A-28 step 7. New src/sources/others.ts: importers for Cline (~/.cline/data/tasks/<id>/ api_conversation_history.json / ui_messages.json), Cursor agent (~/.cursor/chats) and Grok (~/.grok) local session stores — detect each format defensively, map what exists to the shared evidence shape with token masking, and skip unknown layouts with one Korean line (never guess content, never read auth/login files). Wire into scan. Test tests/sources-others.test.ts with synthetic fixtures for Cline and one unknown layout that is skipped.",
+          "files": [
+            "src/sources/others.ts",
+            "src/sources/scan.ts",
+            "tests/sources-others.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28) all agent records → receipts; 'ㄱㄱ'",
+          "title": "A-28 step 7. New src/sources/others.ts: importers for Cline "
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-DAILY-SUMMARY",
+          "scope": "A-28 step 8. After `juceipt scan`, write a Korean daily summary .juceipt/scan/SUMMARY.md: per agent how many sessions, how many receipts are 받아도 됨 / 확인 후 받기 / 문제 있음, the 5 most important receipts to look at (failures, missing tests, big changes) with one plain sentence each, and totals — reuse the existing M3 daily value summary code where possible. Test tests/scan-summary.test.ts with the importer fixtures.",
+          "files": [
+            "src/sources/scan.ts",
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 21:5x (A-28) all agent records → receipts; 'ㄱㄱ'",
+          "title": "A-28 step 8. After `juceipt scan`, write a Korean daily summ"
         }
       ]
     },
