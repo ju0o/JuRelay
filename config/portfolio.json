@@ -4843,7 +4843,8 @@
       "knownFailingTests": [
         "operator-storage (3 timeouts)",
         "default-command (2 hangs)"
-      ]
+      ],
+      "worktreeSetup": []
     }
   ],
   "pool": {
