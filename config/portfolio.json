@@ -3344,6 +3344,50 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 'Next: dogfood the five portfolio projects as JuPlan plans.' (juplan and agent-relay already done)",
           "title": "actl 작업상태 한눈에 보기"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-FINDING-KOREAN",
+          "scope": "In renderValidationSection in packages/runtime/src/index.ts, replace the raw level text (BLOCKER/WARNING/PASS) with Korean labels (막는 문제/주의/통과) and move the raw finding code out of view into the existing '<details><summary>기술 정보</summary><code>…</code></details>' pattern; keep the finding message, the level CSS classes and all computed data unchanged, and update the runtime.test.ts assertions at lines 1192-1196 to match.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/studio-finding-korean.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = plain Korean, no raw codes; Hermes style everywhere (A-21)"
+        },
+        {
+          "taskId": "JUPLAN-EDIT-JSON-RESULT",
+          "scope": "Make `juplan edit` print one JSON line {ok:true, edited:{node,label}} instead of 'EDIT_SAVED' (same pattern as undoSuccessResult for undo), so the planning chat can report what changed; export a small editSuccessResult helper from index.ts, update the runtime.test.ts:419 assertion, and add a CLI-spawn regression test modeled on test/undo-json.test.ts.",
+          "files": [
+            "packages/runtime/src/cli.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/edit-json.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: apply-proposal with preview/undo; inline feedback, no raw codes (J2 undo JSON precedent)"
+        },
+        {
+          "taskId": "JUPLAN-RUNTIME-KOREAN-ERRORS",
+          "scope": "Replace the English errors thrown by editNode ('empty label', 'unknown node: <id>') and freeze ('snapshot requires READY_FOR_FINAL_REVIEW, got …', 'G0-G5 gate evaluation did not pass') in packages/runtime/src/index.ts with plain Korean messages that say what to do next (the unknown node id stays in the message); leave control flow, error codes like DRAFT_LOCKED and UNDO_NOTHING_TO_UNDO untouched, and update runtime.test.ts:439-441 plus one new test covering the new messages.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/runtime-korean-errors.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = non-developer, plain Korean, obvious next action, no raw codes"
         }
       ],
       "qaRuntime": [
