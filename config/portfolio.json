@@ -1382,6 +1382,23 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
           "title": "R2-9: add jutell to PROJECT_LABELS ('JuTell', '짧고 쉬운 작업 보고서'"
+        },
+        {
+          "taskId": "AGENTRELAY-WHO-WORKS-ROUTING-R2",
+          "scope": "Update controlRoomWorkingRows routing display for worker and QA stages, lane labels, Korean task titles, cooling and pool lines, and revise test/controlroom-titles-today.test.mjs expectations to the new row shape; who-works-routing.test.mjs must fail on the base code and pass after the change.",
+          "files": [
+            "src/shared/types.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/shared/projectLabels.ts",
+            "test/who-works-routing.test.mjs",
+            "test/controlroom-titles-today.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/who-works-routing.test.mjs test/controlroom-titles-today.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md"
         }
       ],
       "qaRuntime": [
