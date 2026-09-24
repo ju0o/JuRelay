@@ -5838,6 +5838,17 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:263 '| 4 | Record M3 GO / DEFER / KILL from daily-value validation | M3 |'; docs/operations/PM_STATUS_BOARD.md:36 '| M3 integration | daily value summary integrated for 7 tasks |'; Founder direction 2026-09-24",
           "title": "일상 가치 실험 계속 결정을 계획표에 기록"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-REGISTER-HUMAN-EVIDENCE-CLOSE",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md, fill the Section 5 summary-versus-Receipt answers that are facts (tasks asked, outcomes received, review items and human actions, material impacts t04/t06/t07/t09, cost unknown for 10 of 10) using only a read-only look at ../JuCeipt@402d3ee daily/*.json, receipts/*.json and docs/qa/M3_DAILY_VALUE_SCORECARD.md with source paths cited; leave the subjective 'Could I act without opening the transcript?' answer and all timings as explicit UNKNOWN (never invented); fill Completed by and Validation date in the Section 7 closeout from the register commits b4cd138/04c7373/a77257a; add one line saying the proposed GO mapping comes from the source scorecard and that the leftover subjective UNKNOWN rows do not add evidence for or against it; do not record the M3 milestone decision and do not touch PM_STATUS_BOARD, MASTER_ROADMAP or DECISION_LOG.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:105-110 all six Section 5 rows read `UNKNOWN`, :135-136 'Completed by | `UNKNOWN`' / 'Validation date | `UNKNOWN`', and :126 'Evidence missing, contradictory, or `UNKNOWN` | `UNDECIDED`' contradicts :139 'Proposed mapping ... `GO`'; Founder direction 2026-09-24: 'Complete the seven-task summary-versus-Receipt evidence register, then record the M3 GO, DEFER, or KILL decision.'"
         }
       ]
     },
