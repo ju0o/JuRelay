@@ -3976,6 +3976,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): no raw codes, plain Korean, obvious next action; docs/integration/PROJECT_STATUS_CONTRACT.md:22 '`reason` ... Short machine-readable reason for `UNKNOWN` or `stale`'",
           "title": "상태 이유를 쉬운 말로 풀이하기"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-KO-REASON-HINT",
+          "scope": "When scripts/status-board.mjs finishes with some projects UNKNOWN or stale, make its one plain-Korean stderr line show each project's reason in parentheses (e.g. '프로젝트 2개 중 1개는 상태를 알 수 없어요: missing(unavailable) — README 처음 쓰는 법의 reason 표를 보세요'), keep the all-read line and the stdout JSON unchanged, and update the exact-match assertion in tests/status-board-cli.test.mjs and the README example if it quotes the line.",
+          "files": [
+            "scripts/status-board.mjs",
+            "tests/status-board-cli.test.mjs",
+            "README.md"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; scripts/status-board.mjs@0d91731 currently prints only '…상태를 알 수 없어요: <ids>' with no reason or next step"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-KO-NEXT-COMMAND",
+          "scope": "Add a `next` field to the one JSON line printed by scripts/e2e.sh: when a step fails, it holds the exact command for that step from README '처음 쓰는 법' (build-registry/check-projections → 'node --test tests/*.test.mjs', run-status-board/run-project-id → 'node scripts/status-board.mjs <registry.json>'); drop it when ok. Then change the message ending from '아래 명령을 직접 실행해 보세요' to point at `next`, and add one README '읽는 법' bullet for `next`. Schema jucontroler.e2e.v1, the steps and the exit code stay the same.",
+          "files": [
+            "scripts/e2e.sh",
+            "README.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: obvious next action, inline feedback, plain Korean; scripts/e2e.sh@0d91731 failure message says '아래 명령을 직접 실행해 보세요' but the JSON line contains no command"
         }
       ],
       "qaRuntime": [
