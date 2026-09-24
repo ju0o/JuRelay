@@ -5917,6 +5917,29 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:136-142 quote: 'Ten-task corpus complete | YES — commit `402d3ee` includes 10/10 receipts' and 'Proposed mapping from Section 6 | `GO — continue the bounded daily-value experiment only; source scorecard decision`', which the older docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:29 contradicts: 'M3 daily value summary is integrated for 7 tasks; validation and GO / DEFER / KILL decision are next.'",
           "title": "10건 검증 결과와 다음 단계 확인"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-GTM-M2-GO-STATUS-SYNC",
+          "scope": "In BUSINESS_PRODUCT_WBS.md (§1 Master WBS M2 row still 'PM REVIEW', M3 row 'BLOCKED', §4.3 PM validation checkboxes) and GROWTH_MONETIZATION_GTM.md §8 B0 row, align status with the SSOT (M2 GO per A-14; M3 active with its seven-task evidence register completed in docs/validation/M3_DAILY_VALUE_VALIDATION.md), and link §4.3 to that register, without writing an M3 GO/DEFER/KILL decision and without changing B1–B6 BLOCKED/FUTURE states or the unresolved B0-alias note.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md",
+            "docs/business/GROWTH_MONETIZATION_GTM.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27-28 '| Active product milestone | **M3 — Daily Agent Value Decision** |' / '| Product decision | **M2 GO** |' vs docs/planning/BUSINESS_PRODUCT_WBS.md:41 '| M2 | Core Value Proof | ... | **PM REVIEW** |'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-CANONICAL-HTML-M2-GO-STATUS-SYNC",
+          "scope": "In the canonical docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html, replace the outdated status pill 'CURRENT · M2 PM REVIEW' / 'M3 NEXT AFTER M2 GO' (line 17) and the M2/M3 gate-table state cells (lines 82 and 84) with the SSOT state (M2 GO per A-14; M3 current, evidence register completed, decision pending), changing only static text, keeping B1/B2+/second-runtime BLOCKED labels and the planning-only boundary, and recording no M3 decision.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:183 'M2 is closed by the A-14 GO decision; the scorecard remains the evidence record.' vs docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 '<span class=\"pill now\">CURRENT · M2 PM REVIEW</span>'"
         }
       ]
     },
