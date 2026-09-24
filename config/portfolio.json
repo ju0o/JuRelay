@@ -1458,7 +1458,8 @@
             "npm run test:v03",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = plain Korean, inline feedback, no raw codes; App.tsx:2153 'GitHub Releases에서 최신 버전을 확인할 수 있습니다.' and App.tsx:2166 raw errorMessage.slice(0,160) shown to the user"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = plain Korean, inline feedback, no raw codes; App.tsx:2153 'GitHub Releases에서 최신 버전을 확인할 수 있습니다.' and App.tsx:2166 raw errorMessage.slice(0,160) shown to the user",
+          "title": "업데이트 확인 안내를 쉬운 말로"
         },
         {
           "taskId": "AGENTRELAY-ARIA-LABELS-KO",
@@ -1473,7 +1474,8 @@
             "node --test test/planstudio-founder-view.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean everywhere, no raw codes; planStudio.tsx:488/502/519/637/671 and controlRoom.tsx:572 still carry English aria-labels"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean everywhere, no raw codes; planStudio.tsx:488/502/519/637/671 and controlRoom.tsx:572 still carry English aria-labels",
+          "title": "화면 읽기 안내를 한국어로 바꾸기"
         },
         {
           "taskId": "AGENTRELAY-RUNNER-QA-RUNTIME-SEPARATE",
@@ -1487,7 +1489,8 @@
             "git diff --check",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: 'Agent Relay: independent QA (never self-review)'; portfolio-runner/index.mjs:396 runs QA with the same `adapter` as the worker while snapshot line 110 already reports project.qaRuntime"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: 'Agent Relay: independent QA (never self-review)'; portfolio-runner/index.mjs:396 runs QA with the same `adapter` as the worker while snapshot line 110 already reports project.qaRuntime",
+          "title": "검수를 따로 정한 담당이 맡도록"
         }
       ],
       "qaRuntime": [
@@ -2420,7 +2423,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: actl: no interleaved sends across boards/processes, busy-send guard, ambiguous-delivery honesty, result-ready CTA (collision audit 2026-09-24)"
+          "ssotEvidence": "Founder direction 2026-09-23: actl: no interleaved sends across boards/processes, busy-send guard, ambiguous-delivery honesty, result-ready CTA (collision audit 2026-09-24)",
+          "title": "동시 전송 안내를 사실대로 고치기"
         },
         {
           "taskId": "ACTL-E2E-KOREAN-SEND-CHECK",
@@ -2434,7 +2438,8 @@
             "bash scripts/e2e_disposable.sh",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): 'a real end-to-end script ... runs the product's main user flow offline in a temp dir using only existing commands and prints one JSON line {ok, steps[], ms}'; scripts/e2e_disposable.sh@2bc798a: '[[ \"$send_output\" == *\"sent to\"* || \"$send_output\" == *\"$session\"* ]]' vs src/actl/cli.py:1516 'print(f\"{AGENTS[agent].display_name}에게 보냈어요 · 답이 오면: actl copy {agent}\")'"
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): 'a real end-to-end script ... runs the product's main user flow offline in a temp dir using only existing commands and prints one JSON line {ok, steps[], ms}'; scripts/e2e_disposable.sh@2bc798a: '[[ \"$send_output\" == *\"sent to\"* || \"$send_output\" == *\"$session\"* ]]' vs src/actl/cli.py:1516 'print(f\"{AGENTS[agent].display_name}에게 보냈어요 · 답이 오면: actl copy {agent}\")'",
+          "title": "보내기 자동 점검 다시 통과시키기"
         },
         {
           "taskId": "ACTL-CLI-COPY-RESULT-KOREAN",
@@ -2448,7 +2453,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: 'launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes'; src/actl/cli.py:278-287@2bc798a: 'print(f\"✗ Clipboard delivery failed: {exc}\")' / 'print(f\"✓ Last response copied via {backend}{note}\")'"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: 'launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes'; src/actl/cli.py:278-287@2bc798a: 'print(f\"✗ Clipboard delivery failed: {exc}\")' / 'print(f\"✓ Last response copied via {backend}{note}\")'",
+          "title": "답 복사 결과를 쉬운 말로 알려주기"
         },
         {
           "taskId": "ACTL-CLI-SEND-FAIL-PLAIN",
@@ -2461,7 +2467,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: 'plain Korean, obvious next action, inline feedback, no raw codes'; src/actl/cli.py:1507-1515@2bc798a: 'print(\"empty prompt\", file=sys.stderr)' / 'print(str(exc), file=sys.stderr)'; src/actl/cli.py:278 guard_direct_writer: 'raise RuntimeError(f\"{denied.code}: {denied.detail}\")'"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: 'plain Korean, obvious next action, inline feedback, no raw codes'; src/actl/cli.py:1507-1515@2bc798a: 'print(\"empty prompt\", file=sys.stderr)' / 'print(str(exc), file=sys.stderr)'; src/actl/cli.py:278 guard_direct_writer: 'raise RuntimeError(f\"{denied.code}: {denied.detail}\")'",
+          "title": "보내기 실패 때 다음 할 일 안내하기"
         }
       ],
       "qaRuntime": [
@@ -3440,7 +3447,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = plain Korean, no raw codes; Hermes style everywhere (A-21)"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = plain Korean, no raw codes; Hermes style everywhere (A-21)",
+          "title": "검사 결과를 한국어로 쉽게 보기"
         },
         {
           "taskId": "JUPLAN-EDIT-JSON-RESULT",
@@ -3455,7 +3463,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: apply-proposal with preview/undo; inline feedback, no raw codes (J2 undo JSON precedent)"
+          "ssotEvidence": "Founder direction 2026-09-23: apply-proposal with preview/undo; inline feedback, no raw codes (J2 undo JSON precedent)",
+          "title": "수정한 내용을 대화에서 바로 알려주기"
         },
         {
           "taskId": "JUPLAN-RUNTIME-KOREAN-ERRORS",
@@ -3470,7 +3479,8 @@
             "pnpm --filter @juplan/runtime typecheck",
             "bash scripts/e2e.sh"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: launch bar = non-developer, plain Korean, obvious next action, no raw codes"
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = non-developer, plain Korean, obvious next action, no raw codes",
+          "title": "막혔을 때 다음 할 일을 한국어로 안내"
         }
       ],
       "qaRuntime": [
@@ -4422,7 +4432,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "JuControler-Private/founder/DECISION_LOG.md:4151 'A-22 ... AI 자동 배정 — 모든 역할(PM·Worker·QA·Tester)에 구독 AI 먼저, 한도·실패 시와 가벼운 일에 무료 모델 보조. 무료 모델은 이미 설치된 도구(opencode·Hermes 등)부터, 새 계정·키는 대표님이 직접.'; founder/VERSION_WBS.md:12"
+          "ssotEvidence": "JuControler-Private/founder/DECISION_LOG.md:4151 'A-22 ... AI 자동 배정 — 모든 역할(PM·Worker·QA·Tester)에 구독 AI 먼저, 한도·실패 시와 가벼운 일에 무료 모델 보조. 무료 모델은 이미 설치된 도구(opencode·Hermes 등)부터, 새 계정·키는 대표님이 직접.'; founder/VERSION_WBS.md:12",
+          "title": "역할별 AI 자동 배정 순서 정하기"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-TEST-LIST-NO-COUNT",
@@ -4435,7 +4446,8 @@
             "bash scripts/e2e.sh",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (launch bar: a non-developer uses it as easily as KakaoTalk/Toss, in plain Korean; Quickstart commands must be exactly what works); README.md at c232b5a step 2 says '자동 테스트 파일 여덟 개' while git ls-tree lists 10 tests/*.test.mjs, including skill-attachment-contract and approved-memory-contract"
+          "ssotEvidence": "Founder direction 2026-09-23 (launch bar: a non-developer uses it as easily as KakaoTalk/Toss, in plain Korean; Quickstart commands must be exactly what works); README.md at c232b5a step 2 says '자동 테스트 파일 여덟 개' while git ls-tree lists 10 tests/*.test.mjs, including skill-attachment-contract and approved-memory-contract",
+          "title": "처음 쓰는 법 안내의 테스트 설명 바로잡기"
         }
       ],
       "qaRuntime": [
@@ -6320,7 +6332,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 'Complete the seven-task Receipt-versus-summary register, score decision utility per task, and issue M3 GO only if the day-level view adds clear actionable value'; docs/operations/PM_STATUS_BOARD.md:58 'M3 ... Exit Gate: daily value summary adds decision/value utility'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:123 'Clearly useful: adds actionable day-level context beyond individual Receipts | GO'"
+          "ssotEvidence": "Founder direction 2026-09-25: 'Complete the seven-task Receipt-versus-summary register, score decision utility per task, and issue M3 GO only if the day-level view adds clear actionable value'; docs/operations/PM_STATUS_BOARD.md:58 'M3 ... Exit Gate: daily value summary adds decision/value utility'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:123 'Clearly useful: adds actionable day-level context beyond individual Receipts | GO'",
+          "title": "하루 요약이 판단에 도움되는지 작업별 채점"
         }
       ]
     },
@@ -6626,7 +6639,8 @@
             "node --test tests/context-risk-level-scope-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:330 '#### 높음 … 로그인과 인증 / 사용자 권한 / 결제 / 데이터베이스 구조 / 비밀정보 처리 / 배포 설정'; docs/PRODUCT_SCOPE.md:349 '위험도에는 반드시 짧은 근거를 함께 작성한다.'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:330 '#### 높음 … 로그인과 인증 / 사용자 권한 / 결제 / 데이터베이스 구조 / 비밀정보 처리 / 배포 설정'; docs/PRODUCT_SCOPE.md:349 '위험도에는 반드시 짧은 근거를 함께 작성한다.'",
+          "title": "위험도 안내가 기획서 기준과 맞는지 확인"
         },
         {
           "taskId": "JUTELL-CONTEXT-MAIN-FILES-CAP-PARITY",
@@ -6638,7 +6652,8 @@
             "node --test tests/context-main-files-cap-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:271 '기본적으로 최대 5개의 주요 파일을 설명한다.' + :276 '나머지 파일: 경로 목록 또는 개수만 표시'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:271 '기본적으로 최대 5개의 주요 파일을 설명한다.' + :276 '나머지 파일: 경로 목록 또는 개수만 표시'",
+          "title": "주요 파일을 최대 5개만 보여주는지 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -6886,7 +6901,8 @@
             "npm test",
             "npm run typecheck"
           ],
-          "ssotEvidence": "AI-Agent-marketplace-private/docs/ERD_v0.4.dbml:274 'approval_rules jsonb' (Table worker_policies); Founder direction 2026-09-23 (3) 비용/안전 한도 정책 API"
+          "ssotEvidence": "AI-Agent-marketplace-private/docs/ERD_v0.4.dbml:274 'approval_rules jsonb' (Table worker_policies); Founder direction 2026-09-23 (3) 비용/안전 한도 정책 API",
+          "title": "파일 삭제·외부 전송 승인 규칙 저장"
         },
         {
           "taskId": "AIAGENTMARKE-P2-PROFILE-POLICY-LINK",
@@ -6900,7 +6916,8 @@
             "npm test",
             "npm run typecheck"
           ],
-          "ssotEvidence": "AI-Agent-marketplace-private/docs/ERD_v0.4.dbml:280 'policy_id uuid [ref: > worker_policies.id]' (Table worker_profiles)"
+          "ssotEvidence": "AI-Agent-marketplace-private/docs/ERD_v0.4.dbml:280 'policy_id uuid [ref: > worker_policies.id]' (Table worker_profiles)",
+          "title": "작업자 프로필에 안전 정책 연결"
         },
         {
           "taskId": "AIAGENTMARKE-P2-OWNER-HOME-PILOT-EARNINGS",
@@ -6914,7 +6931,8 @@
             "npm test",
             "npm run build"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (4) '수익 숫자는 시범 운영 표시'; PRODUCT_SSOT_v0.4.md:68 'PRE_BUSINESS에서는 출금 버튼 비활성 + 시범 라벨'"
+          "ssotEvidence": "Founder direction 2026-09-23 (4) '수익 숫자는 시범 운영 표시'; PRODUCT_SSOT_v0.4.md:68 'PRE_BUSINESS에서는 출금 버튼 비활성 + 시범 라벨'",
+          "title": "홈 화면에 시범 운영 수익 표시"
         },
         {
           "taskId": "AIAGENTMARKE-P2-O09-SAVE-POLICY-API",
@@ -6927,7 +6945,8 @@
             "npm test",
             "npm run build"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (3)-(4) 비용/안전 한도 정책 API + O09 안전과 비용 화면; WBS_v0.4.md Phase 2 '비용/안전 정책'"
+          "ssotEvidence": "Founder direction 2026-09-23 (3)-(4) 비용/안전 한도 정책 API + O09 안전과 비용 화면; WBS_v0.4.md Phase 2 '비용/안전 정책'",
+          "title": "안전 설정을 서버에 실제로 저장"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
