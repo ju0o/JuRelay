@@ -6258,6 +6258,21 @@
           ],
           "ssotEvidence": "AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2 (connector 계약, heartbeat); ERD_v0.4.dbml agent_connectors/worker_policies/worker_profiles; Founder request 2026-09-25 00:04",
           "title": "Owner connector 테이블 + 등록/heartbeat API"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-O09-LIMITS-FORM",
+          "scope": "PRODUCT_SSOT O-10 / prototype O09 says the 안전과 비용 screen sets limits, but src/web/Owner.tsx Safety() only shows a notice. Replace it with a form: 하루 최대 비용 (원), 한 작업 최대 (원), 최대 작업 시간 (분), 가능 시간 시작/끝, and three approval rows (파일 삭제: 확인 필요, 외부 전송: 확인 필요, 결제: 차단 fixed). Validate with validatePolicy from src/domain/worker-policy.ts and show Korean error text for invalid values; keep values in local state (no server yet). Keep PilotBadge. Add tests/e2e/owner.spec.ts (Playwright, same config) that opens #/owner, walks 홈 → AI 연결 → 할 수 있는 일 → 안전과 비용, enters an invalid limit (task limit above daily limit is allowed by the domain, so use a negative or empty value) and sees the error, fixes it and saves, and asserts no internal terms (Worker|Harness|Router|Ledger|Runtime|Settlement) and at most one primary .btn per screen.",
+          "files": [
+            "src/web/Owner.tsx",
+            "tests/e2e/owner.spec.ts"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm test",
+            "npm run test:e2e"
+          ],
+          "ssotEvidence": "AI-Agent-marketplace-private docs/PRODUCT_SSOT_v0.4.md O-10 Cost / Safety Policy; docs/source/v0.4/index.html O09; WBS_v0.4 Phase 2 policy/cost/safety settings",
+          "title": "안전과 비용 화면에 실제 한도 입력 + Owner 화면 E2E"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
