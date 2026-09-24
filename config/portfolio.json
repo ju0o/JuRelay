@@ -6821,6 +6821,61 @@
           ],
           "ssotEvidence": "WBS_v0.4.md:10 \"정책 초과 작업 거부 테스트\"",
           "title": "사용 제한 이유를 알려줘"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-POLICY-APPROVAL-RULES",
+          "scope": "Add migrations/0003_worker_policy_approval_rules.sql, which adds the ERD column worker_policies.approval_rules jsonb NOT NULL DEFAULT '{}'. Extend POST and GET /api/owner/policies in src/server/owner-policy.ts to accept and return approval_rules as an object of booleans (file_delete, external_send). Reject a non-object or a non-boolean value with 400 INVALID_POLICY and errors ['approval_rules']. Add integration tests.",
+          "files": [
+            "migrations/0003_worker_policy_approval_rules.sql",
+            "src/server/owner-policy.ts",
+            "tests/integration/owner-policy.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "AI-Agent-marketplace-private/docs/ERD_v0.4.dbml:274 'approval_rules jsonb' (Table worker_policies); Founder direction 2026-09-23 (3) 비용/안전 한도 정책 API"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-PROFILE-POLICY-LINK",
+          "scope": "Add migrations/0004_worker_profile_policy.sql, which adds the ERD column worker_profiles.policy_id uuid REFERENCES worker_policies(id). Extend PUT and GET /api/owner/connectors/:id/profile in src/server/owner.ts so the body can carry an optional policy_id, which is saved and returned. A malformed or unknown policy_id returns 400 INVALID_PROFILE with errors ['policy_id']. Add integration tests.",
+          "files": [
+            "migrations/0004_worker_profile_policy.sql",
+            "src/server/owner.ts",
+            "tests/integration/owner-connector.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "AI-Agent-marketplace-private/docs/ERD_v0.4.dbml:280 'policy_id uuid [ref: > worker_policies.id]' (Table worker_profiles)"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-OWNER-HOME-PILOT-EARNINGS",
+          "scope": "In OwnerHome() in src/web/Owner.tsx, add an earnings card reading '이번 달 수익 0원', shown with the existing PilotBadge so the number is clearly marked as trial operation. Add no withdraw or payout button, no job search and no bidding UI. Extend tests/e2e/owner.spec.ts to assert the card and the pilot label on the O00 home.",
+          "files": [
+            "src/web/Owner.tsx",
+            "tests/e2e/owner.spec.ts"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm test",
+            "npm run build"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (4) '수익 숫자는 시범 운영 표시'; PRODUCT_SSOT_v0.4.md:68 'PRE_BUSINESS에서는 출금 버튼 비활성 + 시범 라벨'"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-O09-SAVE-POLICY-API",
+          "scope": "Change the Safety() save in src/web/Owner.tsx so that, after local validatePolicy passes, it sends the policy to POST /api/owner/policies through the existing api() helper in src/web/api.ts. Go back to the Owner home only on success. On an ApiError, show the existing role=alert error card.",
+          "files": [
+            "src/web/Owner.tsx"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm test",
+            "npm run build"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (3)-(4) 비용/안전 한도 정책 API + O09 안전과 비용 화면; WBS_v0.4.md Phase 2 '비용/안전 정책'"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
