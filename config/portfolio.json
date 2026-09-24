@@ -4561,6 +4561,18 @@
           ],
           "ssotEvidence": "Supervisor capture review run-20260924-1824 (7a87015)",
           "title": "(1) The new jutell lane shows as lowercase 'jutell' in the 진"
+        },
+        {
+          "taskId": "JCAPP-AI-ROUTING-KOREAN-LABELS",
+          "scope": "AI 자동 배정 카드와 홈 요약에서 무료 모델 식별자(opencode/big-pickle 등)를 대표님이 이해할 수 있는 한국어 이름으로 표시하고 원본 코드는 기본 화면에 노출하지 않는다.",
+          "files": [
+            "operator/public/app.js",
+            "test/ai-routing-view.test.mjs"
+          ],
+          "tests": [
+            "node --test test/ai-routing-view.test.mjs"
+          ],
+          "ssotEvidence": "founder/DECISION_LOG.md:4151 \"AI 자동 배정 — 모든 역할(PM·Worker·QA·Tester)에 구독 AI 먼저\""
         }
       ]
     },
