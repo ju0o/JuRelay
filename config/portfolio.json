@@ -6146,6 +6146,29 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:290-296 \"다음 조건에 해당하는 용어만 쉬운 설명을 제공한다 ... 같은 보고서에서 동일한 용어를 반복 설명하지 않는다.\"",
           "title": "쉬운 용어 설명 빠짐·중복 자동 점검"
+        },
+        {
+          "taskId": "JUTELL-MAIN-FILES-CAP-FIXTURE",
+          "scope": "Add a scenario-e general-work report fixture where 8 files changed, plus an offline node:test that checks it has the 6 §4 sections, that 주요 수정 파일 explains at most 5 files with their role, and that the other files are summarized only as a count or path list in a separate 그 외 변경 파일 line.",
+          "files": [
+            "tests/results/scenario-e/main-files-cap.fixture.md",
+            "tests/results/scenario-e/main-files-cap.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-e/main-files-cap.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:271 '기본적으로 최대 5개의 주요 파일을 설명한다. … 주요 파일 최대 5개: 역할과 변경 이유를 설명 / 나머지 파일: 경로 목록 또는 개수만 표시'; docs/BEGINNER_REPORT_SPEC.md:614 '기본적으로 최대 5개의 주요 파일만 설명한다.'"
+        },
+        {
+          "taskId": "JUTELL-FIXTURE-TERM-NO-REPEAT",
+          "scope": "Add an offline node:test that reads every tests/results/scenario-*/*.fixture.md file and the ### headings in .agents/skills/beginner-bridge/references/glossary-ko.md, then checks that no glossary term is explained in parentheses (term followed by '(') more than once in the same fixture.",
+          "files": [
+            "tests/fixture-term-no-repeat.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/fixture-term-no-repeat.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:296 '같은 보고서에서 동일한 용어를 반복 설명하지 않는다.'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
