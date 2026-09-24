@@ -5877,6 +5877,17 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:105-110 all six Section 5 rows read `UNKNOWN`, :135-136 'Completed by | `UNKNOWN`' / 'Validation date | `UNKNOWN`', and :126 'Evidence missing, contradictory, or `UNKNOWN` | `UNDECIDED`' contradicts :139 'Proposed mapping ... `GO`'; Founder direction 2026-09-24: 'Complete the seven-task summary-versus-Receipt evidence register, then record the M3 GO, DEFER, or KILL decision.'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-REPORT-M3-EVIDENCE-REFRESH",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md, update the three outdated M3 lines (header line 6, morning summary line 29, open item line 252). They should say the M3 validation register is complete for the committed 10-receipt corpus at JuCeipt@402d3ee, with the proposed GO mapping taken from the source scorecard, and point to docs/validation/M3_DAILY_VALUE_VALIDATION.md. Do not write an M3, M2 or P0 decision, and do not touch PM_STATUS_BOARD, MASTER_ROADMAP or DECISION_LOG.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:136-142 quote: 'Ten-task corpus complete | YES — commit `402d3ee` includes 10/10 receipts' and 'Proposed mapping from Section 6 | `GO — continue the bounded daily-value experiment only; source scorecard decision`', which the older docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:29 contradicts: 'M3 daily value summary is integrated for 7 tasks; validation and GO / DEFER / KILL decision are next.'"
         }
       ]
     },
