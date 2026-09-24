@@ -4069,6 +4069,17 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: (1) a real end-to-end script (scripts/e2e.sh) that runs the product's main user flow offline ... prints one JSON line {ok, steps[], ms}; launch bar = plain Korean, inline feedback, no raw codes",
           "title": "상태 요약을 정확히 확인해요"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-CONTRACT-TEST",
+          "scope": "Add one offline Node test that executes the existing scripts/e2e.sh and verifies its single JSON line, Korean success message, ordered steps, and jucontroler.e2e.v1 contract.",
+          "files": [
+            "tests/e2e-script.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-script.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: real end-to-end script that runs the main user flow offline and prints {ok, steps[], ms}"
         }
       ],
       "qaRuntime": [
