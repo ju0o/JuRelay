@@ -5978,6 +5978,18 @@
           ],
           "ssotEvidence": "docs/DECISIONS.md:10 'Skill 실행 절차 1항에 `jutell context` 우선 실행 + MCP 세션당 1회 + 단순 작업 `tier: core` 규칙을 추가한다.'",
           "title": "간단한 일은 짧게 안내"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-GLOSSARY-TIER-CAP",
+          "scope": "jutell context의 관련 용어 매칭 상한을 작업 tier와 연동하고 trivial tier는 최대 1개로 제한하며 오프라인 테스트로 검증한다.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "packages/cli/tests/context.test.ts"
+          ],
+          "tests": [
+            "npm test -- --run tests/context.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
