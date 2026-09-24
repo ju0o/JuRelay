@@ -4573,6 +4573,21 @@
             "node --test test/ai-routing-view.test.mjs"
           ],
           "ssotEvidence": "founder/DECISION_LOG.md:4151 \"AI 자동 배정 — 모든 역할(PM·Worker·QA·Tester)에 구독 AI 먼저\""
+        },
+        {
+          "taskId": "JCAPP-PM-CHANNEL-VIEW",
+          "scope": "PM ↔ Agent 소통 창구 (Founder 2026-09-24: 우리만의 PM↔Agent 소통 창구). The board now carries lanes[].channel = the last 20 messages {at, who ('PM (codex)', 'Worker (claude-team)', 'QA (grok)', '대표님'), kind (plan/redesign/directions/founder-chat/hold-explain/result/qa), taskId?, text}. In operator/public/app.js show it per project as a KakaoTalk-like thread: in the 진행 tab lane view a '대화 기록' section (newest at the bottom, bubbles left for AIs with the AI name + role chip, right for 대표님, relative time, long text folded to 3 lines with 더 보기, taskId shown as the Korean task title when the board has it), and in 더보기 > 대화 a project picker that shows the same thread above the send box (sending already goes to the PM via /api/relay/pm-chat). Empty → '아직 대화가 없어요. PM에게 말을 걸어 보세요.' Pure render helper + test/pm-channel-view.test.mjs (ordering, left/right, folding, empty).",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/pm-channel-view.test.mjs"
+          ],
+          "tests": [
+            "node --test test/pm-channel-view.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20:2x: '우리만의 PM<->Agent 소통 창구 만들고'; engine: pool PM (codex→claude-team→cursor→grok→claude-pro→free) + per-lane channel on the board",
+          "title": "PM ↔ Agent 소통 창구 (Founder 2026-09-24: 우리만의 PM↔Agent 소통 창구). "
         }
       ]
     },
