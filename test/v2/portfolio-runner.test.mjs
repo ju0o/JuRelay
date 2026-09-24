@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import test from "node:test";
-import { agentContext, routeOrder, buildCoreV1Snapshot, discoverCodexCommand, formatCoreV1Results, formatCoreV1Text, parseQaPacket, parseResultPacket, parseTaskPacket, PortfolioRunner, WorktreeManager, STATES, QA_VERDICTS, TRANSIENT_ERROR } from "../../src/v2/portfolio-runner/index.mjs";
+import { agentContext, routeOrder, worktreeSetup, buildCoreV1Snapshot, discoverCodexCommand, formatCoreV1Results, formatCoreV1Text, parseQaPacket, parseResultPacket, parseTaskPacket, PortfolioRunner, WorktreeManager, STATES, QA_VERDICTS, TRANSIENT_ERROR } from "../../src/v2/portfolio-runner/index.mjs";
 import { CommandRuntimeAdapter, RuntimeAdapter, createRuntimeAdapters } from "../../src/v2/runtime-adapters/index.mjs";
 const passGate = async () => ({ ok: true, results: [] });
 
@@ -433,4 +433,16 @@ test("agentContext adds role skills and only Founder-approved memories, and logs
   const none = await agentContext({ id: "p" }, "qa", { skillsRoot: join(root, "skills"), memoryStore: join(root, "nope") });
   assert.equal(none.text, "");
   await rm(root, { recursive: true, force: true });
+});
+
+test("worktreeSetup runs lane setup and hides the files it touches from git", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const repo = await mkdtemp(join(process.env.TMPDIR || "/tmp", "ar-setup-"));
+  const git = (...a) => execFileSync("git", ["-C", repo, "-c", "user.name=t", "-c", "user.email=t@t", ...a], { encoding: "utf8" });
+  git("init", "-q"); await writeFile(join(repo, "opencode.json"), "{}"); git("add", "."); git("commit", "-qm", "x");
+  const done = await worktreeSetup({ worktreeSetup: ["echo '{\"mcp\":1}' > opencode.json", "echo x > .mcp-local"] }, repo);
+  assert.deepEqual(done.map((d) => d.ok), [true, true]);
+  assert.equal(git("status", "--porcelain").trim(), "");
+  assert.deepEqual(await worktreeSetup({}, repo), []);
+  await rm(repo, { recursive: true, force: true });
 });

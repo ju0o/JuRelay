@@ -138,6 +138,28 @@ async function linkDeps(projectPath, path) {
   return linked;
 }
 
+// Per-lane setup a fresh worktree needs before an AI can work in it (JuTell 2026-09-24: project-scoped MCP registration
+// is lost in an isolated checkout, so `jutell use opencode/claude` must re-run). Files the setup touches are hidden from
+// git (skip-worktree / info/exclude) so they never end up in the Worker's commit. A failing step is logged, not fatal.
+export async function worktreeSetup(project, path) {
+  const steps = [project?.worktreeSetup].flat().filter((c) => typeof c === "string" && c.trim());
+  if (!steps.length) return [];
+  const done = [];
+  for (const cmd of steps) done.push({ cmd, ok: await exec("bash", ["-lc", cmd], { cwd: path }).then(() => true, () => false) });
+  const status = (await exec("git", ["-C", path, "status", "--porcelain"]).catch(() => ({ stdout: "" }))).stdout.split("\n").filter(Boolean);
+  const tracked = status.filter((l) => !l.startsWith("??")).map((l) => l.slice(3).trim());
+  const untracked = status.filter((l) => l.startsWith("??")).map((l) => l.slice(3).trim());
+  if (tracked.length) await exec("git", ["-C", path, "update-index", "--skip-worktree", "--", ...tracked]).catch(() => {});
+  if (untracked.length) {
+    const exclude = (await exec("git", ["-C", path, "rev-parse", "--git-path", "info/exclude"])).stdout.trim();
+    const file = exclude.startsWith("/") ? exclude : join(path, exclude);
+    const have = await readFile(file, "utf8").catch(() => "");
+    const add = untracked.filter((u) => !have.split("\n").includes(u));
+    if (add.length) { await mkdir(resolve(file, ".."), { recursive: true }); await appendFile(file, (have.endsWith("\n") || !have ? "" : "\n") + add.join("\n") + "\n"); }
+  }
+  return done;
+}
+
 export class WorktreeManager {
   constructor(root) { this.root = root; }
 
@@ -158,6 +180,7 @@ export class WorktreeManager {
     await exec("git", ["-C", project.path, "worktree", "add", "--detach", path, base]);
     // Reuse the project's installed deps so Worker and QA can really build/typecheck/test (a fresh worktree has none).
     await linkDeps(project.path, path);
+    await worktreeSetup(project, path);
     return { path, base, projectId: project.id, async cleanup() { await exec("git", ["-C", project.path, "worktree", "remove", "--force", path]).catch(() => {}); await rm(path, { recursive: true, force: true }); } };
   }
 
