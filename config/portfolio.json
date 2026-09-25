@@ -2811,7 +2811,12 @@
         "grok",
         "cline",
         "codex"
-      ]
+      ],
+      "skills": {
+        "pm": [
+          "founder-ux"
+        ]
+      }
     },
     {
       "id": "juplan",
