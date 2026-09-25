@@ -9330,6 +9330,17 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:202 '[`docs/qa/M3_DAILY_VALUE_SCORECARD.md`](../JuCeipt@402d3ee:docs/qa/M3_DAILY_VALUE_SCORECARD.md)' is the only `](../JuCeipt@` link left at base (git grep); the Section 4 lines 122-123 format is 'scorecard `402d3ee:docs/qa/M3_DAILY_VALUE_SCORECARD.md`'",
           "title": "검증 문서의 깨진 참조 링크 고치기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-FINAL-RECEIPT-RECONCILE",
+          "scope": "Reconcile the Founder's seven-task register against the committed Claude final and Receipt artifacts, retain only rows with both artifacts, and record evidence-bounded GO/DEFER/KILL mapping without product implementation or Founder re-confirmation.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ]
     },
