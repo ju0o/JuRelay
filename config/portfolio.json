@@ -1965,7 +1965,8 @@
             "npm test",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: A) 관제실 레인마다 founder-ux Skill의 'Live status card' (지금 하는 일·여기까지 끝남·확인 상태·대표님 할 일·다음 단계)"
+          "ssotEvidence": "Founder direction 2026-09-23: A) 관제실 레인마다 founder-ux Skill의 'Live status card' (지금 하는 일·여기까지 끝남·확인 상태·대표님 할 일·다음 단계)",
+          "title": "관제실 카드에 진행 상황 쉽게 보기"
         }
       ],
       "qaRuntime": [
@@ -6590,7 +6591,8 @@
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/quickstart-next-sync.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23/24: a real end-to-end script that runs the main user flow offline and prints one JSON line {ok, steps[], ms}; the launch bar is plain Korean and an obvious next action. scripts/status-board.mjs at base exits 2 with the usage lines when arguments are bad, and no e2e step checks that path yet."
+          "ssotEvidence": "Founder direction 2026-09-23/24: a real end-to-end script that runs the main user flow offline and prints one JSON line {ok, steps[], ms}; the launch bar is plain Korean and an obvious next action. scripts/status-board.mjs at base exits 2 with the usage lines when arguments are bad, and no e2e step checks that path yet.",
+          "title": "잘못 입력하면 사용법 안내 확인"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-STALE-LINE-TEST",
@@ -6603,7 +6605,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, obvious next action, no raw codes. scripts/status-board.mjs at base maps reason 'stale' to '관찰한 지 너무 오래됐어요' (reasonWords) and supports registry freshnessMs, but tests/status-board-cli.test.mjs never checks the stale stderr line."
+          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, obvious next action, no raw codes. scripts/status-board.mjs at base maps reason 'stale' to '관찰한 지 너무 오래됐어요' (reasonWords) and supports registry freshnessMs, but tests/status-board-cli.test.mjs never checks the stale stderr line.",
+          "title": "오래된 상태 안내 문구 지키기"
         }
       ],
       "qaRuntime": [
@@ -9182,7 +9185,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/qa/P0_ROADMAP_WBS_GATE_QA.md:19 RQ-03 'Define one mapping at the contract boundary: useful → `GO`, useful-but-distracting → `DEFER`, duplicates → `KILL`; reserve `RETRY`/`SCALE` for the separately defined milestone decision vocabulary.'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:185-187 already uses this mapping"
+          "ssotEvidence": "docs/qa/P0_ROADMAP_WBS_GATE_QA.md:19 RQ-03 'Define one mapping at the contract boundary: useful → `GO`, useful-but-distracting → `DEFER`, duplicates → `KILL`; reserve `RETRY`/`SCALE` for the separately defined milestone decision vocabulary.'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:185-187 already uses this mapping",
+          "title": "검증 결과별 다음 결정 표시하기"
         },
         {
           "taskId": "JUCEIPTPLAN-WBS-M3-PASS-CHECKBOX-SYNC",
@@ -9193,7 +9197,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:154 '| Separate Usage / Delivery / Value Estimate | Section 4 `value_layer_separation` is `PASS`. | `PASS` |' vs docs/planning/BUSINESS_PRODUCT_WBS.md:133 '- [ ] Separate Usage / Delivery / Value Estimate. ([M3 validation §4.2: `PASS`]'; Founder direction 2026-09-25 'score decision utility per task'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:154 '| Separate Usage / Delivery / Value Estimate | Section 4 `value_layer_separation` is `PASS`. | `PASS` |' vs docs/planning/BUSINESS_PRODUCT_WBS.md:133 '- [ ] Separate Usage / Delivery / Value Estimate. ([M3 validation §4.2: `PASS`]'; Founder direction 2026-09-25 'score decision utility per task'",
+          "title": "이미 끝난 검증 항목 완료 표시"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-SECTION5-SOURCE-REF-FORMAT",
@@ -9204,7 +9209,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:33-35 'Recheck with `git -C ../JuCeipt show 402d3ee:<path>`; this validation repository does not copy those source artifacts.'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:33-35 'Recheck with `git -C ../JuCeipt show 402d3ee:<path>`; this validation repository does not copy those source artifacts.'",
+          "title": "검증 근거 출처 표기 바로잡기"
         }
       ]
     },
@@ -9905,7 +9911,8 @@
             "node --test tests/context-risk-unknown-no-git.test.mjs tests/context-risk-level-scope-parity.test.mjs tests/context-unverifiable-wording-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:652 \"다음 정보가 실제 프로젝트 상태와 일치해야 한다.\" (§11.2 사실 정확성)"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:652 \"다음 정보가 실제 프로젝트 상태와 일치해야 한다.\" (§11.2 사실 정확성)",
+          "title": "바뀐 게 없을 때 위험 안내 바로잡기"
         },
         {
           "taskId": "JUTELL-UNRUN-SCREEN-WORDING-PARITY",
@@ -9919,7 +9926,8 @@
             "node --test tests/skill-report-contract.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:409 화면을 실제로 실행하지 않았다면 `표시됩니다`가 아니라 `표시될 것으로 예상됩니다`라고 작성한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:409 화면을 실제로 실행하지 않았다면 `표시됩니다`가 아니라 `표시될 것으로 예상됩니다`라고 작성한다.",
+          "title": "확인 안 한 화면은 예상이라고 쓰기"
         },
         {
           "taskId": "JUTELL-EXPRESSION-ACCURACY-SKILL-PARITY",
@@ -9931,7 +9939,8 @@
             "node --test tests/expression-accuracy-skill-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:665-666 * 실행하지 않은 테스트를 통과했다고 쓰지 않는다. * 화면을 실행하지 않았다면 실제 화면 결과를 보장하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:665-666 * 실행하지 않은 테스트를 통과했다고 쓰지 않는다. * 화면을 실행하지 않았다면 실제 화면 결과를 보장하지 않는다.",
+          "title": "보고서 정직하게 쓰는 규칙 지키기"
         },
         {
           "taskId": "JUTELL-CONTEXT-RISK-HINTS-HIGH-FIRST",
@@ -9946,7 +9955,8 @@
             "node --test tests/context-risk-level-scope-parity.test.mjs",
             "npx tsc -p packages/cli/tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:554 여러 조건에 해당하면 가장 높은 위험도를 적용한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:554 여러 조건에 해당하면 가장 높은 위험도를 적용한다.",
+          "title": "위험이 큰 파일부터 먼저 보여주기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
