@@ -8986,6 +8986,72 @@
           ],
           "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 2 (PM REQUEST_CHANGES after R2 HOLD, QA finding on 0005 backfill); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2",
           "title": "Worker·policy 연결 마무리 (업그레이드 backfill + 테스트)"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-OWNER-HOME-R3",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). Task 4 retry (re-run of OWNER-HOME-R2, which never ran: Codex transport outage 426 at 13:19). Note tests/e2e/owner.spec.ts currently asserts the old 이번 달 수익 0원 card; update it. prior promotion 1bd74ad only shows a hardcoded 이번 달 수익 0원 card. Add GET /api/owner/connectors/:id/activity (x-owner-token) returning counts for this worker from real tables: preview proposals (proposals.worker_id), build contracts in progress (implementation_contracts.worker_id with state ACTIVE or QA), and today's pilot value = sum of quote_amount_minor of this worker's SELECTED proposals created today (0 when none; never invented numbers). Owner home (O00) with a paired connector shows: connection status ONLINE/OFFLINE from the connector GET, 오늘 AI가 만든 예상 가치 labeled as 시범 운영 예상 가치 (지급 대상 아님), 진행 중 작업 count, 시안 활동 and 제작 활동 counts, an evidence-ready 놓친 작업 area that says records will appear once real matching starts, and the PilotBadge. Remove the 이번 달 수익 wording. The screen must not contain 출금 가능, 지급 가능, 보장, or any balance a user could withdraw. Without a pairing, home shows the O06 entry. Tests: integration test for the activity route (zeros for a fresh connector, 404 for wrong token) on PGlite and TEST_DB=postgres, and E2E assertions for the labels and the absent words.",
+          "files": [
+            "src/server/owner.ts",
+            "src/web/Owner.tsx",
+            "tests/integration/owner-connector.test.ts",
+            "tests/e2e/owner.spec.ts"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm test",
+            "npm run test:pg",
+            "npm run test:e2e"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 (2026-09-25); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2, PRODUCT_SSOT_v0.4 O-01/O-10, LATEST_DECISIONS_v0.4 §1 §4 §9",
+          "title": "Owner 홈 — 시범 가치·진행 중·Preview/Build 활동·놓친 작업 영역"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-CODEX-CONNECTOR-R2",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). (Re-run of CODEX-CONNECTOR, which never ran: Codex transport outage 426 at 13:19.) Founder decision 2026-09-25 (HUMAN_GATE answered): first runtime adapter = the Founder's real local Codex CLI. Add src/connector/codex.ts, run with npm run connector -- <pair|heartbeat|run|status> (add the script to package.json, using tsx like npm start). pair --app <url>: runs `${CODEX_BIN:-codex} --version` (fail clearly if missing), POSTs /api/owner/connectors with runtime 'codex', auth_mode 'local-cli-login', connector_version = that version, and runtime_login_vault_ref = 'local-file:~/.codex/auth.json' (a path reference only; the connector must NEVER open or read that file), then stores {app, id, token} in ~/.config/aiwo-connector/codex.json created with mode 0600 (dir overridable by AIWO_CONNECTOR_DIR for tests); the owner token is never printed after pairing except a masked form. heartbeat: one POST heartbeat; run: heartbeat every CONNECTOR_INTERVAL_MS (default 30000) until SIGINT, re-probing `codex --version` each tick and skipping the heartbeat when the CLI stops working; status: GET connector and print ONLINE/OFFLINE. In src/server/owner.ts make the stale threshold CONNECTOR_STALE_MS (default 90000) instead of the hard-coded 90 seconds. Test tests/integration/codex-connector.test.ts: start createApp on a random port with @hono/node-server and the test DB (PGlite, and real PostgreSQL under TEST_DB=postgres), point CODEX_BIN at a stub script, pair, heartbeat -> ONLINE, check the config file mode is 0600, check no DB column holds the stub auth file sentinel text, and CLI-missing makes pair fail.",
+          "files": [
+            "src/connector/codex.ts",
+            "src/server/owner.ts",
+            "package.json",
+            "tests/integration/codex-connector.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck",
+            "npm run test:pg"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 5 + Founder HUMAN_GATE answer 2026-09-25 (Codex local connector); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2 (첫 runtime adapter, heartbeat, capability, policy)",
+          "title": "Codex 로컬 connector (첫 runtime adapter)"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-REAL-CONNECTOR-GATE-R2",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). (Re-run of REAL-CONNECTOR-GATE, which never ran: Codex transport outage 426 at 13:19. The connector-scoped routes PUT/GET /api/owner/connectors/:id/policy, /policy/check, /policy/actions/check and GET /worker already exist at base.) Founder decision 2026-09-25 (HUMAN_GATE answered): first runtime adapter = the Founder's real local Codex CLI. Add scripts/p2-connector-gate.ts (run with npx tsx scripts/p2-connector-gate.ts) that proves Phase 2 end to end with the REAL local Codex CLI (no stub): boot createApp on a random port with a fresh PGlite dir (or DATABASE_URL when set) and CONNECTOR_STALE_MS=3000; pair with src/connector/codex.ts into a temp AIWO_CONNECTOR_DIR; heartbeat -> assert ONLINE and record the timestamp; PUT capabilities and read them back; PUT policy (daily 5000, per-task 1500, runtime 30, allowed task types, available hours covering now, approval rules) and read it back via GET /worker as one identity; run policy checks: allowed task PASS, daily cost exceeded, per-task cost exceeded, runtime exceeded, disallowed task, outside available hours (use a policy window that excludes now) all rejected with their reason codes; approval check shows the pay action DENY in PRE_BUSINESS; wait past the stale threshold -> OFFLINE; heartbeat again -> ONLINE. Raw-login check: dump every text/jsonb column of every table and assert it contains no substring of length >= 16 taken from the values in ~/.codex/auth.json (read only inside this check, print only true/false, never any value); assert the connector row's reference column starts with 'local-file:'. Write the results as a table to evidence/phase2/CONNECTOR_GATE.md (connector id, type, version, timestamps, each check PASS/FAIL, no token or login values) and exit non-zero if any check fails. The script must refuse to run when NODE_ENV=production.",
+          "files": [
+            "scripts/p2-connector-gate.ts",
+            "evidence/phase2/CONNECTOR_GATE.md"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 5 + Founder HUMAN_GATE answer 2026-09-25 (Codex local connector); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2 (첫 runtime adapter, heartbeat, capability, policy)",
+          "title": "실제 Codex connector로 Phase 2 레드게이트 증거 스크립트"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-POLICY-BACKFILL",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). Task 2 remainder: connector-scoped policies (migration 0005 worker_policies.agent_connector_id) are in place, but policies linked before 0005 through worker_profiles.policy_id are never backfilled. Add migrations/0006_worker_policy_connector_backfill.sql: UPDATE worker_policies SET agent_connector_id = worker_profiles.agent_connector_id FROM worker_profiles WHERE worker_profiles.policy_id = worker_policies.id AND worker_policies.agent_connector_id IS NULL. Add tests/integration/migration-upgrade.test.ts: on a fresh test DB apply migrations 0001-0004 only (add an optional upTo argument to migrate() in src/db/migrate.ts), insert a connector, a policy and a profile linked by policy_id, apply the rest, then GET /api/owner/connectors/:id/policy with the owner token returns that policy. Update the migration count in tests/unit/open-database.test.ts. Must pass on PGlite and TEST_DB=postgres.",
+          "files": [
+            "migrations/0006_worker_policy_connector_backfill.sql",
+            "src/db/migrate.ts",
+            "tests/integration/migration-upgrade.test.ts",
+            "tests/unit/open-database.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck",
+            "npm run test:pg"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 2 (QA finding on PROFILE-POLICY-LINK-R2: 0005 without backfill)",
+          "title": "policy connector 컬럼 업그레이드 backfill + 테스트"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
