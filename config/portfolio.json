@@ -4615,6 +4615,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (A-28): mask token-like strings in every receipt; nothing leaves the machine; at base 99f4bb3, scan.ts relay() does `if (typeof item.hook_event_name === \"string\") return [item as RawHookEvent];` unmasked, and scan.ts mask regex omits the base64 branch present in claude/codex/opencode/others TOKEN",
           "title": "Agent Relay 기록 속 비밀키 가리기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-FOUNDER-UX",
+          "scope": "영수증 보기 화면에 확인 후 받기의 뜻과 빠진 확인 항목의 쉬운 설명을 첫 안내문으로 보여주고 원문·개발자 정보는 원문 보기로 숨기며 글자와 버튼 크기를 Founder UX 기준에 맞춘다.",
+          "files": [
+            "src/render/index.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npm test -- tests/pipeline.test.ts",
+            "npm run build"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-DAILY-FOUNDER-SUMMARY",
+          "scope": "scan 요약과 daily 출력에 지금 무엇을 확인할지 한 문장으로 먼저 안내하고 상태 뜻과 작업 제목을 쉬운 한국어로 표시한다.",
+          "files": [
+            "src/daily/index.ts",
+            "src/sources/summary.ts",
+            "tests/daily-cli.test.ts",
+            "tests/scan-summary.test.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npm test -- tests/daily-cli.test.ts tests/scan-summary.test.ts tests/sources-scan-cli.test.ts",
+            "npm run build"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
