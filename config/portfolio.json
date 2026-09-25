@@ -7654,6 +7654,42 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (3)-(4) 비용/안전 한도 정책 API + O09 안전과 비용 화면; WBS_v0.4.md Phase 2 '비용/안전 정책'",
           "title": "안전 설정을 서버에 실제로 저장"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P1-GATE-REGRESSION-REPAIR",
+          "scope": "Run the existing typecheck, build, PGlite test, and real-PostgreSQL test gates at base, and if Phase 2 owner work (migrations 0002-0004, owner routes, Owner.tsx) broke any Phase 1 check, fix only that root cause with no new features; if every gate already passes, change nothing.",
+          "files": [
+            "src/server/owner.ts",
+            "src/server/owner-policy.ts",
+            "src/web/Owner.tsx",
+            "src/server/app.ts",
+            "tests/integration/client-loop.test.ts",
+            "tests/unit/boundaries.test.ts"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "npm test",
+            "npm run test:pg",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-25): 'Run the existing typecheck, build, test, PostgreSQL, and E2E gates, then repair only regressions'; README.md 검증: 'npm run typecheck && npm run build && npm test && npm run test:pg && npm run test:e2e'"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P1-EVIDENCE-DELTA",
+          "scope": "Run all five README gates (typecheck, build, test, test:pg, test:e2e) at base, then append a dated '# Phase 1 evidence delta 2026-09-25 (base 2e9d591)' section to evidence/phase1/RESULTS.log that records the real exit codes and pass/fail counts, including new owner tests and any failures exactly as they happened, and compares them with the 2026-09-24 section (19 unit+PGlite, 9 PG, 2 E2E). Do not edit code or existing lines.",
+          "files": [
+            "evidence/phase1/RESULTS.log"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "npm test",
+            "npm run test:pg",
+            "npm run test:e2e",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-25): 'record a truthful Phase 1 evidence delta'; evidence/phase1/RESULTS.log:1 '# Phase 1 evidence — after Asset Storage Boundary patch (2026-09-24T23:16:40+09:00)'"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
