@@ -7980,6 +7980,28 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:6-17 lists 8 canonical artifacts with no M3 validation artifact (git grep M3_DAILY_VALUE_VALIDATION finds only WBS and P0 report); docs/validation/M3_DAILY_VALUE_VALIDATION.md:3-6 'Status: PLANNING-ONLY VALIDATION ARTIFACT ... Decision: NOT RECORDED BY THIS ARTIFACT'; docs/operations/PM_STATUS_BOARD.md:27 'Active product milestone | M3 — Daily Agent Value Decision'",
           "title": "하루 가치 검증 문서를 목차에 등록"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-REPORT-M2-M3-EDGE-SYNC",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md, change only line 226, the outdated dependency edge 'M3 blocked on M2 GO. OK', to say that M3 depended on M2 GO and that A-14 GO (2026-09-23) has satisfied it, matching line 28 of the same report; do not record or suggest an M3 decision.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:226 '| M2 → M3 | M3 blocked on M2 GO. OK |' vs :28 'M2 is **GO** (A-14, 2026-09-23)' and docs/operations/PM_STATUS_BOARD.md:27 'Active product milestone | **M3 — Daily Agent Value Decision**'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-EXIT-QUESTION-EVIDENCE-LINK",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md §4 'M3 exit' (line 150), add one evidence link after the exit question pointing to ../validation/M3_DAILY_VALUE_VALIDATION.md#41-m3-exit-question-and-daily-level-1-trace, using the same link style as the §4.3 checklist links, without changing checkbox states or recording an M3 decision.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:150 'The day-level view must answer: **“오늘 Agent들에게 시킨 일 중 뭘 받았고, 뭘 확인해야 하며, 구독/사용 대비 가치가 있었나?”**' has no link, and docs/validation/M3_DAILY_VALUE_VALIDATION.md '### 4.1 M3 exit-question and Daily Level 1 trace' traces those three parts; Founder direction 2026-09-25"
         }
       ]
     },
