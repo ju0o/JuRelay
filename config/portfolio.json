@@ -1562,6 +1562,51 @@
             "npm run typecheck"
           ],
           "ssotEvidence": "Founder direction 2026-09-24: plain Korean, no raw codes, Hermes style everywhere (A-21); src/frontend/controlRoom.tsx:307 aria-label={`${role} runtime 순서 선택`}"
+        },
+        {
+          "taskId": "AGENTRELAY-PLANSTUDIO-ARIA-PLACEHOLDER-KO",
+          "scope": "In src/frontend/planStudio.tsx, change only the English screen-reader labels and the example placeholder to plain Korean ('project list'→'프로젝트 목록', 'projects'→'프로젝트', 'goal card'→'목표', 'run policy'→'진행 방식', 'pm chat'→'PM에게 요청', 'selected node detail'→'선택한 작업 상세', placeholder '예: 3번 작업을 QA 먼저로 바꿔줘'→'예: 3번 작업을 먼저 검수해 줘'), with no layout or logic change, and add a source-guard test asserting no aria-label in planStudio.tsx starts with a Latin letter.",
+          "files": [
+            "src/frontend/planStudio.tsx",
+            "test/planstudio-aria-ko.test.mjs"
+          ],
+          "tests": [
+            "node --test test/planstudio-aria-ko.test.mjs",
+            "node --test test/inline-confirm.test.mjs test/planstudio-founder-view.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = plain Korean, no raw codes, Hermes style everywhere (A-21); base planStudio.tsx:466/470/489/585/638/655 aria-label=\"project list\"/\"projects\"/\"goal card\"/\"run policy\"/\"pm chat\"/\"selected node detail\", :645 placeholder=\"예: 3번 작업을 QA 먼저로 바꿔줘\""
+        },
+        {
+          "taskId": "AGENTRELAY-MODEL-USAGE-AI-NAMES",
+          "scope": "Add a pure exported aiDisplayName(runtimeId) to src/shared/projectLabels.ts that maps the eight runtime ids (codex, opencode, cline, grok, cursor, claude, claude-team, claude-pro) to product names ('Codex', 'OpenCode', 'Cline', 'Grok', 'Cursor', 'Claude', 'Claude 팀', 'Claude Pro') and returns unknown ids unchanged, then use it only for the row label in ModelUsagePanel (src/frontend/approvals.tsx ~line 87, keeping key={row.runtimeId}), with a unit test importing it from dist/server/shared/projectLabels.js.",
+          "files": [
+            "src/shared/projectLabels.ts",
+            "src/frontend/approvals.tsx",
+            "test/ai-display-name.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/ai-display-name.test.mjs",
+            "node --test test/cr08.test.mjs test/record-screen-plain.test.mjs test/project-labels.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, no raw codes; A-22 AI 자동 배정 (subscribed AIs first) — base approvals.tsx:87 renders raw <span className=\"model-usage-id\">{row.runtimeId}</span> (e.g. 'claude-team') in the 관제실 모델 사용량 panel"
+        },
+        {
+          "taskId": "AGENTRELAY-APPROVAL-NO-RAW-JSON",
+          "scope": "When an approval rule has no summary/title/ask/name text, show the plain Korean headline '설명이 없는 규칙이에요' instead of JSON.stringify(rule) in approvalReadableLabel and the SupersededApprovals row label (src/frontend/approvals.tsx lines ~43 and ~105), and show '설명이 없는 항목이에요' instead of raw JSON for non-string otherEntries in the 승인 규칙 view (src/frontend/App.tsx ~line 256), while keeping the raw JSON available only inside the existing collapsed '원문 보기' details of ApprovalRuleCard, with a source-guard test.",
+          "files": [
+            "src/frontend/approvals.tsx",
+            "src/frontend/App.tsx",
+            "test/approval-no-raw-json.test.mjs"
+          ],
+          "tests": [
+            "node --test test/approval-no-raw-json.test.mjs",
+            "node --test test/approvals-readable.test.mjs test/approvals-category-ko.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes; base approvals.tsx:43/105 and App.tsx:256 fall back to JSON.stringify(rule/item) as the visible card text"
         }
       ],
       "qaRuntime": [
