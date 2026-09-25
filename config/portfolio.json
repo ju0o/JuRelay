@@ -3396,6 +3396,19 @@
             "ACTL-BOARD-PLAIN-WORDS-R3"
           ],
           "title": "보드: 토큰 감지 칸"
+        },
+        {
+          "taskId": "ACTL-BOARD-PLAIN-WORDS-R3",
+          "scope": "Same goal as ACTL-BOARD-PLAIN-WORDS-R2; its QA found two concrete defects, fix both: (1) the normal (plain=True) board surface must never show the plain=False status wording — no 'ASUS tmux', pane, session, window, SSH/LOCAL or English words; (2) the filter labels (작업 중 / 답 기다림 …) must map to the exact values _phase() returns so each filter actually filters, with a test per filter. Rewrite the JuActl Board for non-developers using the requested plain Korean labels, hide SSH/LOCAL, English ON, and tmux/pane/session/window terms from the visible surface, and add tests in test_board_plain_words.py that fail on the old code and pass on the new code.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_board_plain_words.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
+          "title": "현황판을 쉬운 우리말로 바꾸기"
         }
       ],
       "qaRuntime": [
