@@ -9513,6 +9513,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 15:48: (2) actl AI 창 카드 — founder-ux 'For an actl AI window, the card says: … what it was last asked, in one line; whether an answer is ready to copy'; base app.js:1944 note() returns only '복사할 답 있음' / '답변 만드는 중이에요' when ready or busy, dropping the last request",
           "title": "마지막 지시와 답변 상태를 보여줘"
+        },
+        {
+          "taskId": "JCAPP-RELAY-FLOW-LIVE-WORDS",
+          "scope": "In operator/public/app.js relayFlowRow (진행 lane, shown right under the live card), label the 7 chips and the '지금 … 단계예요' sentence with the live card's words (계획 / 계획 확인 / 만들기 / 검사 / 시험 / 대표님 확인 / 반영) instead of STAGE_KO's 작업/검수/사람 확인, and show the '담당:' AI through aiName (e.g. 'Cline', not raw 'cline'); keep the data-step keys, STAGE_KO itself, homeWorking and the idle sentence unchanged, and update the pins in agent-relay-module and idle-lane-meaning.",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs",
+            "test/idle-lane-meaning.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/idle-lane-meaning.test.mjs test/lovable-live-cards.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux Live status card: '여기까지 끝남: … 계획 → 만들기 → 검사 → 시험 → 반영' and 'No pane ids, task ids, or English status words on the card'; base f9121ad operator/public/app.js:1837 prints '담당: ' + raw current.worker and test/agent-relay-module.test.mjs:63 pins '지금 검수 단계예요. 담당: cline'"
+        },
+        {
+          "taskId": "JCAPP-ACTL-STATE-FROM-TAIL",
+          "scope": "In operator/public/app.js relayPanesPanel, when an AI pane's observedState is UNKNOWN or unmapped, pick one of the founder-ux words from the tail /api/panes already reads: answerReady true → muted '쉬는 중', else a lastRequest with no ready answer → teal '일하는 중'. Keep '조용해요' only when nothing can be read, leave busy() and the readiness line as they are, keep the raw state under 원문 보기, and update the pins in actl-panes-plain and lovable-ai-windows with asserts for all three cases.",
+          "files": [
+            "operator/public/app.js",
+            "test/actl-panes-plain.test.mjs",
+            "test/lovable-ai-windows.test.mjs"
+          ],
+          "tests": [
+            "node --test test/actl-panes-plain.test.mjs test/lovable-ai-windows.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '(2) actl AI 창 카드 … 그 전엔 기존 /api/panes'; founder-ux actl AI window card: 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; base f9121ad operator/public/app.js:1942 falls back to '조용해요' and test/actl-panes-plain.test.mjs:38-39 pins 'Claude Team · Team 폴더 | 조용해요'"
         }
       ],
       "skills": {
