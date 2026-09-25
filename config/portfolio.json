@@ -10031,6 +10031,123 @@
       ],
       "note": "lane added by night plan request 2026-09-25",
       "autoContinue": true
+    },
+    {
+      "id": "juradar",
+      "active": true,
+      "pmState": "NIGHT_PLAN_PM",
+      "path": "/home/skkse12/Desktop/Projects/Core/juRadar",
+      "ssot": "/home/skkse12/Desktop/Projects/Core/juRadar/docs/JuRadar_WBS.md",
+      "owner": "codex",
+      "runtime": [
+        "codex",
+        "claude-team"
+      ],
+      "qaRuntime": [
+        "opencode",
+        "codex",
+        "cline"
+      ],
+      "tasks": [
+        {
+          "taskId": "JURADAR-INQUIRY-DETECT",
+          "scope": "Add runtime/community/inquiryDetect.js exporting isInquiry(text) -> {hit:boolean, kind:'SPONSOR'|'BUSINESS'|null}. It matches Korean and English sponsorship/business words (협찬, 광고 문의, 제휴, 협업, 제안드, 스폰서, 견적, 단가, 외주 문의, 비즈니스 문의, sponsor, collab(oration), partnership, business inquiry) but not casual uses (e.g. '협업 툴 추천해요' about tools stays a miss unless it also asks to work together). In runtime/worker/jobs/communityCheck.js, an incoming interaction that is an inquiry must (1) never be auto-replied: force its proposal to recommendedAction HOLD with reason '협찬·문의로 보여요 — 직접 답해 주세요', (2) fire ONE notify({kind:'INQUIRY', title:'협찬·문의로 보이는 댓글', body:'@user: first 80 chars'}) per interactionId (remember notified ids in the community store so a re-run does not repeat it). notify.js already keeps INQUIRY loud when the Owner is away. Add scripts/test_inquiry_detect.js covering hits, misses, the HOLD override, and once-only notification with a fake notify. Do not read, print or modify .env or any token/credential file; do not touch files outside the list; tests must not use the network or the real Threads API; keep the existing code style and comment density; Korean user-facing strings in plain 해요체.",
+          "files": [
+            "runtime/community/inquiryDetect.js",
+            "runtime/worker/jobs/communityCheck.js",
+            "runtime/community/communityStore.js",
+            "scripts/test_inquiry_detect.js"
+          ],
+          "tests": [
+            "node scripts/test_inquiry_detect.js",
+            "node scripts/test_reply_autonomy.js",
+            "node scripts/test_reply_send_guard.js",
+            "node scripts/test_own_reply_targets.js",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: never miss a sponsorship/business inquiry; it must reach the phone and be excluded from auto-reply (docs/JuRadar_WBS.md 2.7).",
+          "title": "협찬·문의 댓글을 놓치지 않아요"
+        },
+        {
+          "taskId": "JURADAR-OWN-COMMENTS-PANEL",
+          "scope": "The Owner comments by hand on other people's posts; communityCheck already tracks replies to those comments through /me/replies (pickOwnReplyTargets, parentLabel on interactions). Add GET /api/community/own-comments (add it in dashboard/routes/communication.js, or dashboard/server.js next to the existing /api/community routes; auth like neighbouring routes) returning {tracked, withAnswers, aiReplied, pending, items:[{postLabel, ownText(80 chars), answers, lastAnswerAt, aiReplied}]} newest first, max 20, built only from the local community store (no Threads call). Add a small card '내‚´ 댓글 · 받은 답' on the home tab (new dashboard/public/ownComments.js loaded by index.html, same style as flow.js: phone-width, tap targets >=44px, empty state text '아직 추적 중인 댓글이 없어요'). Add scripts/test_own_comments_view.js with a fake store shape (empty, 2 tracked / 1 answered). Do not read, print or modify .env or any token/credential file; do not touch files outside the list; tests must not use the network or the real Threads API; keep the existing code style and comment density; Korean user-facing strings in plain 해요체.",
+          "files": [
+            "dashboard/routes/communication.js",
+            "dashboard/server.js",
+            "dashboard/public/ownComments.js",
+            "dashboard/public/index.html",
+            "scripts/test_own_comments_view.js"
+          ],
+          "tests": [
+            "node scripts/test_own_comments_view.js",
+            "node scripts/test_own_reply_targets.js",
+            "node --check dashboard/public/ownComments.js",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: the Owner comments first by hand, AI answers replies to them; the dashboard should show it (WBS 2.3).",
+          "title": "내가 단 댓글과 받은 답을 한눈에"
+        },
+        {
+          "taskId": "JURADAR-UPLOAD-QUEUE",
+          "scope": "The dashboard image upload (dashboard/server.js POST /api/assets/image) now accepts several images one after another; each creates a candidate and a PREPARE_NEXT_POST job. Verify and fix so that N uploads produce N distinct AI_TIP drafts in upload order: no job is deduped away, no second job picks the same candidate, the same-story guard in runtime/worker/jobs/prepareNextPost.js never drops an image candidate (voiceKind AI_TIP with an ocrText source), and jobs run one at a time. If the existing behaviour is already right, prove it with a test instead of changing code. Extend scripts/test_image_upload.js (or add scripts/test_upload_queue.js) with 3 sequential uploads using fake OCR and a fake job store. Do not read, print or modify .env or any token/credential file; do not touch files outside the list; tests must not use the network or the real Threads API; keep the existing code style and comment density; Korean user-facing strings in plain 해요체.",
+          "files": [
+            "dashboard/server.js",
+            "dashboard/lib/imageUpload.js",
+            "runtime/worker/jobs/prepareNextPost.js",
+            "runtime/jobs/jobStore.js",
+            "scripts/test_image_upload.js",
+            "scripts/test_upload_queue.js"
+          ],
+          "tests": [
+            "node scripts/test_image_upload.js",
+            "node scripts/test_upload_queue.js",
+            "node scripts/test_pipeline_feeder.js",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: upload several GPT images from phone or web; each must be picked up and drafted.",
+          "title": "여러 장 올려도 하나씩 빠짐없이 초안"
+        },
+        {
+          "taskId": "JURADAR-ENGAGE-GOAL",
+          "scope": "Count how many comments the Owner posted on OTHER people's posts today (from the /me/replies data communityCheck already fetches: own replies whose root_post is not the Owner's own post; store a per-day count in the community store, deduped by reply id). Env JURADAR_ENGAGE_GOAL (default 5). Show '오늘 남의 글에 단 댓글 n / 5' as one line in the flow card area of the home tab (dashboard/public/flow.js) fed by GET /api/ops/flow (add an engagement field) and add the same number and a 7-day sum to runtime/worker/jobs/weeklyReport.js. No push notifications and no timetable: it is only a progress display. Add scripts/test_engage_goal.js and keep scripts/test_weekly_report.js and scripts/test_flow_view.js passing. Do not read, print or modify .env or any token/credential file; do not touch files outside the list; tests must not use the network or the real Threads API; keep the existing code style and comment density; Korean user-facing strings in plain 해요체.",
+          "files": [
+            "runtime/worker/jobs/communityCheck.js",
+            "runtime/community/communityStore.js",
+            "dashboard/routes/workers.js",
+            "dashboard/public/flow.js",
+            "runtime/worker/jobs/weeklyReport.js",
+            "scripts/test_engage_goal.js"
+          ],
+          "tests": [
+            "node scripts/test_engage_goal.js",
+            "node scripts/test_weekly_report.js",
+            "node scripts/test_flow_view.js",
+            "node --check dashboard/public/flow.js",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: growth to 10,000 followers needs first-contact comments by the Owner; show progress without a schedule (WBS 2.8).",
+          "title": "오늘 소통 목표 진행 표시"
+        },
+        {
+          "taskId": "JURADAR-MEDIA-KIT",
+          "scope": "Add runtime/reports/mediaKit.js exporting buildMediaKit(now) -> Markdown for sponsors, built only from real local data: account @juradar__, follower count and goal (reuse what weeklyReport.js reads), posts in the last 30 days, average and top-3 views/likes/replies from the local insights store, content pillars (AI info for non-developer vibe coders; the Owner's project building process), posting cadence, and a contact line taken from env JURADAR_MEDIA_CONTACT (omit the line when unset). Any figure that is unavailable prints '집계 전' — never invent or round up numbers. Add GET /api/reports/media-kit (Markdown, auth like neighbouring report routes) and a '미디어 킷 보기' button in the reports tab (dashboard/public/reports.js) that shows the Markdown in a card with a copy button. Add scripts/test_media_kit.js (full data, empty data -> all '집계 전', contact omitted when unset). Do not read, print or modify .env or any token/credential file; do not touch files outside the list; tests must not use the network or the real Threads API; keep the existing code style and comment density; Korean user-facing strings in plain 해요체.",
+          "files": [
+            "runtime/reports/mediaKit.js",
+            "dashboard/routes/workers.js",
+            "dashboard/public/reports.js",
+            "scripts/test_media_kit.js"
+          ],
+          "tests": [
+            "node scripts/test_media_kit.js",
+            "node scripts/test_weekly_report.js",
+            "node --check dashboard/public/reports.js",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: goal is sponsorships; a media kit from real numbers is milestone M5 (WBS 3.3).",
+          "title": "협찬 제안용 미디어 킷 자동 작성"
+        }
+      ],
+      "note": "lane added by Founder request 2026-09-25 night (final-structure build: WBS sections 6-8)"
     }
   ],
   "pool": {
