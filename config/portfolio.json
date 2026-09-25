@@ -3494,7 +3494,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay랑 JuControler 그리고 actl에도 토큰감지도 넣어야 할 거 같음 — 에이전트가 다른 곳으로 더 토큰이 소모되는지, 불필요한 경우'. Shared source already exists on ASUS: `~/.agents/skills/auto-night-orchestrator/scripts/night tokens --json` → {kind:'TOKENS', ok, hours, summary (Korean sentence), claude:{fresh, cache, byProject:[{project, fresh, cache, turns}], topSessions:[{account, project, folder, turns, fresh, cache, total, lastContext}]}, relay:{runs:{runtime:count}, fallbacks:[{runtime, reason, count}], loops:[{taskId, title, builds}]}, codex:{weekPct, fiveHourPct}|null, findings:[{level:'warn'|'info', kind:'long-session'|'outside'|'wasted-tries'|'loop'|'limit', text (Korean), why (Korean cause), action (Korean), raw}; kinds also include 'spike'|'heavy-task'|'burst' (이상징후). Founder 2026-09-25: '이상징후 및 토큰이 새는 원인 이것도']}. founder-ux Skill. Founder 2026-09-26 rewrite choice: '범위 줄이기 — 토큰 칸만 먼저 — 긴 대화 알림은 빼고, AI가 쓴 양을 보여주는 칸부터 먼저 완성해요'."
+          "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay랑 JuControler 그리고 actl에도 토큰감지도 넣어야 할 거 같음 — 에이전트가 다른 곳으로 더 토큰이 소모되는지, 불필요한 경우'. Shared source already exists on ASUS: `~/.agents/skills/auto-night-orchestrator/scripts/night tokens --json` → {kind:'TOKENS', ok, hours, summary (Korean sentence), claude:{fresh, cache, byProject:[{project, fresh, cache, turns}], topSessions:[{account, project, folder, turns, fresh, cache, total, lastContext}]}, relay:{runs:{runtime:count}, fallbacks:[{runtime, reason, count}], loops:[{taskId, title, builds}]}, codex:{weekPct, fiveHourPct}|null, findings:[{level:'warn'|'info', kind:'long-session'|'outside'|'wasted-tries'|'loop'|'limit', text (Korean), why (Korean cause), action (Korean), raw}; kinds also include 'spike'|'heavy-task'|'burst' (이상징후). Founder 2026-09-25: '이상징후 및 토큰이 새는 원인 이것도']}. founder-ux Skill. Founder 2026-09-26 rewrite choice: '범위 줄이기 — 토큰 칸만 먼저 — 긴 대화 알림은 빼고, AI가 쓴 양을 보여주는 칸부터 먼저 완성해요'.",
+          "title": "현황판에 토큰 사용량 칸 추가"
         }
       ],
       "qaRuntime": [
@@ -5869,7 +5870,8 @@
             "npm test",
             "npm run build"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(맨 위 한 문장 — 지금 할 일, 빈 화면 이유+다음 행동) 대상 juceipt 명령 출력(scan); src/sources/summary.ts:71 still prints a fixed sentence without counts"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(맨 위 한 문장 — 지금 할 일, 빈 화면 이유+다음 행동) 대상 juceipt 명령 출력(scan); src/sources/summary.ts:71 still prints a fixed sentence without counts",
+          "title": "요약 첫 줄에 확인할 개수 알려주기"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-EMPTY-STATES",
@@ -5883,7 +5885,8 @@
             "npm test",
             "npm run build"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 빈 화면 이유+다음 행동, 대상 영수증 보기 화면; src/render/index.ts:48,51,61,112 show '없음 (관찰 범위 내)' / '관찰된 결과 없음'"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 빈 화면 이유+다음 행동, 대상 영수증 보기 화면; src/render/index.ts:48,51,61,112 show '없음 (관찰 범위 내)' / '관찰된 결과 없음'",
+          "title": "빈 칸에 이유와 할 일 쉽게 알려주기"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-TITLE-NARROW-BASEFIX",
@@ -7057,7 +7060,8 @@
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/status-board-cli.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23/24: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; scripts/status-board.mjs registryHint already prints the duplicated-ID Korean hint (tested at tests/status-board-cli.test.mjs:248), but no e2e step exercises it"
+          "ssotEvidence": "Founder direction 2026-09-23/24: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; scripts/status-board.mjs registryHint already prints the duplicated-ID Korean hint (tested at tests/status-board-cli.test.mjs:248), but no e2e step exercises it",
+          "title": "겹친 프로젝트 이름 안내 점검"
         },
         {
           "taskId": "JUCONTROLER-E2E-PROJECT-ID-SUMMARY-CHECK",
@@ -7070,7 +7074,8 @@
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23/24: launch bar = plain Korean, obvious next action, inline feedback; the '--project-id' run is Quickstart step 3 in README '3. 빠른 시작 (처음 쓰는 법)', yet at base run_project_id (scripts/e2e.sh:56) never checks the Korean success line that step prints"
+          "ssotEvidence": "Founder direction 2026-09-23/24: launch bar = plain Korean, obvious next action, inline feedback; the '--project-id' run is Quickstart step 3 in README '3. 빠른 시작 (처음 쓰는 법)', yet at base run_project_id (scripts/e2e.sh:56) never checks the Korean success line that step prints",
+          "title": "프로젝트 상태 요약 문구 점검"
         }
       ],
       "qaRuntime": [
@@ -9161,7 +9166,8 @@
             "node --test test/lovable-live-cards.test.mjs test/agent-relay-module.test.mjs test/home-working-line.test.mjs test/review-line-ai-names.test.mjs test/home-hub.test.mjs test/board-down-plain.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48 (허브 홈·진행 Live status card '지금 하는 일' from /api/relay/board); founder-ux Live status card: 'one sentence with the Korean task title, the AI in its friendly name'. Live board 2026-09-26 shows agent-relay, juactl, jucontroler and ai-agent-marketplace with current.state QUEUED at stage 1, and jutell at stage 3 with worker codex and qa null, which the card renders as 'Codex가 검사하는 중' (liveCardModel: const ai = s === 3 ? c.qa || c.worker : c?.worker)."
+          "ssotEvidence": "Founder direction 2026-09-25 15:48 (허브 홈·진행 Live status card '지금 하는 일' from /api/relay/board); founder-ux Live status card: 'one sentence with the Korean task title, the AI in its friendly name'. Live board 2026-09-26 shows agent-relay, juactl, jucontroler and ai-agent-marketplace with current.state QUEUED at stage 1, and jutell at stage 3 with worker codex and qa null, which the card renders as 'Codex가 검사하는 중' (liveCardModel: const ai = s === 3 ? c.qa || c.worker : c?.worker).",
+          "title": "지금 하는 일에 실제로 맡은 AI만 표시"
         },
         {
           "taskId": "JCAPP-AI-NAME-PARTICLE",
@@ -9174,7 +9180,8 @@
             "node --test test/agent-relay-module.test.mjs test/review-line-ai-names.test.mjs test/lovable-live-cards.test.mjs test/home-working-line.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "founder-ux rule 3 'Korean labels' and the Live status card rule 'the AI in its friendly name'; test/agent-relay-module.test.mjs:181 at a6afa17 pins the ungrammatical surface text 'Cline가 검사하는 중' (aiGa at operator/public/app.js:175 uses /[bcdgklmnpqt]$/i, which misses Cline's final ㄴ)."
+          "ssotEvidence": "founder-ux rule 3 'Korean labels' and the Live status card rule 'the AI in its friendly name'; test/agent-relay-module.test.mjs:181 at a6afa17 pins the ungrammatical surface text 'Cline가 검사하는 중' (aiGa at operator/public/app.js:175 uses /[bcdgklmnpqt]$/i, which misses Cline's final ㄴ).",
+          "title": "AI 이름 뒤 조사를 자연스럽게"
         }
       ],
       "skills": {
@@ -9925,7 +9932,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:75 '| Daily `t01`–`t10` | not committed with these task IDs | 10 | 0 |' and :209 '`UNDECIDED` ... must not be converted into `GO`, `DEFER`, or `KILL`'; Founder direction 2026-09-26 'record M3 GO, DEFER, or KILL on only that evidence'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:75 '| Daily `t01`–`t10` | not committed with these task IDs | 10 | 0 |' and :209 '`UNDECIDED` ... must not be converted into `GO`, `DEFER`, or `KILL`'; Founder direction 2026-09-26 'record M3 GO, DEFER, or KILL on only that evidence'",
+          "title": "3단계 검증 근거가 부족함을 표시"
         },
         {
           "taskId": "JUCEIPTPLAN-BOARD-M3-NEXT-MOVES-SYNC",
@@ -9936,7 +9944,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:172 '1. Validate the 10-task daily summary against real user decisions.' and :264 '| 1 | Validate the integrated 10-task Daily Value summary | M3 NOW |' versus docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 '`UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:172 '1. Validate the 10-task daily summary against real user decisions.' and :264 '| 1 | Validate the integrated 10-task Daily Value summary | M3 NOW |' versus docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 '`UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'",
+          "title": "현황판에 3단계 검증 완료 반영"
         }
       ]
     },
@@ -10720,7 +10729,8 @@
           "tests": [
             "node --test tests/context-risk-hints-high-first.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:554 여러 조건에 해당하면 가장 높은 위험도를 적용한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:554 여러 조건에 해당하면 가장 높은 위험도를 적용한다.",
+          "title": "중요한 위험 알림 먼저 보여주기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
