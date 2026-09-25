@@ -3423,6 +3423,18 @@
           ],
           "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
           "title": "현황판을 쉬운 우리말로 바꾸기"
+        },
+        {
+          "taskId": "ACTL-BOARD-PLAIN-WORDS-R3-R2",
+          "scope": "Narrowed to the main board screen and its filter buttons only; the remap-candidate screen (gui.py ~1539-1553) and the AI-connect dialog (gui.py ~1887-1891) move to a follow-up task and must stay untouched. In src/actl/gui.py, the board's visible text (the _card_line output, the empty-board message at line 127 that says 'ASUS tmux', the summary line, and the filter menu at lines 420-421 and 543-545) must show only plain Korean labels (결과 도착 / 작업 중 / 답 기다림 / 승인 기다림 / 확인 중) with no 'tmux', 'pane', 'session', 'window', 'SSH', 'LOCAL', 'ON', 'Prompt' or other English words. Each filter label must map through one dict to the exact value Board._phase() returns, so selecting it keeps only matching rows (today the filter shows raw _phase values such as '작업중' and 'Prompt 대기'). Add tests/test_board_plain_words.py with plain assert functions that run under tests/run_tests.py without pytest: (a) test_empty_board_message_has_no_dev_words, which fails on base because of 'ASUS tmux'; (b) test_card_line_has_no_dev_words over RUNNING/IDLE/WAITING_INPUT/UP/DOWN/READY rows; (c) one test_filter_<label> per filter label asserting the label→_phase mapping selects only matching rows, which fails on base because the menu shows raw values such as 'Prompt 대기'. The existing suite must stay green.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_board_plain_words.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill"
         }
       ],
       "qaRuntime": [
