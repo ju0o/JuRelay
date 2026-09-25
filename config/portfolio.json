@@ -4882,6 +4882,20 @@
             "npm test"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 대상 juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻, 오류 3줄; src/cli/main.ts:178 `console.log(\"완료: HTML을 렌더링했습니다: \" + outHtml ...)` and :174 single-line `오류: receipt.json을 찾을 수 없습니다`"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-RELAY-MASKING-R2",
+          "scope": "From base 72dbccafdc0cda91ed91961509024dd22d5d265b, update scan.ts to recursively mask hook_event_name relay items and reuse claude.ts full TOKEN masking including the long base64 branch; extend tests/sources-scan.test.ts with a hook-shaped relay event and base64-like token in relay task scope/summary, with these cases failing on old code and passing on new code.",
+          "files": [
+            "src/sources/scan.ts",
+            "src/sources/claude.ts",
+            "tests/sources-scan.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-scan.test.ts tests/sources-claude.test.ts tests/sources-agent-relay.test.ts",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (A-28): mask token-like strings in every receipt; nothing leaves the machine; at base 99f4bb3, scan.ts relay() does `if (typeof item.hook_event_name === 'string') return [item as RawHookEvent];` unmasked, and scan.ts mask regex omits the base64 branch present in claude/codex/opencode/others TOKEN"
         }
       ],
       "skills": {
