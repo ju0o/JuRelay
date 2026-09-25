@@ -2117,6 +2117,23 @@
             "AGENTRELAY-LOVABLE-PLAN-RULES-LOG"
           ],
           "title": "새 디자인: 설정 (실행 환경·AI 수·업데이트)"
+        },
+        {
+          "taskId": "AGENTRELAY-LOVABLE-SHELL-R2",
+          "scope": "Narrowed to the connection/automation status only (Lovable rail and screen restyle deferred): add pure helpers in new src/shared/connectionState.ts that classify a failed controlRoom:automationStatus or automationOn/automationOff error by its Korean backend message, with /연결할 수 없습니다/ (EXEC_FAILED) meaning 'offline' and anything else, e.g. /작업 PC는 켜져 있는데/ (REMOTE_FAILED) or /응답을 읽지 못했습니다/ (INVALID_JSON), meaning 'error', and that return the status text ('작업 PC 연결됨 · 방금 확인' when ok, amber '작업 PC에 연결할 수 없어요' only when offline, amber '작업 PC는 켜져 있는데 상태를 읽지 못했어요' for error, never showing '확인 중' after a failed poll), the toggle label ('자동 실행 켜짐'/'자동 실행 꺼짐'/'자동 실행 확인 중' only before the first answer) and the toggle result line ('켰어요 ✓'/'껐어요 ✓', or on failure the backend's Korean e.message shown inline as the main text, with raw detail only under 원문 보기); then wire these into the existing App.tsx topbar as one small status line plus one automation toggle button (icon and text together, ≥44px, amber never red) that poll and call the existing controlRoom:automationStatus/automationOn/automationOff ops via must(), with no IPC/preload/backend changes and no new dependencies.",
+          "files": [
+            "src/shared/connectionState.ts",
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "test/connection-state.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm run typecheck",
+            "npm test",
+            "npm run build:server && node --test test/connection-state.test.mjs test/automation-toggle.test.mjs test/asus-error-vs-offline.test.mjs test/topbar-founder-first.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'. Founder rewrite choice 2026-09-26: 범위 줄이기 — 연결 상태 표시만 먼저 — 화면 디자인은 뒤로 미루고 상태 표시부터 바로잡아요. Required test test/connection-state.test.mjs (imports dist/server/shared/connectionState.js) must fail on the last attempt's behaviour and pass on the new code: a REMOTE_FAILED message ('작업 PC는 켜져 있는데…') and an INVALID_JSON message ('…응답을 읽지 못했습니다') must NOT give '작업 PC에 연결할 수 없어요' or '확인 중', only an EXEC_FAILED message ('…연결할 수 없습니다') gives it; a toggle failure must return the Korean e.message as the visible text, not the fixed '실패했어요 — 작업 PC가 응답하지 않았을 수 있어요'."
         }
       ],
       "qaRuntime": [
