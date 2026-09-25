@@ -50,6 +50,22 @@
       "state": "QUEUED",
       "tasks": [
         {
+          "taskId": "AGENTRELAY-HEADLESS-CAPTURE",
+          "scope": "Add a background capture mode for the automated Tester so the app never shows a window or takes focus: when launched with --capture=<png path> (together with the existing --view=<name>), src/backend/main.ts creates the BrowserWindow with show: false, paintWhenInitiallyHidden: true, skipTaskbar: true, focusable: false, never calls show()/focus(), loads the normal UI with that start view, waits for the renderer to report the view is ready (or 15 s max), captures with webContents.capturePage() at 1280x820, writes the PNG to the given path plus <path>.json {view, ok, title, text (document.body.innerText first 2000 chars), error}, and quits with exit 0 (1 on failure). Single-instance lock and auto-updater must not run in this mode. Validate the path (absolute, ends with .png) and ignore the flag otherwise. Unit-test the argument parsing / validation helper; export it from a shared module.",
+          "files": [
+            "src/backend/main.ts",
+            "src/shared/capture.ts",
+            "test/headless-capture.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/headless-capture.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: '그 화면 안뜨게 하고 백그라운드로 띄우고 그런식으로 해 자꾸 포커싱 전환되어서 불편해' (MainPC Tester launched the app window and a PowerShell window every 30 min, stealing focus); src/backend/main.ts:475 new BrowserWindow, --view= start view support in App.tsx",
+          "title": "창을 띄우지 않고 화면 찍기 (시험용)"
+        },
+        {
           "taskId": "AGENTRELAY-V1-MOVE-RUN-RECURSIVE",
           "scope": "V1 backlog: make moveRun preserve nested run files",
           "files": [
@@ -1921,22 +1937,6 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay gui프로그램 안에 \"어떤 환경에서 진행할건지\"선택하는 것도 넣고 그리고 각 환경마다 남은 cpu|ram도 환경 확인하게'; ASUS OOM 15:53; ASUS night envs --json (skill) returns {kind:'ENVS', envs:[{id,label,ok,cpuPct,cpus,ramFreeGb,ramTotalGb,ais[] | reason}]}",
           "title": "실행 환경별 CPU·RAM 보기"
-        },
-        {
-          "taskId": "AGENTRELAY-HEADLESS-CAPTURE",
-          "scope": "Add a background capture mode for the automated Tester so the app never shows a window or takes focus: when launched with --capture=<png path> (together with the existing --view=<name>), src/backend/main.ts creates the BrowserWindow with show: false, paintWhenInitiallyHidden: true, skipTaskbar: true, focusable: false, never calls show()/focus(), loads the normal UI with that start view, waits for the renderer to report the view is ready (or 15 s max), captures with webContents.capturePage() at 1280x820, writes the PNG to the given path plus <path>.json {view, ok, title, text (document.body.innerText first 2000 chars), error}, and quits with exit 0 (1 on failure). Single-instance lock and auto-updater must not run in this mode. Validate the path (absolute, ends with .png) and ignore the flag otherwise. Unit-test the argument parsing / validation helper; export it from a shared module.",
-          "files": [
-            "src/backend/main.ts",
-            "src/shared/capture.ts",
-            "test/headless-capture.test.mjs"
-          ],
-          "tests": [
-            "npm run build:server",
-            "node --test test/headless-capture.test.mjs",
-            "npm run typecheck"
-          ],
-          "ssotEvidence": "Founder 2026-09-25: '그 화면 안뜨게 하고 백그라운드로 띄우고 그런식으로 해 자꾸 포커싱 전환되어서 불편해' (MainPC Tester launched the app window and a PowerShell window every 30 min, stealing focus); src/backend/main.ts:475 new BrowserWindow, --view= start view support in App.tsx",
-          "title": "창을 띄우지 않고 화면 찍기 (시험용)"
         }
       ],
       "qaRuntime": [
