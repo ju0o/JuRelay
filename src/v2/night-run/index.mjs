@@ -17,7 +17,7 @@ export const DEFAULT_SEND_TO_MAINPC = "/home/skkse12/.agents/skills/send-to-main
  * Builds the systemd-run arguments for running the night supervisor in its own scope.
  * Returns null when already scoped (AGENT_RELAY_OWN_SCOPE=1) or when INVOCATION_ID is not set.
  * @param {object} env - Environment variables
- * @param {string[]} argv - Original command line arguments (without the node binary and script)
+ * @param {string[]} argv - Full process argv: [node, script, ...night-run up args]
  * @returns {string[] | null} The systemd-run arguments or null
  */
 export function buildOwnScopeArgs(env, argv) {
@@ -26,8 +26,8 @@ export function buildOwnScopeArgs(env, argv) {
 
   const timestamp = Date.now();
   const unit = `agent-relay-night-supervisor-${timestamp}`;
-  const script = argv[0];
-  const originalArgs = argv.slice(1);
+  const script = argv[1];
+  const originalArgs = argv.slice(2);
 
   return [
     "systemd-run",

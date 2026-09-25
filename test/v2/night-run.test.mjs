@@ -436,94 +436,74 @@ test("MainPC wrapper pulls from ASUS and fails closed before destructive command
   assert.match(wrapper, /WBS_EXHAUSTED/); assert.match(wrapper, /DEADLINE_COMPLETE/); assert.match(wrapper, /DEADLINE_FORCED_CHECKPOINT/); assert.doesNotMatch(wrapper, /shutdown"/);
 });
 
-test("buildOwnScopeArgs returns systemd-run args when INVOCATION_ID set and not already scoped", () => {
-  const env = { INVOCATION_ID: "test-123", AGENT_RELAY_OWN_SCOPE: "0" };
-  const argv = ["night-run", "up", "--deadline", "04:00"];
-  const args = buildOwnScopeArgs(env, argv);
-  assert.ok(args, "should return args when INVOCATION_ID set and not scoped");
-  assert.equal(args[0], "systemd-run");
-  assert.equal(args[1], "--user");
-  assert.equal(args[2], "--scope");
-  assert.equal(args[3], "--collect");
-  assert.equal(args[4], "--unit");
+const SCOPE_SCRIPT = "/opt/agent-relay/bridge/agent-relay.mjs";
+const SCOPE_UNIT = "agent-relay-night-supervisor-1234567890";
+
+test("buildOwnScopeArgs wraps night-run up in its own systemd scope when INVOCATION_ID is set", () => {
+  const argv = ["/usr/bin/node", SCOPE_SCRIPT, "night-run", "up", "--deadline", "04:00", "--no-poweroff"];
+  const args = buildOwnScopeArgs({ INVOCATION_ID: "test-123" }, argv);
+  assert.deepEqual(args.slice(0, 5), ["systemd-run", "--user", "--scope", "--collect", "--unit"]);
   assert.match(args[5], /^agent-relay-night-supervisor-\d+$/);
-  assert.equal(args[6], "--");
-  assert.equal(args[7], process.execPath);
-  assert.equal(args[8], "night-run");
-  assert.equal(args[9], "up");
-  assert.equal(args[10], "--deadline");
-  assert.equal(args[11], "04:00");
+  assert.deepEqual(args.slice(6), ["--", process.execPath, SCOPE_SCRIPT, "night-run", "up", "--deadline", "04:00", "--no-poweroff"]);
 });
 
-test("buildOwnScopeArgs returns null when already scoped (AGENT_RELAY_OWN_SCOPE=1)", () => {
-  const env = { INVOCATION_ID: "test-123", AGENT_RELAY_OWN_SCOPE: "1" };
-  const argv = ["night-run", "up"];
-  const args = buildOwnScopeArgs(env, argv);
-  assert.equal(args, null, "should return null when already scoped");
+test("buildOwnScopeArgs returns null when already scoped or not under systemd", () => {
+  const argv = ["/usr/bin/node", SCOPE_SCRIPT, "night-run", "up"];
+  assert.equal(buildOwnScopeArgs({ INVOCATION_ID: "test-123", AGENT_RELAY_OWN_SCOPE: "1" }, argv), null);
+  assert.equal(buildOwnScopeArgs({}, argv), null);
 });
 
-test("buildOwnScopeArgs returns null when INVOCATION_ID not set", () => {
-  const env = { AGENT_RELAY_OWN_SCOPE: "0" };
-  const argv = ["night-run", "up"];
-  const args = buildOwnScopeArgs(env, argv);
-  assert.equal(args, null, "should return null when INVOCATION_ID not set");
-});
+// Waiter (stands in for systemd-run) spawns a still-running payload that writes its own pid to the ready file.
+async function spawnWaiterWithPayload(root, readyFile) {
+  const payload = join(root, "payload.mjs");
+  const waiter = join(root, "waiter.mjs");
+  await writeFile(payload, `import { writeFileSync } from "node:fs"; writeFileSync(process.argv[2], String(process.pid)); setInterval(() => {}, 1000);\n`);
+  await writeFile(waiter, `import { spawn } from "node:child_process"; const c = spawn(process.execPath, [process.argv[2], process.argv[3]], { stdio: "ignore" }); process.on("SIGTERM", () => { c.kill(); process.exit(0); }); setInterval(() => {}, 1000);\n`);
+  return spawn(process.execPath, [waiter, payload, readyFile], { stdio: "ignore" });
+}
 
 test("confirmSupervisorScope proves payload moved while waiter stays alive", async () => {
   const root = await mkdtemp(join(tmpdir(), "agent-relay-scope-test-"));
   const readyFile = join(root, "ready");
-  const unit = "agent-relay-night-supervisor-1234567890";
-  const payloadPid = 99999;
-
-  // Simulate a still-running child that writes its PID to readyFile
-  await writeFile(readyFile, String(payloadPid));
-
-  // Injected readCgroup that returns the payload PID in the correct scope
-  const readCgroup = async (pid) => {
-    if (pid === payloadPid) {
-      return `0::/user.slice/user-${process.getuid()}.slice/${unit}.scope\n`;
-    }
-    return `0::/user.slice/user-${process.getuid()}.slice/some-other.service\n`;
-  };
-
-  const result = await confirmSupervisorScope({ readyFile, unit, timeoutMs: 1000, readCgroup });
-  assert.equal(result.ok, true);
-  assert.equal(result.pid, payloadPid, "should return the payload PID, not the waiter PID");
-
-  await rm(root, { recursive: true, force: true });
+  const waiter = await spawnWaiterWithPayload(root, readyFile);
+  try {
+    const readCgroup = async (pid) => pid === waiter.pid
+      ? "0::/user.slice/user-1000.slice/user@1000.service/app.slice/agent-relay-night.service\n"
+      : `0::/user.slice/user-1000.slice/user@1000.service/app.slice/${SCOPE_UNIT}.scope\n`;
+    const result = await confirmSupervisorScope({ readyFile, unit: SCOPE_UNIT, timeoutMs: 5000, readCgroup });
+    const payloadPid = Number(await readFile(readyFile, "utf8"));
+    assert.equal(result.ok, true);
+    assert.equal(result.pid, payloadPid);
+    assert.notEqual(result.pid, waiter.pid);
+    assert.equal(waiter.exitCode, null, "waiter stays alive");
+  } finally {
+    waiter.kill();
+    await rm(root, { recursive: true, force: true });
+  }
 });
 
-test("confirmSupervisorScope returns false when payload still in launching unit's service cgroup", async () => {
+test("confirmSupervisorScope fails when payload is still in the launching service cgroup", async () => {
   const root = await mkdtemp(join(tmpdir(), "agent-relay-scope-test-"));
   const readyFile = join(root, "ready");
-  const unit = "agent-relay-night-supervisor-1234567890";
-  const payloadPid = 99999;
-
-  await writeFile(readyFile, String(payloadPid));
-
-  // Injected readCgroup that returns the payload PID still in the launching unit's service cgroup
-  const readCgroup = async (pid) => {
-    if (pid === payloadPid) {
-      return `0::/user.slice/user-${process.getuid()}.slice/agent-relay-night-launcher.service\n`;
-    }
-    return `0::/user.slice/user-${process.getuid()}.slice/some-other.service\n`;
-  };
-
-  const result = await confirmSupervisorScope({ readyFile, unit, timeoutMs: 200, readCgroup });
-  assert.equal(result.ok, false);
-  assert.ok(result.reason.includes(unit));
-
-  await rm(root, { recursive: true, force: true });
+  const waiter = await spawnWaiterWithPayload(root, readyFile);
+  try {
+    const readCgroup = async () => "0::/user.slice/user-1000.slice/user@1000.service/app.slice/agent-relay-night.service\n";
+    const result = await confirmSupervisorScope({ readyFile, unit: SCOPE_UNIT, timeoutMs: 1500, readCgroup });
+    assert.equal(result.ok, false);
+    assert.match(result.reason, new RegExp(`${SCOPE_UNIT}\\.scope`));
+  } finally {
+    waiter.kill();
+    await rm(root, { recursive: true, force: true });
+  }
 });
 
-test("confirmSupervisorScope returns false when ready file never written", async () => {
+test("confirmSupervisorScope fails when the ready file is never written", async () => {
   const root = await mkdtemp(join(tmpdir(), "agent-relay-scope-test-"));
-  const readyFile = join(root, "never-written");
-  const unit = "agent-relay-night-supervisor-1234567890";
-
-  const result = await confirmSupervisorScope({ readyFile, unit, timeoutMs: 200 });
-  assert.equal(result.ok, false);
-  assert.equal(result.reason, "ready file not written within timeout");
-
-  await rm(root, { recursive: true, force: true });
+  try {
+    const result = await confirmSupervisorScope({ readyFile: join(root, "never-written"), unit: SCOPE_UNIT, timeoutMs: 200, readCgroup: async () => { throw new Error("must not read cgroup"); } });
+    assert.equal(result.ok, false);
+    assert.equal(result.reason, "ready file not written within timeout");
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 });

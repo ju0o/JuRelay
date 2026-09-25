@@ -1,12 +1,10 @@
 #!/usr/bin/env node
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { homedir } from "node:os";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
 import { buildCoreV1Snapshot, formatCoreV1Results, loadManifest, parseTaskPacket, PortfolioRunner } from "../src/v2/portfolio-runner/index.mjs";
 import { DEFAULT_DEADLINE, finalizeNightRun, NightRunSupervisor, runPoweroff, buildOwnScopeArgs, confirmSupervisorScope } from "../src/v2/night-run/index.mjs";
-import { mkdtemp } from "node:fs/promises";
-import { tmpdir } from "node:os";
 
 export const PID_LOCK_ACTIVE = "PID_LOCK_ACTIVE";
 export const PID_LOCK_STALE = "PID_LOCK_STALE";
@@ -150,9 +148,7 @@ if (area === "night-run" && command === "up") {
   const deadline = deadlineIndex >= 0 ? process.argv[deadlineIndex + 1] : DEFAULT_DEADLINE;
   const noPoweroff = process.argv.includes("--no-poweroff");
 
-  // Build argv for the night-run up command (without the node binary and script path)
-  const originalArgv = process.argv.slice(2);
-  const scopeArgs = buildOwnScopeArgs(process.env, originalArgv);
+  const scopeArgs = buildOwnScopeArgs(process.env, process.argv);
 
   if (scopeArgs) {
     // Need to run in own systemd scope
