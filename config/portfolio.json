@@ -7190,6 +7190,20 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23/24: launch bar = plain Korean, obvious next action, inline feedback; the '--project-id' run is Quickstart step 3 in README '3. 빠른 시작 (처음 쓰는 법)', yet at base run_project_id (scripts/e2e.sh:56) never checks the Korean success line that step prints",
           "title": "프로젝트 상태 요약 문구 점검"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-COPY-RUN",
+          "scope": "Make the documented status-board command copy-runnable by removing shell-redirection angle placeholders from the Korean Quickstart and matching E2E failure guidance, without changing runtime behavior.",
+          "files": [
+            "README.md",
+            "docs/getting-started.md",
+            "scripts/e2e.sh"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior."
         }
       ],
       "qaRuntime": [
