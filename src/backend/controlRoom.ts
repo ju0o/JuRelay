@@ -5,6 +5,9 @@ const execFile = promisify(nodeExecFile);
 const NIGHT_SCRIPT = '~/.agents/skills/auto-night-orchestrator/scripts/night';
 const SSH_BASE_ARGS: readonly string[] = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5', 'asus', NIGHT_SCRIPT];
 const EXEC_TIMEOUT = 10_000;
+/** PM `night plan request` is slow; override the default ssh timeout. */
+export const PLAN_REQUEST_TIMEOUT = 120_000;
+export const MAX_PLAN_REQUEST_TEXT_LENGTH = 1500;
 const MAX_OPTION_INDEX = 9999;
 
 export type ControlRoomOperation =
@@ -13,6 +16,7 @@ export type ControlRoomOperation =
   | 'planStudio:get'
   | 'planStudio:save'
   | 'planStudio:chat'
+  | 'planStudio:request'
   | 'planStudio:approve'
   | 'gates:list'
   | 'gates:answer'
@@ -24,7 +28,7 @@ export type ControlRoomOperation =
   | 'controlRoom:automationStatus'
   | 'controlRoom:automationOn'
   | 'controlRoom:automationOff';
-export type PlanStudioAction = 'get' | 'save' | 'chat' | 'approve';
+export type PlanStudioAction = 'get' | 'save' | 'chat' | 'request' | 'approve';
 export type GateAction = 'list' | 'answer';
 export type ControlRoomErrorCode = 'EXEC_FAILED' | 'REMOTE_FAILED' | 'INVALID_JSON' | 'INVALID_INPUT';
 export type ControlRoomExecOptions = ExecFileOptions & { input?: string | Uint8Array };
@@ -182,6 +186,15 @@ function assertPayloadString(operation: ControlRoomOperation, name: string, valu
   }
 }
 
+function assertPlanRequestText(operation: ControlRoomOperation, text: unknown): asserts text is string {
+  if (typeof text !== 'string' || text.length === 0) {
+    throw invalidInput(operation, '요청 내용을 입력해 주세요.');
+  }
+  if (text.length > MAX_PLAN_REQUEST_TEXT_LENGTH) {
+    throw invalidInput(operation, '요청 내용이 너무 깁니다. 짧게 줄여 주세요.');
+  }
+}
+
 function assertLaneRole(operation: ControlRoomOperation, role: unknown): asserts role is LaneRole {
   if (!isValidLaneRole(role)) {
     throw invalidInput(operation, '역할이 올바르지 않습니다.');
@@ -298,6 +311,22 @@ export async function runPlanStudioChat(
     [...SSH_BASE_ARGS, 'roadmap', 'chat', project, '--json'],
     execFileImpl,
     { input: message },
+  );
+}
+
+export async function runPlanStudioRequest(
+  project: string,
+  text: string,
+  execFileImpl: ControlRoomExec = execFile,
+): Promise<unknown> {
+  const operation: ControlRoomOperation = 'planStudio:request';
+  assertProjectId(operation, project);
+  assertPlanRequestText(operation, text);
+  return runSshJson(
+    operation,
+    [...SSH_BASE_ARGS, 'plan', 'request', shQuote(project), shQuote(text), '--json'],
+    execFileImpl,
+    { timeout: PLAN_REQUEST_TIMEOUT },
   );
 }
 

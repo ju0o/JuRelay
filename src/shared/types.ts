@@ -140,6 +140,7 @@ export type RelayRequest =
   | { op: 'planStudio:get'; project: string }
   | { op: 'planStudio:save'; project: string; draft: string }
   | { op: 'planStudio:chat'; project: string; message: string }
+  | { op: 'planStudio:request'; project: string; text: string }
   | { op: 'planStudio:approve'; project: string }
   | { op: 'gates:list' }
   | { op: 'gates:answer'; gateId: string; optionIndex: number }
