@@ -9170,6 +9170,29 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:857 '## 21. 최종 점검 … 위험도와 검증 상태를 분리했는가 … 기존 변경을 이번 작업으로 단정하지 않았는가 … 비밀정보를 명령 전, 출력 처리 중, 보고 전 확인했는가 … 사용자가 직접 할 일이 명확한가 … 같은 내용을 반복하지 않았는가'",
           "title": "최종 확인 내용을 빠짐없이 정리"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-UNVERIFIABLE-WORDING-PARITY",
+          "scope": "Add an offline node:test that reads PRODUCT_SCOPE §7.7 and packages/cli/src/commands/context.ts as text, then checks two things: the §7.7 no-test sentence (확인하지 못함: 프로젝트에 확인 가능한 자동 테스트 명령이 없습니다.) appears word for word as the empty-verifyCommands return in verifySummary, and the §7.7 no-Git sentence (Git 기록이 없어 이번 작업의 변경 파일을 자동으로 구분하지 못했습니다.) appears word for word as the git-unavailable return in gitSummary.",
+          "files": [
+            "tests/context-unverifiable-wording-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-unverifiable-wording-parity.test.mjs",
+            "node --test tests/context-risk-unknown-no-git.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:462 '> 확인하지 못함: 프로젝트에 확인 가능한 자동 테스트 명령이 없습니다.' and :466 '> 확인하지 못함: Git 기록이 없어 이번 작업의 변경 파일을 자동으로 구분하지 못했습니다.'"
+        },
+        {
+          "taskId": "JUTELL-EVALUATION-QUESTIONS-PARITY",
+          "scope": "Add an offline node:test that reads the 7 numbered evaluation questions in BEGINNER_REPORT_SPEC (after the line 평가 질문은 다음과 같다.) and in TEST_SCENARIOS §7.1, then checks four things: both lists have exactly 7 items, the two lists match word for word, PRODUCT_SCOPE §11.1 also has 7 numbered questions, and both PRODUCT_SCOPE §11.1 and the SPEC keep the 7개 중 6개 이상 pass threshold.",
+          "files": [
+            "tests/evaluation-questions-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/evaluation-questions-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:648 '7개 중 6개 이상에 추가 질문 없이 답할 수 있어야 한다.'; docs/BEGINNER_REPORT_SPEC.md:814 '* 7개 질문 중 6개 이상 통과해야 이해 가능'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
