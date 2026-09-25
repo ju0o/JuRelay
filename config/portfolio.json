@@ -1646,6 +1646,25 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 (MainPC Agent Relay 앱 관제실): '보류/차단 => 이거도 더 쉽게 쓸 수 있었으면'; earlier Founder choice for HOLD UI: '둘 다 (문장 + 위에 흐름 그림)' (Canvas HoldRedesign.dc.html, same design already in JuControler hub); Founder 2026-09-25: app said '작업 PC(ASUS)에 연결할 수 없습니다' while ASUS was on (the board command had crashed)",
           "title": "연결 끊김과 작업 PC 오류를 구분해서 알려주기"
+        },
+        {
+          "taskId": "AGENTRELAY-SMALL-POLISH-3-R2",
+          "scope": "R2-9 retry: add `jutell: { name: 'JuTell', goal: '짧고 쉬운 작업 보고서' }` to PROJECT_LABELS in src/shared/projectLabels.ts and leave every existing entry unchanged, especially `'jucontroler-app'` whose name must stay exactly '통합 관제 화면 (jucontroler-app)' (the product name test/project-labels.test.mjs expects; do not edit test/controlroom-plain-2.test.mjs, which conflicted with this before the task and is out of scope); in src/frontend/controlRoom.tsx make the AI 순서 저장 result text say '만드는 AI'/'검수하는 AI' instead of worker/qa and add an opencode-free option labelled '무료 모델(예비)' to the chain editor; in src/frontend/style.css give the 기록 screen header the same side padding as the other screens, change `.app[data-theme=\"light\"] .control-tab.active` to `color: #1d1d1f`, keep the existing `.app[data-theme=\"light\"] .tab-btn.active { ... color: var(--tab-active-fg) ... }` rule because test/approvals-readable.test.mjs needs it, and add a later override rule `.app[data-theme=\"light\"] .tab-btn.active { color: #1d1d1f; }` so the literal #1d1d1f wins; add test/small-polish-3.test.mjs checking the jutell label, the 만드는 AI/검수하는 AI result text, and that opencode-free with '무료 모델(예비)' is present; test/founder-copy-ko.test.mjs fails on the base (light active tabs use var(--tab-active-fg)) and must pass after the change, and test/project-labels.test.mjs must keep passing.",
+          "files": [
+            "src/shared/projectLabels.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/style.css",
+            "test/small-polish-3.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/small-polish-3.test.mjs",
+            "node --test test/project-labels.test.mjs",
+            "node --test test/founder-copy-ko.test.mjs",
+            "node --test test/approvals-readable.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md"
         }
       ],
       "qaRuntime": [
