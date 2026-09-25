@@ -4585,6 +4585,36 @@
           ],
           "ssotEvidence": "JuControler-Private founder/DECISION_LOG.md:4151 'A-22 … AI 자동 배정 — 모든 역할(PM·Worker·QA·Tester)에 구독 AI 먼저, 한도·실패 시와 가벼운 일에 무료 모델 보조'; founder/VERSION_WBS.md:14-15 'A-25 레인별 Skill … A-26 승인한 기억은 모든 AI 작업에 전달, AI가 배운 점은 제안 → 승인 후 적용'; the base README step 2 lists the Skill 장착 and 승인한 기억 checks but not AI 자동 배정",
           "title": "처음 사용 안내에 자동 배정 설명 보강"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-KO-REASON-WORDS",
+          "scope": "In the plain-Korean stderr line that scripts/status-board.mjs prints when some projects are UNKNOWN or stale, show a short Korean meaning next to each reason code (e.g. 'missing(unavailable: 상태 파일이 없거나 읽을 수 없어요)'), with a generic Korean fallback for unlisted reasons, and update the exact expected line in scripts/e2e.sh run_status_board and tests/status-board-cli.test.mjs to match.",
+          "files": [
+            "scripts/status-board.mjs",
+            "scripts/e2e.sh",
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/e2e-script.test.mjs",
+            "bash scripts/e2e.sh",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; JuControler-Private/founder/DECISION_LOG.md:3394 '결과 tab prints no raw `UNKNOWN` in primary'"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-KO-KNOWN-IDS",
+          "scope": "When scripts/status-board.mjs fails with 'Unknown projectId', keep the existing first stderr line '그런 프로젝트 ID가 목록에 없어요 — --project-id 값을 확인하세요' and add the IDs that are in the list, read with the existing loadProjectRegistryEntries from src/project-registry.mjs (e.g. ' (목록에 있는 ID: a, b)'). Keep exit 1, no stdout and the English detail line, and extend the 'unknown --project-id' case in tests/status-board-cli.test.mjs.",
+          "files": [
+            "scripts/status-board.mjs",
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "bash scripts/e2e.sh",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = plain Korean, obvious next action, inline feedback, no raw codes"
         }
       ],
       "qaRuntime": [
