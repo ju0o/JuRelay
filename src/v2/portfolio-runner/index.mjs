@@ -418,7 +418,7 @@ export class PortfolioRunner {
       if (task.state === "HOLD" && String(task.error || "").startsWith("invalid promotion commit:") && !task.promotionRequeued) return { ...task, state: "QUEUED", error: null, attempts: 0, promotionRequeued: true, reconcile: "REQUEUED_AFTER_PROMOTION_FIX" };
       // missing deps in the borrowed node_modules (JuCeipt zod) were an environment failure, not the task's; linkDeps now
       // falls back to a cached npm ci, so rerun those once
-      if (task.state === "HOLD" && !task.depsRequeued && !state.tasks.some((x) => x.taskId === `${task.taskId}-R2`) && /Failed to load url |Cannot find module '|TS2307/.test(`${task.error || ""} ${(task.qa?.findings || []).join(" ")}`)) return { ...task, state: "QUEUED", error: null, qa: null, attempts: 0, depsRequeued: true, reconcile: "REQUEUED_AFTER_DEPS_FIX" };
+      if (task.state === "HOLD" && !task.depsRequeued && !state.tasks.some((x) => x.taskId === `${task.taskId}-R2`) && /Failed to load url |Cannot find module '|TS2307|No module named pytest/.test(`${task.error || ""} ${(task.qa?.findings || []).join(" ")}`)) return { ...task, state: "QUEUED", error: null, qa: null, attempts: 0, depsRequeued: true, reconcile: "REQUEUED_AFTER_DEPS_FIX" };
       if (task.state === "HOLD" && (TRANSIENT_ERROR.test(String(task.error || "")) || QUOTA_ERROR.test(String(task.error || ""))) && (task.outageRequeues || 0) < 2 && !superseded(task.taskId)) return { ...task, state: "QUEUED", error: null, attempts: 0, outageRequeues: (task.outageRequeues || 0) + 1, reconcile: "REQUEUED_AFTER_PROVIDER_OUTAGE" };
       if (task.state === "RUNNING" || task.state === "QA") {
         const pid = task.state === "QA" ? task.qaEvidence?.pid : task.builderEvidence?.pid;

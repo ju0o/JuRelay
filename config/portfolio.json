@@ -3078,8 +3078,7 @@
             "tests/test_board_live_state_truth.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_board_live_state_truth.py -q",
-            "python3 -m pytest -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
           "title": "보드의 '연결 끊김' 오표시 고치기"
@@ -3092,8 +3091,7 @@
             "tests/test_board_plain_words.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_board_plain_words.py -q",
-            "python3 -m pytest -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
           "title": "보드 문구를 쉬운 말로"
@@ -3150,7 +3148,7 @@
             "tests/test_serve_stuck_amber.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_serve_stuck_amber.py tests/test_serve.py tests/test_serve_plain_cards.py tests/test_serve_board_counts.py -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06 비개발자 UX 고도화): founder-ux rule 11 '막힘은 노랑' — actl serve 웹 보드 오류 안내; serve.py BOARD_HTML CLS has \"BLOCKED\":\"bad\"",
           "title": "승인 기다리는 에이전트를 주황색으로 표시"
@@ -3163,7 +3161,7 @@
             "tests/test_serve_result_ready.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_serve_result_ready.py tests/test_serve.py tests/test_serve_plain_cards.py -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): 대상 actl serve 웹 보드 — 답 도착, 결과 복사; Tk counterpart ACTL-RESULT-READY-COPY-CTA-R2 done, web still shows '결과 준비' with an always-on '⧉ 복사'",
           "title": "답이 오면 알려주고 결과 복사 버튼 강조"
@@ -3176,7 +3174,7 @@
             "tests/test_gui_readable_sizes.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_gui_readable_sizes.py tests/test_gui_theme.py -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): founder-ux '글자 16px·버튼 44px' for JuActl Board src/actl/gui.py; gui.py:40 FONT = (\"Segoe UI\", 10), button pady=6/8; ACTL-WEB-READABLE-SIZES covers only serve.py CSS",
           "title": "현황판 글자와 버튼을 크고 보기 쉽게"
@@ -3202,7 +3200,7 @@
             "tests/test_version_one.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_version_one.py -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "GitHub Actions run 36096320753 linux-tests (3.10): ModuleNotFoundError: No module named 'tomllib' (PR ju0o/JuActl#1, 2026-09-25)",
           "title": "버전 시험을 Python 3.10에서도 돌게"
@@ -3283,8 +3281,7 @@
             "tests/test_board_live_state_truth.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_board_live_state_truth.py -q",
-            "python3 -m pytest -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
           "title": "ASUS 작업창 연결 상태 정확히 보기"
@@ -3297,8 +3294,7 @@
             "tests/test_board_plain_words.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_board_plain_words.py -q",
-            "python3 -m pytest -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
           "title": "현황판을 쉬운 우리말로 바꾸기"
@@ -3325,7 +3321,7 @@
             "tests/test_serve_result_ready.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_serve_result_ready.py tests/test_serve.py tests/test_serve_plain_cards.py -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): 대상 actl serve 웹 보드 — 답 도착, 결과 복사; Tk counterpart ACTL-RESULT-READY-COPY-CTA-R2 done, web still shows '결과 준비' with an always-on '⧉ 복사'",
           "title": "답이 오면 바로 결과 복사하기"
@@ -3338,7 +3334,7 @@
             "tests/test_gui_readable_sizes.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_gui_readable_sizes.py tests/test_gui_theme.py -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): founder-ux '글자 16px·버튼 44px' for JuActl Board src/actl/gui.py; gui.py:40 FONT = ('Segoe UI', 10), button pady=6/8; ACTL-WEB-READABLE-SIZES covers only serve.py CSS",
           "title": "화면 글씨와 버튼 크게 키우기"
@@ -3350,7 +3346,7 @@
             "tests/test_version_one.py"
           ],
           "tests": [
-            "python3 -m pytest tests/test_version_one.py -q"
+            "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "GitHub Actions run 36096320753 linux-tests (3.10): ModuleNotFoundError: No module named 'tomllib' (PR ju0o/JuActl#1, 2026-09-25)",
           "title": "버전 확인 검사가 잘 돌게 하기"
