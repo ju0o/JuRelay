@@ -9518,6 +9518,28 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:215-216 'Completed by | `Ju0o___` — register commits `b4cd138`, `04c7373`, and `a77257a`' / 'Validation date | `2026-09-24`' while `git log 99c8500` shows 2412f80 'docs: reconcile M3 seven-task artifact join' and 99c8500 'docs: reconcile M3 final and receipt evidence' dated 2026-09-26; Founder direction 2026-09-26",
           "title": "일일 검증 마감 기록에 근거 추가"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-REPORT-M3-UNDECIDED-SYNC",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md, change only the four M3 lines (header line 6, morning summary line 29, §B.4 line 80, open item line 252) so they no longer say 'proposed GO mapping from the source scorecard' and instead say what M3_DAILY_VALUE_VALIDATION.md §2.2/§7 records: 0 Founder seven-task rows have both a Claude final and a Receipt, so the proposed mapping is UNDECIDED and no M3 decision is recorded here.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts' vs docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:29 'the proposed GO mapping is taken from the source scorecard'; Founder direction 2026-09-26"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-CANONICAL-HTML-M3-JOIN-GAP-SYNC",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html, replace only the M3 status text 'EVIDENCE REGISTER COMPLETE · DECISION PENDING' in the line-17 pill and the line-84 M3 gate state with wording that matches M3_DAILY_VALUE_VALIDATION.md §7: the 10-receipt register is filled, the seven-task final+Receipt join is missing (0 rows), the mapping is UNDECIDED, and the decision is pending.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:218 'Evidence conflicts resolved | NO — the seven-task join evidence is missing; see Section 2.2' vs docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 'CURRENT · EVIDENCE REGISTER COMPLETE · DECISION PENDING'; docs/operations/PM_STATUS_BOARD.md:36 '0 Founder seven-task-register rows join both a final and a Receipt'"
         }
       ]
     },
