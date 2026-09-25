@@ -1849,7 +1849,8 @@
             "node --test test/controlRoom.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 16:09): '1) [자동화 켜기]/[자동화 끄기] = night always / night stop, 지금 켜짐·꺼짐 표시 … 백엔드 테스트는 가짜 명령 실행기로. 버튼마다 작은 작업 하나씩, 테스트 포함'"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 16:09): '1) [자동화 켜기]/[자동화 끄기] = night always / night stop, 지금 켜짐·꺼짐 표시 … 백엔드 테스트는 가짜 명령 실행기로. 버튼마다 작은 작업 하나씩, 테스트 포함'",
+          "title": "밤새 작업 자동 실행을 켭니다"
         },
         {
           "taskId": "AGENTRELAY-LANE-PAUSE-BACKEND",
@@ -1866,7 +1867,8 @@
             "node --test test/controlRoom.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 16:09): '3) 레인 [멈추기]/[다시 켜기] = night roadmap pause|resume' (resume already exists as controlRoom:resume)"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 16:09): '3) 레인 [멈추기]/[다시 켜기] = night roadmap pause|resume' (resume already exists as controlRoom:resume)",
+          "title": "특정 프로젝트 작업을 잠시 멈춥니다"
         },
         {
           "taskId": "AGENTRELAY-PLAN-REQUEST-BACKEND",
@@ -1883,7 +1885,8 @@
             "node --test test/controlRoom.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 16:09): '2) [새 작업 부탁] 프로젝트 선택+한 문장 → night plan request, 결과 작업 목록 표시'"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 16:09): '2) [새 작업 부탁] 프로젝트 선택+한 문장 → night plan request, 결과 작업 목록 표시'",
+          "title": "새 작업 계획을 요청합니다"
         },
         {
           "taskId": "AGENTRELAY-NIGHT-SUPERVISOR-OWN-SCOPE-R2",
@@ -1898,7 +1901,8 @@
             "npm test",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Dogfood finding R-01 (MainPC Desktop AgentRelay-Findings.md, 2026-09-25): agent-relay-night-0925b failed (Result: timeout) at 00:01:54, supervisor pid 3172830 killed; Founder request 2026-09-25 to register this fix as a Relay task"
+          "ssotEvidence": "Dogfood finding R-01 (MainPC Desktop AgentRelay-Findings.md, 2026-09-25): agent-relay-night-0925b failed (Result: timeout) at 00:01:54, supervisor pid 3172830 killed; Founder request 2026-09-25 to register this fix as a Relay task",
+          "title": "밤새 작업을 안전하게 계속 실행합니다"
         },
         {
           "taskId": "AGENTRELAY-ENVS-PANEL",
@@ -3254,7 +3258,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: '원격(--ssh) 보내기 전에 그 창이 실제 그 에이전트인지 확인하는지 검증하고 아니면 막고 … 3) 원격 대상 검증 fail-closed'; src/actl/core/validation.py:209 `return claude_profile(process) == profile.expanduser().resolve(strict=False)` vs :232 `REMOTE_SSH_TARGET and resolved.name == expected.name`"
+          "ssotEvidence": "Founder direction 2026-09-25: '원격(--ssh) 보내기 전에 그 창이 실제 그 에이전트인지 확인하는지 검증하고 아니면 막고 … 3) 원격 대상 검증 fail-closed'; src/actl/core/validation.py:209 `return claude_profile(process) == profile.expanduser().resolve(strict=False)` vs :232 `REMOTE_SSH_TARGET and resolved.name == expected.name`",
+          "title": "원격 작업 환경을 정확히 확인"
         }
       ],
       "qaRuntime": [
@@ -4549,7 +4554,8 @@
             "pnpm --filter @juplan/runtime test -- runtime.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "막힌 작업을 한눈에 알아봅니다"
         }
       ],
       "qaRuntime": [
@@ -5245,7 +5251,8 @@
             "npm test -- tests/pipeline.test.ts",
             "npm run build"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "영수증 확인과 실패 안내 쉽게 보기"
         }
       ],
       "skills": {
@@ -7973,7 +7980,8 @@
             "node --test test/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후, settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base lib/relayBoard.mjs:53 laneChainSentence = `${project} 프로젝트의 ${role === 'qa' ? 'QA' : 'Worker'} 순서를 ${chain.join(' → ')}(으)로 바꿀게요.`"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후, settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base lib/relayBoard.mjs:53 laneChainSentence = `${project} 프로젝트의 ${role === 'qa' ? 'QA' : 'Worker'} 순서를 ${chain.join(' → ')}(으)로 바꿀게요.`",
+          "title": "작업과 검수 담당 순서 바꾸기"
         }
       ],
       "skills": {
