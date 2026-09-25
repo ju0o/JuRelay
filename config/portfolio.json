@@ -4671,7 +4671,8 @@
             "pnpm --filter @juplan/runtime test:run",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "첫 화면에 지금 할 일 한 줄 안내"
         },
         {
           "taskId": "JUPLAN-STUDIO-RAW-SOURCE-FOLD",
@@ -4684,7 +4685,8 @@
             "pnpm --filter @juplan/runtime test:run",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "그림 원문은 접어서 원문 보기로"
         },
         {
           "taskId": "JUPLAN-STUDIO-LIGHT-DARK",
@@ -4697,7 +4699,8 @@
             "pnpm --filter @juplan/runtime test:run",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "밝은 화면·어두운 화면 모두 잘 보이게"
         }
       ],
       "qaRuntime": [
@@ -6389,7 +6392,8 @@
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/quickstart-next-sync.test.mjs tests/status-board-cli.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): a real end-to-end script that runs the product's main user flow offline and prints one JSON line {ok, steps[], ms}; the '프로젝트 목록 파일 내용이 올바르지 않아요' path in scripts/status-board.mjs korean() is the only registry error it does not cover yet"
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): a real end-to-end script that runs the product's main user flow offline and prints one JSON line {ok, steps[], ms}; the '프로젝트 목록 파일 내용이 올바르지 않아요' path in scripts/status-board.mjs korean() is the only registry error it does not cover yet",
+          "title": "목록 내용 오류 안내 자동 점검 추가"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-HELP-TWO-LINES",
@@ -6402,7 +6406,8 @@
             "node scripts/status-board.mjs --help",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 02시 (2): a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that script does; the README must match the code today (JUCONTROLER-README-GITHUB), and scripts/status-board.mjs `usage` is two lines written to stdout for --help"
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (2): a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that script does; the README must match the code today (JUCONTROLER-README-GITHUB), and scripts/status-board.mjs `usage` is two lines written to stdout for --help",
+          "title": "첫 사용 안내의 도움말 설명 바로잡기"
         }
       ],
       "qaRuntime": [
@@ -9607,7 +9612,8 @@
             "node --test tests/context-tier-profile-limits-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/DECISIONS.md:9 'T3: 작업 등급 분류 (trivial ≤2파일·≤30줄·low만 → minimal/8문장, risky ... → detailed/18문장, 나머지 balanced/12문장)'; docs/FEATURE_CONFIGURATION.md:74 '| `minimal` | ... | 주요 파일 3개, 용어 1개, 8문장 |'; docs/FEATURE_CONFIGURATION.md:76 '| `learning` | 모두 켬 | 주요 파일 5개, 용어 6개, 12문장 |'; docs/BEGINNER_REPORT_SPEC.md:130 '* 주요 파일은 최대 3개'"
+          "ssotEvidence": "docs/DECISIONS.md:9 'T3: 작업 등급 분류 (trivial ≤2파일·≤30줄·low만 → minimal/8문장, risky ... → detailed/18문장, 나머지 balanced/12문장)'; docs/FEATURE_CONFIGURATION.md:74 '| `minimal` | ... | 주요 파일 3개, 용어 1개, 8문장 |'; docs/FEATURE_CONFIGURATION.md:76 '| `learning` | 모두 켬 | 주요 파일 5개, 용어 6개, 12문장 |'; docs/BEGINNER_REPORT_SPEC.md:130 '* 주요 파일은 최대 3개'",
+          "title": "단계별 보고 분량 한도 일치 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
