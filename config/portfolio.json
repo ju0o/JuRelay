@@ -1983,7 +1983,8 @@
             "node --test test/lane-pause.test.mjs",
             "npx tsc -p tsconfig.server.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 16:09: '4) 밤 작업 예약: 끝나는 시각 → 새 하위 명령 night schedule HH:MM|list|cancel … 새 night 하위 명령은 JSON 한 줄, 백엔드 테스트는 가짜 명령 실행기로. 버튼마다 작은 작업 하나씩, 테스트 포함.'"
+          "ssotEvidence": "Founder direction 2026-09-25 16:09: '4) 밤 작업 예약: 끝나는 시각 → 새 하위 명령 night schedule HH:MM|list|cancel … 새 night 하위 명령은 JSON 한 줄, 백엔드 테스트는 가짜 명령 실행기로. 버튼마다 작은 작업 하나씩, 테스트 포함.'",
+          "title": "야간 실행 시간 예약·확인·취소"
         },
         {
           "taskId": "AGENTRELAY-HUB-PROMOTE-BACKEND",
@@ -2000,7 +2001,8 @@
             "node --test test/automation-toggle.test.mjs",
             "npx tsc -p tsconfig.server.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 16:09: '5) 허브 [반영하기] = 새 하위 명령 night promote hub(JuControler-Private ff-merge + promote-operator.sh, 누를 때만). 새 night 하위 명령은 JSON 한 줄, 백엔드 테스트는 가짜 명령 실행기로.'"
+          "ssotEvidence": "Founder direction 2026-09-25 16:09: '5) 허브 [반영하기] = 새 하위 명령 night promote hub(JuControler-Private ff-merge + promote-operator.sh, 누를 때만). 새 night 하위 명령은 JSON 한 줄, 백엔드 테스트는 가짜 명령 실행기로.'",
+          "title": "버튼 한 번으로 중심 PC 전환"
         }
       ],
       "qaRuntime": [
@@ -5823,7 +5825,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙 '오류 3줄' 대상 'juceipt 명령 출력(scan, daily, receipt)'; base src/cli/main.ts: non-daily errors print the generic '왜: 실행 중 문제가 생겼어요', and scan.ts throws the English '--since must be a duration such as 24h'"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙 '오류 3줄' 대상 'juceipt 명령 출력(scan, daily, receipt)'; base src/cli/main.ts: non-daily errors print the generic '왜: 실행 중 문제가 생겼어요', and scan.ts throws the English '--since must be a duration such as 24h'",
+          "title": "실행 오류를 쉬운 세 줄로 안내"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-TITLE-NARROW",
@@ -5837,7 +5840,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면을 founder-ux 규칙(한국어 라벨, 휴대폰 폭에서 가로 스크롤 없음)으로 점검; base src/render/index.ts: '<title>Juceipt Receipt</title>' and '.meta-row{display:grid;grid-template-columns:repeat(3,1fr)...}' with no media query"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면을 founder-ux 규칙(한국어 라벨, 휴대폰 폭에서 가로 스크롤 없음)으로 점검; base src/render/index.ts: '<title>Juceipt Receipt</title>' and '.meta-row{display:grid;grid-template-columns:repeat(3,1fr)...}' with no media query",
+          "title": "영수증 제목 한글화와 휴대폰 화면 맞춤"
         }
       ],
       "skills": {
@@ -6966,7 +6970,8 @@
             "node --test tests/quickstart-next-sync.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 02시 item 1: a real offline end-to-end script that prints one JSON line {ok, steps[], ms}); scripts/status-board.mjs@056e99e fallback text '표에 없는 이유예요' is locked by tests/status-board-cli.test.mjs:103 but no e2e step checks it yet"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 02시 item 1: a real offline end-to-end script that prints one JSON line {ok, steps[], ms}); scripts/status-board.mjs@056e99e fallback text '표에 없는 이유예요' is locked by tests/status-board-cli.test.mjs:103 but no e2e step checks it yet",
+          "title": "모르는 이유 안내 자동 점검 추가"
         },
         {
           "taskId": "JUCONTROLER-GETTING-STARTED-UNLISTED-REASON-NEXT",
@@ -6980,7 +6985,8 @@
             "node --test tests/e2e-docs-sync.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss, with an obvious next action; scripts/status-board.mjs@056e99e prints '표에 없는 이유예요' for unlisted reasons, but docs/getting-started.md:109 gives no next step for that case"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss, with an obvious next action; scripts/status-board.mjs@056e99e prints '표에 없는 이유예요' for unlisted reasons, but docs/getting-started.md:109 gives no next step for that case",
+          "title": "모르는 이유가 뜰 때 할 일 안내"
         }
       ],
       "qaRuntime": [
@@ -9037,7 +9043,8 @@
             "node --test test/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2025-09-25 15:48 hub request): actl AI 창 카드 — 기존 /api/panes 사용; founder-ux Live status card: 'whether an answer is ready to copy'; af1ae95:operator/public/app.js:1930 'ponytail: /api/panes carries no answer body, so [결과 복사] copies the card's plain summary; copy the answer itself once the API exposes it.'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2025-09-25 15:48 hub request): actl AI 창 카드 — 기존 /api/panes 사용; founder-ux Live status card: 'whether an answer is ready to copy'; af1ae95:operator/public/app.js:1930 'ponytail: /api/panes carries no answer body, so [결과 복사] copies the card's plain summary; copy the answer itself once the API exposes it.'",
+          "title": "actl 결과 복사 시 AI 답변 그대로 복사"
         },
         {
           "taskId": "JCAPP-BOARD-DOWN-PLAIN",
@@ -9054,7 +9061,8 @@
             "node --test test/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2025-09-25 15:48 hub request): 허브 홈과 진행 탭에 founder-ux 'Live status card' — /api/relay/board 데이터로; founder-ux rule 10 'Explain every error in three short lines … Tell \"the other PC is off / the network dropped\" apart from \"it is on but something failed\"'; af1ae95:operator/public/app.js:518-519 and :1986 show only '확인 중이에요' when board.available is false (lib/relayBoard.mjs:41 sets reason)."
+          "ssotEvidence": "Founder direction 2026-09-23 (2025-09-25 15:48 hub request): 허브 홈과 진행 탭에 founder-ux 'Live status card' — /api/relay/board 데이터로; founder-ux rule 10 'Explain every error in three short lines … Tell \"the other PC is off / the network dropped\" apart from \"it is on but something failed\"'; af1ae95:operator/public/app.js:518-519 and :1986 show only '확인 중이에요' when board.available is false (lib/relayBoard.mjs:41 sets reason).",
+          "title": "Agent Relay 연결 끊김을 쉽게 알려주기"
         }
       ],
       "skills": {
@@ -9780,7 +9788,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 'no committed Claude final under these task IDs; 0 Founder seven-task-register rows join both a final and a Receipt (see docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.2)' vs docs/product/MASTER_ROADMAP.md:96 'M3 status: daily value summary integrated for 10 tasks; validation and GO/DEFER/KILL decision next'; Founder direction 2026-09-26"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 'no committed Claude final under these task IDs; 0 Founder seven-task-register rows join both a final and a Receipt (see docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.2)' vs docs/product/MASTER_ROADMAP.md:96 'M3 status: daily value summary integrated for 10 tasks; validation and GO/DEFER/KILL decision next'; Founder direction 2026-09-26",
+          "title": "전체 계획표의 3단계 진행 상황 맞추기"
         },
         {
           "taskId": "JUCEIPTPLAN-WBS-BOARD-M3-STATE-CELL-JOIN-GAP-SYNC",
@@ -9792,7 +9801,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping ... UNDECIDED — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts' vs docs/operations/PM_STATUS_BOARD.md:58 'INTEGRATED — VALIDATION NEXT'; Founder direction 2026-09-26"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping ... UNDECIDED — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts' vs docs/operations/PM_STATUS_BOARD.md:58 'INTEGRATED — VALIDATION NEXT'; Founder direction 2026-09-26",
+          "title": "작업표와 현황판의 3단계 상태 맞추기"
         }
       ]
     },
