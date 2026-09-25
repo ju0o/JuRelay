@@ -5001,6 +5001,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): plain Korean, obvious next action, inline feedback, no raw codes; JuControler-Private/CURRENT.md: '처음 쓰는 법은 `README.md`' (README links detail to docs/getting-started.md)",
           "title": "상태판 안내 문장 읽는 법 설명서"
+        },
+        {
+          "taskId": "JUCONTROLER-GETTING-STARTED-NEEDS-ACTION-TESTER",
+          "scope": "In docs/getting-started.md, add rows to the '상태판 안내 문장 읽는 법' table for two exact stderr lines that scripts/status-board.mjs prints at base but the table leaves out: the extra line '확인이 필요한 프로젝트: <ID>(<reason>: <뜻>), … — 해당 레인의 확인 요청이나 보류를 처리하세요' (human-gate/hold, next action: handle that lane's confirmation request or hold), and the usage line '사용법: node scripts/status-board.mjs <프로젝트 목록 파일.json> [--project-id <프로젝트 ID>]' (exit 2, next action: re-type the command in that form); also change the ai-assignment row from '역할(PM·Worker·QA)' to '역할(PM·Worker·QA·Tester)' to match the four roles in docs/integration/ai-assignment.v1.json.",
+          "files": [
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "JuControler-Private/founder/VERSION_WBS.md:12 '**AI 자동 배정 (A-22):** PM·Worker·QA·Tester 모두 구독 AI 먼저'; Founder direction 2026-09-24 launch bar: plain Korean, obvious next action, inline feedback"
+        },
+        {
+          "taskId": "JUCONTROLER-README-RELAY-TESTER-FLOW",
+          "scope": "In README.md section '4. 다른 프로그램과의 관계', change the Agent Relay line in the diagram from '(셋톱박스: PM → Worker → QA)' to '(셋톱박스: PM → Worker → QA → Tester)' and its plain-Korean caption to say it plans, builds, reviews and tests, so the README matches the SSOT's lane flow; leave the rest of the README unchanged.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "JuControler-Private/founder/VERSION_WBS.md:9 'PM(계획) → Worker(작업) → QA(검수) → Tester(시험) → 반영 순서로 흐릅니다.'"
         }
       ],
       "qaRuntime": [
