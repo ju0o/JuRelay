@@ -1884,6 +1884,21 @@
             "npm run typecheck"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 16:09): '2) [새 작업 부탁] 프로젝트 선택+한 문장 → night plan request, 결과 작업 목록 표시'"
+        },
+        {
+          "taskId": "AGENTRELAY-NIGHT-SUPERVISOR-OWN-SCOPE-R2",
+          "scope": "In src/v2/night-run/index.mjs export buildOwnScopeArgs(env, argv), which returns [systemd-run, --user, --scope, --collect, --unit, agent-relay-night-supervisor-<timestamp>, --, process.execPath, <script>, ...original night-run up args] only when env.INVOCATION_ID is set and env.AGENT_RELAY_OWN_SCOPE is not \"1\" (otherwise null), and also export confirmSupervisorScope({ readyFile, unit, timeoutMs = 5000, readCgroup = (pid) => readFile(`/proc/${pid}/cgroup`, \"utf8\") }), which polls the ready file for the payload pid, reads that payload pid's own cgroup, and resolves { ok: true, pid } only when the cgroup contains `${unit}.scope`, otherwise { ok: false, reason } at timeout; it must never look at the systemd-run waiter's pid or exit. In the bridge/agent-relay.mjs night-run up branch, when buildOwnScopeArgs returns args, spawn them detached/unref'd with env AGENT_RELAY_OWN_SCOPE=1 and AGENT_RELAY_SCOPE_READY_FILE=<tmp path>, and have the scoped run (OWN_SCOPE=1 with a READY_FILE) write its own process.pid to that file at startup; the launcher then awaits confirmSupervisorScope and exits 0 on ok or 1 with the reason, while the waiter stays alive. In test/v2/night-run.test.mjs add: (a) INVOCATION_ID set -> args include --scope, --unit agent-relay-night-supervisor-, and the original args after --; already scoped or no INVOCATION_ID -> null; (b) 'confirmSupervisorScope proves payload moved while waiter stays alive': spawn a still-running child that writes its pid to readyFile, with an injected readCgroup that returns `0::/user.slice/.../<unit>.scope` for that pid, and assert ok:true and pid === the payload pid, not the waiter pid; (c) the same setup with the injected cgroup still in the launching unit's service cgroup -> ok:false within a short timeoutMs; (d) a ready file that is never written -> ok:false. Do not use `node -e` or process.argv[1] for argv assertions, and do not change the deadline, report or power behaviour.",
+          "files": [
+            "src/v2/night-run/index.mjs",
+            "bridge/agent-relay.mjs",
+            "test/v2/night-run.test.mjs"
+          ],
+          "tests": [
+            "node --test test/v2/night-run.test.mjs",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Dogfood finding R-01 (MainPC Desktop AgentRelay-Findings.md, 2026-09-25): agent-relay-night-0925b failed (Result: timeout) at 00:01:54, supervisor pid 3172830 killed; Founder request 2026-09-25 to register this fix as a Relay task"
         }
       ],
       "qaRuntime": [
