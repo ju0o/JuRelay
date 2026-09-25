@@ -18,6 +18,7 @@ export type ControlRoomOperation =
   | 'gates:answer'
   | 'controlRoom:laneSet'
   | 'controlRoom:resume'
+  | 'controlRoom:pause'
   | 'controlRoom:holdChoose'
   | 'controlRoom:approvalAdd'
   | 'controlRoom:automationStatus'
@@ -363,6 +364,19 @@ export async function runControlRoomResume(
   return runSshJson(
     operation,
     [...SSH_BASE_ARGS, 'roadmap', 'resume', shQuote(project), '--json'],
+    execFileImpl,
+  );
+}
+
+export async function runControlRoomPause(
+  project: string,
+  execFileImpl: ControlRoomExec = execFile,
+): Promise<unknown> {
+  const operation: ControlRoomOperation = 'controlRoom:pause';
+  assertProjectId(operation, project);
+  return runSshJson(
+    operation,
+    [...SSH_BASE_ARGS, 'roadmap', 'pause', shQuote(project), '--json'],
     execFileImpl,
   );
 }
