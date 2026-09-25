@@ -9478,6 +9478,30 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:648 '7개 중 6개 이상에 추가 질문 없이 답할 수 있어야 한다.'; docs/BEGINNER_REPORT_SPEC.md:814 '* 7개 질문 중 6개 이상 통과해야 이해 가능'",
           "title": "평가 기준을 일관되게 맞춰요"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-TIER-PROFILE-LIMITS-PARITY",
+          "scope": "Add an offline node:test that reads packages/cli/src/commands/context.ts, apps/local-admin/server/config/schema.ts, apps/local-admin/src/lib/catalog.ts and docs/FEATURE_CONFIGURATION.md as text. It checks that each classifyTier pair (minimal/8, balanced/12, detailed/18) matches compactReportMaxSentences for the same profile in both preset files and in the FEATURE_CONFIGURATION profile table, and that maxMainFiles is 3 for minimal and 5 for balanced and detailed, as in SPEC §5.1/§5.2. It does not check glossary limits.",
+          "files": [
+            "tests/context-tier-profile-limits-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-tier-profile-limits-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/DECISIONS.md:9 'T3: 작업 등급 분류 (trivial ≤2파일·≤30줄·low만 → minimal/8문장, risky ... → detailed/18문장, 나머지 balanced/12문장)'; docs/FEATURE_CONFIGURATION.md:74 '| `minimal` | ... | 주요 파일 3개, 용어 1개, 8문장 |'; docs/BEGINNER_REPORT_SPEC.md:130 '* 주요 파일은 최대 3개'"
+        },
+        {
+          "taskId": "JUTELL-LENGTH-TIERS-SCOPE-PARITY",
+          "scope": "Add an offline node:test that reads PRODUCT_SCOPE §11.4, BEGINNER_REPORT_SPEC §5 and packages/cli/src/commands/context.ts as text. It checks that §11.4 still lists the three length levels (단순 작업, 중간 규모 작업, 복잡하거나 위험한 작업), that SPEC §5 still has exactly the three headings 5.1 단순 작업, 5.2 일반 작업 and 5.3 복잡하거나 위험한 작업, and that the TaskTier type in context.ts still has exactly three values (trivial, standard, risky).",
+          "files": [
+            "tests/length-tiers-scope-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/length-tiers-scope-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:676-680 '고정된 글자 수를 강제하지 않지만 다음 기준을 사용한다. * 단순 작업: 짧은 요약 중심 * 중간 규모 작업: 주요 기능과 검증 중심 * 복잡하거나 위험한 작업: 필요한 세부정보 추가'; docs/BEGINNER_REPORT_SPEC.md:114 '## 5. 보고서 길이 기준'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
