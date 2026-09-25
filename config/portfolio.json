@@ -9237,23 +9237,6 @@
           ],
           "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 5 + Founder HUMAN_GATE answer 2026-09-25 (Codex local connector); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2 (첫 runtime adapter, heartbeat, capability, policy)",
           "title": "실제 Codex connector로 Phase 2 레드게이트 증거 스크립트"
-        },
-        {
-          "taskId": "AIAGENTMARKE-P2-POLICY-BACKFILL",
-          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). Task 2 remainder: connector-scoped policies (migration 0005 worker_policies.agent_connector_id) are in place, but policies linked before 0005 through worker_profiles.policy_id are never backfilled. Add migrations/0006_worker_policy_connector_backfill.sql: UPDATE worker_policies SET agent_connector_id = worker_profiles.agent_connector_id FROM worker_profiles WHERE worker_profiles.policy_id = worker_policies.id AND worker_policies.agent_connector_id IS NULL. Add tests/integration/migration-upgrade.test.ts: on a fresh test DB apply migrations 0001-0004 only (add an optional upTo argument to migrate() in src/db/migrate.ts), insert a connector, a policy and a profile linked by policy_id, apply the rest, then GET /api/owner/connectors/:id/policy with the owner token returns that policy. Update the migration count in tests/unit/open-database.test.ts. Must pass on PGlite and TEST_DB=postgres.",
-          "files": [
-            "migrations/0006_worker_policy_connector_backfill.sql",
-            "src/db/migrate.ts",
-            "tests/integration/migration-upgrade.test.ts",
-            "tests/unit/open-database.test.ts"
-          ],
-          "tests": [
-            "npm test",
-            "npm run typecheck",
-            "npm run test:pg"
-          ],
-          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 2 (QA finding on PROFILE-POLICY-LINK-R2: 0005 without backfill)",
-          "title": "policy connector 컬럼 업그레이드 backfill + 테스트"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
