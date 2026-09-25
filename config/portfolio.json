@@ -5109,6 +5109,46 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux Skill 규칙(맨 위 한 문장 …)으로 JuPlan Studio 화면(계획 그림 …)을 하나씩 점검해 어긋난 곳마다 작은 작업으로 나눠 줘",
           "title": "계획 요약 맨 위에 안내 문장 넣기"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-SSOT-VIEW",
+          "scope": "계획 원본을 개발자용 JSON 링크만이 아니라 한국어 읽기 화면으로 보여 주고 원문은 원문 보기 안에 둔다.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-ssot-view.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: real PRD/ERD/WBS/API/QA documents from the graph; founder-ux 규칙의 개발자 글자는 원문 보기 안에 둔다."
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-MAP-ACCESSIBLE-DETAIL",
+          "scope": "계획 지도 항목을 키보드로도 선택할 수 있게 하고 각 항목의 전체 한국어 이름과 종류를 접근 가능한 설명으로 제공한다.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-plan-map-accessibility.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: per-type diagrams; 비개발자 UX 고도화 대상에 계획 그림 포함."
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-NEXT-STEP",
+          "scope": "대화 변경의 미리보기·적용·되돌리기 결과에 현재 단계와 다음 행동을 평이한 한국어로 명시한다.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/undo-json.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: JuPlan validates and applies AI change proposals (apply-proposal with preview/undo); founder-ux 규칙의 클릭 결과와 다음 행동을 즉시 보여 준다."
         }
       ],
       "qaRuntime": [
