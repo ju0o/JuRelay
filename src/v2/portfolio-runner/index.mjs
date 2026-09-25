@@ -35,7 +35,7 @@ function packetLine(text, prefix) {
 // A quota/rate-limit failure moves the lane to the next runtime in its chain instead of holding the task.
 export const QUOTA_ERROR = /rate.?limit|quota|usage limit|limit (reached|exceeded)|hit your [a-z ]*limit|weekly limit|too many requests|\b429\b|insufficient[_ ]quota|out of credits|credit balance|exceeded your/i;
 // Provider-side outages (free models overload): the next runtime in the chain takes the turn, like a quota hit.
-export const TRANSIENT_ERROR = /\b50[234]\b|overloaded|temporarily unavailable|service unavailable|upstream error|ECONNRESET|ETIMEDOUT|socket hang up|model not found|hook dispatch failed/i; // last two: a misconfigured runtime (cline 2026-09-23) — the next runtime takes over
+export const TRANSIENT_ERROR = /\b50[234]\b|\b426\b|Upgrade Required|failed to connect to websocket|ECONNREFUSED|stream disconnected|error sending request|overloaded|temporarily unavailable|service unavailable|upstream error|ECONNRESET|ETIMEDOUT|socket hang up|model not found|hook dispatch failed/i; // last two: a misconfigured runtime (cline 2026-09-23) — the next runtime takes over
 // Lane config: runtime / qaRuntime may be one id or an ordered fallback list, e.g. ["opencode", "codex"].
 const chainOf = (value) => [value].flat().filter(Boolean);
 const INTEGRATION_FAILED = new Set(["CONFLICT", "GATE_FAILED", "NOT_INTEGRATED"]);
@@ -405,6 +405,9 @@ export class PortfolioRunner {
     await this.reloadManifestIfChanged();
     const state = await this.load();
     state.activeBuilders = []; state.activeQa = [];
+    // a HOLD someone already re-registered as <id>-R2 / a higher -Rn is not requeued (R-10: duplicates after an outage)
+    const allIds = new Set([...state.tasks.map((t) => t.taskId), ...this.manifest.projects.flatMap((p) => definitions(p).map((d) => d.taskId))]);
+    const superseded = (id) => { const m = /^(.*?)(?:-R(\d+))?$/.exec(id); const n = Number(m[2] || 1); return [...allIds].some((other) => { const o = /^(.*?)-R(\d+)$/.exec(other); return o && o[1] === m[1] && Number(o[2]) > n; }); };
     state.tasks = state.tasks.map((task) => {
       // work cut off by the night deadline resumes in the morning instead of waiting as a HOLD
       if (task.state === "HOLD" && task.error === "CHECKPOINTED_DEADLINE") return { ...task, state: "QUEUED", error: null, reconcile: "REQUEUED_AFTER_DEADLINE" };
@@ -415,7 +418,7 @@ export class PortfolioRunner {
       // missing deps in the borrowed node_modules (JuCeipt zod) were an environment failure, not the task's; linkDeps now
       // falls back to a cached npm ci, so rerun those once
       if (task.state === "HOLD" && !task.depsRequeued && !state.tasks.some((x) => x.taskId === `${task.taskId}-R2`) && /Failed to load url |Cannot find module '|TS2307/.test(`${task.error || ""} ${(task.qa?.findings || []).join(" ")}`)) return { ...task, state: "QUEUED", error: null, qa: null, attempts: 0, depsRequeued: true, reconcile: "REQUEUED_AFTER_DEPS_FIX" };
-      if (task.state === "HOLD" && (TRANSIENT_ERROR.test(String(task.error || "")) || QUOTA_ERROR.test(String(task.error || ""))) && (task.outageRequeues || 0) < 2) return { ...task, state: "QUEUED", error: null, attempts: 0, outageRequeues: (task.outageRequeues || 0) + 1, reconcile: "REQUEUED_AFTER_PROVIDER_OUTAGE" };
+      if (task.state === "HOLD" && (TRANSIENT_ERROR.test(String(task.error || "")) || QUOTA_ERROR.test(String(task.error || ""))) && (task.outageRequeues || 0) < 2 && !superseded(task.taskId)) return { ...task, state: "QUEUED", error: null, attempts: 0, outageRequeues: (task.outageRequeues || 0) + 1, reconcile: "REQUEUED_AFTER_PROVIDER_OUTAGE" };
       if (task.state === "RUNNING" || task.state === "QA") {
         const pid = task.state === "QA" ? task.qaEvidence?.pid : task.builderEvidence?.pid;
         return pid && processAlive(pid) ? { ...task, reconcile: "ACTIVE_PROCESS_PRESERVED" } : { ...task, state: "QUEUED", reconcile: "REQUEUED_AFTER_RESTART" };
