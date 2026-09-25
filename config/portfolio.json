@@ -9427,6 +9427,28 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "확인된 작업만 진행 여부를 정리함"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-M3-DAILY-CORPUS-TRUTH",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md, change only the M3 evidence lines (Control Tower row line 36, bullet line 153, and the 'M3 daily value integration' paragraph lines 164-165). Say that the daily corpus is t01–t10, with 10 Receipts (9 review_required, 1 unknown, 0 ready) and no committed Claude final under those task IDs, and that 0 rows of the Founder seven-task register join to both a final and a Receipt, citing docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.2. Also note that the 4 받아도 됨 / 10 확인 후 받기 mix belongs to the 14-task M2 corpus. Record no M3 decision.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:164-165 'The daily value summary is integrated for 10 tasks. The canonical receipt count is **4 `받아도 됨` / 10 `확인 후 받기`**' vs docs/validation/M3_DAILY_VALUE_VALIDATION.md:75 'Daily `t01`–`t10` | not committed with these task IDs | 10 | 0' and :134 '9 `review_required`, 1 `unknown`, 0 `ready`'; Founder direction 2026-09-26 (board says 10 tasks, register names seven; reconcile which have both a Claude final and a Receipt)"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-CLOSEOUT-RECONCILE-PROVENANCE",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md Section 7, update only the 'Completed by' and 'Validation date' closeout rows. Add the 2026-09-26 final-versus-Receipt reconciliation commits 2412f80 and 99c8500 (both change the Section 2.2 join) next to the existing 2026-09-24 register commits. Leave the mapping, the decision rows and every other section unchanged.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:215-216 'Completed by | `Ju0o___` — register commits `b4cd138`, `04c7373`, and `a77257a`' / 'Validation date | `2026-09-24`' while `git log 99c8500` shows 2412f80 'docs: reconcile M3 seven-task artifact join' and 99c8500 'docs: reconcile M3 final and receipt evidence' dated 2026-09-26; Founder direction 2026-09-26"
         }
       ]
     },
