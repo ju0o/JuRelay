@@ -9183,6 +9183,28 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/qa/P0_ROADMAP_WBS_GATE_QA.md:19 RQ-03 'Define one mapping at the contract boundary: useful → `GO`, useful-but-distracting → `DEFER`, duplicates → `KILL`; reserve `RETRY`/`SCALE` for the separately defined milestone decision vocabulary.'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:185-187 already uses this mapping"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-PASS-CHECKBOX-SYNC",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md, tick only the checklist items whose linked M3 validation evidence is already complete: §4.2 line 133 'Separate Usage / Delivery / Value Estimate' (its §4.2 trace says PASS), §4.3 line 144 'Compare Daily view versus reading individual receipts' (§3.1 scores all ten tasks: 7 ACTIONABLE, 3 UNKNOWN/UNVERIFIED GAP), and §4.3 line 145 'user knows what needs attention now' (§4 review_queue_utility is PASS); leave the UNKNOWN items on lines 134-138, line 146 (§5 value/cost is UNKNOWN) and the line 147 GO/DEFER/KILL decision unticked, and change no other text.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:154 '| Separate Usage / Delivery / Value Estimate | Section 4 `value_layer_separation` is `PASS`. | `PASS` |' vs docs/planning/BUSINESS_PRODUCT_WBS.md:133 '- [ ] Separate Usage / Delivery / Value Estimate. ([M3 validation §4.2: `PASS`]'; Founder direction 2026-09-25 'score decision utility per task'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-SECTION5-SOURCE-REF-FORMAT",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md Section 5 (lines 167-171), replace the markdown links whose targets are `../JuCeipt@402d3ee:<path>` (these point nowhere as relative paths) with the same code-span source-reference format Section 3 already uses (e.g. `../JuCeipt@402d3ee:daily/2026-09-05.json`), keeping every cited artifact, answer, count and UNKNOWN value exactly as it is.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:33-35 'Recheck with `git -C ../JuCeipt show 402d3ee:<path>`; this validation repository does not copy those source artifacts.'"
         }
       ]
     },
