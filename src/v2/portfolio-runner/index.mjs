@@ -391,7 +391,9 @@ export class PortfolioRunner {
     const activeIds = new Set(this.manifest.projects.filter((project) => project.active !== false).map((project) => project.id));
     for (const project of this.manifest.projects.filter((item) => item.active !== false)) {
       // A task that ended in HOLD/gate is settled for now: report it, and let the lane continue with the next definition.
-      const next = definitions(project).find((definition) => !state.tasks.some((task) => task.taskId === definition.taskId && SETTLED.has(task.state)));
+      // dependsOn (R-09): a definition waits until every listed task (or its -R2 redesign) is VERIFIED_DONE, so a HOLD upstream never lets dependents run
+      const done = (id) => state.tasks.some((task) => (task.taskId === id || task.taskId === `${id}-R2`) && task.state === "VERIFIED_DONE");
+      const next = definitions(project).find((definition) => !state.tasks.some((task) => task.taskId === definition.taskId && SETTLED.has(task.state)) && (definition.dependsOn || []).every(done));
       // Plan Studio "stop after each task": a lane paused by the runner waits for `night roadmap resume` (it removes the flag).
       if (existsSync(join(resolve(this.statePath, ".."), "lane-pause", project.id))) continue;
       if (next && !state.tasks.some((task) => task.projectId === project.id && task.taskId === next.taskId)) state.tasks.push({ ...next, projectId: project.id, state: "QUEUED", attempts: 0, qaAttempts: 0 });
@@ -514,7 +516,8 @@ export class PortfolioRunner {
         const head = await headOf();
         const gate = await this.testGate(builder.path, task.tests, { signal });
         const moved = head !== null && (await headOf()) !== head;
-        task.testGate = { ok: gate.ok && !moved, results: gate.results.map(({ cmd, code }) => ({ cmd, code })), at: new Date().toISOString() };
+        task.testGate = { ok: gate.ok && !moved, results: gate.results.map(({ cmd, code, tail }) => ({ cmd, code, ...(code !== 0 ? { tail: String(tail || "").slice(-4000) } : {}) })), at: new Date().toISOString() };
+        if (!gate.ok || moved) { const logDir = join(resolve(this.statePath, ".."), "test-gates"); await mkdir(logDir, { recursive: true }).catch(() => {}); await writeFile(join(logDir, `${task.taskId}.log`), gate.results.map((r) => `$ ${r.cmd}\nexit ${r.code}\n${r.tail || ""}\n`).join("\n")).catch(() => {}); }
         const failed = gate.results.find((result) => result.code !== 0);
         if (!task.testGate.ok) task.qa = { ...task.qa, verdict: "REQUEST_CHANGES", findings: [...(task.qa.findings || []), failed ? `TEST_GATE: \`${failed.cmd}\` exit ${failed.code}: ${failed.tail}` : "TEST_GATE: tests changed HEAD"] };
       }
@@ -526,7 +529,8 @@ export class PortfolioRunner {
       if (task.qa.verdict === "FOUNDER_GATE") task.state = "FOUNDER_GATE"; else task.state = "HOLD"; await this.publishResult(task); break;
       }
     } catch (error) { if (signal?.aborted) { preserveWorktree = true; task.state = "RUNNING"; task.error = "CHECKPOINTED_DEADLINE"; } else if (runtimeLaunchFailure(error)) { task.state = "HOLD"; task.error = `RUNTIME_LAUNCH:${String(error.message || error)}`; } else { task.state = "HOLD"; task.error = String(error.message || error); } state.activeBuilders = state.activeBuilders.filter((item) => item.taskId !== task.taskId); state.activeQa = state.activeQa.filter((item) => item.taskId !== task.taskId); }
-    if (!preserveWorktree) await builder.cleanup(); await this.save(state);
+    // R-08: a HOLD keeps its worktree so the failure can be reproduced (ponytail: never pruned; add pruning if disk fills)
+    if (!preserveWorktree && task.state !== "HOLD") await builder.cleanup(); await this.save(state);
   }
 
   async resolveFounderGate(gateId, decision) {
@@ -564,7 +568,8 @@ export class PortfolioRunner {
         const slots = Math.max(1, Number(this.manifest.maxBuilders) || 2) - inflight.size;
         // One task per lane at a time: tasks of one project edit the same files, so parallel ones conflict at integration.
         const busyLanes = new Set(state.tasks.filter((item) => inflight.has(item.taskId)).map((item) => item.projectId));
-        const next = state.tasks.filter((item) => item.state === "QUEUED" && !inflight.has(item.taskId) && !busyLanes.has(item.projectId) && (busyLanes.add(item.projectId), true));
+        const paused = (id) => existsSync(join(resolve(this.statePath, ".."), "lane-pause", id));  // R-09: pause also holds tasks already QUEUED
+        const next = state.tasks.filter((item) => item.state === "QUEUED" && !inflight.has(item.taskId) && !busyLanes.has(item.projectId) && !paused(item.projectId) && (busyLanes.add(item.projectId), true));
         for (const task of next.slice(0, Math.max(0, slots))) {
           inflight.set(task.taskId, this.runOne(task, state, { signal }).catch((error) => { if (!signal?.aborted) { task.state = "HOLD"; task.error = `RUNNER_ERROR: ${String(error?.message || error)}`; } }).finally(() => inflight.delete(task.taskId)));
         }
