@@ -8568,6 +8568,24 @@
             "JCAPP-LOVABLE-ENV-PANEL"
           ],
           "title": "허브: 토큰 감지 카드"
+        },
+        {
+          "taskId": "JCAPP-LOVABLE-HOME-ORDER",
+          "scope": "Tester capture of the integrated hub (2026-09-25 23:55) differs from the approved Lovable reference /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png in these points; fix all of them in operator/public/app.js/app.css without changing APIs: (1) Home order must be exactly: date+title header → one banner → 4 stats → '지금 상황' project cards → '멈춘 작업' (hold cards of all lanes, the same holdCard component used in 진행, max 4 then a '모두 보기' button to 진행) → 'AI 창' (the AI window cards, max 3 + '모두 보기') → '실행 환경' → '토큰 감지' card; (2) remove from Home the legacy blocks '지금 일하는 중' list, '오늘 끝난 것' list and '이럴 때 쓰세요' shortcuts (keep the done list available in 진행 → 결과, not deleted); (3) banner like the reference: bold title line '멈춘 작업 N건', a second smaller line with the auto-proceed sentence using holds[].waitMin, the amber filled [멈춘 작업 보기] button on the right; (4) the '사람 확인 · 다시 시작' card uses the amber border, never red (founder-ux: being stuck is amber); (5) 실행 환경 bars turn amber when CPU ≥ 85% or RAM free < 3.5 GB; (6) project label 'Juradar' → 'JuRadar'. Tests: a home render test asserting the section order and the absence of the legacy blocks, plus the colour rules.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/lovable-home-order.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-home-order.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로'. Approved Lovable design /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. founder-ux Skill.",
+          "dependsOn": [
+            "JCAPP-TOKEN-DETECT"
+          ],
+          "title": "새 디자인: 홈 순서를 승인된 디자인과 똑같이"
         }
       ],
       "skills": {
