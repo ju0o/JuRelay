@@ -2003,6 +2003,120 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 16:09: '5) 허브 [반영하기] = 새 하위 명령 night promote hub(JuControler-Private ff-merge + promote-operator.sh, 누를 때만). 새 night 하위 명령은 JSON 한 줄, 백엔드 테스트는 가짜 명령 실행기로.'",
           "title": "버튼 한 번으로 중심 PC 전환"
+        },
+        {
+          "taskId": "AGENTRELAY-LOVABLE-SHELL",
+          "scope": "Port the approved Lovable design into the existing Electron React app (src/frontend/*.tsx, src/frontend/style.css) — same look (dark only: bg #0b0d10, cards #12151a, 1px border #232830, radius 14px, teal #7dd3c0 done/OK, amber #e8c170 needs-a-look (never red for stuck), muted #8b93a1, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from the existing backend calls (board, approvals, plan studio, envs, tokens, lane pause, automation toggle, plan request); never hard-code the sample data. Keep every existing feature reachable, keep IPC/preload contracts and tests working; no new npm dependencies. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable. Step 1 (shell): CSS tokens from the reference styles.css; fixed 220px left rail (brand tile 'Agent Relay / AI 팀 자동 실행', items 관제실 · 계획 · 승인 규칙 · 작업 기록 · 설정, active item teal-tinted, bottom box '작업 PC 연결됨 · 방금 확인' from the existing connection state, amber '작업 PC에 연결할 수 없어요' when down) that stays in place while only the main area scrolls; main top bar with the page title, small '실행 환경: <env>' text and the big '자동 실행 켜짐/꺼짐' toggle (icon and text together, not justify-between) wired to the existing automation-toggle backend with inline '켰어요 ✓'/'껐어요 ✓'. The current top nav items map to the rail; the existing work-record/agent-session view becomes 작업 기록; 개발 도구 moves under 설정 → '고급 (개발용)'. Pure helpers + a test for the nav items and the toggle label.",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "src/frontend/components.tsx",
+            "test/lovable-shell.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'.",
+          "title": "새 디자인: 색·글꼴·왼쪽 메뉴·맨 위 줄"
+        },
+        {
+          "taskId": "AGENTRELAY-LOVABLE-CR-TOP",
+          "scope": "Port the approved Lovable design into the existing Electron React app (src/frontend/*.tsx, src/frontend/style.css) — same look (dark only: bg #0b0d10, cards #12151a, 1px border #232830, radius 14px, teal #7dd3c0 done/OK, amber #e8c170 needs-a-look (never red for stuck), muted #8b93a1, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from the existing backend calls (board, approvals, plan studio, envs, tokens, lane pause, automation toggle, plan request); never hard-code the sample data. Keep every existing feature reachable, keep IPC/preload contracts and tests working; no new npm dependencies. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable. Step 2 (관제실 top): dismissible first-run 3-step guide (이건 무엇인가요 → 필요한 설정 한 가지: 작업 PC 연결 → 다음에 일어나는 일, [알겠어요], remembered locally); one banner — amber '멈춘 작업 N건' + second line '5분 안에 고르지 않으면 추천대로 진행해요' (from holds[].waitMin) + amber [멈춘 작업 보기] scrolling to the holds, or teal '지금 하실 일은 없어요. 알아서 진행 중이에요.'; 4 stat tiles (오늘 끝난 작업 teal, 지금 일하는 AI, 멈춘 작업 amber, 대기) from the board. Pure helpers + test with a board fixture.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/style.css",
+            "test/lovable-cr-top.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'.",
+          "dependsOn": [
+            "AGENTRELAY-LOVABLE-SHELL"
+          ],
+          "title": "새 디자인: 관제실 맨 위 안내·숫자 4개"
+        },
+        {
+          "taskId": "AGENTRELAY-LOVABLE-CR-CARDS",
+          "scope": "Port the approved Lovable design into the existing Electron React app (src/frontend/*.tsx, src/frontend/style.css) — same look (dark only: bg #0b0d10, cards #12151a, 1px border #232830, radius 14px, teal #7dd3c0 done/OK, amber #e8c170 needs-a-look (never red for stuck), muted #8b93a1, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from the existing backend calls (board, approvals, plan studio, envs, tokens, lane pause, automation toggle, plan request); never hard-code the sample data. Keep every existing feature reachable, keep IPC/preload contracts and tests working; no new npm dependencies. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable. Step 3: restyle the existing live status cards into the reference project cards (2 columns ≥1100px, 1 column below): name + '잠시 멈춤' state, rows 지금 하는 일 / 여기까지 끝남 (5-step pill stepper) / 확인 상태 chip + evidence / 대표님 할 일 + one outline button / 다음 단계 with folded 원문 보기; a ghost '이 프로젝트 잠시 멈춤' button with inline two-button confirm ([계속 진행] first, then [잠시 멈춤]) wired to the existing lane-pause backend (and '다시 시작' when paused). Restyle the hold cards like the reference (amber border, stepper with amber '!', title, plain sentence, '그래서 <underlined amber recommended ▾> 할게요.' expanding radio options with 추천 first, full-width amber [이대로 진행] using the existing hold-choose call, teal-soft '선택했어요 ✓ · 곧 다시 설계해요', '안 고르면 HH:MM에 추천대로 진행해요'). Tests for the render helpers.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/style.css",
+            "test/lovable-cr-cards.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'.",
+          "dependsOn": [
+            "AGENTRELAY-LOVABLE-CR-TOP"
+          ],
+          "title": "새 디자인: 프로젝트 카드·멈춘 작업 카드"
+        },
+        {
+          "taskId": "AGENTRELAY-LOVABLE-CR-BOTTOM",
+          "scope": "Port the approved Lovable design into the existing Electron React app (src/frontend/*.tsx, src/frontend/style.css) — same look (dark only: bg #0b0d10, cards #12151a, 1px border #232830, radius 14px, teal #7dd3c0 done/OK, amber #e8c170 needs-a-look (never red for stuck), muted #8b93a1, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from the existing backend calls (board, approvals, plan studio, envs, tokens, lane pause, automation toggle, plan request); never hard-code the sample data. Keep every existing feature reachable, keep IPC/preload contracts and tests working; no new npm dependencies. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable. Step 4: below the holds, in this order — 'AI 배정' chips (friendly AI name + plain state 일하는 중 / 쉬는 중 / 잠시 쉬게 함 · N분 뒤 다시 (from routing cooldown) / 준비 안 됨, teal/amber/muted), the 토큰 감지 card restyled like the reference (summary line, two big numbers, amber finding rows with bold text + '왜:' + '할 일:', raw under 원문 보기), then '오늘 끝난 일' as a divided list 'project bold · Korean title · N분 전'. Move the 실행 환경 panel off 관제실 (it goes to 설정 in step 6). Tests for the helpers.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/style.css",
+            "test/lovable-cr-bottom.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'.",
+          "dependsOn": [
+            "AGENTRELAY-LOVABLE-CR-CARDS"
+          ],
+          "title": "새 디자인: AI 배정·토큰 감지·오늘 끝난 일"
+        },
+        {
+          "taskId": "AGENTRELAY-LOVABLE-PLAN-RULES-LOG",
+          "scope": "Port the approved Lovable design into the existing Electron React app (src/frontend/*.tsx, src/frontend/style.css) — same look (dark only: bg #0b0d10, cards #12151a, 1px border #232830, radius 14px, teal #7dd3c0 done/OK, amber #e8c170 needs-a-look (never red for stuck), muted #8b93a1, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from the existing backend calls (board, approvals, plan studio, envs, tokens, lane pause, automation toggle, plan request); never hard-code the sample data. Keep every existing feature reachable, keep IPC/preload contracts and tests working; no new npm dependencies. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable. Step 5: restyle 계획 (left project list 250px, right 목표 card, 작업 순서 rows with number circle + state chip, 'PM에게 바꿔 달라고 말하기' input + [보내기]→'보냈어요 ✓', 사람 확인 box with answer buttons 추천 first), 승인 규칙 (the existing rule groups (keep their current category labels, including the always-ask-the-Founder group), each rule sentence + '자동 적용 N회' + [고치기] [지우기] with inline results, '규칙 추가' card with category select + sentence input), 작업 기록 (by date, '지시 → 결과' rows with [복사]→'복사했어요 ✓'). Keep the existing data calls and three-line error states (what / why / what to do + [다시 시도], PC off vs on-but-failing). Tests for the helpers.",
+          "files": [
+            "src/frontend/planStudio.tsx",
+            "src/frontend/approvals.tsx",
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "test/lovable-plan-rules-log.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'.",
+          "dependsOn": [
+            "AGENTRELAY-LOVABLE-CR-BOTTOM"
+          ],
+          "title": "새 디자인: 계획·승인 규칙·작업 기록 화면"
+        },
+        {
+          "taskId": "AGENTRELAY-LOVABLE-SETTINGS",
+          "scope": "Port the approved Lovable design into the existing Electron React app (src/frontend/*.tsx, src/frontend/style.css) — same look (dark only: bg #0b0d10, cards #12151a, 1px border #232830, radius 14px, teal #7dd3c0 done/OK, amber #e8c170 needs-a-look (never red for stuck), muted #8b93a1, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from the existing backend calls (board, approvals, plan studio, envs, tokens, lane pause, automation toggle, plan request); never hard-code the sample data. Keep every existing feature reachable, keep IPC/preload contracts and tests working; no new npm dependencies. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable. Step 6 (설정): '실행 환경' radio cards from the existing envs call — ASUS (이 컴퓨터) selectable, MainPC shows its CPU/RAM but its button says '준비 중 — 원격 실행은 보류 중이에요' (the Founder put remote execution on hold; do not implement it), 클라우드 disabled '곧 지원'; CPU bar + 'X/Y GB 남음', amber when CPU ≥85% or RAM <3.5 GB, installed AIs by friendly name; '동시에 일하는 AI 수' shown read-only from the board/manifest ('지금 3명 · RAM이 부족하면 자동으로 줄여요'); the existing 업데이트 row restyled; '고급 (개발용)' folded section holding 개발 도구. Tests for the helpers.",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "test/lovable-settings.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'.",
+          "dependsOn": [
+            "AGENTRELAY-LOVABLE-PLAN-RULES-LOG"
+          ],
+          "title": "새 디자인: 설정 (실행 환경·AI 수·업데이트)"
         }
       ],
       "qaRuntime": [
