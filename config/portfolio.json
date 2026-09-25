@@ -3974,7 +3974,12 @@
       "qaRuntime": [
         "codex",
         "opencode"
-      ]
+      ],
+      "skills": {
+        "pm": [
+          "founder-ux"
+        ]
+      }
     },
     {
       "id": "juceipt",
