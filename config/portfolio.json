@@ -3325,6 +3325,18 @@
             "python3 -m pytest tests/test_serve_result_ready.py tests/test_serve.py tests/test_serve_plain_cards.py -q"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): 대상 actl serve 웹 보드 — 답 도착, 결과 복사; Tk counterpart ACTL-RESULT-READY-COPY-CTA-R2 done, web still shows '결과 준비' with an always-on '⧉ 복사'"
+        },
+        {
+          "taskId": "ACTL-TK-READABLE-SIZES-R2",
+          "scope": "From base 43f7a2e2d5f63292082f98aeb637106d355b7912, update src/actl/gui.py so every explicit GUI font tuple, including FONT, FONT_MONO, FONT_HDR, runtime family overrides, and the hard-coded card header, is at least 12pt, and raise the shared button helper padding to pady>=10; add an AST offline test that fails on the base code and passes only when these minimums hold.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_readable_sizes.py"
+          ],
+          "tests": [
+            "python3 -m pytest tests/test_gui_readable_sizes.py tests/test_gui_theme.py -q"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): founder-ux '글자 16px·버튼 44px' for JuActl Board src/actl/gui.py; gui.py:40 FONT = ('Segoe UI', 10), button pady=6/8; ACTL-WEB-READABLE-SIZES covers only serve.py CSS"
         }
       ],
       "qaRuntime": [
