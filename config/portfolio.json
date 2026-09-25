@@ -3433,6 +3433,19 @@
           ],
           "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
           "title": "작업판 화면을 쉬운 말로 바꾸기"
+        },
+        {
+          "taskId": "ACTL-BOARD-PLAIN-WORDS-R4",
+          "scope": "Narrow follow-up of ACTL-BOARD-PLAIN-WORDS-R3 (its other changes already stand): only these two surfaces in src/actl/gui.py — (1) the re-map candidate list (~lines 1539-1553) shows pane IDs, paths and OpenCode/ACP strings: show the AI friendly name + folder name + state in Korean, move pane id/path/raw names under a folded '원문 보기'; (2) the AI 연결 dialog (~lines 1887-1891) shows Agent, pane ID, tmux target and the command: show '<AI 이름> · <폴더> 창에 연결할게요' and move the rest under '원문 보기'. Add tests/test_board_plain_words_r4.py asserting the visible strings contain no pane id pattern (%\\d+), no '/', no 'tmux', no 'ACP'. Run with python3 tests/run_tests.py (pytest is not installed; do not require it).",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_board_plain_words_r4.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: '진짜 비개발자도 보면 이해가 되게'. founder-ux Skill. QA findings of ACTL-BOARD-PLAIN-WORDS-R3.",
+          "title": "보드: 남은 개발자 글자 두 곳 숨기기"
         }
       ],
       "qaRuntime": [
