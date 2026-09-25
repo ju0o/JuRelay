@@ -36,7 +36,7 @@ function packetLine(text, prefix) {
 // A quota/rate-limit failure moves the lane to the next runtime in its chain instead of holding the task.
 export const QUOTA_ERROR = /\b402\b|Payment Required|balance exhausted|rate.?limit|quota|usage limit|limit (reached|exceeded)|hit your [a-z ]*limit|weekly limit|too many requests|\b429\b|insufficient[_ ]quota|out of credits|credit balance|exceeded your/i;
 // Provider-side outages (free models overload): the next runtime in the chain takes the turn, like a quota hit.
-export const TRANSIENT_ERROR = /\b50[234]\b|\b426\b|Upgrade Required|failed to connect to websocket|ECONNREFUSED|stream disconnected|error sending request|overloaded|temporarily unavailable|service unavailable|upstream error|ECONNRESET|ETIMEDOUT|socket hang up|model not found|hook dispatch failed/i; // last two: a misconfigured runtime (cline 2026-09-23) — the next runtime takes over
+export const TRANSIENT_ERROR = /\b50[234]\b|\b426\b|Upgrade Required|failed to connect to websocket|ECONNREFUSED|stream disconnected|error sending request|overloaded|temporarily unavailable|service unavailable|upstream error|ECONNRESET|ETIMEDOUT|socket hang up|model not found|hook dispatch failed|session not found/i; // last two: a misconfigured runtime (cline 2026-09-23) — the next runtime takes over; cline "session not found" 2026-09-26
 // Lane config: runtime / qaRuntime may be one id or an ordered fallback list, e.g. ["opencode", "codex"].
 const chainOf = (value) => [value].flat().filter(Boolean);
 const INTEGRATION_FAILED = new Set(["CONFLICT", "GATE_FAILED", "NOT_INTEGRATED"]);
