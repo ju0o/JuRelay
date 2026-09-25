@@ -6049,6 +6049,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 A-28 (all agent records → receipts), hub shows the scan",
           "title": "JuCeipt 오늘 작업 영수증 한눈에 보기"
+        },
+        {
+          "taskId": "JCAPP-PEER-LANE-NAMES",
+          "scope": "New lanes added by other sessions show raw ids in the 진행 tabs and home lines ('juai', 'ai-agent-marketplace'). Add juai → 'JuAi', ai-agent-marketplace → 'AI 에이전트 마켓플레이스' to the shared project-name map, and make any unknown lane id render as a readable title (replace '-' with spaces, capitalise words) instead of the raw id. Extend the existing name-map test.",
+          "files": [
+            "operator/public/app.js",
+            "test/home-working-line.test.mjs"
+          ],
+          "tests": [
+            "node --test test/home-working-line.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Supervisor capture review run-20260925-1006",
+          "title": "New lanes added by other sessions show raw ids in the 진행 tab"
         }
       ]
     },
