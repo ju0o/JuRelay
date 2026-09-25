@@ -7681,6 +7681,30 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '그냥 30분 내로 말고 5분내로 바로 자동 실행 추천구조로'; night-hold.py WAIT_MIN=5; board holds[].waitMin",
           "title": "멈춘 작업 대기 시간을 실제 값으로"
+        },
+        {
+          "taskId": "JCAPP-RELAY-LIVE-STATUS-CARD",
+          "scope": "홈과 진행의 Agent Relay 레인 카드에 지금 하는 일·여기까지 끝남·확인 상태·대표님 할 일·다음 단계를 /api/relay/board 기반의 쉬운 한국어로 표시한다.",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 허브 홈과 진행 탭에 Agent Relay 레인별 Live status card를 같은 용어와 색으로 표시"
+        },
+        {
+          "taskId": "JCAPP-ACTL-LIVE-STATUS-CARD",
+          "scope": "진행의 actl AI 창 카드를 AI 이름·폴더·일하는 상태·마지막 요청·답변 복사 가능 여부가 보이는 한국어 카드로 정리하고 원문은 접어 둔다.",
+          "files": [
+            "operator/public/app.js",
+            "test/actl-panes-plain.test.mjs"
+          ],
+          "tests": [
+            "node --test test/actl-panes-plain.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: actl AI 창 카드는 실시간 창 API를 우선 사용하고 그 전에는 기존 /api/panes를 사용하며 같은 Live status card 용어를 적용"
         }
       ],
       "skills": {
