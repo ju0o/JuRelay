@@ -5775,6 +5775,20 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-24 02시: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e script runs]; README.md at 7a8957a section 3 lists 'node --test tests/*.test.mjs' and 'node scripts/status-board.mjs <registry.json> [--project-id <id>]', which match the e2e.sh `tests`/`board` next commands"
+        },
+        {
+          "taskId": "JUCONTROLER-README-VIDEO",
+          "scope": "Copy the ready-made 30-second intro video /home/skkse12/Desktop/Projects/Team/promo-v3/out/jucontroler-30s.mp4 to docs/media/jucontroler-30s.mp4 and its thumbnail /home/skkse12/Desktop/Projects/Team/promo-v3/out/jucontroler.jpg to docs/media/jucontroler-30s.jpg (binary copies, unchanged). In README.md, right under the one-line intro, add a '## 30초 소개 영상' section: the thumbnail image as a clickable link to docs/media/jucontroler-30s.mp4 (markdown [![30초 소개 영상](docs/media/jucontroler-30s.jpg)](docs/media/jucontroler-30s.mp4)), then one line '전체 소개 (60초): https://youtu.be/tB1cCLzTvIs'. Nothing else changes.",
+          "files": [
+            "docs/media/jucontroler-30s.mp4",
+            "docs/media/jucontroler-30s.jpg",
+            "README.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: '각 Github에 따로 따로 올릴거라 영상도 따로따로'; 'Aside가 영상 링크 안 주는 거 같은데' → put each repo's 30s video in the repo itself; overall 60s intro already on YouTube https://youtu.be/tB1cCLzTvIs (Aside upload, 일부 공개)",
+          "title": "README에 소개 영상 넣기"
         }
       ],
       "qaRuntime": [
