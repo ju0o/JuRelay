@@ -4522,6 +4522,9 @@
         ],
         "worker": [
           "founder-ux"
+        ],
+        "qa": [
+          "founder-ux"
         ]
       }
     },
