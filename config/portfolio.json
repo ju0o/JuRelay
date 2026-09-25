@@ -4732,6 +4732,32 @@
             "npm run build"
           ],
           "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-RUN-OUTPUT-PLAIN-VERDICT",
+          "scope": "In runCommand in src/cli/main.ts, replace the raw `상태: <acceptance.state enum> (label)` line and the bare 누락/영향/결과 counts with one plain Korean first sentence giving the verdict label and what it means (for example '확인 후 받기 — 빠진 확인 N건을 보고 받으세요'). Keep the receipt/HTML paths on copyable lines, and extend tests/daily-cli.test.ts so the output contains the Korean label and never the raw state words (partial/failed/unknown/ready).",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-cli.test.ts",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 대상: juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻; founder-ux rule 2 (no enum words on the surface); src/cli/main.ts:148 prints receipt.acceptance.state raw"
+        },
+        {
+          "taskId": "JUCEIPT-CLI-ERROR-THREE-LINES",
+          "scope": "In the main() catch block in src/cli/main.ts, turn the generic `오류: <raw err.message>` output into three short plain Korean lines (무슨 일 / 왜, e.g. 폴더나 파일이 없어요 for ENOENT / 할 일). Move the raw English message to one final '원문:' line and keep exit code 1, then update tests/daily-cli.test.ts to cover a missing receipts directory (ENOENT) and the existing empty-dir case.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-cli.test.ts",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '오류 3줄', '개발자 글자는 원문 보기 안'; src/cli/main.ts:268 prints raw err.message (e.g. English ENOENT text) with a generic next line"
         }
       ],
       "skills": {
