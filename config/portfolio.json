@@ -9859,6 +9859,28 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping ... UNDECIDED — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts' vs docs/operations/PM_STATUS_BOARD.md:58 'INTEGRATED — VALIDATION NEXT'; Founder direction 2026-09-26",
           "title": "작업표와 현황판의 3단계 상태 맞추기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-CLOSEOUT-JOIN-SCOPE-NOTE",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md Section 7, change only two rows. In the 'Actionable day-level value bar' row (line 221), add that the Section 3.1 tally (7 ACTIONABLE / 3 UNKNOWN) comes from t01–t10 Receipt-only rows that have no committed Claude final, so it is not final+Receipt joined evidence and cannot on its own support GO, DEFER or KILL under Section 2.2. In the 'Next authorized step' row (line 223), say the evidence-bounded result is UNDECIDED (0 joined rows) and the PM records the M3 decision separately. Do not change any other row or section.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:75 '| Daily `t01`–`t10` | not committed with these task IDs | 10 | 0 |' and :209 '`UNDECIDED` ... must not be converted into `GO`, `DEFER`, or `KILL`'; Founder direction 2026-09-26 'record M3 GO, DEFER, or KILL on only that evidence'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-M3-NEXT-MOVES-SYNC",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md, change only three places that still show M3 validation as not yet done: the milestone-table state 'INTEGRATED — VALIDATION NEXT' (line 58), 'Next steps' item 1 (line 172), and 'Next PM Moves' row 1 (line 264). Each should say the 10-receipt register and the final-versus-Receipt reconciliation are complete, 0 seven-task rows join both artifacts, the mapping is UNDECIDED per M3_DAILY_VALUE_VALIDATION §2.2/§7, and the M3 decision is pending. Do not record any GO, DEFER or KILL, and leave the M2 and P0 rows unchanged.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:172 '1. Validate the 10-task daily summary against real user decisions.' and :264 '| 1 | Validate the integrated 10-task Daily Value summary | M3 NOW |' versus docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 '`UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'"
         }
       ]
     },
