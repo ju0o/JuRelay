@@ -3287,6 +3287,19 @@
             "python3 -m pytest -q"
           ],
           "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill"
+        },
+        {
+          "taskId": "ACTL-BOARD-PLAIN-WORDS-R2",
+          "scope": "Rewrite the JuActl Board for non-developers using the requested plain Korean labels, hide SSH/LOCAL, English ON, and tmux/pane/session/window terms from the visible surface, and add tests in test_board_plain_words.py that fail on the old code and pass on the new code.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_board_plain_words.py"
+          ],
+          "tests": [
+            "python3 -m pytest tests/test_board_plain_words.py -q",
+            "python3 -m pytest -q"
+          ],
+          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill"
         }
       ],
       "qaRuntime": [
