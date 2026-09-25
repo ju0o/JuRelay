@@ -9818,6 +9818,20 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:290-294 \"다음 조건에 해당하는 용어만 쉬운 설명을 제공한다. * 사용자가 작업 결과를 이해하는 데 필요한 용어\" + Founder direction 2026-09-23 (PRODUCT_SCOPE §6.6 필요한 용어만)",
           "title": "바뀐 게 없을 때 엉뚱한 용어 설명 막기"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-RISK-NO-CHANGES",
+          "scope": "In packages/cli/src/commands/context.ts, make riskSummary print 위험 힌트: 없음 (변경된 파일 없음) when Git is available but no files changed, instead of the current 문서·테스트·단순 변경 수준 text that suggests a change happened, plus an offline node:test that checks this branch comes after the Git-unavailable branch and before the no-risk fallback.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "tests/context-risk-no-changes.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-risk-no-changes.test.mjs",
+            "node --test tests/context-risk-unknown-no-git.test.mjs tests/context-risk-level-scope-parity.test.mjs tests/context-unverifiable-wording-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:652 \"다음 정보가 실제 프로젝트 상태와 일치해야 한다.\" (§11.2 사실 정확성)"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
