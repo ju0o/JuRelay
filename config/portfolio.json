@@ -3806,6 +3806,45 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '보니까 바뀐 기능 및 기능이 많이 구현 되었네 이것들 Github에서 README 파일 다듬고 이후 홍보영상 다시 제작'; portfolio architecture (Founder): actl = 리모컨, Agent Relay = 셋톱박스 (actl 기반), JuControler = 허브 (+JuPlan, JuCeipt, Tester, Skill 만들기); Founder: 비개발자도 카톡·토스처럼 쉽게",
           "title": "GitHub 소개 문서(README) 다듬기"
+        },
+        {
+          "taskId": "JUPLAN-RUNTIME-VALIDATION-KOREAN",
+          "scope": "In validateV1Plan in packages/runtime/src/index.ts, rewrite the English messages that reach the Studio 검증 결과 and apply-proposal blockers in plain Korean with a next step: ORPHAN_NODE (name the node label, not the id), TRACEABILITY_FEATURE_REQUIREMENT, TRACEABILITY_WBS, TRACEABILITY_QA, UNKNOWN_SURFACED, and G*_MISSING_* (use NODE_TYPE_LABELS for the type). Keep every code, level and ok result unchanged, and add a runtime test that asserts the Korean text and that no message contains English words.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime-validation-korean.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; packages/runtime/src/index.ts:137 message `Node ${item.id} is not connected to the graph` flows into apply-proposal blockers at index.ts:1407-1409"
+        },
+        {
+          "taskId": "JUPLAN-PLAN-EXPORT-KOREAN-SUMMARY",
+          "scope": "In generateProjections in packages/runtime/src/index.ts, make exports/plan.html and exports/plan.svg (linked from Studio 계획 파일) show the lifecycle through LIFECYCLE_LABELS and '항목 N개 · 연결 M개' instead of the raw lifecycle code and 'N nodes · M edges'. Keep the escaping and SVG size, and update the matching assertions in the existing escape test in runtime.test.ts.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: plain Korean ... no raw codes; packages/runtime/src/index.ts:353-354 write `${plan.meta.lifecycle} · ${plan.nodes.length} nodes · ${plan.edges.length} edges`"
+        },
+        {
+          "taskId": "JUPLAN-DOMAIN-DOC-KOREAN-HEADING",
+          "scope": "In generateProjections in packages/runtime/src/index.ts, title each of the 8 domain docs with its DOC_TITLE_LABELS Korean name (e.g. '# 제품') instead of the raw domain id ('# product'), so /view/docs/<domain> no longer shows an English heading under the Korean page title. Keep the node lines, the 'Generated from' line (already hidden in the view) and file names unchanged, and add a runtime test that checks the heading of every domain doc and its view page.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/domain-doc-heading.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: plain Korean, no raw codes; real PRD/ERD/WBS/API/QA documents from the graph; packages/runtime/src/index.ts:345 writes `# ${domain}`"
         }
       ],
       "qaRuntime": [
