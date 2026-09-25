@@ -8028,6 +8028,37 @@
           ],
           "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 (2026-09-25); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2, PRODUCT_SSOT_v0.4 O-01/O-10, LATEST_DECISIONS_v0.4 §1 §4 §9",
           "title": "Owner 홈 — 시범 가치·진행 중·Preview/Build 활동·놓친 작업 영역"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-CODEX-CONNECTOR",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). Founder decision 2026-09-25 (HUMAN_GATE answered): first runtime adapter = the Founder's real local Codex CLI. Add src/connector/codex.ts, run with npm run connector -- <pair|heartbeat|run|status> (add the script to package.json, using tsx like npm start). pair --app <url>: runs `${CODEX_BIN:-codex} --version` (fail clearly if missing), POSTs /api/owner/connectors with runtime 'codex', auth_mode 'local-cli-login', connector_version = that version, and runtime_login_vault_ref = 'local-file:~/.codex/auth.json' (a path reference only; the connector must NEVER open or read that file), then stores {app, id, token} in ~/.config/aiwo-connector/codex.json created with mode 0600 (dir overridable by AIWO_CONNECTOR_DIR for tests); the owner token is never printed after pairing except a masked form. heartbeat: one POST heartbeat; run: heartbeat every CONNECTOR_INTERVAL_MS (default 30000) until SIGINT, re-probing `codex --version` each tick and skipping the heartbeat when the CLI stops working; status: GET connector and print ONLINE/OFFLINE. In src/server/owner.ts make the stale threshold CONNECTOR_STALE_MS (default 90000) instead of the hard-coded 90 seconds. Test tests/integration/codex-connector.test.ts: start createApp on a random port with @hono/node-server and the test DB (PGlite, and real PostgreSQL under TEST_DB=postgres), point CODEX_BIN at a stub script, pair, heartbeat -> ONLINE, check the config file mode is 0600, check no DB column holds the stub auth file sentinel text, and CLI-missing makes pair fail.",
+          "files": [
+            "src/connector/codex.ts",
+            "src/server/owner.ts",
+            "package.json",
+            "tests/integration/codex-connector.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck",
+            "npm run test:pg"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 5 + Founder HUMAN_GATE answer 2026-09-25 (Codex local connector); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2 (첫 runtime adapter, heartbeat, capability, policy)",
+          "title": "Codex 로컬 connector (첫 runtime adapter)"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-REAL-CONNECTOR-GATE",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). Founder decision 2026-09-25 (HUMAN_GATE answered): first runtime adapter = the Founder's real local Codex CLI. Add scripts/p2-connector-gate.ts (run with npx tsx scripts/p2-connector-gate.ts) that proves Phase 2 end to end with the REAL local Codex CLI (no stub): boot createApp on a random port with a fresh PGlite dir (or DATABASE_URL when set) and CONNECTOR_STALE_MS=3000; pair with src/connector/codex.ts into a temp AIWO_CONNECTOR_DIR; heartbeat -> assert ONLINE and record the timestamp; PUT capabilities and read them back; PUT policy (daily 5000, per-task 1500, runtime 30, allowed task types, available hours covering now, approval rules) and read it back via GET /worker as one identity; run policy checks: allowed task PASS, daily cost exceeded, per-task cost exceeded, runtime exceeded, disallowed task, outside available hours (use a policy window that excludes now) all rejected with their reason codes; approval check shows the pay action DENY in PRE_BUSINESS; wait past the stale threshold -> OFFLINE; heartbeat again -> ONLINE. Raw-login check: dump every text/jsonb column of every table and assert it contains no substring of length >= 16 taken from the values in ~/.codex/auth.json (read only inside this check, print only true/false, never any value); assert the connector row's reference column starts with 'local-file:'. Write the results as a table to evidence/phase2/CONNECTOR_GATE.md (connector id, type, version, timestamps, each check PASS/FAIL, no token or login values) and exit non-zero if any check fails. The script must refuse to run when NODE_ENV=production.",
+          "files": [
+            "scripts/p2-connector-gate.ts",
+            "evidence/phase2/CONNECTOR_GATE.md"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 5 + Founder HUMAN_GATE answer 2026-09-25 (Codex local connector); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2 (첫 runtime adapter, heartbeat, capability, policy)",
+          "title": "실제 Codex connector로 Phase 2 레드게이트 증거 스크립트"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
