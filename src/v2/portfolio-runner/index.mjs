@@ -527,6 +527,12 @@ export class PortfolioRunner {
         if (!gate.ok || moved) { const logDir = join(resolve(this.statePath, ".."), "test-gates"); await mkdir(logDir, { recursive: true }).catch(() => {}); await writeFile(join(logDir, `${task.taskId}.log`), gate.results.map((r) => `$ ${r.cmd}\nexit ${r.code}\n${r.tail || ""}\n`).join("\n")).catch(() => {}); }
         const failed = gate.results.find((result) => result.code !== 0);
         if (!task.testGate.ok) task.qa = { ...task.qa, verdict: "REQUEST_CHANGES", findings: [...(task.qa.findings || []), failed ? `TEST_GATE: \`${failed.cmd}\` exit ${failed.code}: ${failed.tail}` : "TEST_GATE: tests changed HEAD"] };
+        // 토큰 감지 (Founder 2026-09-25): when the base already fails the same command, rebuilding this task can never pass.
+        // Hold it without a rebuild and park the lane until the integration tip moves (a -BASEFIX task still runs).
+        if (failed && !moved && head && builder.base && await this.baseFails(builder.path, builder.base, head, failed.cmd, signal)) {
+          state.baseBroken = { ...(state.baseBroken || {}), [project.id]: { base: builder.base, cmd: failed.cmd, taskId: task.taskId, tail: String(failed.tail || "").slice(-1500), at: new Date().toISOString() } };
+          task.state = "HOLD"; task.error = `BASE_BROKEN: \`${failed.cmd}\` already fails on ${builder.base.slice(0, 7)} before this change`; await this.publishResult(task); break;
+        }
       }
       if (task.qa.verdict === "ACCEPT") { task.promotionRef = await this.worktrees.promote?.(project, task.taskId, task.result.commitSha, builder.path) || `candidate:${task.result.commitSha}`; if (this.worktrees.integrate && !task.verificationOnly) task.integration = await this.worktrees.integrate(project, task).catch((error) => ({ state: "NOT_INTEGRATED", reason: String(error.message || error).slice(0, 500) }));
         // accepted work that did not land on the integration branch is not done (2026-09-24: 4 tasks were marked done but never merged)
@@ -538,6 +544,24 @@ export class PortfolioRunner {
     } catch (error) { if (signal?.aborted) { preserveWorktree = true; task.state = "RUNNING"; task.error = "CHECKPOINTED_DEADLINE"; } else if (runtimeLaunchFailure(error)) { task.state = "HOLD"; task.error = `RUNTIME_LAUNCH:${String(error.message || error)}`; } else { task.state = "HOLD"; task.error = String(error.message || error); } state.activeBuilders = state.activeBuilders.filter((item) => item.taskId !== task.taskId); state.activeQa = state.activeQa.filter((item) => item.taskId !== task.taskId); }
     // R-08: a HOLD keeps its worktree so the failure can be reproduced (ponytail: never pruned; add pruning if disk fills)
     if (!preserveWorktree && task.state !== "HOLD") await builder.cleanup(); await this.save(state);
+  }
+
+  // Run one failing gate command on the task's base commit inside the same worktree (keeps installed deps), then restore HEAD.
+  async baseFails(path, base, head, cmd, signal) {
+    try { await exec("git", ["-C", path, "checkout", "-q", "--detach", base]); } catch { return false; }
+    try { return !(await this.testGate(path, [cmd], { signal })).ok; }
+    finally { await exec("git", ["-C", path, "checkout", "-q", "--detach", head]).catch(() => {}); }
+  }
+
+  // A parked lane resumes once its integration tip moves; tasks held only because the base was broken go back to the queue.
+  async clearBaseBroken(state) {
+    for (const [pid, b] of Object.entries(state.baseBroken || {})) {
+      const project = this.manifest.projects?.find((item) => item.id === pid);
+      const tip = project?.path ? await gitRef(project.path, INTEGRATION_REF) : null;
+      if (project && (!tip || tip === b.base)) continue;
+      delete state.baseBroken[pid];
+      for (const t of state.tasks) if (t.projectId === pid && t.state === "HOLD" && String(t.error || "").startsWith("BASE_BROKEN")) { t.state = "QUEUED"; t.attempts = 0; t.qaAttempts = 0; t.error = null; t.baseRequeued = true; }
+    }
   }
 
   async resolveFounderGate(gateId, decision) {
@@ -578,7 +602,9 @@ export class PortfolioRunner {
         // One task per lane at a time: tasks of one project edit the same files, so parallel ones conflict at integration.
         const busyLanes = new Set(state.tasks.filter((item) => inflight.has(item.taskId)).map((item) => item.projectId));
         const paused = (id) => existsSync(join(resolve(this.statePath, ".."), "lane-pause", id));  // R-09: pause also holds tasks already QUEUED
-        const next = state.tasks.filter((item) => item.state === "QUEUED" && !inflight.has(item.taskId) && !busyLanes.has(item.projectId) && !paused(item.projectId) && (busyLanes.add(item.projectId), true));
+        await this.clearBaseBroken(state);
+        const parked = (item) => state.baseBroken?.[item.projectId] && !/-BASEFIX(-R\d+)?$/.test(item.taskId);
+        const next = state.tasks.filter((item) => item.state === "QUEUED" && !inflight.has(item.taskId) && !busyLanes.has(item.projectId) && !paused(item.projectId) && !parked(item) && (busyLanes.add(item.projectId), true));
         for (const task of next.slice(0, Math.max(0, slots))) {
           inflight.set(task.taskId, this.runOne(task, state, { signal }).catch((error) => { if (!signal?.aborted) { task.state = "HOLD"; task.error = `RUNNER_ERROR: ${String(error?.message || error)}`; } }).finally(() => inflight.delete(task.taskId)));
         }

@@ -475,3 +475,21 @@ test("integrate drops a commit that is already present at the integration tip in
   assert.equal(git("show", "refs/heads/agent-relay/integration:b.txt"), "new");
   await rm(repo, { recursive: true, force: true });
 });
+
+test("base broken: a gate command that already fails on the base parks the lane until the integration tip moves", async () => {
+  const { mkdtempSync, writeFileSync } = await import("node:fs"); const { tmpdir } = await import("node:os"); const { execFileSync } = await import("node:child_process");
+  const repo = mkdtempSync(join(tmpdir(), "basebroken-")); const git = (...a) => execFileSync("git", ["-C", repo, ...a], { encoding: "utf8" }).trim();
+  git("init", "-q"); git("config", "user.email", "t@t"); git("config", "user.name", "t");
+  writeFileSync(join(repo, "ok"), "0"); git("add", "."); git("commit", "-qm", "base"); const base = git("rev-parse", "HEAD");
+  writeFileSync(join(repo, "ok"), "1"); git("commit", "-qam", "change"); const head = git("rev-parse", "HEAD");
+  const runner = new PortfolioRunner({ manifest: { projects: [{ id: "p", path: repo }] }, statePath: "/nonexistent/s.json", worktreeRoot: "/nonexistent/w" });
+  assert.equal(await runner.baseFails(repo, base, head, "grep -q 1 ok"), true);   // base has ok=0 → fails
+  assert.equal(git("rev-parse", "HEAD"), head);                                      // HEAD restored
+  assert.equal(await runner.baseFails(repo, base, head, "test -f ok"), false);
+  git("update-ref", "refs/heads/agent-relay/integration", base);
+  const state = { baseBroken: { p: { base } }, tasks: [{ taskId: "T", projectId: "p", state: "HOLD", error: "BASE_BROKEN: x", attempts: 3 }, { taskId: "U", projectId: "p", state: "HOLD", error: "other" }] };
+  await runner.clearBaseBroken(state); assert.ok(state.baseBroken.p);                // tip unchanged → still parked
+  git("update-ref", "refs/heads/agent-relay/integration", head);
+  await runner.clearBaseBroken(state);
+  assert.equal(state.baseBroken.p, undefined); assert.equal(state.tasks[0].state, "QUEUED"); assert.equal(state.tasks[0].attempts, 0); assert.equal(state.tasks[1].state, "HOLD");
+});
