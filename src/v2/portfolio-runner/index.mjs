@@ -402,6 +402,8 @@ export class PortfolioRunner {
     const state = await this.load();
     state.activeBuilders = []; state.activeQa = [];
     state.tasks = state.tasks.map((task) => {
+      // work cut off by the night deadline resumes in the morning instead of waiting as a HOLD
+      if (task.state === "HOLD" && task.error === "CHECKPOINTED_DEADLINE") return { ...task, state: "QUEUED", error: null, reconcile: "REQUEUED_AFTER_DEADLINE" };
       if (task.state === "HOLD" && String(task.error || "").startsWith("RUNTIME_LAUNCH:")) return { ...task, state: "QUEUED", error: null, reconcile: "REQUEUED_AFTER_RUNTIME_RECOVERY" };
       // an abbreviated builder sha used to fail promotion after QA ACCEPT; promote() now resolves it, so rerun those once
       if (task.state === "VERIFIED_DONE" && INTEGRATION_FAILED.has(task.integration?.state) && !task.verificationOnly && !task.integrationRecheck) return { ...task, state: "HOLD", error: `INTEGRATION_${task.integration.state}: ${task.integration.reason || ""}`.slice(0, 600), integrationRecheck: true, reconcile: "HOLD_NOT_INTEGRATED" };
