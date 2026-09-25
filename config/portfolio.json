@@ -1686,6 +1686,21 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '보니까 바뀐 기능 및 기능이 많이 구현 되었네 이것들 Github에서 README 파일 다듬고 이후 홍보영상 다시 제작'; portfolio architecture (Founder): actl = 리모컨, Agent Relay = 셋톱박스 (actl 기반), JuControler = 허브 (+JuPlan, JuCeipt, Tester, Skill 만들기); Founder: 비개발자도 카톡·토스처럼 쉽게",
           "title": "GitHub 소개 문서(README) 다듬기"
+        },
+        {
+          "taskId": "AGENTRELAY-V1-APP-ICON-R2",
+          "scope": "전체 빌드 오류를 먼저 확인한 뒤, 실제 아이콘 문제만 최소 수정하고 유효한 Agent Relay ICO와 electron-builder 연결을 추가하며 기존 테스트에 설정·ICO 검증을 넣어 기존 코드는 실패하고 수정 코드는 통과하게 한다.",
+          "files": [
+            "electron.builder.yml",
+            "build/icon.ico",
+            "test/v03.test.mjs"
+          ],
+          "tests": [
+            "npm test",
+            "npm run build:win",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "BACKLOG.md:33 '- [ ] 앱 아이콘 미설정 — electron-builder 기본 Electron 아이콘 사용 중'"
         }
       ],
       "qaRuntime": [
