@@ -6712,6 +6712,34 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base app.js:1678 `'>' + esc(hold.taskId)` and app.js:2115 `esc(hold.title || hold.taskId)` still print raw task ids"
+        },
+        {
+          "taskId": "JCAPP-JUCEIPT-SCAN-PROJECT-NAMES",
+          "scope": "In operator/public/app.js, the JuCeipt scan row (scanRow) and the scan detail heading in juceiptScanView print item.project raw (for example 'jucontroler-app'); show projectName(item.project) instead, which is the existing PROJECT_NAMES/projectName map (so 'jucontroler-app' becomes '통합 관제 화면', and folder names like 'JuPlan' stay readable). Keep '폴더 모름' as it is. Extend test/juceipt-scan-view.test.mjs so it also extracts PROJECT_NAMES and projectName, and assert that the r3 row text has '통합 관제 화면' and no longer has 'jucontroler-app'.",
+          "files": [
+            "operator/public/app.js",
+            "test/juceipt-scan-view.test.mjs"
+          ],
+          "tests": [
+            "node --test test/juceipt-scan-view.test.mjs",
+            "node --test test/juceipt-list.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes"
+        },
+        {
+          "taskId": "JCAPP-SWITCH-STUCK-PLAIN",
+          "scope": "In operator/public/app.js advanceSwitchStep, when the supervisor-switch state does not change after a step, the message currently reads '현재 상태(' + technical.state + ')에서 진행되지 않았습니다…' and shows a raw code like DRAINING. Replace it with a plain Korean sentence with no state code: use the view's existing Korean phrase when one is present, otherwise '아직 다음 단계로 넘어가지 못했어요. 잠시 뒤 다시 눌러 주세요.' The raw state stays only inside the existing '기술 세부 정보' details. Add a source-level assertion to test/founder-clean-tokens.test.mjs that app.js no longer contains the string \"'현재 상태(' + technical.state\".",
+          "files": [
+            "operator/public/app.js",
+            "test/founder-clean-tokens.test.mjs"
+          ],
+          "tests": [
+            "node --test test/founder-clean-tokens.test.mjs",
+            "node --test test/supervisor-switch.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): plain Korean, inline feedback, no raw codes; Hermes style everywhere (A-21)"
         }
       ]
     },
