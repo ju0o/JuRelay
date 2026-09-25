@@ -3653,6 +3653,48 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "팝업 없이 화면 안에서 오류 안내"
+        },
+        {
+          "taskId": "ACTL-ROWS-PANE-SNAPSHOT",
+          "scope": "Cut the 12 per-agent tmux display-message calls in one board refresh to zero for detected panes. In src/actl/core/tmux.py, add a module-level pane snapshot plus a context manager `pane_snapshot(panes)`. While it is active, pane_field answers #{pane_id}/#{pane_pid}/#{pane_current_path}/#{pane_current_command}/#{pane_title} from the PaneInfo rows that list-panes already returned, matching on pane_id or target; any other format or target still goes through _run. In src/actl/tui.py, wrap _rows' ThreadPoolExecutor build loop in `with pane_snapshot(d.pane for d in all_dets)`, clearing it in finally. Keep every observe_activity/extract_last_response/validate_target signature unchanged, because existing test fakes use one-argument lambdas. Add tests/test_rows_op_budget.py: it builds 4 fake strong detections, monkeypatches tmux._run/subprocess to count wrapper calls during one _rows(config) call, and asserts zero display-message calls and a fixed upper bound on total wrapper calls, so the count can't creep back up.",
+          "files": [
+            "src/actl/core/tmux.py",
+            "src/actl/tui.py",
+            "tests/test_rows_op_budget.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:65-75 'produced 19 remote wrapper operations: … `tmux display-message` | 12'; Founder direction 2026-09-26 'Fold the 12 per-agent display-message calls into the existing single list-panes -F query, and add a test that counts wrapper calls per _rows()'"
+        },
+        {
+          "taskId": "ACTL-SERVE-LIVE-CARDS",
+          "scope": "Add a pure module src/actl/live_card.py. Its `live_card(row)` turns one tui._rows row into the Founder live-status card dict {ai, folder, title ('<display> · <pane_path basename> 폴더'), status (exactly one of 일하는 중/쉬는 중/답 기다림/연결 안 됨: WORKING→일하는 중, IDLE/DONE→쉬는 중, BLOCKED/WAITING_INPUT→답 기다림, DOWN/MISMATCH/UNMAPPED/not live→연결 안 됨, anything else→쉬는 중 only when control_ready, otherwise 연결 안 됨), last_asked (row.get('last_asked') or '아직 시킨 일 없음'), answer_ready (result_state == 'READY'), raw: {target, pane_id, runtime_state, control_detail}}. No pane ids or English on any field outside raw. Then add GET /api/cards to src/actl/serve.py, returning {cards: [live_card(r) for r in _rows(load_config())]} behind the existing _authorized check and plain-Korean error handling. Add tests/test_live_card.py covering each status mapping, the no-English/no-% surface rule and the /api/cards handler via the existing serve test pattern.",
+          "files": [
+            "src/actl/live_card.py",
+            "src/actl/serve.py",
+            "tests/test_live_card.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:46 'actl serve에 같은 카드 데이터를 주는 실시간 API(허브 JuControler가 나중에 그대로 씀)' and founder-ux 'For an actl AI window, the card says: which AI and folder … 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨 … whether an answer is ready to copy'"
+        },
+        {
+          "taskId": "ACTL-TK-CARD-HEADER-AI-FOLDER",
+          "scope": "In src/actl/gui.py, change _card_header(row) so each Tk AI window card header reads '<display> · <pane_path basename> 폴더 · <state>'. Drop the folder part when pane_path is empty, '-' or UNKNOWN. The state is one of 일하는 중/쉬는 중/답 기다림/연결 안 됨: add RUNTIME_STATE_LABELS entries so BLOCKED/WAITING_INPUT show '답 기다림', and show '연결 안 됨' when row.state is DOWN/MISMATCH or live_runtime is false. Keep the role part and keep the '확인 중' fallback for truly unknown states. Update tests/test_gui_card_plain_header.py to the new expected strings, and add tests/test_gui_card_ai_folder.py asserting 'Claude Team · Team 폴더 · 일하는 중', the folder omitted for '-', '연결 안 됨' for DOWN, and no '%', English state word or path separator in the header.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_card_plain_header.py",
+            "tests/test_gui_card_ai_folder.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:46 'AI 창 카드마다: 어떤 AI·어느 폴더, 일하는 중/쉬는 중/답 기다림/연결 안 됨'; founder-ux Live status card 'which AI and folder it is (\"Claude Team · Team 폴더\")'"
         }
       ],
       "qaRuntime": [
