@@ -10142,6 +10142,17 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:172 '1. Validate the 10-task daily summary against real user decisions.' and :264 '| 1 | Validate the integrated 10-task Daily Value summary | M3 NOW |' versus docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 '`UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'",
           "title": "현황판에 3단계 검증 완료 반영"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-EXIT-TRACE-OUTCOME-SOURCE-FIX",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md §4.1, change only the 'Existing fact' cells of the 'What was received?' row (line 154) and the 'Key delivered outcomes' row (line 160). They wrongly say 'Section 3 records 26 delivered outcome entries'; Section 3 rows only show per-Receipt coverage such as '0/1 delivered'. Point both cells at where the 26 is actually recorded: Section 2.1 (line 60, '26 delivered outcomes') and Section 4 `outcome_traceability` (line 136, '26 entries with task IDs'). Change no other row, score, mapping or decision text.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:154 'Section 3 records 26 delivered outcome entries across the 10-task register.' vs :60 'This snapshot reconciles to 10 receipts, 26 delivered outcomes' and :136 'daily `delivered_outcomes` has 26 entries with task IDs'; Section 3 rows :88-97 record '0/1 delivered; 1 unknown'"
         }
       ]
     },
