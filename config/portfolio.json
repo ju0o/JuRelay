@@ -1702,6 +1702,20 @@
           ],
           "ssotEvidence": "BACKLOG.md:33 '- [ ] 앱 아이콘 미설정 — electron-builder 기본 Electron 아이콘 사용 중'",
           "title": "Agent Relay 앱 아이콘 제대로 표시"
+        },
+        {
+          "taskId": "AGENTRELAY-NIGHT-SUPERVISOR-OWN-SCOPE",
+          "scope": "Found while dogfooding (AI-Agent-marketplace PM, 2026-09-25): the Night Run started by a systemd user timer (systemd-run --on-calendar ... night start 04:00) died 90 s after launch with Result: timeout, because the supervisor detached with setsid+nohup still lives in the launching unit cgroup and systemd stops the whole cgroup when the unit main process exits. Fix in src/v2/night-run/index.mjs: export buildOwnScopeArgs(env, argv) that returns the argv for re-running the same night-run up command inside its own transient scope (systemd-run --user --scope --collect --unit agent-relay-night-supervisor-<timestamp> -- <node> <script> <same args>) when env.INVOCATION_ID is set (started from a systemd unit) and env.AGENT_RELAY_OWN_SCOPE is not \"1\"; otherwise null. In the night-run up entry, when it returns args, spawn that command detached with AGENT_RELAY_OWN_SCOPE=1 in env and exit 0 after the child starts, so the supervisor outlives the launching unit. Add tests to test/v03.test.mjs: INVOCATION_ID set -> scope args include --scope and the original args; already scoped -> null; no INVOCATION_ID (ssh/terminal) -> null. Do not change the deadline, report or power behaviour.",
+          "files": [
+            "src/v2/night-run/index.mjs",
+            "test/v03.test.mjs"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Dogfood finding R-01 (MainPC Desktop AgentRelay-Findings.md, 2026-09-25): agent-relay-night-0925b failed (Result: timeout) at 00:01:54, supervisor pid 3172830 killed; Founder request 2026-09-25 to register this fix as a Relay task",
+          "title": "예약(systemd)으로 켠 야간 실행이 1분 만에 죽는 문제"
         }
       ],
       "qaRuntime": [
@@ -1709,7 +1723,8 @@
         "opencode",
         "claude-pro",
         "codex"
-      ]
+      ],
+      "autoContinue": true
     },
     {
       "id": "juactl",
