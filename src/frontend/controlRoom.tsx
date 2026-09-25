@@ -693,7 +693,7 @@ function HoldCards({ holds, titleOf, gateId, qaFinding, hasBlocker, onRefresh }:
   // 보류 항목 없이 blocker만 있을 때도 멈춘 작업 1개로 보여준다.
   const count = Math.max(holds.length, hasBlocker ? 1 : 0);
   return (
-    <article className="control-card hold-warn wide">
+    <article className="control-card hold-warn wide" id="lane-hold">
       <h3><span aria-hidden="true">⚠ </span>{holdHeadingText(count)}</h3>
       {shown.map((hold, index) => {
         const autoText = holdAutoProceedText(hold.heldSeen, hold.waitMin);
@@ -729,6 +729,125 @@ function HoldCards({ holds, titleOf, gateId, qaFinding, hasBlocker, onRefresh }:
         <button className="btn subtle" type="button" onClick={() => setShowAll(true)}>더 보기 ({holds.length - HOLD_PAGE}개)</button>
       )}
     </article>
+  );
+}
+
+// ── 라이브 상태 카드: 지금 하는 일 · 여기까지 끝남 · 확인 상태 · 대표님 할 일 · 다음 단계 ──
+// 개발자 원문(작업 ID)은 접힌 '원문 보기'에만 둔다. Pure helper + 카드 하나.
+
+const STEPS = ['계획', '만들기', '검사', '시험', '반영'] as const;
+/** FLOW(7단계) 인덱스 → STEPS(5단계) 인덱스. 사람 확인은 시험에 붙는다. */
+const STEP_OF_FLOW = [0, 0, 1, 2, 3, 3, 4];
+const STAGE_VERB = ['계획하는', '확인하는', '만드는', '검사하는', '시험하는', '대표님 확인을 기다리는', '반영하는'];
+const START_KEYS = ['startedAt', 'started_at', 'startAt', 'since'];
+
+interface LiveStatus {
+  headline: string;
+  doing: string;
+  progress: string;
+  lastDone: string;
+  verify: '확인됨' | '일부 확인' | '확인하지 못함';
+  verifyEvidence: string;
+  todo: '없음' | '확인 필요' | '결정 필요' | '설정 필요';
+  todoButton: { label: string; target: string } | null;
+  next: string;
+  taskId: string;
+}
+
+function minutesSince(value: unknown, now: number): number | null {
+  const ms = typeof value === 'number' ? (value < 1e12 ? value * 1000 : value) : typeof value === 'string' && value.trim() ? Date.parse(value) : NaN;
+  return Number.isFinite(ms) ? Math.max(0, Math.floor((now - ms) / 60000)) : null;
+}
+
+function spanText(min: number): string {
+  if (min < 60) return `${min}분`;
+  if (min < 1440) return min % 60 ? `${Math.floor(min / 60)}시간 ${min % 60}분` : `${min / 60}시간`;
+  return `${Math.floor(min / 1440)}일`;
+}
+
+/** 받침 있는 이름은 '이', 아니면 '가'. */
+function subjectParticle(name: string): string {
+  const code = name.charCodeAt(name.length - 1);
+  return code >= 0xac00 && code <= 0xd7a3 && (code - 0xac00) % 28 !== 0 ? '이' : '가';
+}
+
+export function liveStatusOf(lane: ControlRoomLane, now: number = Date.now()): LiveStatus {
+  const current = lane.current ?? {};
+  const holds = visibleHoldEntries(lane.holds);
+  const hasCurrent = hasWork(lane);
+  const holdCurrent = !hasCurrent ? holds[0] : undefined;
+  const rawHold = holdCurrent && lane.holds?.find(entry => entry && typeof entry === 'object' && controlRoomTaskId(entry) === holdCurrent.taskId);
+  const task = hasCurrent ? current : rawHold;
+  const working = hasCurrent || Boolean(holdCurrent);
+  const stageValue = hasCurrent ? current.stage ?? 0 : holdCurrent?.step ?? 0;
+  const idx = stageIndex(stageValue);
+  const doneSteps = !working ? 0 : flowState(stageValue, 6) === 'done' ? STEPS.length : STEP_OF_FLOW[idx] ?? 0;
+  const paused = isPaused(lane);
+  const title = currentTitleOf(task);
+  const worker = lane.workerChain ?? current.worker;
+  const aiId = chainToList(idx >= 3 ? lane.qaChain ?? current.qa : worker)[0];
+  const ai = aiId ? runtimeLabel(aiId) : 'AI';
+  const startedAt = START_KEYS.map(key => current[key]).find(value => value !== undefined && value !== '');
+  const startedMin = minutesSince(startedAt, now);
+  const elapsed = startedMin === null ? '' : startedMin < 1 ? ' · 방금 시작' : ` · ${spanText(startedMin)}째`;
+
+  const doing = !working ? '지금 하는 일이 없어요. 쉬는 중이에요.'
+    : paused ? `'${title}' 작업이 멈춰 있어요.`
+    : `${ai}${subjectParticle(ai)} '${title}' ${STAGE_VERB[idx] ?? '진행하는'} 중${elapsed}`;
+  const progress = !working ? '진행 중인 작업이 없어요.'
+    : doneSteps === 0 ? `${STEPS.length}단계 중 아직 시작 단계예요 (${STEPS.join(' → ')})`
+    : `${STEPS.length}단계 중 ${doneSteps}단계 끝남 (${STEPS.slice(0, doneSteps).join(' → ')})`;
+  const lastItem = controlRoomTodayDone({ lanes: [lane] })[0];
+  const agoMin = minutesSince(lastItem?.finishedAt, now);
+  const lastDone = lastItem
+    ? `마지막으로 끝난 일: '${lastItem.title}'${agoMin === null ? '' : ` · ${agoMin < 1 ? '방금' : `${spanText(agoMin)} 전`}`}`
+    : '오늘 끝난 일은 아직 없어요.';
+
+  const verified = controlRoomVerifiedDoneTotal({ lanes: [lane] });
+  const [verify, verifyEvidence]: [LiveStatus['verify'], string] =
+    doneSteps >= STEPS.length ? ['확인됨', '모든 단계 통과']
+    : doneSteps >= 3 ? ['일부 확인', `${STEPS[doneSteps - 1]}까지 통과했어요`]
+    : !working && verified > 0 ? ['확인됨', `끝난 작업 ${verified}개 확인됨`]
+    : verified > 0 ? ['일부 확인', `지금까지 끝난 작업 ${verified}개는 확인됨`]
+    : ['확인하지 못함', '아직 확인한 기록이 없어요'];
+
+  const gate = lane.humanGate ?? lane.founderGate;
+  const [todo, todoButton, headline]: [LiveStatus['todo'], LiveStatus['todoButton'], string] =
+    gate ? ['결정 필요', { label: '답하러 가기', target: 'lane-gate' }, '결정하실 일이 있어요. 아래 버튼을 눌러 주세요.']
+    : holds.length > 0 ? ['결정 필요', { label: '고르러 가기', target: 'lane-hold' }, '멈춘 작업이 있어요. 어떻게 할지 골라 주세요.']
+    : paused ? ['확인 필요', { label: '멈춘 이유 보기', target: holdSummary(lane, '') !== null ? 'lane-hold' : 'lane-current' }, '멈춘 작업이 있어요. 이유를 확인해 주세요.']
+    : chainToList(worker).length === 0 ? ['설정 필요', { label: '담당 AI 정하기', target: 'lane-ai' }, '설정이 하나 필요해요. 아래 버튼을 눌러 주세요.']
+    : ['없음', null, working ? '지금 하실 일은 없어요. 알아서 진행 중이에요.' : '지금 하실 일은 없어요. 쉬는 중이에요.'];
+
+  const next = gate ? '대표님이 답하시면 바로 이어서 진행해요.'
+    : holds.length > 0 ? holdAutoProceedText(holds[0]?.heldSeen, holds[0]?.waitMin) || '고르시면 곧 다시 설계해요.'
+    : paused ? '다시 시작하시면 이어서 진행해요.'
+    : !working ? '새 작업이 정해지면 알아서 시작해요.'
+    : doneSteps >= STEPS.length ? '모두 끝났어요. 새 작업을 기다려요.'
+    : STEPS[doneSteps + 1] ? `이 단계가 끝나면 알아서 '${STEPS[doneSteps + 1]}' 단계로 넘어가요.`
+    : '반영이 끝나면 이 작업은 마무리돼요.';
+  return { headline, doing, progress, lastDone, verify, verifyEvidence, todo, todoButton, next, taskId: working ? controlRoomTaskId(task) : '' };
+}
+
+export function LiveStatusCard({ lane, now }: { lane: ControlRoomLane; now?: number }): React.ReactElement {
+  const s = liveStatusOf(lane, now);
+  const tone = (ok: boolean): React.CSSProperties => ({ color: ok ? 'var(--accent)' : 'var(--warn)' });
+  return (
+    <section className="control-card wide live-status" aria-label="지금 상태" style={{ fontSize: 16 }}>
+      <p className="control-card-value">{s.headline}</p>
+      <p><strong>지금 하는 일</strong><br />{s.doing}</p>
+      <p><strong>여기까지 끝남</strong><br />{s.progress}<br />{s.lastDone}</p>
+      <p><strong>확인 상태</strong><br /><span style={tone(s.verify === '확인됨')}>{s.verify}</span> · {s.verifyEvidence}</p>
+      <p><strong>대표님 할 일</strong><br /><span style={tone(s.todo === '없음')}>{s.todo}</span></p>
+      {s.todoButton && (
+        <button className="btn primary" type="button" style={{ minHeight: 44 }}
+          onClick={() => document.getElementById(s.todoButton!.target)?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+          {s.todoButton.label}
+        </button>
+      )}
+      <p><strong>다음 단계</strong><br />{s.next}</p>
+      {s.taskId && <details><summary>원문 보기</summary><p className="muted mono">ID: {s.taskId}</p></details>}
+    </section>
   );
 }
 
@@ -783,6 +902,7 @@ function LaneView({ lane, onRefresh }: {
           <pre className="mono">{rawText(lane)}</pre>
         </details>
       </header>
+      <LiveStatusCard lane={lane} />
       <div className="control-flow" aria-label="진행 단계">
         {FLOW.map((name, index) => {
           const state = working && holdCurrent ? flowState(`BLOCK ${stageValue}`, index) : working ? flowState(stageValue, index) : 'pending';
@@ -790,14 +910,14 @@ function LaneView({ lane, onRefresh }: {
         })}
       </div>
       <div className="control-cards">
-        <article className="control-card">
+        <article className="control-card" id="lane-current">
           <h3>현재 작업</h3>
           <p className="control-card-value">{working ? (taskTitle || '지금 하는 일 없음') : '쉬는 중'}</p>
           <p className="muted">단계: {stage}</p>
           {working && <details><summary>원문 보기</summary><p className="muted mono">ID: {taskId || '—'}</p><pre className="mono">{rawText(currentTask)}</pre></details>}
           {paused && project && holds.length === 0 && <ResumeControl project={project} onRefresh={onRefresh} />}
         </article>
-        <article className="control-card wide">
+        <article className="control-card wide" id="lane-ai">
           <h3>담당 AI</h3>
           {showWorker && <p>만드는 AI: <strong>{workerText}</strong></p>}
           {showQa && <p>검수하는 AI: <strong>{qaText}</strong></p>}
@@ -809,7 +929,7 @@ function LaneView({ lane, onRefresh }: {
           )}
         </article>
         {showHoldCard && <HoldCards holds={holds} titleOf={holdTitle} gateId={gateIdForHold} qaFinding={qaFinding} hasBlocker={holds.length === 0} onRefresh={onRefresh} />}
-        {gate && <article className="control-card human"><h3>사람 확인</h3><GateForm gate={gate} onRefresh={onRefresh} /></article>}
+        {gate && <article className="control-card human" id="lane-gate"><h3>사람 확인</h3><GateForm gate={gate} onRefresh={onRefresh} /></article>}
       </div>
     </section>
   );
