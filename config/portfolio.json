@@ -9884,6 +9884,47 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:652 \"다음 정보가 실제 프로젝트 상태와 일치해야 한다.\" (§11.2 사실 정확성)"
+        },
+        {
+          "taskId": "JUTELL-UNRUN-SCREEN-WORDING-PARITY",
+          "scope": "Add one line under report-format.md §2 saying that if the screen was not actually run, the report writes `표시될 것으로 예상됩니다` and not `표시됩니다`, plus a new offline node:test that reads PRODUCT_SCOPE §7.3 and report-format.md and checks both still contain that rule.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/unrun-screen-wording-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/unrun-screen-wording-parity.test.mjs",
+            "node --test tests/skill-report-contract.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:409 화면을 실제로 실행하지 않았다면 `표시됩니다`가 아니라 `표시될 것으로 예상됩니다`라고 작성한다."
+        },
+        {
+          "taskId": "JUTELL-EXPRESSION-ACCURACY-SKILL-PARITY",
+          "scope": "Add a new offline node:test that reads PRODUCT_SCOPE §11.3 and SKILL.md. It checks that §11.3 still lists the unrun-test and unrun-screen bullets, that SKILL.md step 9 still says 실행하지 못한 검증을 통과했다고 쓰지 않는다, and that step 16 still asks 예상과 실제 확인을 구분했는가.",
+          "files": [
+            "tests/expression-accuracy-skill-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/expression-accuracy-skill-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:665-666 * 실행하지 않은 테스트를 통과했다고 쓰지 않는다. * 화면을 실행하지 않았다면 실제 화면 결과를 보장하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-RISK-HINTS-HIGH-FIRST",
+          "scope": "In packages/cli/src/commands/context.ts, make buildContext order riskHints so high comes before medium (a stable sort, applied before the MAX_RISK_HINTS slice). This stops the 5-line riskSummary from pushing a high-risk file out behind medium ones. Add a new offline node:test that reads context.ts as text and checks that the sort comes before the slice.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "tests/context-risk-hints-high-first.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-risk-hints-high-first.test.mjs",
+            "node --test tests/context-risk-no-changes.test.mjs",
+            "node --test tests/context-risk-level-scope-parity.test.mjs",
+            "npx tsc -p packages/cli/tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:554 여러 조건에 해당하면 가장 높은 위험도를 적용한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
