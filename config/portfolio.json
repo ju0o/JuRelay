@@ -3482,6 +3482,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '진짜 비개발자도 보면 이해가 되게'. founder-ux Skill. QA findings of ACTL-BOARD-PLAIN-WORDS-R3.",
           "title": "보드: 남은 개발자 글자 두 곳 숨기기"
+        },
+        {
+          "taskId": "ACTL-BOARD-TOKEN-DETECT-R2",
+          "scope": "Narrowed per Founder (토큰 칸만 먼저, 긴 대화 알림은 빼기): build only the '토큰 감지' card in the Tk board, and drop the AI window card long-session badge and pane-folder matching entirely, so gui.py must not show any '대화가 길어요' text on agent cards. (1) Add a new pure module src/actl/tokens.py with no tkinter import. It has: fetch(ssh_target) → dict|None, which runs `ssh <target> ~/.agents/skills/auto-night-orchestrator/scripts/night tokens --json` when a target is set, runs the same path locally when it exists, and otherwise, or on a non-zero exit, a timeout or bad JSON, returns None; parse(text) → dict|None; korean_units(n) → str (e.g. 123456789 → '1억 2,345만', 52000 → '5만 2,000', 999 → '999'); top_projects(data, n=6); ordered_findings(data), which puts kinds spike|heavy-task|burst first and then the rest. (2) In src/actl/gui.py, add a '토큰 감지' card to the right panel. The card is fed only through the existing self._bg(fn, done) worker, started once at startup and then re-armed with self.root.after(300000, ...), so it never refreshes faster than every 5 minutes. It shows: a summary top line; big '새로 쓴 토큰' (claude.fresh) and '다시 읽은 토큰(캐시)' (claude.cache) numbers in korean_units; the top-6 project rows; then each finding as a row in bold text, amber fg=WARN for warn and fg=DIM for info, followed by '왜: <why>' and '할 일: <action>' lines. When findings is empty it shows teal '새는 곳 없어요 — 정상이에요'. Raw fields (folders, session ids, taskIds, runtime ids) appear only under a folded '원문 보기' toggle. When fetch returns None it shows exactly three plain lines: '토큰 정보를 가져올 수 없어요' / 'ASUS에 연결되지 않았거나 감지기가 없어요' / '5분 뒤 다시 시도해요'. (3) Add tests/test_tokens.py with an inline JSON fixture copying the SSOT TOKENS shape. It must include test_parse_fixture, test_parse_bad_json_returns_none, test_korean_units, test_top_projects_limits_six, test_ordered_findings_anomalies_first and test_fetch_returns_none_without_target_or_script, the last using monkeypatch on subprocess/os.path. All of these fail at base 4099a93 because src/actl/tokens.py does not exist, and pass after the change. Run with python3 tests/run_tests.py; no network, no real ssh.",
+          "files": [
+            "src/actl/tokens.py",
+            "src/actl/gui.py",
+            "tests/test_tokens.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay랑 JuControler 그리고 actl에도 토큰감지도 넣어야 할 거 같음 — 에이전트가 다른 곳으로 더 토큰이 소모되는지, 불필요한 경우'. Shared source already exists on ASUS: `~/.agents/skills/auto-night-orchestrator/scripts/night tokens --json` → {kind:'TOKENS', ok, hours, summary (Korean sentence), claude:{fresh, cache, byProject:[{project, fresh, cache, turns}], topSessions:[{account, project, folder, turns, fresh, cache, total, lastContext}]}, relay:{runs:{runtime:count}, fallbacks:[{runtime, reason, count}], loops:[{taskId, title, builds}]}, codex:{weekPct, fiveHourPct}|null, findings:[{level:'warn'|'info', kind:'long-session'|'outside'|'wasted-tries'|'loop'|'limit', text (Korean), why (Korean cause), action (Korean), raw}; kinds also include 'spike'|'heavy-task'|'burst' (이상징후). Founder 2026-09-25: '이상징후 및 토큰이 새는 원인 이것도']}. founder-ux Skill. Founder 2026-09-26 rewrite choice: '범위 줄이기 — 토큰 칸만 먼저 — 긴 대화 알림은 빼고, AI가 쓴 양을 보여주는 칸부터 먼저 완성해요'."
         }
       ],
       "qaRuntime": [
