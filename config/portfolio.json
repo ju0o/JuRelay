@@ -6769,6 +6769,21 @@
             "node --test tests/info-system-scope-parity.test.mjs"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:261 근거 출처, 확인 상태, 사용자 행동, 보고서 상태를 같은 의미로 사용하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-RISK-UNKNOWN-NO-GIT",
+          "scope": "In packages/cli/src/commands/context.ts, make riskSummary print a 판정 불가 line (Git 기록이 없어 변경 범위를 확인하지 못함) when output.git.available is false, instead of the current '위험 힌트: 없음 (문서·테스트·단순 변경 수준)', and add an offline node:test that reads context.ts as text and checks that riskSummary has a git.available branch returning 판정 불가 before the '없음' fallback.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "tests/context-risk-unknown-no-git.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-risk-unknown-no-git.test.mjs",
+            "node --test tests/context-risk-level-scope-parity.test.mjs",
+            "node --test tests/context-main-files-cap-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:347 \"변경 범위나 실행 환경을 충분히 확인하지 못해 위험도를 판단할 수 없는 상태다.\""
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
