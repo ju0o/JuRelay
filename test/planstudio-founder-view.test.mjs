@@ -92,3 +92,17 @@ test("planStudio.tsx — Founder Korean labels present, finished toggle closed b
   assert.match(studioSrc, /showDone.*useState\(false\)|useState\(false\)[\s\S]*showDone/, "finished toggle should be closed by default");
   assert.ok(studioSrc.includes("sortPlanStudioTasks"), "should order via the shared helper");
 });
+
+test("planStudio.tsx — errors are a Korean three-line recovery with retry and raw text folded", () => {
+  assert.ok(!/\{error && /.test(studioSrc), "raw {error} flash should be gone");
+  assert.ok(!/flashError\(\w+\)/.test(studioSrc), "every flashError call needs a Korean 'what' line and a retry");
+  assert.ok(studioSrc.includes("이유: 다른 PC가 꺼져 있거나 네트워크가 끊긴 것 같아요."), "missing offline guess");
+  assert.ok(studioSrc.includes("이유: 연결은 되어 있는데 처리하다가 문제가 생겼어요."), "missing failed-while-connected guess");
+  assert.match(studioSrc, /retry\(\); \}\}>다시 시도<\/button>/, "missing 다시 시도 button");
+  assert.match(
+    studioSrc,
+    /<details><summary>원문 보기<\/summary><p className="muted mono">\{failure\.raw\}<\/p><\/details>/,
+    "original error should render only inside 원문 보기",
+  );
+  assert.ok(!/\{failure\.raw\}/.test(studioSrc.replace(/<details>[\s\S]*?<\/details>/g, "")), "raw error must not appear outside details");
+});

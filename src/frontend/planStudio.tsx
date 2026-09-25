@@ -223,6 +223,22 @@ function gateFromLane(lane: BoardLane | undefined): StudioGate | null {
   return { gateId, title, options: options.length ? options : ['승인', '반려'] };
 }
 
+type PlanFailure = { what: string; why: string; raw: string; retry: () => void };
+
+// 오류 세 줄: 무슨 일(what) · 왜(why, 추측) · 할 일(다시 시도 버튼). 원문은 접어 둔다.
+function planFailure(what: string, e: unknown, retry: () => void): PlanFailure {
+  const raw = e instanceof Error ? e.message : String(e);
+  const offline = /fetch|network|timeout|timed out|ECONN|ENOTFOUND|EHOSTUNREACH|offline|socket|연결/i.test(raw);
+  return {
+    what,
+    why: offline
+      ? '이유: 다른 PC가 꺼져 있거나 네트워크가 끊긴 것 같아요. 연결을 확인한 뒤 눌러 주세요.'
+      : '이유: 연결은 되어 있는데 처리하다가 문제가 생겼어요. 잠시 뒤 다시 시도해 주세요.',
+    raw,
+    retry,
+  };
+}
+
 export function PlanStudio({ onClose, initialProject }: { onClose: () => void; initialProject?: string }): React.ReactElement {
   const [lanes, setLanes] = useState<BoardLane[]>([]);
   const [projects, setProjects] = useState<string[]>([]);
@@ -232,7 +248,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
   const [chat, setChat] = useState('');
   const [gates, setGates] = useState<StudioGate[]>([]);
   const [gatePick, setGatePick] = useState<Record<string, number>>({});
-  const [error, setError] = useState('');
+  const [failure, setFailure] = useState<PlanFailure | null>(null);
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<'chat' | 'save' | 'approve' | 'gate' | null>(null);
@@ -266,7 +282,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
           if (initialProject && names.includes(initialProject)) return initialProject;
           return names[0] ?? prev;
         });
-      }).catch(e => { if (alive) setError(e instanceof Error ? e.message : String(e)); });
+      }).catch(e => { if (alive) setFailure(planFailure('프로젝트 목록을 불러오지 못했어요', e, () => setDraftLoadAttempt(value => value + 1))); });
     };
     refresh();
     const timer = window.setInterval(refresh, 5000);
@@ -278,7 +294,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
     if (!project) { setLoading(false); return; }
     let alive = true;
     setLoading(true);
-    setError('');
+    setFailure(null);
     setDraftLoadError(false);
     void must<unknown>({ op: 'planStudio:get', project }).then(raw => {
       if (!alive) return;
@@ -360,11 +376,11 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
 
   function flashInfo(text: string): void {
     setInfo(text);
-    setError('');
+    setFailure(null);
   }
 
-  function flashError(e: unknown): void {
-    setError(e instanceof Error ? e.message : String(e));
+  function flashError(e: unknown, what: string, retry: () => void): void {
+    setFailure(planFailure(what, e, retry));
   }
 
   async function persist(next: StudioDraft, what: 'chat' | 'save' | 'approve' | 'gate'): Promise<void> {
@@ -374,7 +390,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
       await must({ op: 'planStudio:save', project, draft: payload });
       setDraft(next);
       flashInfo('초안 저장됨');
-    } catch (e) { flashError(e); } finally { setBusy(null); }
+    } catch (e) { flashError(e, '초안을 저장하지 못했어요', () => void persist(next, what)); } finally { setBusy(null); }
   }
 
   function isNotStarted(task: StudioTask): boolean {
@@ -383,7 +399,10 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
 
   async function sendChat(e: React.FormEvent): Promise<void> {
     e.preventDefault();
-    const message = chat.trim();
+    await submitChat(chat.trim());
+  }
+
+  async function submitChat(message: string): Promise<void> {
     if (!message || busy) return;
     setBusy('chat');
     try {
@@ -400,7 +419,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
         flashInfo('PM 답변 반영 후 초안을 다시 읽었습니다');
       }
       setChat('');
-    } catch (err) { flashError(err); } finally { setBusy(null); }
+    } catch (err) { flashError(err, 'PM에게 보낸 말이 반영되지 않았어요', () => void submitChat(message)); } finally { setBusy(null); }
   }
 
   async function approve(): Promise<void> {
@@ -409,7 +428,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
       await must({ op: 'planStudio:approve', project });
       setDraft(prev => ({ ...prev, approved: true }));
       flashInfo('계획 승인 → 자동 진행 요청됨');
-    } catch (e) { flashError(e); } finally { setBusy(null); setPendingApprove(false); }
+    } catch (e) { flashError(e, '계획을 승인하지 못했어요', () => void approve()); } finally { setBusy(null); setPendingApprove(false); }
   }
 
   async function answerGate(gateId: string): Promise<void> {
@@ -418,7 +437,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
     try {
       await must({ op: 'gates:answer', gateId, optionIndex });
       flashInfo('응답 제출됨');
-    } catch (e) { flashError(e); } finally { setBusy(null); }
+    } catch (e) { flashError(e, '응답을 보내지 못했어요', () => void answerGate(gateId)); } finally { setBusy(null); }
   }
 
   function requestDelete(task: StudioTask): void {
@@ -460,7 +479,14 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
         <span>이 계획을 읽지 못했어요</span>{' '}
         <button className="mini" onClick={() => setDraftLoadAttempt(value => value + 1)}>다시 불러오기</button>
       </div>}
-      {error && <div className="flash err">{error}</div>}
+      {failure && <div className="flash warn" role="alert" style={{ flexDirection: 'column', alignItems: 'flex-start', background: 'color-mix(in srgb, var(--warn) 12%, transparent)', borderColor: 'var(--warn)' }}>
+        <p><strong>{failure.what}</strong></p>
+        <p>{failure.why}</p>
+        <p>
+          <button className="mini" onClick={() => { const retry = failure.retry; setFailure(null); retry(); }}>다시 시도</button>
+        </p>
+        <details><summary>원문 보기</summary><p className="muted mono">{failure.raw}</p></details>
+      </div>}
       {info && <div className="flash ok">{info}</div>}
       <div className="plan-studio-grid">
         <section className="control-card plan-projects" aria-label="프로젝트 목록">
