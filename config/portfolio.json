@@ -3434,7 +3434,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill"
+          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
+          "title": "작업판 화면을 쉬운 말로 바꾸기"
         }
       ],
       "qaRuntime": [
@@ -4874,7 +4875,8 @@
             "pnpm --filter @juplan/runtime typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux Skill 규칙(… 글자 16px·버튼 44px …)으로 JuPlan Studio 화면(… PRD/WBS/ERD/SSOT 보기, … 검증 문제 표시)을 점검해 어긋난 곳마다 작은 작업으로"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux Skill 규칙(… 글자 16px·버튼 44px …)으로 JuPlan Studio 화면(… PRD/WBS/ERD/SSOT 보기, … 검증 문제 표시)을 점검해 어긋난 곳마다 작은 작업으로",
+          "title": "Studio 작은 글씨를 읽기 쉽게 키우기"
         },
         {
           "taskId": "JUPLAN-PROPOSAL-KOREAN-SUMMARY",
@@ -4890,7 +4892,8 @@
             "pnpm --filter @juplan/runtime typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: 대상: JuPlan Studio 화면(… 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기 …); founder-ux rule 7: 누르면 1초 안에 결과 문장"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: 대상: JuPlan Studio 화면(… 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기 …); founder-ux rule 7: 누르면 1초 안에 결과 문장",
+          "title": "바뀐 내용을 한 문장으로 알려주기"
         },
         {
           "taskId": "JUPLAN-PLAN-HTML-TOP-SENTENCE",
@@ -4904,7 +4907,8 @@
             "pnpm --filter @juplan/runtime typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux Skill 규칙(맨 위 한 문장 …)으로 JuPlan Studio 화면(계획 그림 …)을 하나씩 점검해 어긋난 곳마다 작은 작업으로 나눠 줘"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux Skill 규칙(맨 위 한 문장 …)으로 JuPlan Studio 화면(계획 그림 …)을 하나씩 점검해 어긋난 곳마다 작은 작업으로 나눠 줘",
+          "title": "계획 요약 맨 위에 안내 문장 넣기"
         }
       ],
       "qaRuntime": [
@@ -5746,7 +5750,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(맨 위 한 문장, 개발자 글자는 원문 보기 안, 글자 16px) — 대상: 영수증 보기 화면, 판정 '확인 후 받기' 같은 말의 뜻, 영어 작업 제목을 쉬운 한국어 요약으로"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(맨 위 한 문장, 개발자 글자는 원문 보기 안, 글자 16px) — 대상: 영수증 보기 화면, 판정 '확인 후 받기' 같은 말의 뜻, 영어 작업 제목을 쉬운 한국어 요약으로",
+          "title": "영수증 맨 위에 결과와 할 일 한 줄 안내"
         },
         {
           "taskId": "JUCEIPT-MISSING-CHECK-PLAIN-WORDS",
@@ -5759,7 +5764,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상: juceipt 명령 출력과 영수증 보기 화면, 빠진 확인 항목의 쉬운 설명"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상: juceipt 명령 출력과 영수증 보기 화면, 빠진 확인 항목의 쉬운 설명",
+          "title": "빠진 확인 항목을 쉬운 말로 설명"
         }
       ],
       "skills": {
@@ -6857,7 +6863,8 @@
             "node --test tests/quickstart-next-sync.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): real offline end-to-end script printing one JSON line {ok, steps[], ms}; tests/status-board-cli.test.mjs:90 already locks the source-stale line in the CLI, but scripts/e2e.sh:133 has no step for it"
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): real offline end-to-end script printing one JSON line {ok, steps[], ms}; tests/status-board-cli.test.mjs:90 already locks the source-stale line in the CLI, but scripts/e2e.sh:133 has no step for it",
+          "title": "오래된 원본 정보 안내 점검"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-UNLISTED-REASON-TEST",
@@ -6869,7 +6876,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "scripts/status-board.mjs:54 \"reasonWords[row.reason ?? 'stale'] ?? '표에 없는 이유예요'\" (no test covers this fallback; src/project-status.mjs:63 keeps a source-supplied reason); Founder direction 2026-09-24 오후: plain Korean, no raw codes"
+          "ssotEvidence": "scripts/status-board.mjs:54 \"reasonWords[row.reason ?? 'stale'] ?? '표에 없는 이유예요'\" (no test covers this fallback; src/project-status.mjs:63 keeps a source-supplied reason); Founder direction 2026-09-24 오후: plain Korean, no raw codes",
+          "title": "처음 보는 사유도 그대로 보여주기 점검"
         }
       ],
       "qaRuntime": [
@@ -8892,7 +8900,8 @@
             "node --test test/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48: '허브 홈과 진행 탭에 founder-ux Skill의 Live status card 규칙 그대로 … 같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만)'; operator/public/app.js:1872 '// Same live status card as homeHub (duplicated …)' yet :1895 and :495 give different 확인 상태 words at the same stage"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '허브 홈과 진행 탭에 founder-ux Skill의 Live status card 규칙 그대로 … 같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만)'; operator/public/app.js:1872 '// Same live status card as homeHub (duplicated …)' yet :1895 and :495 give different 확인 상태 words at the same stage",
+          "title": "홈과 진행 화면의 진행 카드 문구 통일"
         },
         {
           "taskId": "JCAPP-ACTL-CARD-STATE-WORD",
@@ -8908,7 +8917,8 @@
             "node --test test/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "founder-ux Skill 'Live status card' (For an actl AI window): 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; test/actl-panes-plain.test.mjs:89 is titled 'state words:일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨' but :91 asserts '작업 중'; Founder direction 2026-09-25 15:48 '같은 용어'"
+          "ssotEvidence": "founder-ux Skill 'Live status card' (For an actl AI window): 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; test/actl-panes-plain.test.mjs:89 is titled 'state words:일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨' but :91 asserts '작업 중'; Founder direction 2026-09-25 15:48 '같은 용어'",
+          "title": "작업 창 상태를 '일하는 중'으로 통일"
         }
       ],
       "skills": {
@@ -9610,7 +9620,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts' vs docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:29 'the proposed GO mapping is taken from the source scorecard'; Founder direction 2026-09-26"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts' vs docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:29 'the proposed GO mapping is taken from the source scorecard'; Founder direction 2026-09-26",
+          "title": "보고서의 가치 검증 결과를 미정으로 정정"
         },
         {
           "taskId": "JUCEIPTPLAN-CANONICAL-HTML-M3-JOIN-GAP-SYNC",
@@ -9621,7 +9632,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:218 'Evidence conflicts resolved | NO — the seven-task join evidence is missing; see Section 2.2' vs docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 'CURRENT · EVIDENCE REGISTER COMPLETE · DECISION PENDING'; docs/operations/PM_STATUS_BOARD.md:36 '0 Founder seven-task-register rows join both a final and a Receipt'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:218 'Evidence conflicts resolved | NO — the seven-task join evidence is missing; see Section 2.2' vs docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 'CURRENT · EVIDENCE REGISTER COMPLETE · DECISION PENDING'; docs/operations/PM_STATUS_BOARD.md:36 '0 Founder seven-task-register rows join both a final and a Receipt'",
+          "title": "사업 지도의 가치 검증 상태 문구 정정"
         }
       ]
     },
