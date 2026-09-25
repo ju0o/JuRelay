@@ -1899,6 +1899,41 @@
             "npm run typecheck"
           ],
           "ssotEvidence": "Dogfood finding R-01 (MainPC Desktop AgentRelay-Findings.md, 2026-09-25): agent-relay-night-0925b failed (Result: timeout) at 00:01:54, supervisor pid 3172830 killed; Founder request 2026-09-25 to register this fix as a Relay task"
+        },
+        {
+          "taskId": "AGENTRELAY-ENVS-PANEL",
+          "scope": "Desktop app: add controlRoom op 'envs' in src/backend/controlRoom.ts that runs `ssh -o BatchMode=yes -o ConnectTimeout=5 asus ~/.agents/skills/auto-night-orchestrator/scripts/night envs --json` the same way as board (execFile, no shell, 30s timeout, REMOTE_FAILED vs offline messages), and a '실행 환경' card at the top of 관제실 (src/frontend/controlRoom.tsx): one row per environment — label (ASUS (이 컴퓨터) · MainPC · 클라우드), a CPU bar (%), a RAM bar (남은 GB / 전체 GB), the AI programs found as friendly names, and when ok=false the plain reason. Refresh every 30s. Colours per founder-ux (green plenty, amber when RAM free < 3.5 GB or CPU > 80%, red only when RAM free < 1.5 GB). Pure helpers (bar %, colour) in src/shared/projectLabels.ts + test with a fake payload.",
+          "files": [
+            "src/backend/controlRoom.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/shared/projectLabels.ts",
+            "src/shared/types.ts",
+            "test/envs-panel.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/envs-panel.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay gui프로그램 안에 \"어떤 환경에서 진행할건지\"선택하는 것도 넣고 그리고 각 환경마다 남은 cpu|ram도 환경 확인하게'; ASUS OOM 15:53; ASUS night envs --json (skill) returns {kind:'ENVS', envs:[{id,label,ok,cpuPct,cpus,ramFreeGb,ramTotalGb,ais[] | reason}]}",
+          "title": "실행 환경별 CPU·RAM 보기"
+        },
+        {
+          "taskId": "AGENTRELAY-ENV-PICKER",
+          "scope": "Desktop app: per project (lane) an '어디서 돌릴까요?' picker with options 자동 (추천: 남은 RAM이 많은 곳) / ASUS / MainPC / 클라우드, shown in the lane view next to 담당 AI. Saving runs `ssh … night lane env <project> auto|asus|mainpc|cloud --json` (validate the value; execFile, no shell) and shows '저장했어요 ✓' inline. Environments that are not reachable (from the envs op) are shown disabled with the reason. Test the value validation and the fake exec call.",
+          "files": [
+            "src/backend/controlRoom.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/shared/types.ts",
+            "test/env-picker.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/env-picker.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay gui프로그램 안에 \"어떤 환경에서 진행할건지\"선택하는 것도 넣고 그리고 각 환경마다 남은 cpu|ram도 환경 확인하게'; ASUS OOM 15:53; ASUS night envs --json (skill) returns {kind:'ENVS', envs:[{id,label,ok,cpuPct,cpus,ramFreeGb,ramTotalGb,ais[] | reason}]}",
+          "title": "어디서 돌릴지 고르기"
         }
       ],
       "qaRuntime": [
