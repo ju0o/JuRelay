@@ -9069,6 +9069,18 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27 '| Active product milestone | **M3 — Daily Agent Value Decision** |' (also :58 '| **M3** | **Daily Agent Value Decision** |') vs README.md:51 '→ M3 Daily Report Decision' and docs/product/MASTER_ROADMAP.md:464 '| M3 Daily Report Decision | GO / DEFER / KILL based on actual use | M2 | 🟡 VALIDATION NEXT |'",
           "title": "3단계 목표 이름을 최신으로 맞추기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-NAME-HTML-WBS-SYNC",
+          "scope": "Rename the remaining outdated M3 milestone labels to the SSOT name 'Daily Agent Value Decision' in three places only: the canonical docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html M3 gate row at line 84 ('Daily Agent Value Proof'), and docs/planning/BUSINESS_PRODUCT_WBS.md line 17 ('M3 Daily Value Decision') and the §1 M3 row at line 43 ('Daily Value Proof'). Leave all status, dependency and B0/M2 'Value Proof' wording unchanged, and record no M3 decision.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html",
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27 '| Active product milestone | **M3 — Daily Agent Value Decision** |'; docs/product/MASTER_ROADMAP.md:229 '## Phase M3 — Daily Agent Value Decision'"
         }
       ]
     },
