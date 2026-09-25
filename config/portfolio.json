@@ -5629,6 +5629,19 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙(맨 위 한 문장, 시간은 상대/현지 시각)으로 juceipt 명령 출력 점검; src/cli/main.ts:208 prints `마지막 활동 ${source.lastActivity}` from src/sources/discover.",
           "title": "JuCeipt 기록 출처 점검 다시 맞추기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-FOUNDER-UX-R3-R2",
+          "scope": "Narrowed per Founder: in src/render/index.ts, drop every screen-switching button (show-review, show-evidence, back-receipt-2, back-review-3), the show() script and the .level display:none/.active toggle. Level1 stays always visible at the top and opens with a plain-language notice that explains '확인 후 받기' and what each missing check means. Level2 and level3 move, fully expanded and with no buttons, inside one <details class=\"raw-source\"> whose <summary> reads '원문 보기' and is closed by default. Branch, commit hash, 'Git commit', English action types and the evidence table appear only inside that fold. Rollback text outside the fold becomes '저장된 이전 상태로 되돌릴 수 있어요'. Body text is at least 18px and the summary/any button has min-height 48px. Add one test, it('founder UX: level1 always visible, no in-fold nav, dev terms only in 원문 보기'), to tests/pipeline.test.ts using the existing renderHtml/buildReceipt helpers. It asserts that HTML before '<details class=\"raw-source\"' contains '확인 후 받기' and has no 'Git', 'commit' or 'branch', that the HTML has no 'show-evidence', 'back-receipt-2', 'back-review-3' or 'show-review' ids and no '.level{display:none}', and that '<details class=\"raw-source\"' has no 'open' attribute. This test fails on the old code ('Git commit' at old lines 26/88, nav buttons at 53/107-108/128) and passes on the new code. Splitting failures into 무엇이/왜/다음 is out of scope for this task, and tests/daily*.test.ts must not be edited.",
+          "files": [
+            "src/render/index.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npm test -- tests/pipeline.test.ts",
+            "npm run build"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
