@@ -9693,6 +9693,20 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; operator/public/app.js:1911 at f9121ad renders relay-now with STAGE_KO ('작업'/'검수') directly before liveProjectCard, which uses '만드는'/'검사하는'"
+        },
+        {
+          "taskId": "JCAPP-RELAY-FLOW-LIVE-WORDS-R2",
+          "scope": "In operator/public/app.js relayFlowRow only, label the 7 chips and the '지금 … 단계예요' sentence with the live card's words from a const array declared inside relayFlowRow (['계획','계획 확인','만들기','검사','시험','대표님 확인','반영']; not a new top-level const, because idle-lane-meaning's sandbox only loads esc/RELAY_FLOW/STAGE_KO) in place of STAGE_KO[index]/STAGE_KO[stage]; leave the '담당: ' worker text raw (the aiName change is deferred to a later task), and keep the data-step keys, STAGE_KO itself, homeWorking and the idle sentence unchanged; update the pins so that test/agent-relay-module.test.mjs:63 expects '지금 검사 단계예요. 담당: cline · 2번째 시도예요.', :73 and :75 expect '지금 만들기 단계예요. …', the :46 per-stage label loop uses the new words, and test/idle-lane-meaning.test.mjs:40 expects '지금 만들기 단계예요.' (these pins fail on base f9121ad and pass after the change); the full-suite command is `node --test test/*.test.mjs`, because the last attempt's `node --test test/` fails on Node 22 with MODULE_NOT_FOUND no matter what the code does",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs",
+            "test/idle-lane-meaning.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/idle-lane-meaning.test.mjs test/lovable-live-cards.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux Live status card: '여기까지 끝남: … 계획 → 만들기 → 검사 → 시험 → 반영' and 'No pane ids, task ids, or English status words on the card'; base f9121ad operator/public/app.js:1834,1837 label chips and sentence with STAGE_KO (작업/검수/사람 확인) and test/agent-relay-module.test.mjs:63 pins '지금 검수 단계예요. 담당: cline'"
         }
       ],
       "skills": {
