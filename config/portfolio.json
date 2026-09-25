@@ -6988,6 +6988,28 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:122-123 'For each check, retain the validator's observation, the source Receipt IDs, and a short counterexample when the result is `NO` or `UNKNOWN`.'; Founder direction 2026-09-25 'Complete the seven-task Receipt-versus-summary register'",
           "title": "일일 가치 검증표에 근거 영수증 표시"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-REPORT-B4-M3-LINE-SYNC",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md §B.4 (line 80), replace the outdated 'M2 GO; M3 validation is next.' with the wording already used in header line 6 and morning summary line 29: the M3 validation register is complete for the committed 10-receipt corpus at JuCeipt@402d3ee, the proposed GO mapping comes from the source scorecard, and no M3 decision is recorded there; keep 'P0 cannot unlock B2+.' and change no other line.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:80 'STATUS_BOARD, WBS M2 row, HTML pill, handoff, UNPLANNED_WORK decision: M2 GO; M3 validation is next.' contradicts line 29 'M3 validation register is complete for the committed 10-receipt corpus at JuCeipt@402d3ee'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-CLOSEOUT-ACTIONABLE-BAR-TRACE",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md Section 7, add one closeout row 'Actionable day-level value bar' that links the Founder GO condition (GO only if the day-level view adds clear actionable value) to facts already in the artifact: the Section 3.1 tally (7 ACTIONABLE, 3 UNKNOWN/UNVERIFIED GAP) and the Section 4 checks review_queue_utility and impact_traceability (both PASS). Also add a Section 3.1 cross-reference to the 'Proposed mapping basis' row. Keep 'M3 milestone decision: NOT RECORDED HERE' and 'Next authorized step' unchanged.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 'score decision utility per task, and issue M3 GO only if the day-level view adds clear actionable value'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:185 basis cites only the source scorecard, while :103 'Tally: 7 ACTIONABLE, 3 UNKNOWN/UNVERIFIED GAP' is not cited in the closeout"
         }
       ]
     },
