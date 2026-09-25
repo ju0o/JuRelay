@@ -2768,6 +2768,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, no raw codes; base src/actl/cli.py:1099 print(f\"✓ {AGENTS[agent].display_name} re-mapped to {matches[0].pane.pane_id}\") and :1129 raise ValueError(f\"{AGENTS[agent].display_name} is not currently mapped to a live pane\")",
           "title": "보낼 곳을 쉽게 고르고 안내받기"
+        },
+        {
+          "taskId": "ACTL-STATUS-AUTO-RECONCILE",
+          "scope": "Make `actl status` and `actl --status` (src/actl/cli.py main dispatch) call the existing `_auto_reconcile(config, announce=False)` before `_print_status`, so an agent with exactly one strong-confidence detection (or the existing newest-pane rule) shows as 켜짐 instead of 연결 안 됨; text mode prints one plain Korean line per change like '자동 연결했어요: Codex → %10', `--json` output stays a single JSON array, and any discovery error keeps the old read-only rows; add offline tests that monkeypatch cli.discover/reconcile/save_config/backup_config.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_status_auto_reconcile.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: '9/25 ASUS 실측: discover는 claude-team %0/%11, claude-pro %3, codex %10을 정확히 찾지만 status는 Claude Team 1개만 UP이고 나머지는 UNMAPPED … 1) status/board/serve가 강한 신뢰도 탐지를 자동 반영해 Live Pane을 항상 보여주기'"
+        },
+        {
+          "taskId": "ACTL-REMOTE-CLAUDE-PROFILE-VALIDATE",
+          "scope": "Fix src/actl/core/validation.py `_is_claude` so that under REMOTE_SSH_TARGET it matches the Claude profile by basename (same rule `claude_profile` and discovery `_candidate` already use) instead of comparing the ASUS path to the MainPC path. Remote Claude Team and Claude Pro panes should then validate UP, while a pane running the other Claude profile, or a non-Claude process, still returns MISMATCH and send stays blocked; add offline regression tests in tests/test_validation.py with a monkeypatched REMOTE_SSH_TARGET and process environment.",
+          "files": [
+            "src/actl/core/validation.py",
+            "tests/test_validation.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: '원격(--ssh) 보내기 전에 그 창이 실제 그 에이전트인지 확인하는지 검증하고 아니면 막고 … 3) 원격 대상 검증 fail-closed'; src/actl/core/validation.py:209 `return claude_profile(process) == profile.expanduser().resolve(strict=False)` vs :232 `REMOTE_SSH_TARGET and resolved.name == expected.name`"
         }
       ],
       "qaRuntime": [
