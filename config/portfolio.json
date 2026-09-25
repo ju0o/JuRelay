@@ -3879,6 +3879,45 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: plain Korean, no raw codes; real PRD/ERD/WBS/API/QA documents from the graph; packages/runtime/src/index.ts:345 writes `# ${domain}`",
           "title": "분야별 문서 제목을 한국어로 표시"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-DIAGRAM-LINK-KOREAN",
+          "scope": "In renderExportsSection in packages/runtime/src/index.ts, label each Studio home 다이어그램 link with its existing DIAGRAM_TYPE_LABELS Korean name (e.g. 개체-관계, 작업 의존성) instead of the raw type id such as 'erd' or 'wbs-dependency', keeping every /view/diagrams/<type> href, the count heading, and all exported files unchanged, and add a test asserting the ordered [href, Korean label] pairs.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-diagram-links.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes; per-type diagrams"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-BADGE-KOREAN",
+          "scope": "In packages/runtime/src/index.ts, make statusBadge show Korean text (통과 / 막힘) instead of the raw PASS/BLOCKED while keeping the badge pass/blocked CSS classes, and in renderGatesSection show the ✓ mark only on gates that pass (a failing gate reads '<label> 0개' or its count without ✓), without changing gate or validation semantics; update the two badge assertions in runtime.test.ts and add a blocked-plan assertion that a failing gate has no ✓.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: plain Korean, obvious next action, inline feedback, no raw codes; Hermes style everywhere (A-21)"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-PLAN-FILE-LABELS",
+          "scope": "In packages/runtime/src/index.ts, give the Studio 계획 파일 links from PLAN_EXPORT_FILES plain Korean labels (e.g. 계획 원본 (JSON), 데이터 구조 (DBML), 계획 그림 (SVG), 계획 한 장 요약 (HTML), 진행 상태 (JSON)) while keeping every /exports/... href, the existence check, and the served files unchanged, and add a test asserting the ordered [href, label] pairs and that no bare filename appears as link text.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-plan-file-labels.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime typecheck",
+            "pnpm --filter @juplan/runtime test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes"
         }
       ],
       "qaRuntime": [
