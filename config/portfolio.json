@@ -1953,6 +1953,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay랑 JuControler 그리고 actl에도 토큰감지도 넣어야 할 거 같음 — 에이전트가 다른 곳으로 더 토큰이 소모되는지, 불필요한 경우'. Shared source already exists on ASUS: `~/.agents/skills/auto-night-orchestrator/scripts/night tokens --json` → {kind:'TOKENS', ok, hours, summary (Korean sentence), claude:{fresh, cache, byProject:[{project, fresh, cache, turns}], topSessions:[{account, project, folder, turns, fresh, cache, total, lastContext}]}, relay:{runs:{runtime:count}, fallbacks:[{runtime, reason, count}], loops:[{taskId, title, builds}]}, codex:{weekPct, fiveHourPct}|null, findings:[{level:'warn'|'info', kind:'long-session'|'outside'|'wasted-tries'|'loop'|'limit', text (Korean), why (Korean cause), action (Korean), raw}; kinds also include 'spike'|'heavy-task'|'burst' (이상징후). Founder 2026-09-25: '이상징후 및 토큰이 새는 원인 이것도']}. founder-ux Skill.",
           "title": "관제실: 토큰 감지 카드"
+        },
+        {
+          "taskId": "AGENTRELAY-CONTROLROOM-LIVE-STATUS-CARD-R2",
+          "scope": "관제실 각 프로젝트 카드에 지금 하는 일·여기까지 끝남·확인 상태·대표님 할 일·다음 단계를 쉬운 한국어로 표시하고 개발자 원문은 접어 두며, 이 다섯 항목을 검증하는 회귀 테스트가 기존 코드에서 실패하고 변경 후 통과하도록 한다; 이어서 하기 실패 안내와 ResumeControl 오류 문구는 이번 범위에서 제외한다.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "test/controlroom-today.test.mjs"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: A) 관제실 레인마다 founder-ux Skill의 'Live status card' (지금 하는 일·여기까지 끝남·확인 상태·대표님 할 일·다음 단계)"
         }
       ],
       "qaRuntime": [
