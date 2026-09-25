@@ -10185,6 +10185,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "JUTELL-FORBIDDEN-PHRASES-FIXTURE-PARITY",
+          "scope": "Add a new offline node:test that pulls the 8 SPEC §20 forbidden phrases out of the `## 20. 금지 표현` bullets, checks they appear in the same order in report-format.md `## 7. 금지 표현`, checks SKILL.md still points to `references/report-format.md`, and checks that no tests/results/scenario-*/*.fixture.md file contains any of those phrases (fixtures at base are already clean, so no fixture edits are needed).",
+          "files": [
+            "tests/forbidden-phrases-fixture-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/forbidden-phrases-fixture-parity.test.mjs",
+            "node --test tests/skill-report-contract.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:836 '## 20. 금지 표현 … 근거가 없으면 다음 표현을 사용하지 않는다. * 완벽하게 작동합니다 … * 배포해도 됩니다'; Founder direction 2026-09-23 (choice 2026-09-26)"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
