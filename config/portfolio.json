@@ -6041,6 +6041,33 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-COUNT-TOP-SENTENCE",
+          "scope": "In koreanSummary in src/daily/index.ts, replace the fixed first line '지금 확인할 일: 작업 상태와 확인이 필요한 내용을 먼저 살펴보세요.' with one sentence built from the real counts, the same way buildScanSummary in src/sources/summary.ts already does it: '확인 후 받기 N개, 문제 있음 M개가 있어요. 검토 필요 작업부터 보세요.' when anything needs a look, '지금 하실 일은 없어요 — 모두 받아도 돼요.' when every receipt is ready, and a line with the reason and next step when there are no tasks. Change no other summary line, and update the exact expectations in tests/daily.test.ts and tests/daily-cli.test.ts, including one new case each for the review-needed, all-ready and empty sentences.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rule 1 (맨 위 한 문장: 무엇을 할지) for juceipt daily output; src/daily/index.ts:100 at 9fa4dea is still the fixed generic sentence, while scan got the count-based sentence in 80e85ca"
+        },
+        {
+          "taskId": "JUCEIPT-HELP-FIRST-RUN-GUIDE",
+          "scope": "In main() in src/cli/main.ts, change the help output (shown for no arguments, help, --help and -h) from the bare '사용법:' flag list to this order: a plain Korean top sentence saying what JuCeipt is for; a 3-step first-run guide (1 무엇인지: AI가 이 컴퓨터에 남긴 작업 기록으로 영수증을 만들어요, 이 컴퓨터 밖으로 보내지 않아요 · 2 할 일 하나: juceipt scan 실행 · 3 다음에 생기는 일: 영수증과 SUMMARY.md가 생기고 '받아도 됨 / 확인 후 받기 / 문제 있음'으로 알려줘요); then each existing command with a short Korean description next to its unchanged copyable syntax. Keep the '사용법:' label and the fail-closed exit codes, and extend the existing help test in tests/daily-cli.test.ts to check the top sentence, the three steps and one description line.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rules 1 and 14 (맨 위 한 문장, 첫 실행 3단계 안내) for the juceipt command output; src/cli/main.ts:293-301 at 9fa4dea prints only '사용법:' and the raw flag syntax"
         }
       ],
       "skills": {
