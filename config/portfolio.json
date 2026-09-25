@@ -5183,6 +5183,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: launch bar = plain Korean, no raw codes. At base 4fd861d, the 23 keys in scripts/status-board.mjs reasonWords (lines 7-31) and the 23 rows in the README.md reason table (lines 64-90) match only by hand. No test checks that they stay in sync.",
           "title": "이유 안내가 빠지지 않게 확인하기"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-KO-HELP",
+          "scope": "Make `node scripts/status-board.mjs --help` (and `-h`) print the two existing usage lines (Korean '사용법: …' first, then English 'Usage: …') to stdout and exit 0 without loading any registry. Unknown flags like --bogus still exit 2. Add one test for this to tests/status-board-cli.test.mjs, and add a sentence to the '사용법:' row of the '상태판 안내 문장 읽는 법' table in docs/getting-started.md saying `--help` shows the same lines and exits 0.",
+          "files": [
+            "scripts/status-board.mjs",
+            "tests/status-board-cli.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes"
+        },
+        {
+          "taskId": "JUCONTROLER-GETTING-STARTED-LINES-SYNC-TEST",
+          "scope": "Add one offline test, tests/getting-started-lines-sync.test.mjs. It reads the first-column backticked lines of the '상태판 안내 문장 읽는 법' table in docs/getting-started.md, splits each line on `<…>` placeholders and on `…`, trims each piece, and keeps pieces of 4 or more characters. It then asserts that every kept piece appears verbatim in the source text of scripts/status-board.mjs, so the doc cannot drift from the real Korean stderr lines. Change only the test file; the doc and the script already match at base.",
+          "files": [
+            "tests/getting-started-lines-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-lines-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): plain Korean, obvious next action, inline feedback, no raw codes; follows the done JUCONTROLER-GETTING-STARTED-CLI-MESSAGES table and the JUCONTROLER-REASON-TABLE-SYNC-TEST pattern"
         }
       ],
       "qaRuntime": [
