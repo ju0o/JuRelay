@@ -4339,6 +4339,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "영수증 자동 생성과 비밀 가림 점검"
+        },
+        {
+          "taskId": "JUCEIPT-CODEX-TOOL-MASKING",
+          "scope": "In src/sources/codex.ts, pass Codex tool inputs (payload.arguments, including JSON-string arguments) and tool outputs (payload.output, text or object) through the token mask before they become PreToolUse/PostToolUse evidence, and use the same stronger token pattern as claude.ts (add the base64-like `[A-Za-z0-9+/]{32,}={0,2}` form). Today prompts and final messages are masked but tool inputs and outputs are not, so sk-/ghp_ tokens printed by shell commands reach receipt.json. Add a synthetic test with a token in a function_call argument and in a function_call_output that asserts only <redacted> remains.",
+          "files": [
+            "src/sources/codex.ts",
+            "tests/sources-codex.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-codex.test.ts tests/sources-scan.test.ts",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (A-28): 'mask token-like strings in every receipt; nothing leaves the machine'"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-AGENT-RELAY-TASKS",
+          "scope": "Make scanSessions in src/sources/scan.ts turn the real Agent Relay state.json shape (top-level `tasks` array with taskId/projectId/scope/builderEvidence/result/qa/doneAt) into one scan session per task. Reuse the existing importer in src/sources/agentRelay.ts: scope becomes a masked UserPromptSubmit, result.summary a masked Stop, doneAt the timestamp, and taskId the sessionId. Keep the current `sessions` shape working. Today scan only reads `sessions`, so the real Agent Relay state produces no receipts. Add a synthetic `tasks` fixture case to the scan regression covering recent/old filtering and token masking.",
+          "files": [
+            "src/sources/scan.ts",
+            "tests/sources-scan.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-scan.test.ts tests/sources-agent-relay.test.ts tests/sources-scan-cli.test.ts",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (A-28): 'Agent Relay task state (~/.local/share/AgentRelay/data/portfolio-execution/state.json) ... one `juceipt scan` command that finds sources and writes receipts for recent sessions'"
         }
       ]
     },
