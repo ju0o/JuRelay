@@ -1,11 +1,11 @@
 "use strict";
 
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { execFile as nodeExecFile } from "node:child_process";
-import { dirname } from "node:path";
+import { dirname, join } from "node:path";
 import { promisify } from "node:util";
 
 const execFile = promisify(nodeExecFile);
@@ -80,12 +80,38 @@ export function seoulDate(value = new Date()) {
   return new Intl.DateTimeFormat("en-CA", { timeZone: DEFAULT_TIMEZONE, year: "numeric", month: "2-digit", day: "2-digit" }).format(value);
 }
 
-export function buildNightReport(record) {
-  const lanes = (record.lanes || []).map((lane) => `- ${lane.id || lane.project}: state=${lane.state || "UNKNOWN"}, blocker=${lane.blockers?.[0] || lane.blocker || "-"}`).join("\n") || "- none";
-  const unfinished = (record.unfinishedTasks || []).map((task) => `- ${task.project}/${task.taskId}: worker=${task.workerState || "-"}, QA=${task.qaState || "-"}, worktree=${task.worktree || "-"}, resume=${task.resumeRequired ? "yes" : "no"}`).join("\n") || "- none";
-  // Written before the transfer and the power-off, so say plainly what happens next instead of a stale-looking PENDING (retro 2026-09-24).
-  const next = record.shutdownState === "REPORTING" ? ["> 이 보고서가 MainPC에 보이면 전송은 성공했어요. 그다음 MainPC(30초 뒤) → ASUS 순서로 꺼져요. 실제 종료 결과는 ASUS의 LAST_NIGHT_RUN.json에 남아요.", ""] : [];
-  return [`# Night Report ${seoulDate(new Date(record.startedAt))}`, "", ...next, `- runId: ${record.runId}`, `- start: ${record.startedAt}`, `- end: ${record.endedAt || "-"}`, `- endReason: ${record.endReason}`, `- deadline: ${record.deadline}`, `- shutdownState: ${record.shutdownState}`, "", "## Completed projects / lanes", lanes, "", "## Completed WBS / task", `- ${record.taskId || "-"}`, `- promotion: ${record.promotionRef || record.commitSha || "-"}`, "", "## Retry / QA", `- QA: ${record.qaState || "-"}`, `- attempts: ${record.attempts || 0}`, "", "## Unfinished tasks", unfinished, "", "## Founder Gate", `- ${record.founderGate || "none"}`, "", "## Blockers / next WBS", `- blocker: ${record.blocker || "-"}`, `- next: ${record.next || "-"}`, `- checkpoint: ${record.checkpointPath || "-"}`, "", "## Shutdown", `- reportPathAsus: ${record.reportPathAsus || "-"}`, `- reportTransferState: ${record.reportTransferState || "-"}`, `- reportPathMainPC: ${record.reportPathMainPC || "-"}`, `- mainPcShutdownRequested: ${record.mainPcShutdownRequested ? "yes" : "no"}`, `- asusShutdownRequested: ${record.asusShutdownRequested ? "yes" : "no"}`, ""].join("\n");
+const LANE_KO = { "agent-relay": "Agent Relay", juactl: "actl", juplan: "JuPlan", juceipt: "JuCeipt", jucontroler: "JuControler 공개판", "jucontroler-app": "통합 관제 화면", "juceipt-planning": "JuCeipt 기획", jutell: "JuTell", juai: "JuAi", "ai-agent-marketplace": "AI 에이전트 마켓플레이스" };
+const kst = (iso) => { try { return new Intl.DateTimeFormat("ko-KR", { timeZone: DEFAULT_TIMEZONE, month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(iso)); } catch { return "-"; } };
+
+// Plain-Korean night report for the Founder (2026-09-25: "보고서가 전부 영어라 못 알아보겠음"). ctx = {state, manifest, holds}
+// is best-effort context loaded at finalize time; without it the report still says what happened in Korean.
+export function buildNightReport(record, ctx = {}) {
+  const tasks = ctx.state?.tasks || [];
+  const titles = {}; for (const p of ctx.manifest?.projects || []) for (const t of p.tasks || []) titles[t.taskId] = t.title || t.scope?.slice(0, 60);
+  const from = Date.parse(record.startedAt || 0); const to = Date.parse(record.endedAt || new Date().toISOString());
+  const done = tasks.filter((t) => t.state === "VERIFIED_DONE" && t.doneAt && Date.parse(t.doneAt) >= from && Date.parse(t.doneAt) <= to);
+  const byLane = {}; for (const t of done) (byLane[t.projectId] ||= []).push(t);
+  const holds = (ctx.holds || []).filter((h) => h.choice !== "skip");
+  const lines = [`# 밤 작업 보고서 ${seoulDate(new Date(record.startedAt || Date.now()))}`, ""];
+  if (record.shutdownState === "REPORTING") lines.push("> 이 보고서가 MainPC에 보이면 전송은 성공했어요. 그다음 MainPC(30초 뒤) → ASUS 순서로 꺼져요. 아침에 ASUS를 켜면 자동 작업이 알아서 다시 시작돼요.", "");
+  lines.push("## 한눈에", `- 시간: ${kst(record.startedAt)} ~ ${kst(record.endedAt || record.deadline)}`,
+    `- 끝낸 작업: **${done.length}개** (프로젝트 ${Object.keys(byLane).length}곳)`,
+    `- 멈춘 작업: ${holds.length}개${holds.length ? " — 쉬운 설명과 선택지가 준비돼 있고, 답이 없으면 30분 뒤 추천대로 다시 설계돼요" : ""}`,
+    `- 끝난 이유: ${record.endReason === "DEADLINE_COMPLETE" ? "정한 시간이 되어 마무리했어요" : record.endReason === "WBS_EXHAUSTED" ? "할 일을 다 끝냈어요" : "예상과 다르게 끝났어요 (" + (record.endReason || "알 수 없음") + ")"}`, "");
+  lines.push("## 프로젝트별로 끝낸 것");
+  if (!done.length) lines.push("- 이번 밤에 끝난 작업이 없어요.");
+  for (const [lane, list] of Object.entries(byLane).sort((a, b) => b[1].length - a[1].length)) {
+    lines.push(`### ${LANE_KO[lane] || lane} — ${list.length}개`);
+    for (const t of list.slice(0, 12)) lines.push(`- ${titles[t.taskId] || t.taskId}`);
+    if (list.length > 12) lines.push(`- 그 밖에 ${list.length - 12}개`);
+  }
+  lines.push("", "## 멈춘 작업");
+  if (!holds.length) lines.push("- 없어요.");
+  for (const h of holds.slice(0, 10)) lines.push(`- ${LANE_KO[h.projectId] || h.projectId} · ${titles[h.taskId] || h.taskId} — ${h.explain?.sentence || "쉬운 설명을 만드는 중이에요"}`);
+  lines.push("", "## 아침에 할 일", "- ASUS를 켜기만 하면 돼요. 자동 작업이 이어서 진행돼요.",
+    "- 통합 관제 화면에 새로 끝난 게 있으면, Supervisor가 시험·확인한 뒤 반영용 한 줄 명령을 드려요.", "",
+    "<details><summary>기술 정보 (개발자용)</summary>", "", `runId ${record.runId} · 마지막 작업 ${record.taskId || "-"} · 종료 ${record.endReason} · 전송 ${record.reportTransferState || "-"} · 끄기 ${record.shutdownState}`, "", "</details>", "");
+  return lines.join("\n");
 }
 
 export async function sendReportToMainPc({ reportPath, target = mainPcTarget(), scriptPath = process.env.AGENT_RELAY_SEND_TO_MAINPC || DEFAULT_SEND_TO_MAINPC, execFileImpl = execFile }) {
@@ -104,10 +130,19 @@ export async function requestMainPcShutdown({ target = mainPcTarget(), identity 
   return { state: "REQUESTED", target, command: "shutdown.exe /s /t 30", at: new Date().toISOString(), output: String(result.stdout || "").trim() };
 }
 
+async function nightReportContext(dataDir) {
+  const read = async (f) => { try { return JSON.parse(await readFile(f, "utf8")); } catch { return null; } };
+  const state = await read(join(dataDir, "state.json"));
+  const manifest = await read(new URL("../../../config/portfolio.json", import.meta.url).pathname);
+  const holds = [];
+  try { for (const f of await readdir(join(dataDir, "holds"))) { const h = await read(join(dataDir, "holds", f)); if (h && (state?.tasks || []).some((t) => t.taskId === h.taskId && t.state === "HOLD")) holds.push(h); } } catch {}
+  return { state, manifest, holds };
+}
+
 export async function finalizeNightRun({ record: initial, checkpointPath, persist, send = sendReportToMainPc, requestShutdown = requestMainPcShutdown, poweroff = runPoweroff, reportPath, dryRun = false, deferPoweroff = false, transport = "push" }) {
   let record = { ...initial, checkpointPath, shutdownState: "REPORTING", reportPathAsus: reportPath || `${dirname(checkpointPath)}/NIGHT_REPORT_${seoulDate(new Date(initial.startedAt))}.md`, reportPathMainPC: null, reportTransferState: "PENDING", mainPcShutdownRequested: false, mainPcShutdownAt: null, asusShutdownRequested: false, unfinishedTasks: initial.unfinishedTasks || [] };
   await mkdir(dirname(record.reportPathAsus), { recursive: true });
-  await writeFile(record.reportPathAsus, buildNightReport(record));
+  await writeFile(record.reportPathAsus, buildNightReport(record, await nightReportContext(dirname(checkpointPath))));
   if (transport === "mainpc-pull") return persist({ ...record, shutdownState: "READY_FOR_MAINPC_PULL", reportState: "LOCAL_READY", reportTransferState: "LOCAL_ONLY", asusShutdownRequested: false });
   try { const transfer = dryRun ? { state: "DRY_RUN", path: `MainPC/Desktop/${record.reportPathAsus.split("/").pop()}`, remoteSha: createHash("sha256").update(await readFile(record.reportPathAsus)).digest("hex") } : await send({ reportPath: record.reportPathAsus }); record = { ...record, reportTransferState: transfer.state, reportPathMainPC: transfer.path || null, reportTransferSha256: transfer.remoteSha || null }; }
   catch (error) { record = { ...record, reportTransferState: "REPORT_TRANSFER_FAILED", reportTransferError: String(error.message || error) }; }
