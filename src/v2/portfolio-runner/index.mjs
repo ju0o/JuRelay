@@ -131,6 +131,28 @@ async function linkDeps(projectPath, path) {
     for (const entry of await readdir(join(projectPath, rel), { withFileTypes: true }).catch(() => [])) if (entry.isDirectory() && !["node_modules", ".git"].includes(entry.name)) await walk(join(rel, entry.name), depth + 1);
   };
   await walk("", 0);
+  // The borrowed node_modules may lack deps the base declares (JuCeipt 2026-09-25: zod/typescript missing → every
+  // test gate failed). Then install once per package-lock hash into a shared cache and link that instead; the
+  // project's own checkout is never touched.
+  const pkg = JSON.parse(await readFile(join(path, "package.json"), "utf8").catch(() => "null"));
+  const lock = await readFile(join(path, "package-lock.json")).catch(() => null);
+  if (pkg && lock) {
+    const want = Object.keys({ ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) });
+    if (want.some((d) => !existsSync(join(path, "node_modules", d, "package.json")))) {
+      const cache = join(homedir(), ".local/share/AgentRelay/deps", createHash("sha256").update(lock).digest("hex").slice(0, 16));
+      if (!existsSync(join(cache, "node_modules"))) {
+        await mkdir(cache, { recursive: true });
+        for (const f of ["package.json", "package-lock.json", ".npmrc"]) if (existsSync(join(path, f))) await writeFile(join(cache, f), await readFile(join(path, f)));
+        await exec("npm", ["ci", "--no-audit", "--no-fund", "--ignore-scripts"], { cwd: cache, timeout: 600_000 }).catch(() => {});
+      }
+      if (existsSync(join(cache, "node_modules"))) {
+        await rm(join(path, "node_modules"), { force: true, recursive: false }).catch(() => {});
+        await unlink(join(path, "node_modules")).catch(() => {});
+        await symlink(join(cache, "node_modules"), join(path, "node_modules"), "dir");
+        if (!linked.includes("")) linked.push("");
+      }
+    }
+  }
   if (linked.length) {
     const exclude = resolve(path, (await exec("git", ["-C", path, "rev-parse", "--git-path", "info/exclude"])).stdout.trim());
     if (!(await readFile(exclude, "utf8").catch(() => "")).split(/\r?\n/).includes("node_modules")) { await mkdir(resolve(exclude, ".."), { recursive: true }); await appendFile(exclude, "\nnode_modules\n"); }
