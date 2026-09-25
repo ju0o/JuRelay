@@ -3313,6 +3313,18 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (founder-ux rules 1, 5, 14: 맨 위 한 문장, 빈 화면 이유+다음 행동, 첫 실행 3단계 안내 — web board); src/actl/serve.py:52 'content:'ACTL // REMOTE AGENT CONTROL // SIGNAL LOCKED''"
+        },
+        {
+          "taskId": "ACTL-WEB-RESULT-READY-CTA-R2",
+          "scope": "From base 43f7a2e2d5f63292082f98aeb637106d355b7912, update src/actl/serve.py BOARD_HTML so READY shows '답이 왔어요' in the teal OK pill, makes '결과 복사' the primary action only for the selected READY result, and adds immediate visible success feedback after doCopy(); add an offline HTML-string test that fails on the old labels, always-on CTA, and missing copy feedback and passes on the new behavior.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_result_ready.py"
+          ],
+          "tests": [
+            "python3 -m pytest tests/test_serve_result_ready.py tests/test_serve.py tests/test_serve_plain_cards.py -q"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): 대상 actl serve 웹 보드 — 답 도착, 결과 복사; Tk counterpart ACTL-RESULT-READY-COPY-CTA-R2 done, web still shows '결과 준비' with an always-on '⧉ 복사'"
         }
       ],
       "qaRuntime": [
