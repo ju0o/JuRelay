@@ -7588,6 +7588,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '각 Github에 따로 따로 올릴거라 영상도 따로따로'; 'Aside가 영상 링크 안 주는 거 같은데' → put each repo's 30s video in the repo itself; overall 60s intro already on YouTube https://youtu.be/tB1cCLzTvIs (Aside upload, 일부 공개)",
           "title": "README에 소개 영상 넣기"
+        },
+        {
+          "taskId": "JCAPP-REVIEW-LINE-AI-NAMES",
+          "scope": "Hub (operator/public/app.js): the review line on 홈 '지금 일하는 중' and 진행 reads 'claude-team이 만든 것을 opencode가 확인해요' with raw runtime ids, and '장착된 Skill' shows raw skill ids like 'founder-ux'. Use the same friendly runtime names as '맡은 AI' (Claude Team, Claude Pro, Codex, OpenCode, Cursor, Grok, Cline, 무료 모델) in that sentence, and show skills by their SKILL.md description's first words or a Korean label map (founder-ux → '비개발자 화면 기준'), raw id only under 원문 보기. Pure helper + test.",
+          "files": [
+            "operator/public/app.js",
+            "test/review-line-ai-names.test.mjs"
+          ],
+          "tests": [
+            "node --test test/review-line-ai-names.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Hub tester capture 2026-09-25 14:11 run-20260925-1411/01-홈.png, 02-진행.png; founder-ux Skill rule 2",
+          "title": "검수 줄의 AI 이름을 보기 좋게"
         }
       ],
       "skills": {
