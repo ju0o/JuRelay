@@ -9720,6 +9720,6 @@
   "memoryDelivery": true,
   "minFreeMemoryMb": 3500,
   "pausedRuntimes": {
-    "grok": "2026-09-25 Grok Build usage balance exhausted (402) — Founder tops up, then re-add to pool"
+    "grok": "2026-09-25 excluded by Founder (\"Grok은 배제하고 다른 Agent로 진행\")"
   }
 }
