@@ -22,13 +22,36 @@ const AI_DISPLAY_NAMES: Record<string, string> = {
   grok: 'Grok',
   cursor: 'Cursor',
   claude: 'Claude',
-  'claude-team': 'Claude 팀',
+  'claude-team': 'Claude Team',
   'claude-pro': 'Claude Pro',
+  'opencode-free': '무료 모델',
 };
 
-/** runtime id → 제품 이름. 모르는 id는 그대로 돌려준다. */
+/** runtime id → 제품 이름. 대소문자 무시, 모르는 id는 그대로 돌려준다. */
 export function aiDisplayName(runtimeId: string): string {
-  return Object.prototype.hasOwnProperty.call(AI_DISPLAY_NAMES, runtimeId) ? AI_DISPLAY_NAMES[runtimeId] : runtimeId;
+  const key = runtimeId.trim().toLowerCase();
+  return Object.prototype.hasOwnProperty.call(AI_DISPLAY_NAMES, key) ? AI_DISPLAY_NAMES[key] : runtimeId;
+}
+
+/** project/lane id → 화면 이름 (대소문자 무시). 모르면 id 그대로. */
+export function projectDisplayName(projectId: string): string {
+  const key = projectId.trim().toLowerCase();
+  return Object.prototype.hasOwnProperty.call(PROJECT_LABELS, key) ? PROJECT_LABELS[key].name : projectId;
+}
+
+/** 쉬는 AI 종료 시각 → 'HH:MM' 로컬 시각. 'HH:MM'은 그대로, ISO/epoch는 로컬로 바꾸고, 못 읽으면 ''. */
+export function localClockLabel(value: unknown): string {
+  if (typeof value === 'string' && /^\d{1,2}:\d{2}$/.test(value.trim())) return value.trim();
+  const ms = typeof value === 'number' ? (value < 1e12 ? value * 1000 : value) : typeof value === 'string' && value.trim() ? Date.parse(value) : NaN;
+  if (!Number.isFinite(ms)) return '';
+  const at = new Date(ms);
+  return `${String(at.getHours()).padStart(2, '0')}:${String(at.getMinutes()).padStart(2, '0')}`;
+}
+
+/** '쉬는 AI' 한 항목: 'OpenCode (12:12까지 쉼)'. 시각을 못 읽으면 'OpenCode (잠시 쉼)'. */
+export function coolingItemText(runtimeId: string, until: unknown): string {
+  const clock = localClockLabel(until);
+  return `${aiDisplayName(runtimeId)} (${clock ? `${clock}까지 쉼` : '잠시 쉼'})`;
 }
 
 /** Joined hold reasons that count as "no hold" (empty, dash placeholder, or only separators). */
@@ -266,6 +289,11 @@ export function visibleHoldEntries(holds: unknown): NormalizedHold[] {
 /** 카드 제목 — '보류/차단' 같은 말 없이 멈춘 작업 수만 알려준다. */
 export function holdHeadingText(count: number): string {
   return `멈춘 작업 ${Math.max(0, Math.trunc(count) || 0)}개`;
+}
+
+/** 레인 탭 배지 — 호박색 '멈춘 작업 N' (blocker만 있어 개수를 모르면 1). */
+export function holdBadgeText(count: number): string {
+  return `멈춘 작업 ${Math.max(1, Math.trunc(count) || 0)}`;
 }
 
 export const HOLD_FLOW_STEPS: readonly string[] = ['PM', 'Worker', 'QA', 'Tester', '반영'];

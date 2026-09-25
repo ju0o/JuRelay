@@ -3,8 +3,8 @@ import { must } from './bridge.js';
 import { ModelUsagePanel } from './approvals.js';
 import { InlineConfirm } from './components.js';
 import type { ControlRoomModelUsage } from '../shared/types.js';
-import { controlRoomTaskId, controlRoomTaskTitle, founderTaskTitle, controlRoomHasDoneData, controlRoomTodayCount, controlRoomTodayDone, controlRoomVerifiedDoneTotal, controlRoomWorkingRows, laneAttention } from '../shared/types.js';
-import { PROJECT_LABELS, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
+import { controlRoomTaskId, controlRoomTaskTitle, founderTaskTitle, controlRoomHasDoneData, controlRoomTodayCount, controlRoomTodayDone, controlRoomVerifiedDoneTotal, controlRoomWorkingItems, controlRoomRoutingLine, laneAttention } from '../shared/types.js';
+import { PROJECT_LABELS, aiDisplayName, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
 import type { NormalizedHold } from '../shared/projectLabels.js';
 
 export interface ControlRoomHoldExplain {
@@ -111,7 +111,7 @@ function projectOf(lane: ControlRoomLane): string {
 
 function projectPresentation(lane: ControlRoomLane): { id: string; name: string; goal: string } {
   const id = projectOf(lane);
-  const known = PROJECT_LABELS[id];
+  const known = PROJECT_LABELS[id.toLowerCase()];
   const current = lane.current ?? {};
   return {
     id,
@@ -198,7 +198,7 @@ function TodayCard({ board }: { board: ControlRoomBoard | null }): React.ReactEl
           : <><p className="control-card-value">오늘 {count}개 끝났어요</p><ul className="today-list">
             {items.map((item, index) => (
               <li key={`${item.lane}-${item.taskId || item.title}-${index}`}>
-                <span><strong>{item.lane ? `${PROJECT_LABELS[item.lane]?.name ?? item.lane} · ` : ''}{item.title}</strong></span>
+                <span><strong>{item.lane ? `${projectDisplayName(item.lane)} · ` : ''}{item.title}</strong></span>
                 <details><summary>원문 보기</summary><p className="muted mono">ID: {item.taskId || '—'}</p>{item.scope && <p className="muted mono">범위: {item.scope}</p>}</details>
               </li>
             ))}
@@ -208,11 +208,15 @@ function TodayCard({ board }: { board: ControlRoomBoard | null }): React.ReactEl
 }
 
 function WhoLine({ board }: { board: ControlRoomBoard | null }): React.ReactElement {
-  const rows = controlRoomWorkingRows(board?.lanes ?? [], board?.routing);
+  const items = controlRoomWorkingItems(board?.lanes ?? []);
+  const rows = controlRoomRoutingLine(board?.routing);
   return (
     <section className="control-card who-line" aria-label="지금 일하는 AI">
       <p className="control-card-value who-text">지금 일하는 AI</p>
-      {rows.length === 0 ? <p className="muted">쉬는 중</p> : rows.map(row => <p key={row} className="muted">{row}</p>)}
+      {items.length === 0 && rows.length === 0 ? <p className="muted">쉬는 중</p> : <>
+        {items.map((item, index) => <div key={`${item.text}-${index}`} className="muted"><p>{item.text}</p>{item.taskId && <details className="who-raw"><summary>원문 보기</summary><span className="mono">ID: {item.taskId}</span></details>}</div>)}
+        {rows.map(row => <p key={row} className="muted">{row}</p>)}
+      </>}
     </section>
   );
 }
@@ -266,7 +270,7 @@ function statusText(status: ActionStatus): string {
 }
 
 /** opencode-free는 화면에서 '무료 모델(예비)'로 보여준다. */
-const runtimeLabel = (runtime: string): string => (runtime === 'opencode-free' ? '무료 모델(예비)' : runtime);
+const runtimeLabel = (runtime: string): string => (runtime === 'opencode-free' ? '무료 모델(예비)' : aiDisplayName(runtime));
 
 function ChainEditor({ project, role, initial, workerChain, onRefresh }: {
   project: string;
@@ -747,7 +751,7 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
       {board === null && !error ? <div className="control-empty">작업 PC에서 불러오는 중…</div>
       : error && lanes.length === 0 ? <div className="control-empty">{error}{errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}</div>
       : !sortedLanes.length ? <div className="control-empty" role="status"><p>아직 진행 중인 프로젝트가 없어요. 지금 하실 일은 없어요.</p><p className="muted">계획이 승인되면 프로젝트가 여기에 자동으로 나타나요. 이 화면은 5초마다 알아서 새로 고쳐요.</p></div> : <>
-        <div className="control-tabs" role="tablist" aria-label="프로젝트 목록">{sortedLanes.map((lane, index) => { const presentation = projectPresentation(lane); const key = laneSelectKey(lane, index); const isActive = key === activeKey; const attn = laneAttention(lane); return <button className={`control-tab${isActive ? ' active' : ''}`} key={lane.id ?? lane.project ?? index} onClick={() => setSelectedId(key)} role="tab" aria-selected={isActive} aria-label={`${presentation.name}: ${presentation.goal}`}><span>{presentation.name}</span>{attn === 'decision' && <span className="attn-badge decision">결정 필요</span>}{attn === 'hold' && <span className="attn-badge hold">보류</span>}<small style={{ display: 'block', marginTop: 4 }}>{presentation.goal}</small></button>; })}</div>
+        <div className="control-tabs" role="tablist" aria-label="프로젝트 목록">{sortedLanes.map((lane, index) => { const presentation = projectPresentation(lane); const key = laneSelectKey(lane, index); const isActive = key === activeKey; const attn = laneAttention(lane); return <button className={`control-tab${isActive ? ' active' : ''}`} key={lane.id ?? lane.project ?? index} onClick={() => setSelectedId(key)} role="tab" aria-selected={isActive} aria-label={`${presentation.name}: ${presentation.goal}`}><span>{presentation.name}</span>{attn === 'decision' && <span className="attn-badge decision">결정 필요</span>}{attn === 'hold' && <span className="attn-badge hold">{holdBadgeText(visibleHoldEntries(lane.holds).length)}</span>}<small style={{ display: 'block', marginTop: 4 }}>{presentation.goal}</small></button>; })}</div>
         {activeLane && <LaneView lane={activeLane} onRefresh={load} />}
       </>}
     </main>

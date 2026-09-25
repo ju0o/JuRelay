@@ -7,8 +7,8 @@ const source = await readFile(new URL('../src/frontend/controlRoom.tsx', import.
 
 test('founderTaskTitle keeps Hangul titles and hides raw ids', () => {
   assert.equal(founderTaskTitle({ taskId: 'AGENTRELAY-1', title: '로그인 수정' }), '로그인 수정');
-  assert.equal(founderTaskTitle({ taskId: 'AGENTRELAY-1', title: 'AGENTRELAY-1' }), '이름 준비 중인 작업');
-  assert.equal(founderTaskTitle({ scope: 'On the web board in src/actl/serve.py' }), '이름 준비 중인 작업');
+  assert.equal(founderTaskTitle({ taskId: 'AGENTRELAY-1', title: 'AGENTRELAY-1' }), '새 작업 (이름 짓는 중)');
+  assert.equal(founderTaskTitle({ scope: 'On the web board in src/actl/serve.py' }), '새 작업 (이름 짓는 중)');
 });
 
 test('a visible hold becomes the current blocked flow when current is absent', () => {

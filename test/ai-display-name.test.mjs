@@ -10,7 +10,7 @@ test("aiDisplayName maps runtime ids to product names", () => {
     grok: "Grok",
     cursor: "Cursor",
     claude: "Claude",
-    "claude-team": "Claude 팀",
+    "claude-team": "Claude Team",
     "claude-pro": "Claude Pro",
   })) assert.equal(aiDisplayName(id), name);
 });

@@ -1,4 +1,4 @@
-import { PROJECT_LABELS } from './projectLabels.js';
+import { aiDisplayName, coolingItemText, projectDisplayName } from './projectLabels.js';
 
 /**
  * Shared type definitions for Agent Relay Log V0.
@@ -388,10 +388,13 @@ export function controlRoomTaskTitle(task: unknown): string {
   return controlRoomValue(record, CONTROL_ROOM_TASK_TITLE_KEYS) || controlRoomTaskId(task);
 }
 
+/** 제목이 아직 없는 작업에 보여주는 이름. */
+export const NEW_TASK_TITLE = '새 작업 (이름 짓는 중)';
+
 /** Founder-facing title: raw ids/scope text are never presented as task names. */
 export function founderTaskTitle(task: unknown): string {
   const title = controlRoomTaskTitle(task);
-  return /[\uac00-\ud7a3]/.test(title) ? title : '이름 준비 중인 작업';
+  return /[\uac00-\ud7a3]/.test(title) ? title : NEW_TASK_TITLE;
 }
 
 function controlRoomTaskScope(task: unknown): string {
@@ -553,7 +556,7 @@ function controlRoomRuntimeName(value: unknown): string {
   return '';
 }
 
-function controlRoomRoutingLine(routing: unknown): string[] {
+export function controlRoomRoutingLine(routing: unknown): string[] {
   if (!routing || typeof routing !== 'object' || Array.isArray(routing)) return [];
   const record = routing as Record<string, unknown>;
   const coolingItems = Array.isArray(record.cooling)
@@ -565,27 +568,29 @@ function controlRoomRoutingLine(routing: unknown): string[] {
     if (!item || typeof item !== 'object' || Array.isArray(item)) return '';
     const value = item as Record<string, unknown>;
     const name = controlRoomRuntimeName(value);
-    const until = controlRoomString(value.until ?? value.coolingUntil ?? value.availableAt ?? value.cooling_until);
-    return name && until ? `${name}(${until}까지)` : '';
+    const until = value.until ?? value.coolingUntil ?? value.availableAt ?? value.cooling_until;
+    return name ? coolingItemText(name, until) : '';
   }).filter(Boolean);
   const lines = cooling.length > 0 ? [`쉬는 AI: ${cooling.join(' · ')}`] : [];
   if (record.pool !== undefined && record.pool !== null) lines.push('배정 순서: 구독 AI 먼저, 무료 모델은 예비');
   return lines;
 }
 
-export function controlRoomWorkingRows(input: unknown, routing?: unknown): string[] {
+/** 지금 일하는 AI 한 줄 + 원문 보기에만 둘 작업 id. */
+export interface ControlRoomWorkingItem { text: string; taskId: string }
+
+export function controlRoomWorkingItems(input: unknown): ControlRoomWorkingItem[] {
   const board = input && typeof input === 'object' && !Array.isArray(input) ? input as Record<string, unknown> : null;
   const lanes = Array.isArray(input) ? input : board?.lanes;
   if (!Array.isArray(lanes)) return [];
-  const route = routing ?? board?.routing;
   return lanes.flatMap(laneValue => {
     if (!laneValue || typeof laneValue !== 'object') return [];
     const lane = laneValue as Record<string, unknown>;
     const current = lane.current && typeof lane.current === 'object' ? lane.current as Record<string, unknown> : {};
-    const title = controlRoomTaskTitle(current);
-    if (!title) return [];
+    if (!controlRoomTaskTitle(current)) return [];
+    const title = founderTaskTitle(current);
     const projectId = controlRoomString(lane.project ?? lane.id);
-    const project = projectId || '알 수 없는 레인';
+    const project = projectId ? projectDisplayName(projectId) : '알 수 없는 레인';
     const stageValue = current.stage;
     const stage = typeof stageValue === 'number'
       ? ['계획', '확인', '작업', '검수', '시험', '사람 확인', '반영'][Math.max(0, Math.min(6, Math.floor(stageValue)))]
@@ -596,9 +601,13 @@ export function controlRoomWorkingRows(input: unknown, routing?: unknown): strin
     const chain = stageIndex >= 3 ? lane.qaChain : lane.workerChain;
     const selected = current[stageIndex >= 3 ? 'qa' : 'worker'] ?? (Array.isArray(chain) ? chain[0] : chain);
     const worker = controlRoomRuntimeName(selected);
-    const projectLabel = PROJECT_LABELS[projectId]?.name ?? project;
-    return [`${projectLabel} · ${stage} · ${worker || 'AI 확인 중'} · ${title}`];
-  }).concat(controlRoomRoutingLine(route));
+    return [{ text: `${project} · ${stage} · ${worker ? aiDisplayName(worker) : 'AI 확인 중'} · ${title}`, taskId: controlRoomTaskId(current) }];
+  });
+}
+
+export function controlRoomWorkingRows(input: unknown, routing?: unknown): string[] {
+  const board = input && typeof input === 'object' && !Array.isArray(input) ? input as Record<string, unknown> : null;
+  return controlRoomWorkingItems(input).map(item => item.text).concat(controlRoomRoutingLine(routing ?? board?.routing));
 }
 
 /** An approval rule with optional auto-approval learning stats. */
