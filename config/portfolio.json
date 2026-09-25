@@ -9651,6 +9651,36 @@
             "node --test test/"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 15:48: '(2) actl AI 창 카드 … 그 전엔 기존 /api/panes'; founder-ux actl AI window card: 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; base f9121ad operator/public/app.js:1942 falls back to '조용해요' and test/actl-panes-plain.test.mjs:38-39 pins 'Claude Team · Team 폴더 | 조용해요'"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-HUMAN-STEP-TODO",
+          "scope": "In operator/public/app.js liveCardModel, count a running task at board stage 5 (사람 확인) as waiting on the Founder: add `|| s === 5` to the gated flag. The card then says 대표님 할 일 '결정 필요' with the [고르기] button and 다음 단계 '결정해 주시면 이어서 진행해요'. Today it says '대표님 확인을 기다리는 중' next to 대표님 할 일 '없음' and '끝나면 다음 작업을 자동으로 시작해요'. Add a lovable-live-cards assert for a stage-5 lane with no humanGate on both 홈 and 진행.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-live-cards.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-live-cards.test.mjs",
+            "node --test test/agent-relay-module.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): 허브 홈과 진행 탭에 founder-ux 'Live status card' 규칙 그대로 — 대표님 할 일(없음/확인 필요/결정 필요/설정 필요, 있으면 버튼), 다음 단계; operator/public/app.js:477 at f9121ad maps stage 5 to '대표님 확인을 기다리는' while todo (line 497) only checks hubGateCount/HUMAN_GATE"
+        },
+        {
+          "taskId": "JCAPP-RELAY-LANE-ONE-NOW-LINE",
+          "scope": "In operator/public/app.js relayLaneView (진행), delete the separate relay-now line that sits right above the live card. It reads '<project> · <title> · 검수 중 — Codex가 만든 것을 Grok이 확인해요' with the old STAGE_KO words, while the live card under it already says '<title> / Grok이 검사하는 중 · N분째'. Each 진행 lane then states what it is doing once, in the live card's words. Leave homeWorking and STAGE_KO unchanged, and update the relay-now pins in agent-relay-module and home-working-line to check that the live card carries the title and AI instead.",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs",
+            "test/home-working-line.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/home-working-line.test.mjs",
+            "node --test test/lovable-live-cards.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; operator/public/app.js:1911 at f9121ad renders relay-now with STAGE_KO ('작업'/'검수') directly before liveProjectCard, which uses '만드는'/'검사하는'"
         }
       ],
       "skills": {
