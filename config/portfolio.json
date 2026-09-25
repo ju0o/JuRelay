@@ -9384,6 +9384,37 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): actl AI 창 카드 — 그 전엔 기존 /api/panes, founder-ux 'Live status card' 규칙과 같은 용어·같은 색; founder-ux rule 10 (오류 3줄, 꺼짐/실패 구분, 버튼) and rule 7 (no silent state)",
           "title": "AI 창을 못 읽을 때 쉽게 알려주기"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-WAITING-FOR-FOUNDER",
+          "scope": "In operator/public/app.js, a lane with nothing running now says why it waits. When the lane has an open human gate (lane.state 'HUMAN_GATE' from night-board.py, or hubGateCount(lane) > 0), liveCardModel's 지금 하는 일 reads '대표님 결정을 기다리는 중' instead of '다음 작업을 기다리는 중'. When the lane has open holds (not skipped and not holdResolved), it reads '멈춘 작업 N건 — 대표님 선택을 기다리는 중'. In relayLaneView the lane pill reads '결정 기다리는 중' for HUMAN_GATE instead of '확인 중'. Colour stays amber, never red. The pins in test/agent-relay-module.test.mjs:174 and test/lovable-live-cards.test.mjs:65 follow, with new asserts for the gate case, the hold case and the idle case with no gate and no hold, which keeps '다음 작업을 기다리는 중'.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-live-cards.test.mjs",
+            "test/agent-relay-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-live-cards.test.mjs",
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/home-working-line.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: 허브 홈과 진행 탭에 founder-ux 'Live status card' 규칙 그대로 — 지금 하는 일 … 대표님 할 일(없음/확인 필요/결정 필요/설정 필요) … 같은 용어·같은 색(빨강 진짜 위험만); ~/.agents/skills/auto-night-orchestrator/scripts/night-board.py:103 emits lane state 'HUMAN_GATE', which relayLaneView (app.js:1910) shows as '확인 중'"
+        },
+        {
+          "taskId": "JCAPP-ACTL-CARD-ASK-ALWAYS",
+          "scope": "In operator/public/app.js relayPanesPanel, every AI window card shows both what the AI was last asked and whether an answer is ready. Today the one note line replaces '마지막 지시: …' with '복사할 답 있음' or '답변 만드는 중이에요', so the last request disappears exactly when the AI is working or done. Split it into two lines: '마지막 지시: <first line, 80 chars>' (or '마지막 지시가 아직 안 보여요'), then a readiness line: '복사할 답 있음' (ready, teal), '답변 만드는 중이에요' (busy) or '아직 복사할 답이 없어요'. Keep the [결과 복사] behaviour, the tones, and 원문 보기 exactly as they are. Update the note pins in test/actl-panes-plain.test.mjs and test/lovable-ai-windows.test.mjs, and add asserts that ready and busy cards still show the last request.",
+          "files": [
+            "operator/public/app.js",
+            "test/actl-panes-plain.test.mjs",
+            "test/lovable-ai-windows.test.mjs"
+          ],
+          "tests": [
+            "node --test test/actl-panes-plain.test.mjs",
+            "node --test test/lovable-ai-windows.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: (2) actl AI 창 카드 — founder-ux 'For an actl AI window, the card says: … what it was last asked, in one line; whether an answer is ready to copy'; base app.js:1944 note() returns only '복사할 답 있음' / '답변 만드는 중이에요' when ready or busy, dropping the last request"
         }
       ],
       "skills": {
