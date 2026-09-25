@@ -7869,6 +7869,22 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: actl AI 창 카드는 실시간 창 API를 우선 사용하고 그 전에는 기존 /api/panes를 사용하며 같은 Live status card 용어를 적용",
           "title": "actl AI 작업 상태 한눈에 보기"
+        },
+        {
+          "taskId": "JCAPP-AI-ORDER-PLAIN-R2",
+          "scope": "Same goal as JCAPP-AI-ORDER-PLAIN: in the 진행 tab's '담당 AI 순서 (고급)' block, change the labels to '작업 AI 순서'/'검수 AI 순서' and '<AI 이름> 앞으로', and change the confirm sentence to '<프로젝트 한국어 이름> 작업|검수 AI 순서를 <AI 이름> → …(으)로 바꿀게요.'; build that sentence the same way in operator/public/app.js relayChainSentence and lib/relayBoard.mjs laneChainSentence; lift the aiRoutingRows name mapping into one top-level helper (runtimeName, the two known free models, '무료 AI' for opencode/*, '이름 모를 AI' otherwise) and put the same helper in lib/relayBoard.mjs; keep raw ids only in data-* attributes and in the night lane set argv; update the agent-relay-module line-57 wording, the line-142 sentence and the extracted-consts list. The only change from last time is the full-suite gate: it is now `node --test test/*.test.mjs`, because Node 22 read the bare `test/` argument as a module path and failed with MODULE_NOT_FOUND. Keep the previous implementation as it was and re-run the gates.",
+          "files": [
+            "operator/public/app.js",
+            "lib/relayBoard.mjs",
+            "test/agent-relay-module.test.mjs",
+            "test/ai-routing-view.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/ai-routing-view.test.mjs test/inline-actions.test.mjs test/home-working-line.test.mjs",
+            "node --test test/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후, settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base lib/relayBoard.mjs:53 laneChainSentence = `${project} 프로젝트의 ${role === 'qa' ? 'QA' : 'Worker'} 순서를 ${chain.join(' → ')}(으)로 바꿀게요.`"
         }
       ],
       "skills": {
