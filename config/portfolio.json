@@ -7424,6 +7424,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "승인 규칙을 한국어로 골라 추가"
+        },
+        {
+          "taskId": "JCAPP-MEMORY-FORM-PLAIN",
+          "scope": "In the 기억 '새 기억 추가' form in operator/public/app.js (memoryStudioView), replace the free-text '프로젝트·하네스 식별자' input with a Korean project select built from PROJECT_NAMES (the first option is '프로젝트 고르지 않음 (전체)', with value ''), keep sending scopeKey unchanged in the data-memory-add handler, and make the memory card meta line show projectName(m.scopeKey) instead of the raw id, with a test.",
+          "files": [
+            "operator/public/app.js",
+            "test/memory-studio.test.mjs"
+          ],
+          "tests": [
+            "node --test test/memory-studio.test.mjs test/memory-proposals-plain.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 더보기 안 화면(… 기억 …) 점검 — founder-ux rule 2 '개발자 글자는 원문 보기 안' / raw project id input (same class as 승인 'all 또는 프로젝트 id' fix)"
+        },
+        {
+          "taskId": "JCAPP-TESTER-HEAD-KOREAN",
+          "scope": "In operator/public/app.js testerView, rename the page header so it matches the 진행 sub-tab '시험 결과': eyebrow '진행', h2 '시험 결과', and the not-connected empty state becomes '시험 결과가 아직 이 화면에 연결되지 않았어요 — 자동 시험이 한 번 돌면 여기에 생겨요.' (reason plus next step); update the test assertions to match.",
+          "files": [
+            "operator/public/app.js",
+            "test/tester-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/tester-module.test.mjs test/tester-summary.test.mjs test/tester-runs.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux rule 3 Korean labels (시험) and rule 5 empty states give a reason and the next step; progressTabs already labels this view '시험 결과' (operator/public/app.js:11 at b59c85c)"
         }
       ],
       "skills": {
