@@ -3509,6 +3509,46 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: launch bar = non-developer, plain Korean, obvious next action, no raw codes",
           "title": "막혔을 때 다음 할 일을 한국어로 안내"
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-KOREAN-BLOCKERS",
+          "scope": "In packages/runtime/src/index.ts, rewrite the blocker messages that apply-proposal returns in plain Korean with a clear next step: parseApplyProposal's 'Agent response was not valid JSON' and 'did not match GraphChangeProposal shape' (INVALID_PROPOSAL), and the MERGE_FAILED message built from merge()'s CONFLICTING_NODE_ID/CONFLICTING_EDGE_ID (for example '이미 있는 항목 id와 겹칩니다: <id>. 다른 id로 다시 제안하세요'). Keep every blocker code, keep the error merge() itself throws unchanged (runtime.test.ts:240/248 match it with a regex), and leave packages/agent-provider untouched. Add a new offline test that runs apply-proposal on malformed JSON, a wrong shape and a conflicting id, and checks that each message is Korean and never starts with a raw code.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/proposal-korean-blockers.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: launch bar = non-developer, plain Korean, inline feedback, no raw codes; JuPlan validates and applies AI change proposals (apply-proposal with preview/undo)"
+        },
+        {
+          "taskId": "JUPLAN-BUILDER-KOREAN-ERRORS",
+          "scope": "In createBuilderHandoff in packages/runtime/src/index.ts, replace both throws of the raw 'BUILDER_REQUIRES_FROZEN_SNAPSHOT' with one plain-Korean message that says what to do next (for example '아직 확정된 계획이 없어 빌더에 넘길 수 없습니다. 먼저 계획을 확정(스냅샷)한 뒤 다시 시도하세요'). Keep the frozen-snapshot gate and the missing-directory vs unexpected-error behavior exactly as they are, and update the two assertions at runtime.test.ts:1342/1355 to match the new message.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, obvious next action, no raw codes; CONTROL_TOWER.md V1 E2E Target 9 'Optional Claude Code Builder handoff'"
+        },
+        {
+          "taskId": "JUPLAN-VALIDATOR-KOREAN-MESSAGES",
+          "scope": "In packages/plan-core/src/validate.ts, rewrite every finding message (DUPLICATE_NODE_ID, DANGLING_EDGE_FROM/TO, RELATES_TO_MISSING_DESCRIPTION, VERIFIED_WITHOUT_EVIDENCE, the evidence-ref findings, EVIDENCE_LINE_RANGE_INVERTED, PROJECT_PLAN_ID_MISMATCH, CONTENT_HASH_MISMATCH, FROZEN_WITHOUT_APPROVAL, LIFECYCLE_REVISION_MISMATCH, IMPLEMENTED_WITH_UNKNOWN_KNOWLEDGE) in plain Korean. Keep every code, level, nodeId/edgeId and the validation logic unchanged, because the Studio 검증 결과 section shows these messages to the Founder. Add plan-core tests that check a few of the messages are Korean while the codes stay the same.",
+          "files": [
+            "packages/plan-core/src/validate.ts",
+            "packages/plan-core/test/plan.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/plan-core test",
+            "pnpm --filter @juplan/runtime test",
+            "pnpm -r run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: launch bar = non-developer uses it as easily as KakaoTalk/Toss — plain Korean, inline feedback, no raw codes"
         }
       ],
       "qaRuntime": [
