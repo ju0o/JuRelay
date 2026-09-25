@@ -4818,7 +4818,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙으로 검증 문제 표시 점검, 개발자 글자는 원문 보기 안, 진짜 비개발자도 보면 이해가 되게"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙으로 검증 문제 표시 점검, 개발자 글자는 원문 보기 안, 진짜 비개발자도 보면 이해가 되게",
+          "title": "계획 점검 결과를 정확하게 보여주기"
         },
         {
           "taskId": "JUPLAN-CHANGE-UNKNOWN-ITEM-KOREAN",
@@ -4832,7 +4833,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기 점검, 오류 3줄, 개발자 글자(id)는 표면에 두지 않기"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기 점검, 오류 3줄, 개발자 글자(id)는 표면에 두지 않기",
+          "title": "없는 항목 안내를 쉬운 말로 바꾸기"
         },
         {
           "taskId": "JUPLAN-STUDIO-GATES-NEXT-STEP",
@@ -4845,7 +4847,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 검증 문제 표시 점검, 막힘은 노랑 + 다음 행동이 분명하게 (launch bar: obvious next action)"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 검증 문제 표시 점검, 막힘은 노랑 + 다음 행동이 분명하게 (launch bar: obvious next action)",
+          "title": "자동 체크 후 다음 할 일 알려주기"
         }
       ],
       "qaRuntime": [
@@ -5641,7 +5644,8 @@
             "npm test -- tests/pipeline.test.ts",
             "npm run build"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "JuCeipt 영수증을 버튼 없이 한 화면에서 보기"
         }
       ],
       "skills": {
@@ -6676,7 +6680,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "tests/status-board-cli.test.mjs:87 already expects the exact stale stderr line; README.md:86 '| `stale` | 관찰한 지 너무 오래됐어요(기본 5분). 지금 상태로 믿으면 안 돼요.'; Founder direction 2026-09-24: the e2e script runs the main user flow offline and prints one JSON line {ok, steps[], ms}"
+          "ssotEvidence": "tests/status-board-cli.test.mjs:87 already expects the exact stale stderr line; README.md:86 '| `stale` | 관찰한 지 너무 오래됐어요(기본 5분). 지금 상태로 믿으면 안 돼요.'; Founder direction 2026-09-24: the e2e script runs the main user flow offline and prints one JSON line {ok, steps[], ms}",
+          "title": "오래된 상태 안내가 잘 뜨는지 점검"
         },
         {
           "taskId": "JUCONTROLER-GETTING-STARTED-STALE-NEXT",
@@ -6689,7 +6694,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "README.md:86-87 stale/source-stale rows say '원본에서 상태를 새로 저장하세요', but the docs/getting-started.md table row for the unknown-summary line only says to fix the current.json file; Founder direction 2026-09-24: obvious next action in plain Korean"
+          "ssotEvidence": "README.md:86-87 stale/source-stale rows say '원본에서 상태를 새로 저장하세요', but the docs/getting-started.md table row for the unknown-summary line only says to fix the current.json file; Founder direction 2026-09-24: obvious next action in plain Korean",
+          "title": "오래된 상태일 때 할 일 안내 보강"
         }
       ],
       "qaRuntime": [
@@ -9322,7 +9328,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:202 '[`docs/qa/M3_DAILY_VALUE_SCORECARD.md`](../JuCeipt@402d3ee:docs/qa/M3_DAILY_VALUE_SCORECARD.md)' is the only `](../JuCeipt@` link left at base (git grep); the Section 4 lines 122-123 format is 'scorecard `402d3ee:docs/qa/M3_DAILY_VALUE_SCORECARD.md`'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:202 '[`docs/qa/M3_DAILY_VALUE_SCORECARD.md`](../JuCeipt@402d3ee:docs/qa/M3_DAILY_VALUE_SCORECARD.md)' is the only `](../JuCeipt@` link left at base (git grep); the Section 4 lines 122-123 format is 'scorecard `402d3ee:docs/qa/M3_DAILY_VALUE_SCORECARD.md`'",
+          "title": "검증 문서의 깨진 참조 링크 고치기"
         }
       ]
     },
@@ -10180,7 +10187,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 00:04: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs:1 'Pure helpers ... so check.mjs can test them.'"
+          "ssotEvidence": "Founder direction 2026-09-25 00:04: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs:1 'Pure helpers ... so check.mjs can test them.'",
+          "title": "글자 정리와 한국 시간 계산 자동 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
