@@ -5157,6 +5157,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '각 Github에 따로 따로 올릴거라 영상도 따로따로'; 'Aside가 영상 링크 안 주는 거 같은데' → put each repo's 30s video in the repo itself; overall 60s intro already on YouTube https://youtu.be/tB1cCLzTvIs (Aside upload, 일부 공개)",
           "title": "README에 소개 영상 넣기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-FOUNDER-UX-R2",
+          "scope": "src/render/index.ts의 영수증 보기 화면 맨 위 첫 안내문에 '확인 후 받기'의 뜻과 빠진 확인 항목의 쉬운 설명을 보여주고, 원문·개발자 정보(branch·commit 해시·'Git commit'·영어 action type·evidence 표)는 기본으로 접힌 '원문 보기' 안으로만 옮기며(되돌리기 문구는 '저장된 이전 상태로 되돌릴 수 있어요'처럼 쉬운 말로 바꿔요), 실패한 작업은 '무엇이 실패했는지·왜(원인)·다음에 할 일'을 각각 따로 보여주고, 본문 글자는 18px 이상, 버튼은 높이 48px 이상으로 맞추며, tests/pipeline.test.ts에 새 테스트를 추가해요: 원문 보기 바깥 HTML에 'Git'·'commit'·'branch'가 없어야 하고, 실패 action이 있으면 원인과 '다음' 안내가 모두 있어야 하며, 첫 안내문에 '확인 후 받기'가 있어야 해요. 이 테스트는 옛 코드에서는 실패하고(옛 코드 25-27·96-97줄의 'Git commit', 93줄의 한 줄짜리 실패 표시 때문) 새 코드에서는 통과해야 해요.",
+          "files": [
+            "src/render/index.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npm test -- tests/pipeline.test.ts",
+            "npm run build"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
