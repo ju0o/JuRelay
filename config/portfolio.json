@@ -6658,6 +6658,20 @@
           ],
           "ssotEvidence": "Dogfood 2026-09-25 11:0x on live hub 홈 (capture for the promo video): '지금 일하는 중' rows read 'Agent Relay · 새 작업 · hold fallback no raw', 'JuTell · 새 작업 · scenario g unknown risk report'; 'AI 자동 배정 … 마지막 배정: 이름 모를 AI'; '오늘 끝난 것' lists raw ids 'ai-agent-marketplace 12개 · juai 5개'; the 멈춘 작업 banner is red. Founder: 비개발자, 카톡·토스처럼 쉽게; HOLD UI amber (Founder choice, Canvas HoldRedesign).",
           "title": "홈 화면 남은 영어·코드명 정리"
+        },
+        {
+          "taskId": "JCAPP-HOLD-UNTITLED-PLAIN",
+          "scope": "In operator/public/app.js, when a 멈춘 작업 has no Korean title, holdCard's heading and the 건너뛴 멈춘 작업 card in the approvals view (skippedHolds, `hold.title || hold.taskId`) must show '이름 없는 멈춘 작업' instead of the raw taskId (the taskId stays only in the title attribute and data-* attributes, as the titled case already does); cover this in test/hold-card.test.mjs (holdCard with no title prints no taskId text) and test/approvals-module.test.mjs (skipped hold with no title), and keep every existing assertion passing.",
+          "files": [
+            "operator/public/app.js",
+            "test/hold-card.test.mjs",
+            "test/approvals-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/hold-card.test.mjs test/approvals-module.test.mjs test/home-plain-leftovers.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base app.js:1678 `'>' + esc(hold.taskId)` and app.js:2115 `esc(hold.title || hold.taskId)` still print raw task ids"
         }
       ]
     },
