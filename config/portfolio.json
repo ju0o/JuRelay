@@ -5646,6 +5646,36 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "JuCeipt 영수증을 버튼 없이 한 화면에서 보기"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-CLI-FOUNDER-OUTPUT",
+          "scope": "In scanCommand in src/cli/main.ts, replace the stdout lines '완료: AI 작업 기록을 스캔했습니다. / 세션: N개' with one plain Korean first sentence built from the returned index entries' verdicts, for example '작업 5개를 봤어요 — 받아도 됨 2개, 확인 후 받기 2개, 문제 있음 1개'. Use ACCEPTANCE_LABEL and the summary.ts meaning of 문제 있음 (partial/failed/cancelled/unknown). When no session is found, print a reason and next step instead of '세션: 0개', for example '최근 24시간 안에 AI 작업 기록이 없어요 — 기간을 늘려 juceipt scan --since 7d 로 다시 해 보세요'. Keep the copyable SUMMARY.md path line and the current exit codes. Update tests/sources-scan-cli.test.ts to cover the counts sentence and the empty case.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npx vitest run tests/sources-scan-cli.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 대상: juceipt 명령 출력(scan, daily, receipt) — 맨 위 한 문장, 빈 화면 이유+다음 행동; base src/cli/main.ts:244-249 prints raw '세션: N개' with no verdict sentence and no empty-state guidance"
+        },
+        {
+          "taskId": "JUCEIPT-TASK-TITLE-ENGLISH-KOREAN",
+          "scope": "Extend taskTitle in src/daily/index.ts so English request text maps to the same plain Korean titles. Add case-insensitive English keyword groups next to each existing Korean group: install/setup/readme → 설치 안내 확인; implement/add/build/create/feature → 기능 만들기; fix/bug/error/issue → 문제 수정; test/verify/check/review → 작업 결과 확인; init/bootstrap/prepare → 저장소 준비; handle/process/improve/refactor → 작업 내용 처리. Keep the existing Korean matches and the '작업 내용 확인' fallback. Add unit cases to tests/daily.test.ts, update any exact expectations the new matches change (e.g. the 'ship it'/'check it' fixtures), and keep tests/daily-corpus.test.ts and tests/scan-summary.test.ts passing.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/daily-corpus.test.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npx vitest run tests/daily.test.ts tests/daily-corpus.test.ts tests/scan-summary.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '영어 작업 제목을 쉬운 한국어 요약으로'; base src/daily/index.ts:28-37 taskTitle matches only Korean keywords, so every English request (e.g. 'Fix login bug') falls through to '작업 내용 확인' in daily output and scan SUMMARY.md"
         }
       ],
       "skills": {
