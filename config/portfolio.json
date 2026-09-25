@@ -4887,6 +4887,33 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '보니까 바뀐 기능 및 기능이 많이 구현 되었네 이것들 Github에서 README 파일 다듬고 이후 홍보영상 다시 제작'; portfolio architecture (Founder): actl = 리모컨, Agent Relay = 셋톱박스 (actl 기반), JuControler = 허브 (+JuPlan, JuCeipt, Tester, Skill 만들기); Founder: 비개발자도 카톡·토스처럼 쉽게",
           "title": "GitHub 소개 문서(README) 다듬기"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-KO-NEEDS-ACTION",
+          "scope": "When a successful scripts/status-board.mjs run has rows with reason 'human-gate' or 'hold' (their status stays known, so today they are silently counted under '모두 상태를 읽었어요'), add one plain-Korean stderr line after the existing summary such as '확인이 필요한 프로젝트: lane(human-gate: 사람 확인을 기다려요) — 해당 레인의 확인 요청이나 보류를 처리하세요', reusing the existing reasonWords map; keep stdout JSON, exit codes and the existing summary lines exactly the same when no such rows exist (the scripts/e2e.sh fixture has holds:[] and humanGate:null, so its exact stderr check is unchanged), and add a CLI test using an agent-relay-board source with one held lane and one human-gate lane.",
+          "files": [
+            "scripts/status-board.mjs",
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, obvious next action; src/adapters/agent-relay.mjs:28 'Hold and human gate are surfaced as reasons only; the lane's own state stays the status.'"
+        },
+        {
+          "taskId": "JUCONTROLER-GETTING-STARTED-CLI-MESSAGES",
+          "scope": "Add a short plain-Korean section to docs/getting-started.md titled '상태판 안내 문장 읽는 법'. It quotes the exact stderr lines scripts/status-board.mjs prints at base: all read, some UNKNOWN or stale, empty registry, file cannot be opened, broken JSON, invalid registry, and unknown --project-id with its list of known IDs. Next to each line it says the one next action and explains that the English line underneath is kept for developers. Docs only, with no code changes.",
+          "files": [
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): plain Korean, obvious next action, inline feedback, no raw codes; JuControler-Private/CURRENT.md: '처음 쓰는 법은 `README.md`' (README links detail to docs/getting-started.md)"
         }
       ],
       "qaRuntime": [
