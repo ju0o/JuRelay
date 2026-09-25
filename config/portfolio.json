@@ -6505,6 +6505,21 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '보니까 바뀐 기능 및 기능이 많이 구현 되었네 이것들 Github에서 README 파일 다듬고 이후 홍보영상 다시 제작'; portfolio architecture (Founder): actl = 리모컨, Agent Relay = 셋톱박스 (actl 기반), JuControler = 허브 (+JuPlan, JuCeipt, Tester, Skill 만들기); Founder: 비개발자도 카톡·토스처럼 쉽게",
           "title": "GitHub 소개 문서(README) 다듬기"
+        },
+        {
+          "taskId": "JCAPP-HOME-PLAIN-LEFTOVERS",
+          "scope": "Home view in operator/public/app.js: (1) '지금 일하는 중' rows: when a task has no Korean title the row shows '새 작업 · <slugified taskId>' — drop the slug entirely and show '새 작업 (이름 짓는 중)' instead; never show lowercased task-id words. (2) 'AI 자동 배정 · … · 마지막 배정: 이름 모를 AI': when the last routed runtime is unknown hide the '마지막 배정' part; known runtime ids map to the same friendly names the rest of the app uses (Codex, Claude Team, Claude Pro, Cursor, OpenCode, Grok, Cline, 무료 모델). (3) '오늘 끝난 것' per-lane counts and anywhere else lane names show: use the lane label map and add ai-agent-marketplace → 'AI 인력사무소', juai → 'JuAi', jutell → 'JuTell'; unknown ids fall back to a title-cased name with hyphens as spaces. (4) The 멈춘 작업 banner uses the amber warning tokens (not red/danger). Pure helpers + unit test.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/home-plain-leftovers.test.mjs"
+          ],
+          "tests": [
+            "node --test test/home-plain-leftovers.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Dogfood 2026-09-25 11:0x on live hub 홈 (capture for the promo video): '지금 일하는 중' rows read 'Agent Relay · 새 작업 · hold fallback no raw', 'JuTell · 새 작업 · scenario g unknown risk report'; 'AI 자동 배정 … 마지막 배정: 이름 모를 AI'; '오늘 끝난 것' lists raw ids 'ai-agent-marketplace 12개 · juai 5개'; the 멈춘 작업 banner is red. Founder: 비개발자, 카톡·토스처럼 쉽게; HOLD UI amber (Founder choice, Canvas HoldRedesign).",
+          "title": "홈 화면 남은 영어·코드명 정리"
         }
       ]
     },
