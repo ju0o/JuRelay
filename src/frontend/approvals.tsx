@@ -47,17 +47,20 @@ export function approvalReadableLabel(rule: ApprovalRuleJson): string {
   return APPROVAL_PLAIN_WORDS.reduce((label, [developerWord, plainWord]) => label.replaceAll(developerWord, plainWord), text);
 }
 
-export function ApprovalRuleCard({ rule }: { rule: ApprovalRuleJson }): React.ReactElement {
+function approvalOriginalText(rule: ApprovalRuleJson): string {
   const record = rule as Record<string, unknown>;
   const raw = rule.summary ?? record.title ?? record.ask ?? record.name;
-  const original = typeof raw === 'string' && raw.trim() ? raw : JSON.stringify(rule);
+  return typeof raw === 'string' && raw.trim() ? raw : JSON.stringify(rule);
+}
+
+export function ApprovalRuleCard({ rule }: { rule: ApprovalRuleJson }): React.ReactElement {
   return (
     <article className="control-card">
       <p className="control-card-value" style={{ whiteSpace: 'pre-wrap' }}>{approvalReadableLabel(rule)}</p>
       <p className="muted approval-stats">{approvalStatsLine(rule)}</p>
       <details className="approval-original">
         <summary>원문 보기</summary>
-        <p className="muted" style={{ whiteSpace: 'pre-wrap' }}>{original}</p>
+        <p className="muted" style={{ whiteSpace: 'pre-wrap' }}>{approvalOriginalText(rule)}</p>
       </details>
     </article>
   );
@@ -102,18 +105,17 @@ export function ModelUsagePanel({ models }: { models: unknown }): React.ReactEle
 export function SupersededApprovals({ rules }: { rules: readonly ApprovalRuleJson[] }): React.ReactElement | null {
   const past = rules.filter(isSupersededApprovalRule);
   if (past.length === 0) return null;
-  const label = (rule: ApprovalRuleJson): string => {
-    const record = rule as Record<string, unknown>;
-    const raw = rule.summary ?? record.title ?? record.ask ?? record.name;
-    return typeof raw === 'string' && raw.trim() ? raw : APPROVAL_NO_TEXT_LABEL;
-  };
   return (
     <details className="approval-superseded" aria-label="지난 결정">
       <summary>지난 결정 {past.length}개</summary>
       <ul className="approval-superseded-list">
         {past.map((rule, i) => (
           <li key={i} className="approval-superseded-row">
-            <span className="control-card-value" style={{ whiteSpace: 'pre-wrap' }}>{label(rule)}</span>
+            <span className="control-card-value" style={{ whiteSpace: 'pre-wrap' }}>{approvalReadableLabel(rule)}</span>
+            <details className="approval-original">
+              <summary>원문 보기</summary>
+              <p className="muted" style={{ whiteSpace: 'pre-wrap' }}>{approvalOriginalText(rule)}</p>
+            </details>
           </li>
         ))}
       </ul>

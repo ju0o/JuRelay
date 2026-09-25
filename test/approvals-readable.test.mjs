@@ -18,6 +18,13 @@ test('approval display uses plain words and keeps original text closed', () => {
   assert.match(approvals, /<summary>원문 보기<\/summary>/);
 });
 
+test('past decisions use plain wording and fold the unmodified original', () => {
+  const past = approvals.slice(approvals.indexOf('export function SupersededApprovals'));
+  assert.match(past, /approvalReadableLabel\(rule\)/);
+  assert.match(past, /<summary>원문 보기<\/summary>/);
+  assert.match(past, /approvalOriginalText\(rule\)/);
+});
+
 test('light active control tab uses a high-contrast token', () => {
   assert.match(css, /--tab-active-fg:\s*#111111/);
   assert.match(css, /\.app\[data-theme="light"\] \.tab-btn\.active[^\{]*\{[^}]*color:\s*var\(--tab-active-fg\)/);
