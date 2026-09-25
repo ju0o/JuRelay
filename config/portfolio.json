@@ -6187,6 +6187,20 @@
           ],
           "ssotEvidence": "Supervisor capture review run-20260925-1006",
           "title": "New lanes added by other sessions show raw ids in the 진행 tab"
+        },
+        {
+          "taskId": "JCAPP-ERRORS-PLAIN",
+          "scope": "Add one pure plainError(message) in operator/public/app.js that passes Korean text through unchanged, maps the shared server refusals to plain Korean ('confirmation sentence'→'화면이 오래됐어요. 새로 고친 뒤 다시 해 주세요.', 'unknown project'→'이 프로젝트를 찾지 못했어요.', 'relay board unavailable'→'릴레이 보드를 읽지 못했어요. 잠시 후 다시 해 주세요.', 'timed out'→'시간이 너무 오래 걸렸어요. 잠시 후 다시 해 주세요.', 'HTTP 5xx'/'Failed to fetch'→'서버와 연결이 잠시 끊겼어요. 잠시 후 다시 해 주세요.') and turns anything else into '처리하지 못했어요. 잠시 후 다시 해 주세요.'; use it for every error.message shown to the Founder (inlineRun, juplan propose, studioFeedback callers, lastActionFailure '전달 실패:' lines, the render() load-failure <small> line) so no English or 'HTTP 500' text reaches the screen, keeping the existing laneSkillsError/skillSaveError mappings and the PM-chat Hangul check as they are.",
+          "files": [
+            "operator/public/app.js",
+            "test/errors-plain.test.mjs"
+          ],
+          "tests": [
+            "node --test test/errors-plain.test.mjs",
+            "node --test test/inline-actions.test.mjs test/skill-save.test.mjs test/lane-skills-api.test.mjs test/chat-to-pm.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes"
         }
       ]
     },
