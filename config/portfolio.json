@@ -6576,6 +6576,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss, with plain Korean and an obvious next action; scripts/status-board.mjs korean() at 4bbda8a returns '상태판을 불러오지 못했어요 — 아래 내용을 확인하세요' as its fallback, but the getting-started table leaves this line out",
           "title": "상태판 오류 안내문 읽는 법 보강"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-BAD-ARGUMENTS-STEP",
+          "scope": "Add a twelfth step run_bad_arguments to scripts/e2e.sh after run_help (label '명령 모양 오류 안내', next command 'node scripts/status-board.mjs <registry.json>'). It runs status-board with no arguments and passes only on exit code 2, an empty stdout, and a stderr that is exactly the two usage lines ('사용법: …' then 'Usage: …'). Also add the step to the expected steps in tests/e2e-script.test.mjs, and to docs/getting-started.md: the json example line, the step list on line 20, and a '- `run-bad-arguments` (명령 모양 오류 안내)' bullet.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/quickstart-next-sync.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23/24: a real end-to-end script that runs the main user flow offline and prints one JSON line {ok, steps[], ms}; the launch bar is plain Korean and an obvious next action. scripts/status-board.mjs at base exits 2 with the usage lines when arguments are bad, and no e2e step checks that path yet."
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-STALE-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs. It writes a temp registry with one repository-status-file entry 'old' that has freshnessMs 1, and a current.json whose observedAt is one hour ago. It runs scripts/status-board.mjs and asserts exit 0 and that stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: old(stale: 관찰한 지 너무 오래됐어요) — README 처음 쓰는 법의 reason 표를 보세요'. This locks in the plain-Korean line for an expired source, which no CLI test covers today.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, obvious next action, no raw codes. scripts/status-board.mjs at base maps reason 'stale' to '관찰한 지 너무 오래됐어요' (reasonWords) and supports registry freshnessMs, but tests/status-board-cli.test.mjs never checks the stale stderr line."
         }
       ],
       "qaRuntime": [
