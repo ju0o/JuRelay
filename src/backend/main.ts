@@ -12,6 +12,7 @@ import * as path from 'path';
 import * as relay from './fs.js';
 import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomHoldChoose, runControlRoomLaneSet, runControlRoomResume, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioSave } from './controlRoom.js';
 import { migrateSettings } from './migrate.js';
+import { CaptureReport, parseCapturePath } from '../shared/capture.js';
 import { checkForUpdates, downloadUpdate, initUpdater, installUpdate, updaterSupported } from './updater.js';
 import {
   AppSettings,
@@ -38,6 +39,12 @@ import {
 let baseDir = '';
 
 let startView: StartView = parseStartView(process.argv);
+
+/** `--capture=<png>`: background screenshot mode for the automated Tester (no window shown, no focus). */
+const capturePath = parseCapturePath(process.argv);
+/** Resolved when the renderer asks for its start view = the UI has mounted and applied it. */
+let markRendererReady: () => void = () => undefined;
+const rendererReady = new Promise<void>(resolve => { markRendererReady = resolve; });
 function currentSettings(): AppSettings {
   return relay.loadSettings(baseDir);
 }
@@ -377,6 +384,7 @@ async function handleRequest(req: RelayRequest): Promise<unknown> {
       return runControlRoomApprovalAdd(req.category, req.summary);
 
     case 'app:startView':
+      markRendererReady();
       return { view: startView };
 
     default:
@@ -477,6 +485,9 @@ function createWindow(): void {
     height: 820,
     minWidth: 940,
     minHeight: 640,
+    ...(capturePath
+      ? { show: false, paintWhenInitiallyHidden: true, skipTaskbar: true, focusable: false, useContentSize: true }
+      : {}),
     title: 'Agent Relay',
     backgroundColor: '#17181c',
     autoHideMenuBar: true,
@@ -518,6 +529,7 @@ function createWindow(): void {
       void mainWindow?.loadFile(clientPath);
       return;
     }
+    if (capturePath) { void finishCapture('페이지 로드 실패: ' + code + ' ' + desc); return; }
     dialog.showErrorBox(
       'Agent Relay — 페이지 로드 실패',
       `오류 코드: ${code}\n설명: ${desc}\n\n시도한 경로:\n${devUrl || clientPath}\n\n경로가 존재하는지 확인하세요.`,
@@ -525,6 +537,7 @@ function createWindow(): void {
   });
 
   mainWindow.webContents.on('will-prevent-unload', (event) => {
+    if (capturePath) { event.preventDefault(); return; }
     const choice = dialog.showMessageBoxSync(mainWindow!, {
       type: 'warning',
       buttons: ['취소', '닫기'],
@@ -547,6 +560,7 @@ function createWindow(): void {
   }
 
   if (!fs.existsSync(clientPath)) {
+    if (capturePath) { void finishCapture('index.html 없음'); return; }
     dialog.showErrorBox(
       'Agent Relay — index.html 없음',
       `다음 경로에 index.html이 없습니다:\n${clientPath}\n\n앱을 다시 빌드하거나 재설치하세요.`,
@@ -557,6 +571,49 @@ function createWindow(): void {
   void mainWindow.loadFile(clientPath);
 }
 
+/** How long the UI may keep loading data after it mounted before we take the picture. */
+const CAPTURE_SETTLE_MS = 1500;
+const CAPTURE_MAX_MS = 15000;
+let captureDone = false;
+
+/** Capture (error='') or record the failure, write PNG + <png>.json, then quit 0/1. Runs once. */
+async function finishCapture(error: string): Promise<void> {
+  if (captureDone) return;
+  captureDone = true;
+  const report: CaptureReport = { view: startView, ok: false, title: '', text: '', error };
+  try {
+    const wc = mainWindow?.webContents;
+    if (!wc || wc.isDestroyed()) throw new Error(error || '창이 없습니다.');
+    if (!error) {
+      report.title = wc.getTitle();
+      report.text = String(await wc.executeJavaScript('document.body.innerText')).slice(0, 2000);
+      const img = await wc.capturePage();
+      fs.mkdirSync(path.dirname(capturePath), { recursive: true });
+      fs.writeFileSync(capturePath, img.toPNG());
+      report.ok = true;
+    }
+  } catch (e) {
+    report.error = report.error || (e instanceof Error ? e.message : String(e));
+  }
+  try {
+    fs.writeFileSync(capturePath + '.json', JSON.stringify(report, null, 2));
+  } catch {
+    report.ok = false;
+  }
+  app.exit(report.ok ? 0 : 1);
+}
+
+/** Wait for load + renderer mount (max CAPTURE_MAX_MS), let data settle, then capture. */
+function runCapture(): void {
+  const wc = mainWindow!.webContents;
+  const loaded = new Promise<void>(resolve => wc.once('did-finish-load', () => resolve()));
+  const timeout = new Promise<void>(resolve => setTimeout(resolve, CAPTURE_MAX_MS));
+  void Promise.race([
+    Promise.all([loaded, rendererReady]).then(() => new Promise<void>(r => setTimeout(r, CAPTURE_SETTLE_MS))),
+    timeout,
+  ]).then(() => finishCapture(''));
+}
+
 app.whenReady().then(() => {
   app.setAppUserModelId('com.agentrelaylog.v0');
   startView = parseStartView(process.argv);
@@ -565,6 +622,12 @@ app.whenReady().then(() => {
   migrateLegacySettings();
   registerIpc();
   createWindow();
+
+  if (capturePath) {
+    if (mainWindow) runCapture();
+    else void finishCapture('창을 만들지 못했습니다.');
+    return; // no updater, never show/focus in capture mode
+  }
 
   // ── Updater ──
   // 시작 후 조용히 1회 확인(정책상 자동 다운로드/설치 없음). 새 버전이 있으면
@@ -582,5 +645,5 @@ app.whenReady().then(() => {
 });
 
 app.on('activate', () => {
-  if (mainWindow) mainWindow.show();
+  if (mainWindow && !capturePath) mainWindow.show();
 });
