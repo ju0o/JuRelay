@@ -8335,6 +8335,27 @@
           ],
           "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 5 + Founder HUMAN_GATE answer 2026-09-25 (Codex local connector); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2 (첫 runtime adapter, heartbeat, capability, policy)",
           "title": "실제 Codex connector로 Phase 2 레드게이트 증거 스크립트"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-PROFILE-POLICY-LINK-R3",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). Task 2 second retry. PROFILE-POLICY-LINK-R2 reached HOLD after 3 attempts although its last commit 4f5f4ee (on top of 561395e, both in this repo's object store) passed npm test, typecheck and, when the PM re-ran it, test:pg 30/30; QA's remaining finding: migration 0005 adds worker_policies.agent_connector_id without backfilling policies already linked through worker_profiles.policy_id, and no upgrade-path test exists. Start from the current integration tip. If the connector-scoped policy routes of the Task 2 contract (PUT/GET /api/owner/connectors/:id/policy, POST /policy/check, POST /policy/actions/check, GET /worker, cross-link rejection on profile PUT, unauthenticated /api/owner/policies routes removed) are not all present, first git cherry-pick 561395e and 4f5f4ee and resolve conflicts keeping both sides' intent; if some already exist from another task, keep one implementation and make it match the Task 2 contract. Then add migrations/0006_worker_policy_connector_backfill.sql: UPDATE worker_policies SET agent_connector_id = worker_profiles.agent_connector_id FROM worker_profiles WHERE worker_profiles.policy_id = worker_policies.id AND worker_policies.agent_connector_id IS NULL. Add tests/integration/migration-upgrade.test.ts: apply migrations up to 0004 on a fresh test DB, insert a connector, policy and profile linked through policy_id, apply the remaining migrations, then GET /api/owner/connectors/:id/policy with the owner token returns that policy. Tests must pass on PGlite and TEST_DB=postgres.",
+          "files": [
+            "migrations/0005_worker_policy_connector.sql",
+            "migrations/0006_worker_policy_connector_backfill.sql",
+            "src/server/owner.ts",
+            "src/server/owner-policy.ts",
+            "tests/integration/owner-policy.test.ts",
+            "tests/integration/owner-connector.test.ts",
+            "tests/integration/migration-upgrade.test.ts",
+            "tests/unit/open-database.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck",
+            "npm run test:pg"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 2 (PM REQUEST_CHANGES after R2 HOLD, QA finding on 0005 backfill); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2",
+          "title": "Worker·policy 연결 마무리 (업그레이드 backfill + 테스트)"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
