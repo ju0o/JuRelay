@@ -10,7 +10,7 @@ import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electro
 import * as fs from 'fs';
 import * as path from 'path';
 import * as relay from './fs.js';
-import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomEnvs, runControlRoomTokens, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneSet, runControlRoomPause, runControlRoomScheduleCancel, runControlRoomScheduleList, runControlRoomScheduleSet,runControlRoomResume, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
+import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomEnvs, runControlRoomTokens, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneSet, runControlRoomPause, runControlRoomPromoteHub, runControlRoomScheduleCancel, runControlRoomScheduleList, runControlRoomScheduleSet,runControlRoomResume, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
 import { migrateSettings } from './migrate.js';
 import { CaptureReport, parseCapturePath } from '../shared/capture.js';
 import { checkForUpdates, downloadUpdate, initUpdater, installUpdate, updaterSupported } from './updater.js';
@@ -412,6 +412,9 @@ async function handleRequest(req: RelayRequest): Promise<unknown> {
 
     case 'controlRoom:automationOff':
       return runControlRoomAutomationOff();
+
+    case 'controlRoom:promoteHub':
+      return runControlRoomPromoteHub();
 
     case 'app:startView':
       markRendererReady();

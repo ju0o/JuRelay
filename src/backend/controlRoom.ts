@@ -32,7 +32,8 @@ export type ControlRoomOperation =
   | 'controlRoom:approvalAdd'
   | 'controlRoom:automationStatus'
   | 'controlRoom:automationOn'
-  | 'controlRoom:automationOff';
+  | 'controlRoom:automationOff'
+  | 'controlRoom:promoteHub';
 export type PlanStudioAction = 'get' | 'save' | 'chat' | 'request' | 'approve';
 export type GateAction = 'list' | 'answer';
 export type ControlRoomErrorCode = 'EXEC_FAILED' | 'REMOTE_FAILED' | 'INVALID_JSON' | 'INVALID_INPUT';
@@ -478,6 +479,11 @@ export const runControlRoomAutomationOn = (execFileImpl: ControlRoomExec = execF
   runAutomation('controlRoom:automationOn', 'always', execFileImpl);
 export const runControlRoomAutomationOff = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
   runAutomation('controlRoom:automationOff', 'stop', execFileImpl);
+
+/** 허브 승격 — `night promote hub --json`. 호출될 때만 실행되고 느려서 60초까지 기다린다. */
+export const PROMOTE_TIMEOUT = 60_000;
+export const runControlRoomPromoteHub = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
+  runSshJson('controlRoom:promoteHub', [...SSH_BASE_ARGS, 'promote', 'hub', '--json'], execFileImpl, { timeout: PROMOTE_TIMEOUT });
 
 // ── Control Room "오늘 끝난 일 / 지금 일하는 AI" (R5/R6) ───────────────────
 // Pure helpers — 단위 테스트 대상. board JSON 모양이 바뀌어도 깨지지 않게

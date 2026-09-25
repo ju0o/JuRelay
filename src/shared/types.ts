@@ -157,6 +157,7 @@ export type RelayRequest =
   | { op: 'controlRoom:automationStatus' }
   | { op: 'controlRoom:automationOn' }
   | { op: 'controlRoom:automationOff' }
+  | { op: 'controlRoom:promoteHub' }
   | { op: 'app:startView' };
 
 /** Standard successful response envelope. */
