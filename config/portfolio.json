@@ -4207,6 +4207,47 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "막힌 검사를 노란색 주의로 표시"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-RAW-TEXT-FOLD",
+          "scope": "In packages/runtime/src/index.ts, move the developer text still on the Studio home surface behind one folded details: renderOverviewSection's 버전 pair shows only 초안/확정본 with plan.revision.revisionId under renderTechInfo; renderGatesSection says '사람 승인은 확정할 때 따로 받아요' without the English '(snapshot)'; renderExportsSection folds the raw '.juplan/evidence/planning-passes.md' path under renderTechInfo and gives it a plain-Korean line ('AI와 나눈 기획 기록이 저장돼 있어요'). Computed data stays unchanged. Update the existing runtime.test.ts assertions and add a regression test that none of these raw strings appear outside a <details> block.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/studio-raw-text-fold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화: 개발자 글자는 원문 보기 안 — JuPlan Studio 화면)"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-EMPTY-ERROR-GUIDE",
+          "scope": "In packages/runtime/src/index.ts, rewrite the Studio empty and error states so each one gives the reason and the next step in plain Korean: the empty 계획 지도 in renderPlanMapSection, the empty diagram in renderDiagramViewPage, renderExportMissingPage (the file may not be made yet; go back to Studio home and open it from 내보낸 파일) and renderUnexpectedErrorPage (what happened / a likely reason / what to do). Update the existing runtime.test.ts assertions that check the old sentences and add one regression test for all four pages.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/studio-empty-error-guide.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화: 빈 화면 이유+다음 행동, 오류 3줄 — JuPlan Studio 화면)"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-TOUCH-TEXT-SIZE",
+          "scope": "In the STUDIO_STYLE constant in packages/runtime/src/index.ts, give the search input, the 지우기 button and the .links anchors a click target of at least 44px (min-height:44px, inline-flex centering for the links), and raise the small reading text (.map-hint, .pair dt, .finding .level) to at least 1rem. Leave the badge and blocked colours alone, because a separate amber task already covers them. Add a regression test that loads the served Studio page and checks these rules are present.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-touch-size.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화: 글자 16px·버튼 44px — JuPlan Studio 화면)"
         }
       ],
       "qaRuntime": [
