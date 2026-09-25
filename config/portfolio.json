@@ -7775,6 +7775,28 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:132-133 '## 4.2 Value model / - [ ] Separate Usage / Delivery / Value Estimate.'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:121 'value_layer_separation — both daily .cost objects total unknown: 5; receipts .cost.status is unknown for all 10'; Founder direction 2026-09-25 score decision utility per task"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-DECISION-ITEM-EVIDENCE-LINK",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md §4.3 line 147 ('GO / DEFER / KILL Daily Report productization.'), add an evidence link to the M3 validation Section 7 closeout (docs/validation/M3_DAILY_VALUE_VALIDATION.md#7-closeout-fields, whose 'Actionable day-level value bar' row traces the Founder GO condition), using the same link style as lines 144-146; leave the checkbox unchecked and record no M3 decision.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:147 '- [ ] GO / DEFER / KILL Daily Report productization.' has no evidence link, while lines 144-146 each link to M3 validation sections; docs/validation/M3_DAILY_VALUE_VALIDATION.md:189 'Actionable day-level value bar | Founder condition: `GO` only if the day-level view adds clear actionable value.'; Founder direction 2026-09-25"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-INDEX-M3-VALIDATION-ARTIFACT",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_INDEX.md, add docs/validation/M3_DAILY_VALUE_VALIDATION.md as item 9 in the Canonical artifacts list, labeled as the planning-only M3 evidence register (10-receipt corpus at JuCeipt@402d3ee) that records no milestone decision. Also add one 'Authority by question' row ('Does the day-level view add actionable value beyond Receipts?' → M3_DAILY_VALUE_VALIDATION.md for evidence, PM_STATUS_BOARD.md for the decision) and update the Last updated date.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_INDEX.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:6-17 lists 8 canonical artifacts with no M3 validation artifact (git grep M3_DAILY_VALUE_VALIDATION finds only WBS and P0 report); docs/validation/M3_DAILY_VALUE_VALIDATION.md:3-6 'Status: PLANNING-ONLY VALIDATION ARTIFACT ... Decision: NOT RECORDED BY THIS ARTIFACT'; docs/operations/PM_STATUS_BOARD.md:27 'Active product milestone | M3 — Daily Agent Value Decision'"
         }
       ]
     },
