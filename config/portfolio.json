@@ -6987,6 +6987,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss, with an obvious next action; scripts/status-board.mjs@056e99e prints '표에 없는 이유예요' for unlisted reasons, but docs/getting-started.md:109 gives no next step for that case",
           "title": "모르는 이유가 뜰 때 할 일 안내"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-DUPLICATE-ID-STEP",
+          "scope": "Add a seventeenth step run_duplicate_project_id to scripts/e2e.sh after run_unlisted_reason (label '중복 프로젝트 ID 안내', next command 'node scripts/status-board.mjs <registry.json>'): it writes a temp registry with two repository-status-file entries that share projectId 'dup' and passes only when status-board exits 1, stdout is empty, and the first stderr line is exactly '프로젝트 목록 파일 내용이 올바르지 않아요 — 프로젝트 ID dup가 두 번 이상 나와요 — 하나만 남기거나 ID를 바꾸세요'. Also add the step's name and label to the loop and to the labels and commands maps, add it to the expected steps in tests/e2e-script.test.mjs, and add it to the ```json example and the step bullet list in the docs/getting-started.md section '`bash scripts/e2e.sh` 결과 읽는 법' so tests/e2e-docs-sync.test.mjs keeps passing.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/status-board-cli.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23/24: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; scripts/status-board.mjs registryHint already prints the duplicated-ID Korean hint (tested at tests/status-board-cli.test.mjs:248), but no e2e step exercises it"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-PROJECT-ID-SUMMARY-CHECK",
+          "scope": "In scripts/e2e.sh, change only the run_project_id step: save status-board stderr to $tmp/lane.err, and make the step fail unless that file is exactly the one plain-Korean line '프로젝트 1개 모두 상태를 읽었어요', in addition to the existing single-lane RUNNING check. Do not change the step name, label, next command, or step order.",
+          "files": [
+            "scripts/e2e.sh"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23/24: launch bar = plain Korean, obvious next action, inline feedback; the '--project-id' run is Quickstart step 3 in README '3. 빠른 시작 (처음 쓰는 법)', yet at base run_project_id (scripts/e2e.sh:56) never checks the Korean success line that step prints"
         }
       ],
       "qaRuntime": [
