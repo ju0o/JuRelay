@@ -6647,6 +6647,36 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24: plain Korean, obvious next action, no raw codes. scripts/status-board.mjs at base maps reason 'stale' to '관찰한 지 너무 오래됐어요' (reasonWords) and supports registry freshnessMs, but tests/status-board-cli.test.mjs never checks the stale stderr line.",
           "title": "오래된 상태 안내 문구 지키기"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-STALE-STEP",
+          "scope": "Add a thirteenth step run_stale to scripts/e2e.sh after run_bad_arguments (label '오래된 상태 안내', next command 'node scripts/status-board.mjs <registry.json>'). It writes a temp repository-status-file source 'old' whose observedAt is one hour ago, plus a registry entry with freshnessMs 1. It passes only when exit code is 0 and stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: old(stale: 관찰한 지 너무 오래됐어요) — README 처음 쓰는 법의 reason 표를 보세요'. Also add run_stale to the labels, commands and step loop, the expected steps in tests/e2e-script.test.mjs, and the docs/getting-started.md e2e section (JSON example, next list, and a '- `run-stale` (오래된 상태 안내)' bullet).",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs",
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "tests/status-board-cli.test.mjs:87 already expects the exact stale stderr line; README.md:86 '| `stale` | 관찰한 지 너무 오래됐어요(기본 5분). 지금 상태로 믿으면 안 돼요.'; Founder direction 2026-09-24: the e2e script runs the main user flow offline and prints one JSON line {ok, steps[], ms}"
+        },
+        {
+          "taskId": "JUCONTROLER-GETTING-STARTED-STALE-NEXT",
+          "scope": "In the docs/getting-started.md table '상태판 안내 문장 읽는 법', change only the '다음에 할 일' cell of the '프로젝트 <N>개 중 <M>개는 상태를 알 수 없어요: …' row. Keep the current advice to fix `<dataRoot>/current.json`, and add one plain-Korean sentence: when the reason is `stale` or `source-stale`, the file is not broken, so save the status again from the source (원본에서 상태를 새로 저장하세요). Leave the first-column line unchanged.",
+          "files": [
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "node --test tests/getting-started-lines-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:86-87 stale/source-stale rows say '원본에서 상태를 새로 저장하세요', but the docs/getting-started.md table row for the unknown-summary line only says to fix the current.json file; Founder direction 2026-09-24: obvious next action in plain Korean"
         }
       ],
       "qaRuntime": [
