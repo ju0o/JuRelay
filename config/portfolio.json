@@ -7930,6 +7930,23 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-25): 'record a truthful Phase 1 evidence delta'; evidence/phase1/RESULTS.log:1 '# Phase 1 evidence — after Asset Storage Boundary patch (2026-09-24T23:16:40+09:00)'",
           "title": "1단계 검사 결과 오늘자 기록 추가"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-APPROVAL-RULES-R2",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). Task 1 retry: prior promotion 103daa3 stored approval_rules as booleans only, which does not meet the contract. In src/domain/worker-policy.ts add ACTIONS = FILE_DELETE, EXTERNAL_SEND, EXTERNAL_UPLOAD, PUBLIC_P-U-B-L-I-S-H, P-A-Y-M-E-N-T (write these last two codes without the hyphens) and DECISIONS = ALLOW, REQUIRE_APPROVAL, DENY. Add validateApprovalRules(rules): rejects non-objects, unknown action keys and unknown decision values; a missing action defaults to REQUIRE_APPROVAL. Add decideAction(rules, action, mode) with mode from CommerceMode in src/domain/commerce.ts: the pay action (the fifth code) is ALWAYS DENY while mode is PRE_BUSINESS whatever the rule says, so it cannot be bypassed without the Founder COMMERCIAL gate; in COMMERCIAL the rule applies. In src/server/owner-policy.ts validate approval_rules on create with validateApprovalRules (400 INVALID_POLICY on malformed) and add POST /api/owner/policies/:id/actions/check {action} returning {action, decision, mode} using currentMode(db) (400 on unknown action). Tests: unit cases ALLOW, REQUIRE_APPROVAL, DENY, default REQUIRE_APPROVAL, PRE_BUSINESS pay action forced DENY even when rule says ALLOW, COMMERCIAL follows rule, malformed rules rejected; integration test of the check route (runs on PGlite and TEST_DB=postgres).",
+          "files": [
+            "src/domain/worker-policy.ts",
+            "src/server/owner-policy.ts",
+            "tests/unit/worker-policy.test.ts",
+            "tests/integration/owner-policy.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck",
+            "npm run test:pg"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 (2026-09-25); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2, PRODUCT_SSOT_v0.4 O-01/O-10, LATEST_DECISIONS_v0.4 §1 §4 §9",
+          "title": "고위험 행동 승인 규칙 ALLOW/REQUIRE_APPROVAL/DENY"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
