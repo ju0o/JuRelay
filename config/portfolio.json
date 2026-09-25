@@ -7634,6 +7634,17 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:113-122 records PASS for summary_context, acceptance_parity, review_queue_utility, outcome_traceability, impact_traceability, unknown_safety, value_layer_separation and scope_drift, while docs/planning/BUSINESS_PRODUCT_WBS.md:124-130 still shows '- [ ] Aggregate task counts and acceptance distribution.' and the other §4.1 items unchecked, with no evidence links; Founder direction 2026-09-25: complete the Receipt-versus-summary register and score decision utility per task"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-VALUE-MODEL-COVERAGE-TRACE",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md, add a short subsection '4.2 WBS value-model coverage trace' after Section 4.1 with one row for each of the six BUSINESS_PRODUCT_WBS.md §4.2 Value model items (lines 133-138). Each row cites only facts already in the artifact: the Section 4 value_layer_separation PASS for the Usage/Delivery/Value split, and all 10 Receipt costs `unknown` with no value estimate for value_profile, agent_cost_profile, subscription allocation, value ratio and verdict. Mark items the corpus does not prove as `UNKNOWN`, record no M3 decision, and do not edit the WBS or any other file.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:132-133 '## 4.2 Value model / - [ ] Separate Usage / Delivery / Value Estimate.'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:121 'value_layer_separation — both daily .cost objects total unknown: 5; receipts .cost.status is unknown for all 10'; Founder direction 2026-09-25 score decision utility per task"
         }
       ]
     },
