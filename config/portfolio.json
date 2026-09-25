@@ -1609,6 +1609,43 @@
             "npm run typecheck"
           ],
           "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes; base approvals.tsx:43/105 and App.tsx:256 fall back to JSON.stringify(rule/item) as the visible card text"
+        },
+        {
+          "taskId": "AGENTRELAY-HOLD-CARD-EASY",
+          "scope": "Control Room lane view (src/frontend/controlRoom.tsx) '보류 / 차단' card is hard for the Founder. Rework it, keeping the existing data path (normalizeHoldEntry/visibleHoldEntries in src/shared/projectLabels.ts, HoldOptionButtons → controlRoom:holdChoose / gates:answer): (1) heading '멈춘 작업 N개' with an amber warning style instead of red 'blocked'; the words 보류/차단 never shown. (2) One card per hold (not one lumped card; show 3, then '더 보기'). Each card: task title (founderTaskTitle); a one-row flow PM → Worker → QA → Tester → 반영 where steps before hold.step are ✓, hold.step is ⚠ amber, later are grey; hold.sentence in large type (18px+). (3) Below: '그래서 <추천 선택지 label> 할게요.' with the recommended label as an underlined button; clicking it opens the 3 options inline as radio rows (label + detail, 추천 marked); one primary button [이대로 진행] sends the selected option through the existing HoldOptionButtons confirm path (retry/narrow/skip); after success show '선택했어요: <label> · 곧 다시 설계해요' in place. (4) If hold.choice is already set show that saved line instead of the buttons. (5) If heldSeen and waitMin are present show '아무것도 안 고르면 HH:MM에 추천대로 진행해요' (local time). (6) No explanation yet → '쉬운 말로 바꾸는 중이에요…'. (7) Raw reason and IDs stay folded under one '원문 보기'. Put the pure pieces (flow step states from step, auto-proceed time text, heading text) as exported helpers in src/shared/projectLabels.ts; styles in src/frontend/style.css using existing Hermes tokens, readable in light and dark. No window.prompt/confirm. Update any existing test that asserted the old '보류 / 차단' heading.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/style.css",
+            "src/shared/projectLabels.ts",
+            "test/hold-card-easy.test.mjs",
+            "test/hold-option-buttons.test.mjs",
+            "test/controlroom-plain-2.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/hold-card-easy.test.mjs",
+            "node --test test/hold-option-buttons.test.mjs test/hold-choice-real.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 (MainPC Agent Relay 앱 관제실): '보류/차단 => 이거도 더 쉽게 쓸 수 있었으면'; earlier Founder choice for HOLD UI: '둘 다 (문장 + 위에 흐름 그림)' (Canvas HoldRedesign.dc.html, same design already in JuControler hub); Founder 2026-09-25: app said '작업 PC(ASUS)에 연결할 수 없습니다' while ASUS was on (the board command had crashed)",
+          "title": "멈춘 작업 카드를 한 문장과 버튼 하나로"
+        },
+        {
+          "taskId": "AGENTRELAY-ASUS-ERROR-VS-OFFLINE",
+          "scope": "src/backend/controlRoom.ts runControlRoom/runSshJson map every execFile failure to '작업 PC(ASUS)에 연결할 수 없습니다…'. When ssh itself connected but the remote command failed (execFile error with numeric code other than 255, i.e. ssh returned the remote exit status, or stderr contains 'Traceback'), throw ControlRoomError 'REMOTE_FAILED' with '작업 PC는 켜져 있는데 화면 자료를 만들다 오류가 났어요. 잠시 후 자동으로 다시 불러와요. 계속되면 원문 보기로 알려 주세요.' and keep the last 400 chars of stderr as the raw detail the UI shows under 원문 보기. Keep code 255 / ETIMEDOUT / ENOENT as the offline message. Unit test with a fake execFileImpl for both cases.",
+          "files": [
+            "src/backend/controlRoom.ts",
+            "src/frontend/controlRoom.tsx",
+            "test/asus-error-vs-offline.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/asus-error-vs-offline.test.mjs",
+            "node --test test/controlRoom.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 (MainPC Agent Relay 앱 관제실): '보류/차단 => 이거도 더 쉽게 쓸 수 있었으면'; earlier Founder choice for HOLD UI: '둘 다 (문장 + 위에 흐름 그림)' (Canvas HoldRedesign.dc.html, same design already in JuControler hub); Founder 2026-09-25: app said '작업 PC(ASUS)에 연결할 수 없습니다' while ASUS was on (the board command had crashed)",
+          "title": "연결 끊김과 작업 PC 오류를 구분해서 알려주기"
         }
       ],
       "qaRuntime": [
