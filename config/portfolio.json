@@ -6696,6 +6696,35 @@
           ],
           "ssotEvidence": "README.md:86-87 stale/source-stale rows say '원본에서 상태를 새로 저장하세요', but the docs/getting-started.md table row for the unknown-summary line only says to fix the current.json file; Founder direction 2026-09-24: obvious next action in plain Korean",
           "title": "오래된 상태일 때 할 일 안내 보강"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-HUMAN-GATE-STEP",
+          "scope": "Add a fourteenth step run_human_gate to scripts/e2e.sh after run_stale (label '사람 확인 알림', next command 'node scripts/status-board.mjs <registry.json>'): it writes a temp Agent Relay board with one lane 'gated' (state RUNNING, holds [], humanGate {\"kind\":\"approval\"}) and a one-entry agent-relay-board registry, runs status-board, and passes only on exit 0 with stderr exactly the two lines '프로젝트 1개 모두 상태를 읽었어요' and '확인이 필요한 프로젝트: gated(human-gate: 사람 확인을 기다려요) — 해당 레인의 확인 요청이나 보류를 처리하세요'; add the step to the loop, labels map and commands map, add ['run-human-gate','사람 확인 알림'] at the end of the expected steps in tests/e2e-script.test.mjs, and in docs/getting-started.md add the step to the ```json example line, to the run-… list in the `next` bullet, and as a new bullet `- \\`run-human-gate\\` (사람 확인 알림): …` after the run-stale bullet.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/quickstart-next-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): a real end-to-end script that runs the product's main user flow offline in a temp dir and prints one JSON line {ok, steps[], ms}; today e2e covers the 'hold' needs-action line (run_needs_action) but not the 'human-gate' one, which src/adapters/agent-relay.mjs:29-30 returns and scripts/status-board.mjs prints on its 확인이 필요한 프로젝트 line"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-SOURCE-STALE-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on the existing 'names an expired source with the plain-Korean stale reason' test: it writes a temp registry with one juplan-status entry 'flagged' whose current.json is {\"projectId\":\"flagged\",\"status\":\"READY\",\"observedAt\":<now>,\"stale\":true}, runs scripts/status-board.mjs, and asserts exit 0, the stdout row has status READY, stale true and reason source-stale, and stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: flagged(source-stale: 원본이 오래된 값이라고 알렸어요) — README 처음 쓰는 법의 reason 표를 보세요\\n'.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, no raw codes; the source-stale wording in scripts/status-board.mjs reasonWords ('원본이 오래된 값이라고 알렸어요') and the docs/getting-started.md advice for stale·source-stale are not checked by any CLI test at base; source-stale is only checked at the adapter level in tests/juplan-adapter.test.mjs:52-53"
         }
       ],
       "qaRuntime": [
