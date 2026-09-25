@@ -10575,6 +10575,18 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:836 '## 20. 금지 표현 … 근거가 없으면 다음 표현을 사용하지 않는다. * 완벽하게 작동합니다 … * 배포해도 됩니다'; Founder direction 2026-09-23 (choice 2026-09-26)",
           "title": "쓰면 안 되는 말이 보고서에 없는지 확인"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-RISK-HINTS-HIGH-FIRST-R2",
+          "scope": "In packages/cli/src/commands/context.ts, stably order riskHints with high before medium before the MAX_RISK_HINTS slice, and add an offline text test that fails on the old ordering and passes when sorting precedes slicing.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "tests/context-risk-hints-high-first.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-risk-hints-high-first.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:554 여러 조건에 해당하면 가장 높은 위험도를 적용한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
