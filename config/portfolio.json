@@ -7609,6 +7609,17 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 'M3 integration | daily value summary integrated for 10 tasks' vs docs/product/MASTER_ROADMAP.md:96 'M3 status: daily value summary integrated for 7 tasks'",
           "title": "로드맵 3단계 자료 개수를 10개로 바로잡기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-AGGREGATE-MODEL-EVIDENCE-LINKS",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md §4.1 (lines 124-130), add an evidence link to each of the seven Aggregate-model checklist items, pointing to the matching PASS check in docs/validation/M3_DAILY_VALUE_VALIDATION.md §4 (Receipt-only derivation→scope_drift, task counts and acceptance→summary_context and acceptance_parity, delivered outcomes→outcome_traceability, human review items→review_queue_utility, material impacts→impact_traceability, evidence coverage and unknowns→unknown_safety, usage/cost only when observed→value_layer_separation), and tick only the items whose linked check records PASS; leave §4.2, §4.3 and the GO/DEFER/KILL item unchanged and record no M3 decision.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:113-122 records PASS for summary_context, acceptance_parity, review_queue_utility, outcome_traceability, impact_traceability, unknown_safety, value_layer_separation and scope_drift, while docs/planning/BUSINESS_PRODUCT_WBS.md:124-130 still shows '- [ ] Aggregate task counts and acceptance distribution.' and the other §4.1 items unchecked, with no evidence links; Founder direction 2026-09-25: complete the Receipt-versus-summary register and score decision utility per task"
         }
       ]
     },
