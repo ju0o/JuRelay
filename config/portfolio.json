@@ -5295,7 +5295,12 @@
         "opencode",
         "cline",
         "codex"
-      ]
+      ],
+      "skills": {
+        "pm": [
+          "founder-ux"
+        ]
+      }
     },
     {
       "id": "jucontroler-app",
