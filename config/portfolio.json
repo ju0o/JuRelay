@@ -3875,6 +3875,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-24 21:5x (A-28): 'Agent들이 해당 컴퓨터에 남기는 모든 기록들을 기반으로 영수증을 만들어줘야 함'",
           "title": "다른 도구의 작업 기록도 JuCeipt로 불러오기"
+        },
+        {
+          "taskId": "JUCEIPT-SOURCES-CLI-PLAIN-KOREAN",
+          "scope": "In src/cli/main.ts, change the human-readable (non --json) output of `juceipt sources` from the raw `sessions=N last=none size=BYTES` tab dump to plain Korean lines. Each line should read like '<에이전트>: 기록 N개 · 마지막 활동 <시각 또는 없음> · 크기 <KB/MB>', a missing source should read '기록 없음', and the output should end with one copyable next-action line. Leave the `--json` output byte-for-byte unchanged. Add a vitest that spies on console.log, calls main() with a temporary HOME holding synthetic ~/.claude/projects and ~/.codex/sessions files, and checks that the Korean labels and the next-action line are there and that `sessions=`, `last=` and `size=` are gone.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-cli.test.ts tests/sources-discover.test.ts",
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 (settled): 'launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes'. Base 173e804 src/cli/main.ts sourcesCommand prints `sessions=${source.sessionCount}`, `last=${source.lastActivity ?? \"none\"}`, `size=${source.totalSize}`."
         }
       ]
     },
