@@ -2751,7 +2751,8 @@
             "bash scripts/e2e_disposable.sh",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, no raw codes; base src/actl/cli.py:1099 print(f\"✓ {AGENTS[agent].display_name} re-mapped to {matches[0].pane.pane_id}\") and :1129 raise ValueError(f\"{AGENTS[agent].display_name} is not currently mapped to a live pane\")"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, no raw codes; base src/actl/cli.py:1099 print(f\"✓ {AGENTS[agent].display_name} re-mapped to {matches[0].pane.pane_id}\") and :1129 raise ValueError(f\"{AGENTS[agent].display_name} is not currently mapped to a live pane\")",
+          "title": "보낼 곳을 쉽게 고르고 안내받기"
         }
       ],
       "qaRuntime": [
@@ -4351,7 +4352,8 @@
             "npx vitest run tests/sources-codex.test.ts tests/sources-scan.test.ts",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (A-28): 'mask token-like strings in every receipt; nothing leaves the machine'"
+          "ssotEvidence": "Founder direction 2026-09-23 (A-28): 'mask token-like strings in every receipt; nothing leaves the machine'",
+          "title": "도구 사용 기록의 민감정보 보호"
         },
         {
           "taskId": "JUCEIPT-SCAN-AGENT-RELAY-TASKS",
@@ -4364,7 +4366,8 @@
             "npx vitest run tests/sources-scan.test.ts tests/sources-agent-relay.test.ts tests/sources-scan-cli.test.ts",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (A-28): 'Agent Relay task state (~/.local/share/AgentRelay/data/portfolio-execution/state.json) ... one `juceipt scan` command that finds sources and writes receipts for recent sessions'"
+          "ssotEvidence": "Founder direction 2026-09-23 (A-28): 'Agent Relay task state (~/.local/share/AgentRelay/data/portfolio-execution/state.json) ... one `juceipt scan` command that finds sources and writes receipts for recent sessions'",
+          "title": "Agent Relay 작업 기록을 한눈에 확인"
         }
       ]
     },
@@ -5052,7 +5055,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "JuControler-Private/founder/VERSION_WBS.md:12 '**AI 자동 배정 (A-22):** PM·Worker·QA·Tester 모두 구독 AI 먼저'; Founder direction 2026-09-24 launch bar: plain Korean, obvious next action, inline feedback"
+          "ssotEvidence": "JuControler-Private/founder/VERSION_WBS.md:12 '**AI 자동 배정 (A-22):** PM·Worker·QA·Tester 모두 구독 AI 먼저'; Founder direction 2026-09-24 launch bar: plain Korean, obvious next action, inline feedback",
+          "title": "상태판 확인 요청 쉽게 알아보기"
         },
         {
           "taskId": "JUCONTROLER-README-RELAY-TESTER-FLOW",
@@ -5064,7 +5068,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "JuControler-Private/founder/VERSION_WBS.md:9 'PM(계획) → Worker(작업) → QA(검수) → Tester(시험) → 반영 순서로 흐릅니다.'"
+          "ssotEvidence": "JuControler-Private/founder/VERSION_WBS.md:9 'PM(계획) → Worker(작업) → QA(검수) → Tester(시험) → 반영 순서로 흐릅니다.'",
+          "title": "Agent Relay 작업 흐름 한눈에 보기"
         },
         {
           "taskId": "JUCONTROLER-E2E-NEEDS-ACTION-STEP",
@@ -5080,7 +5085,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (launch bar: obvious next action, inline feedback; priority (1) a real E2E script that runs the main user flow offline). scripts/e2e.sh at base checks only the UNKNOWN summary line and never runs the human-gate/hold '확인이 필요한 프로젝트' path added in 542d38d."
+          "ssotEvidence": "Founder direction 2026-09-23 (launch bar: obvious next action, inline feedback; priority (1) a real E2E script that runs the main user flow offline). scripts/e2e.sh at base checks only the UNKNOWN summary line and never runs the human-gate/hold '확인이 필요한 프로젝트' path added in 542d38d.",
+          "title": "보류된 프로젝트도 자동 확인하기"
         },
         {
           "taskId": "JUCONTROLER-REASON-TABLE-SYNC-TEST",
@@ -5093,7 +5099,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: launch bar = plain Korean, no raw codes. At base 4fd861d, the 23 keys in scripts/status-board.mjs reasonWords (lines 7-31) and the 23 rows in the README.md reason table (lines 64-90) match only by hand. No test checks that they stay in sync."
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = plain Korean, no raw codes. At base 4fd861d, the 23 keys in scripts/status-board.mjs reasonWords (lines 7-31) and the 23 rows in the README.md reason table (lines 64-90) match only by hand. No test checks that they stay in sync.",
+          "title": "이유 안내가 빠지지 않게 확인하기"
         }
       ],
       "qaRuntime": [
@@ -6740,7 +6747,8 @@
             "node --test test/hold-card.test.mjs test/approvals-module.test.mjs test/home-plain-leftovers.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base app.js:1678 `'>' + esc(hold.taskId)` and app.js:2115 `esc(hold.title || hold.taskId)` still print raw task ids"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base app.js:1678 `'>' + esc(hold.taskId)` and app.js:2115 `esc(hold.title || hold.taskId)` still print raw task ids",
+          "title": "멈춘 작업 이름을 쉽게 보여줘요"
         },
         {
           "taskId": "JCAPP-JUCEIPT-SCAN-PROJECT-NAMES",
@@ -6754,7 +6762,8 @@
             "node --test test/juceipt-list.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes",
+          "title": "JuCeipt 작업 이름을 쉽게 보여줘요"
         },
         {
           "taskId": "JCAPP-SWITCH-STUCK-PLAIN",
@@ -6768,7 +6777,8 @@
             "node --test test/supervisor-switch.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): plain Korean, inline feedback, no raw codes; Hermes style everywhere (A-21)"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): plain Korean, inline feedback, no raw codes; Hermes style everywhere (A-21)",
+          "title": "막힌 전환을 쉽게 다시 시도하게 해줘요"
         }
       ]
     },
@@ -7204,7 +7214,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 '| M3 integration | daily value summary integrated for 7 tasks |' vs docs/validation/M3_DAILY_VALUE_VALIDATION.md:5 'Scope: integrated 10-task Daily Value summary' and :27 'Capture completeness | 10/10 captured'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 '| M3 integration | daily value summary integrated for 7 tasks |' vs docs/validation/M3_DAILY_VALUE_VALIDATION.md:5 'Scope: integrated 10-task Daily Value summary' and :27 'Capture completeness | 10/10 captured'",
+          "title": "실제 검증 건수로 현황 맞추기"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-TALLY-BAR-POINTER-FIX",
@@ -7215,7 +7226,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:108 'See the Section 7 `Proposed mapping basis` row for the closeout trace from this tally to the Founder GO condition' vs :189 'Actionable day-level value bar | Founder condition: `GO` only if the day-level view adds clear actionable value. The Section 3.1 tally records `7 ACTIONABLE`...'; Founder direction 2026-09-25"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:108 'See the Section 7 `Proposed mapping basis` row for the closeout trace from this tally to the Founder GO condition' vs :189 'Actionable day-level value bar | Founder condition: `GO` only if the day-level view adds clear actionable value. The Section 3.1 tally records `7 ACTIONABLE`...'; Founder direction 2026-09-25",
+          "title": "실행 가능한 가치 기준 확인하기"
         }
       ]
     },
@@ -7670,7 +7682,8 @@
             "node --test tests/fixture-risk-reason.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:520 사용자가 특정 파일이나 코드 블록의 역할을 설명해달라고 요청하면 비개발자 눈높이로 설명한다. / :522 이 경우 전체 작업 완료 보고서를 강제로 생성하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:520 사용자가 특정 파일이나 코드 블록의 역할을 설명해달라고 요청하면 비개발자 눈높이로 설명한다. / :522 이 경우 전체 작업 완료 보고서를 강제로 생성하지 않는다.",
+          "title": "파일 하나의 기능을 쉽게 설명"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
