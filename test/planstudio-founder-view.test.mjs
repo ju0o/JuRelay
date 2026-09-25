@@ -101,8 +101,16 @@ test("planStudio.tsx — errors are a Korean three-line recovery with retry and 
   assert.match(studioSrc, /retry\(\); \}\}>다시 시도<\/button>/, "missing 다시 시도 button");
   assert.match(
     studioSrc,
-    /<details><summary>원문 보기<\/summary><p className="muted mono">\{failure\.raw\}<\/p><\/details>/,
+    /<details><summary>원문 보기<\/summary><p className="muted mono">\{shownFailure\.raw\}<\/p><\/details>/,
     "original error should render only inside 원문 보기",
   );
-  assert.ok(!/\{failure\.raw\}/.test(studioSrc.replace(/<details>[\s\S]*?<\/details>/g, "")), "raw error must not appear outside details");
+  assert.ok(!/\{shownFailure\.raw\}/.test(studioSrc.replace(/<details>[\s\S]*?<\/details>/g, "")), "raw error must not appear outside details");
+  assert.ok(!studioSrc.includes('className="flash err"'), "no red flash for load failures");
+  assert.match(studioSrc, /planFailure\('이 계획을 읽지 못했어요', e,/, "planStudio:get failure goes through the three-line recovery");
+});
+
+test("planStudio.tsx — board retry re-calls controlRoom:board and success clears its failure", () => {
+  assert.match(studioSrc, /setBoardAttempt\(value => value \+ 1\)/, "board retry must bump boardAttempt");
+  assert.match(studioSrc, /\}, \[initialProject, boardAttempt\]\)/, "board effect must re-run on boardAttempt");
+  assert.match(studioSrc, /setBoardFailure\(null\);\n\s*const nextLanes/, "board success must clear boardFailure");
 });

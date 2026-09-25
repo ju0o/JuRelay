@@ -249,6 +249,8 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
   const [gates, setGates] = useState<StudioGate[]>([]);
   const [gatePick, setGatePick] = useState<Record<string, number>>({});
   const [failure, setFailure] = useState<PlanFailure | null>(null);
+  const [boardFailure, setBoardFailure] = useState<PlanFailure | null>(null);
+  const [boardAttempt, setBoardAttempt] = useState(0);
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<'chat' | 'save' | 'approve' | 'gate' | null>(null);
@@ -273,6 +275,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
     const refresh = (): void => {
       void must<{ lanes?: BoardLane[] }>({ op: 'controlRoom:board' }).then(next => {
         if (!alive) return;
+        setBoardFailure(null);
         const nextLanes = Array.isArray(next?.lanes) ? next.lanes : [];
         setLanes(nextLanes);
         const names = [...new Set(nextLanes.map(l => str(l.project ?? l.id)).filter(Boolean))];
@@ -282,12 +285,12 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
           if (initialProject && names.includes(initialProject)) return initialProject;
           return names[0] ?? prev;
         });
-      }).catch(e => { if (alive) setFailure(planFailure('프로젝트 목록을 불러오지 못했어요', e, () => setDraftLoadAttempt(value => value + 1))); });
+      }).catch(e => { if (alive) setBoardFailure(planFailure('프로젝트 목록을 불러오지 못했어요', e, () => setBoardAttempt(value => value + 1))); });
     };
     refresh();
     const timer = window.setInterval(refresh, 5000);
     return () => { alive = false; window.clearInterval(timer); };
-  }, [initialProject]);
+  }, [initialProject, boardAttempt]);
 
   // Draft + gates load per project.
   useEffect(() => {
@@ -301,8 +304,8 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
       const next = normalizeDraft(raw);
       setDraft(next);
       setSelectedId(prev => (prev && next.tasks.some(t => t.id === prev) ? prev : next.tasks[0]?.id ?? null));
-    }).catch(() => {
-      if (alive) { setDraft(EMPTY_DRAFT); setDraftLoadError(true); }
+    }).catch(e => {
+      if (alive) { setDraft(EMPTY_DRAFT); setDraftLoadError(true); setFailure(planFailure('이 계획을 읽지 못했어요', e, () => setDraftLoadAttempt(value => value + 1))); }
     }).finally(() => { if (alive) setLoading(false); });
     void must<unknown>({ op: 'gates:list' }).then(raw => {
       if (alive) setGates(normalizeGates(raw));
@@ -466,6 +469,8 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
     void persist(next, 'save').then(() => flashInfo(`‘${lastDeleted.task.title}’ 되돌림`));
   }
 
+  const shownFailure = failure ?? boardFailure;
+
   return (
     <main className="control-room plan-studio">
       <div className="control-room-head">
@@ -475,17 +480,13 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
         </div>
         <button className="btn" onClick={onClose}>닫기</button>
       </div>
-      {draftLoadError && <div className="flash err" role="alert">
-        <span>이 계획을 읽지 못했어요</span>{' '}
-        <button className="mini" onClick={() => setDraftLoadAttempt(value => value + 1)}>다시 불러오기</button>
-      </div>}
-      {failure && <div className="flash warn" role="alert" style={{ flexDirection: 'column', alignItems: 'flex-start', background: 'color-mix(in srgb, var(--warn) 12%, transparent)', borderColor: 'var(--warn)' }}>
-        <p><strong>{failure.what}</strong></p>
-        <p>{failure.why}</p>
+      {shownFailure && <div className="flash warn" role="alert" style={{ flexDirection: 'column', alignItems: 'flex-start', background: 'color-mix(in srgb, var(--warn) 12%, transparent)', borderColor: 'var(--warn)' }}>
+        <p><strong>{shownFailure.what}</strong></p>
+        <p>{shownFailure.why}</p>
         <p>
-          <button className="mini" onClick={() => { const retry = failure.retry; setFailure(null); retry(); }}>다시 시도</button>
+          <button className="mini" onClick={() => { const retry = shownFailure.retry; setFailure(null); setBoardFailure(null); retry(); }}>다시 시도</button>
         </p>
-        <details><summary>원문 보기</summary><p className="muted mono">{failure.raw}</p></details>
+        <details><summary>원문 보기</summary><p className="muted mono">{shownFailure.raw}</p></details>
       </div>}
       {info && <div className="flash ok">{info}</div>}
       <div className="plan-studio-grid">
