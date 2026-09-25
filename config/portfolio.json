@@ -8675,6 +8675,30 @@
             "JCAPP-TOKEN-DETECT"
           ],
           "title": "새 디자인: 홈 순서를 승인된 디자인과 똑같이"
+        },
+        {
+          "taskId": "JCAPP-ADVANCED-KOREAN-SURFACE",
+          "scope": "고급 화면의 역량 제목과 기능 설명을 평이한 한국어로 바꾸고 원문 기술 정보는 접힌 영역에만 둔다.",
+          "files": [
+            "operator/public/app.js",
+            "test/more-advanced.test.mjs"
+          ],
+          "tests": [
+            "node --test test/more-advanced.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JCAPP-FIRST-RUN-GUIDE",
+          "scope": "홈 최초 방문자에게 무엇인지·필요한 한 가지 설정·다음 동작의 3단계 안내를 보여주고 확인 결과를 화면 안에 남긴다.",
+          "files": [
+            "operator/public/app.js",
+            "test/home-hub.test.mjs"
+          ],
+          "tests": [
+            "node --test test/home-hub.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
