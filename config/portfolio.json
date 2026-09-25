@@ -4240,6 +4240,31 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '보니까 바뀐 기능 및 기능이 많이 구현 되었네 이것들 Github에서 README 파일 다듬고 이후 홍보영상 다시 제작'; portfolio architecture (Founder): actl = 리모컨, Agent Relay = 셋톱박스 (actl 기반), JuControler = 허브 (+JuPlan, JuCeipt, Tester, Skill 만들기); Founder: 비개발자도 카톡·토스처럼 쉽게",
           "title": "GitHub 소개 문서(README) 다듬기"
+        },
+        {
+          "taskId": "JUCEIPT-A28-SCAN-CLI",
+          "scope": "Wire the existing scanSessions pipeline into juceipt scan with --since and --out options, Korean next-action output, help text, and matching README usage.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-scan-cli.test.ts",
+            "README.md"
+          ],
+          "tests": [
+            "npm test -- --run tests/sources-scan-cli.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-A28-SCAN-REGRESSION",
+          "scope": "Add an offline scanSessions regression using synthetic Claude, Codex, and Agent Relay records that proves recent-session filtering, receipt/index/summary outputs, auth-login exclusion, and token masking; make only the minimum importer fix required by the test.",
+          "files": [
+            "src/sources/scan.ts",
+            "tests/sources-scan.test.ts"
+          ],
+          "tests": [
+            "npm test -- --run tests/sources-scan.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ]
     },
