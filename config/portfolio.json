@@ -1937,6 +1937,22 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay gui프로그램 안에 \"어떤 환경에서 진행할건지\"선택하는 것도 넣고 그리고 각 환경마다 남은 cpu|ram도 환경 확인하게'; ASUS OOM 15:53; ASUS night envs --json (skill) returns {kind:'ENVS', envs:[{id,label,ok,cpuPct,cpus,ramFreeGb,ramTotalGb,ais[] | reason}]}",
           "title": "실행 환경별 CPU·RAM 보기"
+        },
+        {
+          "taskId": "AGENTRELAY-TOKEN-DETECT",
+          "scope": "Add runControlRoomTokens(execFileImpl) in src/backend/controlRoom.ts using runSshJson with [...SSH_BASE_ARGS, 'tokens', '--json'] (same error handling as board), expose it through the existing IPC/preload pattern used for board/approvals, and render it in the Control Room. Show a '토큰 감지' card: top line = summary; big numbers '새로 쓴 토큰' (fresh) and '다시 읽은 토큰(캐시)' (cache) formatted in Korean units (억/만); a short per-project list (project friendly names, top 6); then each finding as one amber row (warn) or muted row (info) with text + action; teal '새는 곳 없어요 — 정상이에요' when findings is empty; raw fields (folders, session ids, taskIds, runtime ids) only under a folded '원문 보기'. Refresh every 5 minutes, not faster (the detector reads logs). Unreachable ASUS → three-line plain error. Pure helpers (formatting, finding rows) + tests with a TOKENS fixture.",
+          "files": [
+            "src/backend/controlRoom.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/shared/tokens.ts",
+            "test/tokens.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay랑 JuControler 그리고 actl에도 토큰감지도 넣어야 할 거 같음 — 에이전트가 다른 곳으로 더 토큰이 소모되는지, 불필요한 경우'. Shared source already exists on ASUS: `~/.agents/skills/auto-night-orchestrator/scripts/night tokens --json` → {kind:'TOKENS', ok, hours, summary (Korean sentence), claude:{fresh, cache, byProject:[{project, fresh, cache, turns}], topSessions:[{account, project, folder, turns, fresh, cache, total, lastContext}]}, relay:{runs:{runtime:count}, fallbacks:[{runtime, reason, count}], loops:[{taskId, title, builds}]}, codex:{weekPct, fiveHourPct}|null, findings:[{level:'warn'|'info', kind:'long-session'|'outside'|'wasted-tries'|'loop'|'limit', text (Korean), action (Korean), raw}]}. founder-ux Skill.",
+          "title": "관제실: 토큰 감지 카드"
         }
       ],
       "qaRuntime": [
@@ -3363,6 +3379,23 @@
           ],
           "ssotEvidence": "README.md:43-47 '토큰을 직접 정하지 않으면 ... ?token=... 주소로 처음 접속'; Founder direction 2026-09-23",
           "title": "접속 암호를 화면에서 바로 입력하기"
+        },
+        {
+          "taskId": "ACTL-BOARD-TOKEN-DETECT",
+          "scope": "In the Tk board (src/actl/gui.py) add a '토큰 감지' section fed by a new pure module src/actl/tokens.py: fetch() runs the shared detector (over the board's existing ssh target when set: ssh <target> ~/.agents/skills/auto-night-orchestrator/scripts/night tokens --json; locally the same path when it exists; else returns None → '토큰 정보를 가져올 수 없어요'), in the board's existing background worker (self._bg), every 5 minutes. Show a '토큰 감지' card: top line = summary; big numbers '새로 쓴 토큰' (fresh) and '다시 읽은 토큰(캐시)' (cache) formatted in Korean units (억/만); a short per-project list (project friendly names, top 6); then each finding as one amber row (warn) or muted row (info) with text + action; teal '새는 곳 없어요 — 정상이에요' when findings is empty; raw fields (folders, session ids, taskIds, runtime ids) only under a folded '원문 보기'. Refresh every 5 minutes, not faster (the detector reads logs). Unreachable ASUS → three-line plain error. Also mark an AI window card with '대화가 길어요 · /compact 추천' (amber) when a long-session finding's raw.folder equals that pane's folder. Tests for src/actl/tokens.py (parsing, Korean units, pane matching) with a fixture; run with python3 tests/run_tests.py.",
+          "files": [
+            "src/actl/tokens.py",
+            "src/actl/gui.py",
+            "tests/test_tokens.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay랑 JuControler 그리고 actl에도 토큰감지도 넣어야 할 거 같음 — 에이전트가 다른 곳으로 더 토큰이 소모되는지, 불필요한 경우'. Shared source already exists on ASUS: `~/.agents/skills/auto-night-orchestrator/scripts/night tokens --json` → {kind:'TOKENS', ok, hours, summary (Korean sentence), claude:{fresh, cache, byProject:[{project, fresh, cache, turns}], topSessions:[{account, project, folder, turns, fresh, cache, total, lastContext}]}, relay:{runs:{runtime:count}, fallbacks:[{runtime, reason, count}], loops:[{taskId, title, builds}]}, codex:{weekPct, fiveHourPct}|null, findings:[{level:'warn'|'info', kind:'long-session'|'outside'|'wasted-tries'|'loop'|'limit', text (Korean), action (Korean), raw}]}. founder-ux Skill.",
+          "dependsOn": [
+            "ACTL-BOARD-PLAIN-WORDS-R2"
+          ],
+          "title": "보드: 토큰 감지 칸"
         }
       ],
       "qaRuntime": [
@@ -8351,6 +8384,25 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후, settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base lib/relayBoard.mjs:53 laneChainSentence = `${project} 프로젝트의 ${role === 'qa' ? 'QA' : 'Worker'} 순서를 ${chain.join(' → ')}(으)로 바꿀게요.`",
           "title": "작업과 검수 담당 순서 바꾸기"
+        },
+        {
+          "taskId": "JCAPP-TOKEN-DETECT",
+          "scope": "Add GET /api/tokens in operator/server.mjs that runs `~/.agents/skills/auto-night-orchestrator/scripts/night tokens --json` via execFile (no shell, 30s timeout, cached 5 minutes) and returns its JSON. In the hub (operator/public/app.js, app.css) add a '토큰 감지' card in the new Lovable style next to '실행 환경'. Show a '토큰 감지' card: top line = summary; big numbers '새로 쓴 토큰' (fresh) and '다시 읽은 토큰(캐시)' (cache) formatted in Korean units (억/만); a short per-project list (project friendly names, top 6); then each finding as one amber row (warn) or muted row (info) with text + action; teal '새는 곳 없어요 — 정상이에요' when findings is empty; raw fields (folders, session ids, taskIds, runtime ids) only under a folded '원문 보기'. Refresh every 5 minutes, not faster (the detector reads logs). Unreachable ASUS → three-line plain error. Tests for the route (fake execFile, cache) and the render helper.",
+          "files": [
+            "operator/server.mjs",
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/token-detect.test.mjs"
+          ],
+          "tests": [
+            "node --test test/token-detect.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay랑 JuControler 그리고 actl에도 토큰감지도 넣어야 할 거 같음 — 에이전트가 다른 곳으로 더 토큰이 소모되는지, 불필요한 경우'. Shared source already exists on ASUS: `~/.agents/skills/auto-night-orchestrator/scripts/night tokens --json` → {kind:'TOKENS', ok, hours, summary (Korean sentence), claude:{fresh, cache, byProject:[{project, fresh, cache, turns}], topSessions:[{account, project, folder, turns, fresh, cache, total, lastContext}]}, relay:{runs:{runtime:count}, fallbacks:[{runtime, reason, count}], loops:[{taskId, title, builds}]}, codex:{weekPct, fiveHourPct}|null, findings:[{level:'warn'|'info', kind:'long-session'|'outside'|'wasted-tries'|'loop'|'limit', text (Korean), action (Korean), raw}]}. founder-ux Skill.",
+          "dependsOn": [
+            "JCAPP-LOVABLE-ENV-PANEL"
+          ],
+          "title": "허브: 토큰 감지 카드"
         }
       ],
       "skills": {
