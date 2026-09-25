@@ -101,6 +101,8 @@ export function parseTaskPacket(text) {
 export function parseQaPacket(text) {
   const packet = packetLine(text, "QA_PACKET:");
   if (!packet || packet.schema !== "agent-relay.qa.v1" || !packet.taskId || !QA_VERDICTS.includes(packet.verdict) || !Array.isArray(packet.tests)) throw new Error("invalid QA_PACKET");
+  // some QA agents return findings as objects ({location, message}); every reader (board, holds, reports) expects strings
+  if (Array.isArray(packet.findings)) packet.findings = packet.findings.map((f) => typeof f === "string" ? f : [f?.location, f?.message || f?.evidence].filter(Boolean).join(": ") || JSON.stringify(f));
   return packet;
 }
 
