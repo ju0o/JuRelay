@@ -3695,6 +3695,18 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 15:46 'AI 창 카드마다: 어떤 AI·어느 폴더, 일하는 중/쉬는 중/답 기다림/연결 안 됨'; founder-ux Live status card 'which AI and folder it is (\"Claude Team · Team 폴더\")'"
+        },
+        {
+          "taskId": "ACTL-TK-PANE-BOARD-INLINE-ERRORS-R2",
+          "scope": "Board.on_board(전체 창 화면) 안의 messagebox.showinfo/showerror(선택 필요·별칭/이름 변경/session·window·pane 생성·이동 실패)를 모두 top 창 안의 tk.StringVar 한국어 안내 Label로 바꾸고(askyesno 확인창과 표의 pane.current_command 열은 이번 범위 밖이라 그대로 둠), tests/test_gui_korean_labels.py에 test_pane_board_uses_inline_notice_not_dialogs를 추가한다. 이 테스트는 inspect.getsource(Board.on_board)에 'messagebox.showinfo'나 'messagebox.showerror'가 있으면 실패하므로 기존 코드에서는 실패하고 새 코드에서는 통과해야 한다.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_korean_labels.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "qaRuntime": [
