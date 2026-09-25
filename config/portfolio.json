@@ -6539,6 +6539,28 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:21-28 still lists only placeholder prompts ('Receipt identifiers and source artifact paths for all included tasks', 'Validator role, date, and whether the validator knew the underlying task context', '10/10 included, or the missing task and reason'), while Section 2.1 (lines 37-63) and Section 7 (lines 161-163) already record those facts. Founder direction 2026-09-25: 'Complete the seven-task Receipt-versus-summary register'",
           "title": "매일 영수증 검증 결과 기록"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-EXIT-QUESTION-TRACE",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md, add a short subsection after Section 4 that traces each of the three parts of the WBS M3 exit question (what was received, what must be checked, value versus subscription/usage) and each of the seven MASTER_ROADMAP Daily Level 1 sections to an existing Section 2.1/3/3.1/4/5 fact, and marks the value part UNKNOWN because all 10 costs are unknown, without recording an M3 decision.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:149-150 'The day-level view must answer: 오늘 Agent들에게 시킨 일 중 뭘 받았고, 뭘 확인해야 하며, 구독/사용 대비 가치가 있었나?'; Founder direction 2026-09-25 'issue M3 GO only if the day-level view adds clear actionable value'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-VALIDATION-EVIDENCE-LINKS",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md §4.3, add evidence links after the first three PM validation checklist items that point to the matching M3_DAILY_VALUE_VALIDATION.md Section 3.1/4/5 rows, leaving every checkbox unticked and the GO / DEFER / KILL item unchanged.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:141-146 'Evidence register: M3 Daily Value Validation ... - [ ] Compare Daily view versus reading individual receipts. - [ ] Check whether user knows what needs attention now. - [ ] Check whether value/cost summary is understandable.'"
         }
       ]
     },
