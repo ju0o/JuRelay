@@ -9091,6 +9091,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2025-09-25 15:48 hub request): 허브 홈과 진행 탭에 founder-ux 'Live status card' — /api/relay/board 데이터로; founder-ux rule 10 'Explain every error in three short lines … Tell \"the other PC is off / the network dropped\" apart from \"it is on but something failed\"'; af1ae95:operator/public/app.js:518-519 and :1986 show only '확인 중이에요' when board.available is false (lib/relayBoard.mjs:41 sets reason).",
           "title": "Agent Relay 연결 끊김을 쉽게 알려주기"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-DOING-TRUE",
+          "scope": "In operator/public/app.js, make the live card's 지금 하는 일 line (liveCardModel) name only the AI that actually does the step: the worker at stage 2 (만들기), the qa at stage 3 (검사), and no AI name for any other stage. At stage 3 with qa null it should read '<worker>가 만든 것을 검사하는 중' instead of claiming the worker is checking. When lane.current.state is 'QUEUED' it should read '차례를 기다리는 중' instead of the stage verb, and homeWorking should read '<title> · 차례 기다리는 중' for the same case, so 홈 and 진행 agree. Update the existing pins in test/lovable-live-cards.test.mjs and test/agent-relay-module.test.mjs and add asserts for the qa-null and QUEUED cases.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-live-cards.test.mjs",
+            "test/agent-relay-module.test.mjs",
+            "test/home-working-line.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-live-cards.test.mjs test/agent-relay-module.test.mjs test/home-working-line.test.mjs test/review-line-ai-names.test.mjs test/home-hub.test.mjs test/board-down-plain.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48 (허브 홈·진행 Live status card '지금 하는 일' from /api/relay/board); founder-ux Live status card: 'one sentence with the Korean task title, the AI in its friendly name'. Live board 2026-09-26 shows agent-relay, juactl, jucontroler and ai-agent-marketplace with current.state QUEUED at stage 1, and jutell at stage 3 with worker codex and qa null, which the card renders as 'Codex가 검사하는 중' (liveCardModel: const ai = s === 3 ? c.qa || c.worker : c?.worker)."
+        },
+        {
+          "taskId": "JCAPP-AI-NAME-PARTICLE",
+          "scope": "In operator/public/app.js, make aiGa pick the Korean subject particle from how the name is read aloud, so 'Cline' (클라인) gets '이' and the card says 'Cline이 검사하는 중' instead of 'Cline가'. Keep Claude Team이, Codex가, OpenCode가, Grok이, Claude Pro가, Cursor가 and 무료 모델이 as they are. Update the 'Cline가 검사하는 중' pin in test/agent-relay-module.test.mjs and add one assert per friendly name.",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/review-line-ai-names.test.mjs test/lovable-live-cards.test.mjs test/home-working-line.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "founder-ux rule 3 'Korean labels' and the Live status card rule 'the AI in its friendly name'; test/agent-relay-module.test.mjs:181 at a6afa17 pins the ungrammatical surface text 'Cline가 검사하는 중' (aiGa at operator/public/app.js:175 uses /[bcdgklmnpqt]$/i, which misses Cline's final ㄴ)."
         }
       ],
       "skills": {
