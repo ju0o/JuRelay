@@ -6,6 +6,8 @@ import type { ControlRoomModelUsage } from '../shared/types.js';
 import { controlRoomTaskId, controlRoomTaskTitle, founderTaskTitle, controlRoomHasDoneData, controlRoomTodayCount, controlRoomTodayDone, controlRoomVerifiedDoneTotal, controlRoomWorkingItems, controlRoomRoutingLine, laneAttention } from '../shared/types.js';
 import { PROJECT_LABELS, aiDisplayName, barPercent, envReasonText, envTone, normalizeEnvs, ramText, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
 import type { EnvRow, EnvTone, NormalizedHold } from '../shared/projectLabels.js';
+import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from '../shared/tokens.js';
+import type { TokenFinding, TokensView } from '../shared/tokens.js';
 
 export interface ControlRoomHoldExplain {
   sentence?: unknown;
@@ -273,6 +275,72 @@ function EnvsCard(): React.ReactElement {
         </div>
         : !rows?.length ? <p className="muted" role="status">아직 알려진 실행 환경이 없어요 — 작업 PC가 응답하면 여기에 자동으로 나타나요.</p>
         : <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>{rows.map(row => <EnvRowView key={row.id} row={row} />)}</ul>}
+    </section>
+  );
+}
+
+function TokenFindingRow({ f }: { f: TokenFinding }): React.ReactElement {
+  const warn = f.severity === 'warn';
+  return (
+    <li style={{ padding: '10px 12px', margin: '8px 0', borderRadius: 8, border: `1px solid ${warn ? 'var(--warn)' : 'var(--border)'}`, background: warn ? 'var(--bg3)' : 'transparent' }}>
+      <p className={warn ? undefined : 'muted'} style={{ margin: 0, fontWeight: 700, color: warn ? ENV_COLOR.warn : undefined }}>{f.text}</p>
+      {f.why && <p className="muted" style={{ margin: '4px 0 0' }}>왜: {f.why}</p>}
+      {f.action && <p className="muted" style={{ margin: '4px 0 0' }}>할 일: {f.action}</p>}
+      {Object.keys(f.raw).length > 0 && <details><summary>원문 보기</summary><pre className="mono">{JSON.stringify(f.raw, null, 2)}</pre></details>}
+    </li>
+  );
+}
+
+function TokensCard(): React.ReactElement {
+  const [view, setView] = useState<TokensView | null>(null);
+  const [rawJson, setRawJson] = useState('');
+  const [error, setError] = useState('');
+  const [errorDetail, setErrorDetail] = useState('');
+  const load = useCallback(async (): Promise<void> => {
+    try {
+      const payload = await must<unknown>({ op: 'controlRoom:tokens' });
+      setView(normalizeTokens(payload));
+      setRawJson(JSON.stringify(payload, null, 2));
+      setError('');
+      setErrorDetail('');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+      setErrorDetail((e as { detail?: string })?.detail ?? '');
+    }
+  }, []);
+  useEffect(() => {
+    let alive = true;
+    const refresh = (): void => { if (alive) void load(); };
+    refresh();
+    const timer = window.setInterval(refresh, TOKENS_REFRESH_MS);
+    return () => { alive = false; window.clearInterval(timer); };
+  }, [load]);
+  const projects = view ? topTokenProjects(view) : [];
+  return (
+    <section className="control-card" aria-label="토큰 감지">
+      <p className="control-card-value">토큰 감지</p>
+      {view === null && !error ? <p className="muted" role="status">불러오는 중…</p>
+        : view === null ? <div role="status">
+          <p style={{ color: ENV_COLOR.warn }}>토큰 사용량을 가져오지 못했어요.</p>
+          <p className="muted">{error}</p>
+          <button className="btn" style={{ minHeight: 44 }} onClick={() => void load()}>다시 시도</button>
+          {errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}
+        </div>
+        : <>
+          <p>{tokensSummaryLine(view)}</p>
+          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+            <div><p className="muted" style={{ margin: 0 }}>새로 쓴 토큰</p><p className="control-card-value" style={{ margin: 0, fontSize: 28 }}>{formatTokens(view.fresh)}</p></div>
+            <div><p className="muted" style={{ margin: 0 }}>다시 읽은 토큰(캐시)</p><p className="control-card-value" style={{ margin: 0, fontSize: 28 }}>{formatTokens(view.cache)}</p></div>
+          </div>
+          {projects.length > 0 && <ul style={{ listStyle: 'none', margin: '12px 0 0', padding: 0 }}>
+            {projects.map(p => <li key={p.id} className="muted" style={{ padding: '4px 0' }}>{p.label} · 새로 {formatTokens(p.fresh)} · 캐시 {formatTokens(p.cache)}</li>)}
+          </ul>}
+          {view.findings.length === 0
+            ? <p role="status" style={{ color: 'var(--accent)', fontWeight: 700 }}>새는 곳 없어요 — 정상이에요</p>
+            : <ul style={{ listStyle: 'none', margin: '12px 0 0', padding: 0 }}>{view.findings.map((f, i) => <TokenFindingRow key={i} f={f} />)}</ul>}
+          <p className="muted">5분마다 알아서 새로 고쳐요.</p>
+          <details><summary>원문 보기</summary><pre className="mono">{rawJson}</pre></details>
+        </>}
     </section>
   );
 }
@@ -816,6 +884,7 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
     <main className="control-room">
       <div className="control-room-head"><div><h1>관제실</h1>{decisionCount > 0 && <p className="control-decision-count">결정 대기 {decisionCount}건</p>}<p className="muted">5초마다 자동으로 새로 고쳐요.</p></div><button className="btn" onClick={onClose}>닫기</button></div>
       <EnvsCard />
+      <TokensCard />
       <TodayCard board={board} />
       <WhoLine board={board} />
       <ModelUsagePanel models={board?.models} />

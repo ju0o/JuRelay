@@ -14,6 +14,7 @@ export type ControlRoomOperation =
   | 'board'
   | 'approvals'
   | 'envs'
+  | 'tokens'
   | 'planStudio:get'
   | 'planStudio:save'
   | 'planStudio:chat'
@@ -278,6 +279,10 @@ export async function runControlRoom(
 export const ENVS_TIMEOUT = 30_000;
 export const runControlRoomEnvs = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
   runSshJson('envs', [...SSH_BASE_ARGS, 'envs', '--json'], execFileImpl, { timeout: ENVS_TIMEOUT });
+
+/** 토큰 감지 — `night tokens --json`. */
+export const runControlRoomTokens = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
+  runSshJson('tokens', [...SSH_BASE_ARGS, 'tokens', '--json'], execFileImpl);
 
 export async function runPlanStudioGet(
   project: string,
