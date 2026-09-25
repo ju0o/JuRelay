@@ -5358,6 +5358,23 @@
             "npm test"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙(맨 위 한 문장, 시간은 상대/현지 시각)으로 juceipt 명령 출력 점검; src/cli/main.ts:208 prints `마지막 활동 ${source.lastActivity}` from src/sources/discover."
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-MEMORY-BOUND-R2",
+          "scope": "Retry the bounded scan memory fix from base debfd7f9f1c14be8cc505eb729ec6795facf1fe6, including streaming and per-session processing, while correcting OpenCode cutoff filtering to use one consistent millisecond cutoff so stale rows cannot pass via an OR between seconds and milliseconds; add a regression test that fails on the old numeric-cutoff logic and passes on the new logic, plus the required old-large-file skip and heap-bound checks.",
+          "files": [
+            "src/sources/scan.ts",
+            "src/sources/others.ts",
+            "src/sources/opencode.ts",
+            "src/sources/claude.ts",
+            "tests/scan-memory-bound.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npx vitest run tests/scan-memory-bound.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "OOM 2026-09-25 15:53 (journalctl -b -1 -k: node pid 2216423 rss 1695 MB = juceipt scan --since 30m on integration; swap free 196 kB); src/sources/scan.ts:94,110,133-135"
         }
       ],
       "skills": {
