@@ -1967,6 +1967,40 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: A) 관제실 레인마다 founder-ux Skill의 'Live status card' (지금 하는 일·여기까지 끝남·확인 상태·대표님 할 일·다음 단계)",
           "title": "관제실 카드에 진행 상황 쉽게 보기"
+        },
+        {
+          "taskId": "AGENTRELAY-NIGHT-SCHEDULE-BACKEND",
+          "scope": "Add relay IPC ops controlRoom:scheduleSet(time), controlRoom:scheduleList and controlRoom:scheduleCancel to src/backend/controlRoom.ts. They mirror runControlRoomPause and use runSshJson with shell:false to run [...SSH_BASE_ARGS, 'schedule', <HH:MM>|'list'|'cancel', '--json']. scheduleSet checks the time against a strict 00:00-23:59 HH:MM pattern and rejects anything else with INVALID_INPUT, and a Korean message, before ssh runs. Wire the three ops into main.ts and the RelayRequest union in types.ts. Add a fake-exec test that covers the exact argv, invalid-time rejection with no ssh call, and the offline EXEC_FAILED message.",
+          "files": [
+            "src/backend/controlRoom.ts",
+            "src/backend/main.ts",
+            "src/shared/types.ts",
+            "test/night-schedule.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/night-schedule.test.mjs",
+            "node --test test/lane-pause.test.mjs",
+            "npx tsc -p tsconfig.server.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 16:09: '4) 밤 작업 예약: 끝나는 시각 → 새 하위 명령 night schedule HH:MM|list|cancel … 새 night 하위 명령은 JSON 한 줄, 백엔드 테스트는 가짜 명령 실행기로. 버튼마다 작은 작업 하나씩, 테스트 포함.'"
+        },
+        {
+          "taskId": "AGENTRELAY-HUB-PROMOTE-BACKEND",
+          "scope": "Add relay IPC op controlRoom:promoteHub to src/backend/controlRoom.ts. It takes no user arguments and uses runSshJson with shell:false to run the fixed argv [...SSH_BASE_ARGS, 'promote', 'hub', '--json'] with a longer exported PROMOTE_TIMEOUT, like PLAN_REQUEST_TIMEOUT. It runs only when the op is called, and nothing else calls it automatically. Wire the op into main.ts and the RelayRequest union in types.ts. Add a fake-exec test that covers the exact argv and timeout, that the JSON result is passed through, and the offline EXEC_FAILED and remote-failure messages.",
+          "files": [
+            "src/backend/controlRoom.ts",
+            "src/backend/main.ts",
+            "src/shared/types.ts",
+            "test/hub-promote.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/hub-promote.test.mjs",
+            "node --test test/automation-toggle.test.mjs",
+            "npx tsc -p tsconfig.server.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 16:09: '5) 허브 [반영하기] = 새 하위 명령 night promote hub(JuControler-Private ff-merge + promote-operator.sh, 누를 때만). 새 night 하위 명령은 JSON 한 줄, 백엔드 테스트는 가짜 명령 실행기로.'"
         }
       ],
       "qaRuntime": [
