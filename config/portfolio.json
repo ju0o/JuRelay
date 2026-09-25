@@ -8313,6 +8313,63 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:535-537 \"### 8.5 일반 질문 / 단순한 개발 개념 질문이나 프로젝트와 무관한 질문에는 긴 작업 보고서 형식을 적용하지 않는다.\"",
           "title": "간단한 질문엔 짧게 답하는지 점검"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-N-PREEXISTING-CHANGES",
+          "scope": "Add tests/results/scenario-n/preexisting-changes.fixture.md, a general-work report for a checkout that already had uncommitted changes before the task started, plus an offline node:test that checks: the 6 §4 headings appear in order; changes are sorted under the three PRODUCT_SCOPE §7.6 origin labels (작업 시작 전부터 있던 변경, 이번 작업으로 발생한 변경, and 출처 구분 불가 or 어느 작업에서 발생했는지 판단하기 어려운 변경); no pre-existing file is listed as a 주요 수정 파일 of this task; and the report says the existing changes were not reverted or overwritten.",
+          "files": [
+            "tests/results/scenario-n/preexisting-changes.fixture.md",
+            "tests/results/scenario-n/preexisting-changes.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-n/preexisting-changes.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:440 '### 7.6 기존 변경 보호 원칙 — 작업 시작 전부터 존재한 변경과 이번 작업으로 발생한 변경을 가능한 범위에서 구분한다 … 기존 변경을 임의로 삭제하거나 되돌리지 않는다'; docs/BEGINNER_REPORT_SPEC.md:589 '## 14. 작업 시작 기준 상태 … 나머지는 `출처 구분 불가`로 표시'"
+        },
+        {
+          "taskId": "JUTELL-MAIN-FILES-EXCLUDE-PARITY",
+          "scope": "Add the BEGINNER_REPORT_SPEC §15.2 rule to report-format.md §3 as one short bullet (자동 생성 파일, 단순 잠금 파일, 기능 변화가 없는 포맷 수정, 단순 스냅샷 and 보조 파일 are left out of 주요 수정 파일 unless they affect 의존성, 보안 or 배포), plus an offline node:test that reads both files as text and checks the five excluded kinds and the 의존성·보안·배포 exception appear in each.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/main-files-exclude-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/main-files-exclude-parity.test.mjs",
+            "node --test tests/skill-report-contract.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:642 '### 15.2 제외 우선 파일 — 자동 생성 파일, 단순 잠금 파일, 기능 변화가 없는 포맷 수정, 단순 스냅샷, 기능에 직접 영향을 주지 않는 보조 파일 … 단, 의존성, 보안 또는 배포에 영향을 주면 주요 파일로 포함할 수 있다'"
+        },
+        {
+          "taskId": "JUTELL-BASELINE-STATE-SKILL-PARITY",
+          "scope": "Bring SKILL.md 실행 절차 steps 3–4 in line with BEGINNER_REPORT_SPEC §14: add 기존 테스트 실패 여부 to the step 3 baseline list and add 기존 변경을 되돌리거나 덮어쓰지 않는다 to step 4. Then add an offline node:test that reads SPEC §14 and SKILL.md as text and checks that all 5 §14 baseline items, the 출처 구분 불가 label and the do-not-revert rule appear in both.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/baseline-state-skill-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/baseline-state-skill-parity.test.mjs",
+            "node --test tests/token-diet-guidance-parity.test.mjs",
+            "node --test tests/info-system-scope-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:589 '## 14. 작업 시작 기준 상태 — Git 저장소 여부, 현재 변경 파일, 추적되지 않은 파일, 현재 브랜치, 기존 테스트 실패 여부 … 기존 변경을 되돌리거나 덮어쓰지 않음'"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-O-CONDITIONAL-ITEMS",
+          "scope": "Add tests/results/scenario-o/conditional-items.fixture.md, a general-work report in which one file was newly created and one was deleted, plus an offline node:test that checks: the 6 §4 headings appear in order; the new file and the deleted file are each named under a separate 새로 생성된 파일 line and a separate 삭제된 파일 line; and no other PRODUCT_SCOPE §6.3 conditional item (e.g. 배포 관련 주의사항, 외부 서비스 변경) appears when it does not apply.",
+          "files": [
+            "tests/results/scenario-o/conditional-items.fixture.md",
+            "tests/results/scenario-o/conditional-items.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-o/conditional-items.test.mjs",
+            "node --test tests/fixture-risk-reason.test.mjs",
+            "node --test tests/fixture-term-no-repeat.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:205 '### 6.3 조건부 보고 항목 — 다음 항목은 작업이 복잡하거나 관련 정보가 있을 때만 추가한다. * 새로 생성된 파일 * 삭제된 파일 …'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
