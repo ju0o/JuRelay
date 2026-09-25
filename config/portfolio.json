@@ -1665,6 +1665,20 @@
             "node --test test/approvals-readable.test.mjs"
           ],
           "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md"
+        },
+        {
+          "taskId": "AGENTRELAY-README-GITHUB",
+          "scope": "Rewrite README.md for GitHub visitors, Korean first with a short English summary at the end. Every claim must match what the code on this branch does today: open the code and the existing docs to check each feature and each command before writing it; drop or fix anything stale (old names, removed commands, features that do not exist). Sections: 1) 한 줄 소개 + 누구를 위한 것인지 (non-developers who run several AI assistants); 2) 지금 되는 것 — 4 to 7 short bullets in plain words, each naming what the user sees or gets; 3) 빠른 시작 — only commands that really exist in package.json / the CLI / scripts, in the order a first-time user runs them; 4) 다른 프로그램과의 관계 — one small text diagram: actl(리모컨) → Agent Relay(셋톱박스: PM → Worker → QA) → JuControler(허브: JuPlan · JuCeipt · Tester); 5) 아직 안 되는 것 — honest short list; 6) English summary (5 lines). Keep it under 180 lines, no badges that point nowhere, no personal paths, hostnames, IPs or account names. Move long developer detail that is still true into docs/ (link it) instead of deleting it. Agent Relay: AI 여러 개가 계획(PM) → 만들기(Worker) → 검사(QA)를 스스로 이어 가는 셋톱박스. Check and describe: AI 자동 배정 (구독 AI 먼저, 무료 모델은 보조), 검사는 만든 AI가 아닌 다른 AI, 멈춘 작업을 쉬운 한 문장 + 선택지 3개로 설명하고 30분 뒤 추천대로 진행, 밤 자동 작업 (Night Run), 데스크톱 앱 화면 (관제실 · 승인 규칙 · 계획), 프로젝트·역할별 Skill 과 승인한 기억 전달.",
+          "files": [
+            "README.md",
+            "docs/"
+          ],
+          "tests": [
+            "git diff --check",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: '보니까 바뀐 기능 및 기능이 많이 구현 되었네 이것들 Github에서 README 파일 다듬고 이후 홍보영상 다시 제작'; portfolio architecture (Founder): actl = 리모컨, Agent Relay = 셋톱박스 (actl 기반), JuControler = 허브 (+JuPlan, JuCeipt, Tester, Skill 만들기); Founder: 비개발자도 카톡·토스처럼 쉽게",
+          "title": "GitHub 소개 문서(README) 다듬기"
         }
       ],
       "qaRuntime": [
