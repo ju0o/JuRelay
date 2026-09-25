@@ -4746,7 +4746,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화, 대상: 계획 그림): founder-ux rule 12 'Contrast must pass in light and dark'; packages/runtime/src/index.ts renderPlanMapSvg `<rect ... fill=\"#1f2937\"` vs `.plan-map .map-label{fill:var(--text)}` with light `--text:#15181D`"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화, 대상: 계획 그림): founder-ux rule 12 'Contrast must pass in light and dark'; packages/runtime/src/index.ts renderPlanMapSvg `<rect ... fill=\"#1f2937\"` vs `.plan-map .map-label{fill:var(--text)}` with light `--text:#15181D`",
+          "title": "밝은 화면에서도 계획 지도 글씨 잘 보이게"
         },
         {
           "taskId": "JUPLAN-STUDIO-FOLD-LABEL-UNIFY",
@@ -4762,7 +4763,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08: '개발자 글자는 원문 보기 안'); founder-ux rule 2 'Keep all of these behind one folded \"원문 보기\"'; index.ts renderTechInfo `<summary>기술 정보</summary>` vs renderDiagramViewPage `<summary>원문 보기</summary>`"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08: '개발자 글자는 원문 보기 안'); founder-ux rule 2 'Keep all of these behind one folded \"원문 보기\"'; index.ts renderTechInfo `<summary>기술 정보</summary>` vs renderDiagramViewPage `<summary>원문 보기</summary>`",
+          "title": "접어 둔 설명 이름을 원문 보기로 통일"
         },
         {
           "taskId": "JUPLAN-STUDIO-REFRESH-FAIL-VISIBLE",
@@ -4775,7 +4777,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08: '누르면 1초 안에 결과 문장, 오류 3줄, 막힘은 노랑'); founder-ux rules 7, 10 and 11; index.ts STUDIO_LIVE_SECTIONS_SCRIPT `.catch(function(){announceLive(\"계획을 새로 고치지 못했어요.\")})` into `<p class=\"sr-only\" id=\"map-live\">`"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08: '누르면 1초 안에 결과 문장, 오류 3줄, 막힘은 노랑'); founder-ux rules 7, 10 and 11; index.ts STUDIO_LIVE_SECTIONS_SCRIPT `.catch(function(){announceLive(\"계획을 새로 고치지 못했어요.\")})` into `<p class=\"sr-only\" id=\"map-live\">`",
+          "title": "새로 고침 실패 시 안내와 다시 불러오기"
         }
       ],
       "qaRuntime": [
@@ -6531,7 +6534,8 @@
             "node --test tests/quickstart-next-sync.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23/24: (1) a real end-to-end script that runs the product's main user flow offline and prints one JSON line {ok, steps[], ms}; README 3. 빠른 시작 step 3 at 4bbda8a promises that `--help` prints the Korean and English usage lines and exits 0, but no e2e step checks it"
+          "ssotEvidence": "Founder direction 2026-09-23/24: (1) a real end-to-end script that runs the product's main user flow offline and prints one JSON line {ok, steps[], ms}; README 3. 빠른 시작 step 3 at 4bbda8a promises that `--help` prints the Korean and English usage lines and exits 0, but no e2e step checks it",
+          "title": "사용법 안내 화면 자동 점검 추가"
         },
         {
           "taskId": "JUCONTROLER-GETTING-STARTED-FALLBACK-LINE",
@@ -6544,7 +6548,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss, with plain Korean and an obvious next action; scripts/status-board.mjs korean() at 4bbda8a returns '상태판을 불러오지 못했어요 — 아래 내용을 확인하세요' as its fallback, but the getting-started table leaves this line out"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss, with plain Korean and an obvious next action; scripts/status-board.mjs korean() at 4bbda8a returns '상태판을 불러오지 못했어요 — 아래 내용을 확인하세요' as its fallback, but the getting-started table leaves this line out",
+          "title": "상태판 오류 안내문 읽는 법 보강"
         }
       ],
       "qaRuntime": [
@@ -9111,7 +9116,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27 '| Active product milestone | **M3 — Daily Agent Value Decision** |'; docs/product/MASTER_ROADMAP.md:229 '## Phase M3 — Daily Agent Value Decision'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27 '| Active product milestone | **M3 — Daily Agent Value Decision** |'; docs/product/MASTER_ROADMAP.md:229 '## Phase M3 — Daily Agent Value Decision'",
+          "title": "3단계 목표 이름을 문서마다 똑같이 맞추기"
         }
       ]
     },
@@ -9797,7 +9803,8 @@
           "tests": [
             "npm test --prefix packages/cli -- tests/context.test.ts"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:290-294 \"다음 조건에 해당하는 용어만 쉬운 설명을 제공한다. * 사용자가 작업 결과를 이해하는 데 필요한 용어\" + Founder direction 2026-09-23 (PRODUCT_SCOPE §6.6 필요한 용어만)"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:290-294 \"다음 조건에 해당하는 용어만 쉬운 설명을 제공한다. * 사용자가 작업 결과를 이해하는 데 필요한 용어\" + Founder direction 2026-09-23 (PRODUCT_SCOPE §6.6 필요한 용어만)",
+          "title": "바뀐 게 없을 때 엉뚱한 용어 설명 막기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
