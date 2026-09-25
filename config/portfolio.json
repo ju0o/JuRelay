@@ -10218,6 +10218,17 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:154 'Section 3 records 26 delivered outcome entries across the 10-task register.' vs :60 'This snapshot reconciles to 10 receipts, 26 delivered outcomes' and :136 'daily `delivered_outcomes` has 26 entries with task IDs'; Section 3 rows :88-97 record '0/1 delivered; 1 unknown'",
           "title": "검증 문서 전달 건수 출처 바로잡기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-DECISION-LOG-M2-GO-ENTRY",
+          "scope": "Add to docs/decisions/DECISION_LOG.md a D-022 entry that only records the already-made M2 GO decision (A-14, 2026-09-23, Status ACCEPTED), with pointers to docs/operations/PM_STATUS_BOARD.md line 159 and docs/qa/M2_RECEIPT_VALUE_SCORECARD.md; it adds no new M2, M3 or P0 decision and changes no other entry.",
+          "files": [
+            "docs/decisions/DECISION_LOG.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:159 '**GO (2026-09-23, A-14).** The two trust fixes are complete'; docs/operations/PM_STATUS_BOARD.md:187 'M2 is closed by the A-14 GO decision; the scorecard remains the evidence record.'; README.md:111 'docs/decisions/DECISION_LOG.md — durable product/architecture decisions' (the log at b56ee56 ends at D-021 and has no M2 GO entry)"
         }
       ]
     },
