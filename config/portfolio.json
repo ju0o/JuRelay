@@ -1700,7 +1700,8 @@
             "npm run build:win",
             "npm run typecheck"
           ],
-          "ssotEvidence": "BACKLOG.md:33 '- [ ] 앱 아이콘 미설정 — electron-builder 기본 Electron 아이콘 사용 중'"
+          "ssotEvidence": "BACKLOG.md:33 '- [ ] 앱 아이콘 미설정 — electron-builder 기본 Electron 아이콘 사용 중'",
+          "title": "Agent Relay 앱 아이콘 제대로 표시"
         }
       ],
       "qaRuntime": [
@@ -3818,7 +3819,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; packages/runtime/src/index.ts:137 message `Node ${item.id} is not connected to the graph` flows into apply-proposal blockers at index.ts:1407-1409"
+          "ssotEvidence": "Founder direction 2026-09-23: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; packages/runtime/src/index.ts:137 message `Node ${item.id} is not connected to the graph` flows into apply-proposal blockers at index.ts:1407-1409",
+          "title": "검증 결과를 쉬운 한국어로 안내"
         },
         {
           "taskId": "JUPLAN-PLAN-EXPORT-KOREAN-SUMMARY",
@@ -3831,7 +3833,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: plain Korean ... no raw codes; packages/runtime/src/index.ts:353-354 write `${plan.meta.lifecycle} · ${plan.nodes.length} nodes · ${plan.edges.length} edges`"
+          "ssotEvidence": "Founder direction 2026-09-23: plain Korean ... no raw codes; packages/runtime/src/index.ts:353-354 write `${plan.meta.lifecycle} · ${plan.nodes.length} nodes · ${plan.edges.length} edges`",
+          "title": "계획 파일 요약을 한국어로 표시"
         },
         {
           "taskId": "JUPLAN-DOMAIN-DOC-KOREAN-HEADING",
@@ -3844,7 +3847,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: plain Korean, no raw codes; real PRD/ERD/WBS/API/QA documents from the graph; packages/runtime/src/index.ts:345 writes `# ${domain}`"
+          "ssotEvidence": "Founder direction 2026-09-23: plain Korean, no raw codes; real PRD/ERD/WBS/API/QA documents from the graph; packages/runtime/src/index.ts:345 writes `# ${domain}`",
+          "title": "분야별 문서 제목을 한국어로 표시"
         }
       ],
       "qaRuntime": [
@@ -4306,7 +4310,8 @@
           "tests": [
             "npm test -- --run tests/sources-scan-cli.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "최근 작업 영수증 한 번에 만들기"
         },
         {
           "taskId": "JUCEIPT-A28-SCAN-REGRESSION",
@@ -4318,7 +4323,8 @@
           "tests": [
             "npm test -- --run tests/sources-scan.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "영수증 자동 생성과 비밀 가림 점검"
         }
       ]
     },
@@ -4980,7 +4986,8 @@
             "bash scripts/e2e.sh",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, obvious next action; src/adapters/agent-relay.mjs:28 'Hold and human gate are surfaced as reasons only; the lane's own state stays the status.'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = non-developer uses it like KakaoTalk/Toss — plain Korean, obvious next action; src/adapters/agent-relay.mjs:28 'Hold and human gate are surfaced as reasons only; the lane's own state stays the status.'",
+          "title": "확인이 필요한 프로젝트 따로 알려주기"
         },
         {
           "taskId": "JUCONTROLER-GETTING-STARTED-CLI-MESSAGES",
@@ -4992,7 +4999,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): plain Korean, obvious next action, inline feedback, no raw codes; JuControler-Private/CURRENT.md: '처음 쓰는 법은 `README.md`' (README links detail to docs/getting-started.md)"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): plain Korean, obvious next action, inline feedback, no raw codes; JuControler-Private/CURRENT.md: '처음 쓰는 법은 `README.md`' (README links detail to docs/getting-started.md)",
+          "title": "상태판 안내 문장 읽는 법 설명서"
         }
       ],
       "qaRuntime": [
@@ -7037,7 +7045,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:80 'STATUS_BOARD, WBS M2 row, HTML pill, handoff, UNPLANNED_WORK decision: M2 GO; M3 validation is next.' contradicts line 29 'M3 validation register is complete for the committed 10-receipt corpus at JuCeipt@402d3ee'"
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:80 'STATUS_BOARD, WBS M2 row, HTML pill, handoff, UNPLANNED_WORK decision: M2 GO; M3 validation is next.' contradicts line 29 'M3 validation register is complete for the committed 10-receipt corpus at JuCeipt@402d3ee'",
+          "title": "보고서 속 검증 단계 설명 최신화"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-CLOSEOUT-ACTIONABLE-BAR-TRACE",
@@ -7048,7 +7057,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 'score decision utility per task, and issue M3 GO only if the day-level view adds clear actionable value'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:185 basis cites only the source scorecard, while :103 'Tally: 7 ACTIONABLE, 3 UNKNOWN/UNVERIFIED GAP' is not cited in the closeout"
+          "ssotEvidence": "Founder direction 2026-09-25: 'score decision utility per task, and issue M3 GO only if the day-level view adds clear actionable value'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:185 basis cites only the source scorecard, while :103 'Tally: 7 ACTIONABLE, 3 UNKNOWN/UNVERIFIED GAP' is not cited in the closeout",
+          "title": "하루 요약 가치 판단 근거 정리"
         }
       ]
     },
@@ -7801,7 +7811,8 @@
             "npm run test:pg",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-25): 'Run the existing typecheck, build, test, PostgreSQL, and E2E gates, then repair only regressions'; README.md 검증: 'npm run typecheck && npm run build && npm test && npm run test:pg && npm run test:e2e'"
+          "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-25): 'Run the existing typecheck, build, test, PostgreSQL, and E2E gates, then repair only regressions'; README.md 검증: 'npm run typecheck && npm run build && npm test && npm run test:pg && npm run test:e2e'",
+          "title": "1단계 기능 고장 확인 및 복구"
         },
         {
           "taskId": "AIAGENTMARKE-P1-EVIDENCE-DELTA",
@@ -7817,7 +7828,8 @@
             "npm run test:e2e",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-25): 'record a truthful Phase 1 evidence delta'; evidence/phase1/RESULTS.log:1 '# Phase 1 evidence — after Asset Storage Boundary patch (2026-09-24T23:16:40+09:00)'"
+          "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-25): 'record a truthful Phase 1 evidence delta'; evidence/phase1/RESULTS.log:1 '# Phase 1 evidence — after Asset Storage Boundary patch (2026-09-24T23:16:40+09:00)'",
+          "title": "1단계 검사 결과 오늘자 기록 추가"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
