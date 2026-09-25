@@ -277,6 +277,17 @@ test("runtime chains: a model that hit quota is tried last for the cooldown wind
   runner._cooldown.cline = 0; clineDown = false; assert.equal((await runner.runChain(["cline", "codex"], {})).runtime, "cline");
 });
 
+test("runtime chains: repeat failures double the cooldown, a success resets it", async () => {
+  const fail = { async availability() { return { ok: true }; }, async run() { throw new Error("x exit null"); } };
+  const ok = { async availability() { return { ok: true }; }, async run() { return { pid: 1, code: 0, startedAt: "t", text: "x" }; } };
+  const runner = new PortfolioRunner({ runtimeAdapters: { slow: fail, codex: ok }, manifest: { projects: [] }, statePath: "/nonexistent/s.json", worktreeRoot: "/nonexistent/w" });
+  runner.cooldownMs = 1000; const rest = () => runner._cooldown.slow - Date.now();
+  await runner.runChain(["slow", "codex"], {}); assert.ok(rest() <= 1000 && rest() > 900);
+  runner._cooldown.slow = 0; await runner.runChain(["slow", "codex"], {}); assert.ok(rest() > 1900);
+  for (let i = 0; i < 4; i++) { runner._cooldown.slow = 0; await runner.runChain(["slow", "codex"], {}); } assert.ok(rest() <= 8000 && rest() > 7900);
+  runner.runtimeAdapters.slow = ok; runner._cooldown.slow = 0; await runner.runChain(["slow", "codex"], {}); assert.equal(runner._strikes.slow, 0);
+});
+
 test("runLoop drain: in-flight work finishes, nothing new starts, the loop exits and clears the flag", async () => {
   const root = await mkdtemp(join(process.env.TMPDIR || "/tmp", "ar-drain-")); let release; const gate = new Promise((r) => { release = r; }); const order = [];
   const packet = (id, kind) => kind === "workspace-write" ? `RESULT_PACKET: {"schema":"agent-relay.result.v1","taskId":"${id}","status":"IMPLEMENTED","changedFiles":[],"tests":[],"commitSha":"abc","summary":"s"}` : `QA_PACKET: {"schema":"agent-relay.qa.v1","taskId":"${id}","verdict":"ACCEPT","tests":[],"findings":[],"summary":"ok"}`;

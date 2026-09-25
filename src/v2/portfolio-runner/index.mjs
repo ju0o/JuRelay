@@ -472,7 +472,9 @@ export class PortfolioRunner {
     const tried = []; const now = Date.now(); this._cooldown ??= {};
     // A model that just hit quota / timed out / was down goes to the back of the chain for COOLDOWN_MS instead of being tried first again.
     const ordered = routeOrder(chain, this.manifest?.pool, this._cooldown, now);
-    const cool = (id) => { this._cooldown[id] = Date.now() + (this.cooldownMs ?? 30 * 60_000); };
+    // Each repeat failure doubles the rest (30 min → 1 h → 2 h → 4 h max), so a model that keeps timing out stops burning tokens (Founder 2026-09-25 토큰 감지).
+    this._strikes ??= {};
+    const cool = (id) => { const n = this._strikes[id] = (this._strikes[id] || 0) + 1; this._cooldown[id] = Date.now() + (this.cooldownMs ?? 30 * 60_000) * 2 ** Math.min(n - 1, 3); };
     for (const id of ordered) {
       const adapter = this.runtimeAdapters[id];
       if (!adapter) { tried.push(`${id}: not configured`); continue; }
@@ -481,7 +483,8 @@ export class PortfolioRunner {
       let result;
       try { result = await adapter.run(request); }
       catch (error) { const message = String(error.message || error); if (request.signal?.aborted || !(QUOTA_ERROR.test(message) || TRANSIENT_ERROR.test(message) || /exit null/.test(message))) throw error; cool(id); tried.push(`${id}: ${QUOTA_ERROR.test(message) ? "quota" : TRANSIENT_ERROR.test(message) ? "unavailable" : "timeout"}`); continue; }
-      if (validate) { try { validate(result.text); } catch { tried.push(`${id}: invalid output`); if (id !== ordered.at(-1)) continue; } }
+      if (validate) { try { validate(result.text); } catch { tried.push(`${id}: invalid output`); if (id !== ordered.at(-1)) { cool(id); continue; } } }
+      this._strikes[id] = 0;
       this.routing = { cooldown: { ...this._cooldown }, last: { runtime: id, at: new Date().toISOString(), fallbacks: tried } };
       return { ...result, runtime: id, fallbacks: tried };
     }
