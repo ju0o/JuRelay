@@ -2893,6 +2893,36 @@
             "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "ACTL-BOARD-LIVE-STATE-TRUTH",
+          "scope": "JuActl Board (ssh asus) shows every card as '<AI> · 확인 중' with '연결 끊김 · 프로젝트 미지정 · 아직 답 없음' while the same panes are alive on ASUS (actl discover on ASUS finds claude-team %0/%11, claude-pro %3 in juRadar, codex %10), and Claude Pro appears only under 확인 필요 while its live preview works. Find why the remote card state says 연결 끊김 and project 미지정 (remote discovery result not merged into the card model / stale MainPC config) and make cards show the truth: 연결됨 / 일하는 중 / 쉬는 중 / 연결 안 됨, project = the pane's folder name, one card per live pane including Claude Pro. The top-left 'ASUS에서 에이전트를 찾는 중...' must end with a result. Test with a fake remote discovery payload.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/core/status.py",
+            "src/actl/core/remote.py",
+            "tests/test_board_live_state_truth.py"
+          ],
+          "tests": [
+            "python3 -m pytest tests/test_board_live_state_truth.py -q",
+            "python3 -m pytest -q"
+          ],
+          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
+          "title": "보드의 '연결 끊김' 오표시 고치기"
+        },
+        {
+          "taskId": "ACTL-BOARD-PLAIN-WORDS",
+          "scope": "JuActl Board wording per founder-ux: window/header 'actl 0.2.0 · 에이전트 보드' → 'actl · AI 리모컨'; top counters '에이전트 4 · 작업 중 0 · 대기 0 · 문제 3 · 확인 중 0' → 'AI 4개 · 일하는 중 0 · 확인 필요 3' (drop zero counters); '에이전트' → 'AI' everywhere; right panel title 'Claude Pro · %3 — LIVE PANE' → 'Claude Pro · juRadar 폴더' with pane id only under 자세한 기록; 'LIVE PANE PREVIEW' → '지금 화면'; 'pane 관리(고급)' → '창 연결 관리 (고급)'; 'ASUS 화면 전환' → 'ASUS에서 이 창 보기'; add one top sentence: what to do now (e.g. '보낼 AI를 고르고 아래에 적어 보내세요'). Unit test on the label helpers.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_board_plain_words.py"
+          ],
+          "tests": [
+            "python3 -m pytest tests/test_board_plain_words.py -q",
+            "python3 -m pytest -q"
+          ],
+          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
+          "title": "보드 문구를 쉬운 말로"
         }
       ],
       "qaRuntime": [
