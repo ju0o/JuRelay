@@ -5842,6 +5842,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면을 founder-ux 규칙(한국어 라벨, 휴대폰 폭에서 가로 스크롤 없음)으로 점검; base src/render/index.ts: '<title>Juceipt Receipt</title>' and '.meta-row{display:grid;grid-template-columns:repeat(3,1fr)...}' with no media query",
           "title": "영수증 제목 한글화와 휴대폰 화면 맞춤"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SUMMARY-COUNT-TOP-SENTENCE",
+          "scope": "In buildScanSummary in src/sources/summary.ts, replace the fixed first line '지금 확인할 일: 확인이 필요한 작업과 상태 뜻을 먼저 살펴보세요.' with one sentence built from the real counts. When something needs a look, say how many are 확인 후 받기 and 문제 있음 and point to '우선 확인할 영수증', e.g. '확인 후 받기 2개, 문제 있음 1개가 있어요. 아래 우선 확인할 영수증부터 보세요.'. When everything is 받아도 됨, say '지금 하실 일은 없어요 — 모두 받아도 돼요.'. When there are no sessions, keep the agent table from showing empty and instead say why it is empty and what to do next ('이 기간에 AI 작업 기록이 없어요 — juceipt scan --since 7d 로 기간을 늘려 보세요'). Update the expectations in tests/scan-summary.test.ts and tests/sources-scan-cli.test.ts to cover the review, all-ready and empty cases, and leave the daily summary and receipt view unchanged.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts tests/sources-scan-cli.test.ts",
+            "npm test",
+            "npm run build"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(맨 위 한 문장 — 지금 할 일, 빈 화면 이유+다음 행동) 대상 juceipt 명령 출력(scan); src/sources/summary.ts:71 still prints a fixed sentence without counts"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-EMPTY-STATES",
+          "scope": "In renderLevel1 of src/render/index.ts, replace the developer-style empty texts '관찰된 결과 없음', '없음 (관찰 범위 내)', '관찰 범위 내에서 중요 영향 없음' and the bare '—' shown for 최종 결과. Each should become one plain Korean line saying why it is empty and what to do, e.g. '기록에서 받은 결과를 찾지 못했어요 — 원문 보기에서 AI 보고를 확인하세요' and '남은 확인이 없어요 — 기록으로 모두 확인됐어요'. Change the matching '관찰 범위 내 없음' in renderLevel2 the same way. Do not touch the page title, the CSS or the review_required notice. Add assertions to tests/receipt-render-founder.test.ts that a receipt with no delivered items, gaps or impacts renders the new sentences and never contains '관찰 범위'.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts",
+            "npm test",
+            "npm run build"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 빈 화면 이유+다음 행동, 대상 영수증 보기 화면; src/render/index.ts:48,51,61,112 show '없음 (관찰 범위 내)' / '관찰된 결과 없음'"
         }
       ],
       "skills": {
