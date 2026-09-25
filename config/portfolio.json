@@ -6130,6 +6130,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rules 1 and 14 (맨 위 한 문장, 첫 실행 3단계 안내) for the juceipt command output; src/cli/main.ts:293-301 at 9fa4dea prints only '사용법:' and the raw flag syntax",
           "title": "처음부터 영수증 만들기"
+        },
+        {
+          "taskId": "JUCEIPT-NEXT-ACTION-PLAIN-VERBS",
+          "scope": "In src/reconciler/index.ts, rewrite every gap human_action string (lines ~374-481: '\"…\" 를 직접 실행/비교해 확인', '요청 항목 \"…\" 의 결과를 직접 확인하거나 Agent 에게 재요청', 'Agent 에게 \"…\" 의 실패/누락 부분 수정을 요청', '검증 명령을 다시 실행해 실제 성공 여부 확인', '실행 비용을 직접 확인', '명시된 사람 검토/확인을 수행하고 완료 여부를 결정', '실제 환경에서 \"…\" 1회 확인' and the forbidden-command one) as one plain Korean sentence per action that ends in a clear verb and has no 'Agent', slashes or developer words (e.g. '「…」가 제대로 되는지 직접 해 보고 확인하세요', 'AI에게 「…」를 다시 맡기세요', '시험을 한 번 더 돌려 정말 통과하는지 확인하세요'), because these texts appear on the receipt view '받기 전 내가 할 일' and in the daily '검토 필요 작업'; leave gap kind/title/detail and committed corpus JSON untouched, and add a test in tests/reconciler.test.ts asserting that every produced human_action contains no 'Agent', '/', or ASCII-only English words other than the quoted request text.",
+          "files": [
+            "src/reconciler/index.ts",
+            "tests/reconciler.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(한국어 동사, 개발자 글자는 원문 보기 안) — 대상: 영수증 보기 화면·daily 출력의 '빠진 확인 항목의 쉬운 설명'"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SUMMARY-OPEN-RECEIPT-LINK",
+          "scope": "In buildScanSummary in src/sources/summary.ts, give each '우선 확인할 영수증' line a clickable Markdown link '[영수증 열기](<relative path to that entry's receipt.html>)' (receiptPath with .json→.html, made relative to the SUMMARY.md folder, which writeScanSummary passes in as an optional outDir argument) so the Founder can open the right receipt without hunting folders, and replace the remaining jargon on the surface — heading '## 에이전트별 세션과 수용 상태' → '## AI별 작업과 판정', table header '에이전트 | 세션' → 'AI | 작업', reason '수용 판단에 문제가 있음' → '끝나지 않았거나 판단할 수 없음', '- 세션 N건' → '- 작업 N건' — keeping the existing top sentence and 상태 뜻 line exact; update tests/scan-summary.test.ts to assert the link, the new wording, and that no '세션' or '수용' appears outside 원문 보기.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(도움 없이 끝낼 수 있게, 개발자 글자는 원문 보기 안) — 대상: juceipt scan 출력(SUMMARY.md)"
         }
       ],
       "skills": {
