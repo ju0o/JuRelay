@@ -7402,6 +7402,31 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 기존 오프라인 E2E와 한국어 Quickstart를 다음 수용 대상으로 삼고 새 런타임 동작은 만들지 않음",
           "title": "실행 결과를 한 줄로 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-DEFAULT-FRESHNESS-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs. It runs scripts/status-board.mjs on a temp registry whose repository-status-file entries have no freshnessMs: one current.json was observed 4 minutes ago and one 6 minutes ago. The test checks that the first stays known with stale false and the second is UNKNOWN with stale true and reason 'stale', which locks in the '기본 5분' default the Quickstart and getting-started describe, without changing any code or docs.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "README.md §2 '파일이 없거나 오래됐으면(기본 5분) 추측하지 않고 `UNKNOWN`/`stale`' and docs/getting-started.md '(기본 5분)'; src/project-status.mjs:74 'freshnessMs ?? 5 * 60 * 1000'; Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target"
+        },
+        {
+          "taskId": "JUCONTROLER-PROJECT-STATUS-SCHEMA-CONTRACT-TEST",
+          "scope": "Add one offline test, tests/project-status-schema-contract.test.mjs. It loads docs/integration/project-status.schema.json (today no test reads it) and runs scripts/status-board.mjs on the README Quickstart-style temp registry. For every printed row it checks that each schema 'required' key is present, that no key falls outside schema 'properties' (additionalProperties false), and that schema equals the const 'project-status.v1'. This makes the getting-started claim that `node --test` checks this file's shape true, without changing the schema or any code.",
+          "files": [
+            "tests/project-status-schema-contract.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/project-status-schema-contract.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md '약속(계약) 파일': '`node --test tests/*.test.mjs`는 아래 파일의 모양도 확인합니다' listing '`integration/project-status.schema.json` | 상태판 한 줄(`project-status.v1`) 모양'; git grep finds no test at e5672ff that references project-status.schema.json; Founder direction 2026-09-26"
         }
       ],
       "qaRuntime": [
