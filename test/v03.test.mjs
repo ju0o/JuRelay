@@ -31,6 +31,19 @@ async function main() {
     PASS('electron-builder files include dist/server');
   } else FAIL('electron-builder files must include dist/server/**/*');
 
+  console.log('P3) Windows 앱 아이콘 — builder 설정 + 유효한 ICO(256px 포함)');
+  const iconRef = builderConfig.match(/^win:\n(?:[ \t]+.*\n)*?[ \t]+icon:\s*(\S+)\s*$/m)?.[1];
+  if (iconRef === 'build/icon.ico') PASS('win.icon points to build/icon.ico');
+  else FAIL('electron.builder.yml win.icon must be build/icon.ico');
+  try {
+    const ico = fs.readFileSync(path.join(process.cwd(), iconRef || 'build/icon.ico'));
+    const count = ico.readUInt16LE(4);
+    const sizes = Array.from({ length: count }, (_, i) => ico[6 + i * 16] || 256);
+    if (ico.readUInt16LE(0) === 0 && ico.readUInt16LE(2) === 1 && [16, 32, 256].every((s) => sizes.includes(s))) {
+      PASS(`icon.ico is a valid ICO (${sizes.join(',')}px)`);
+    } else FAIL('icon.ico must be a valid multi-size ICO (16, 32, 256px)');
+  } catch (e) { FAIL('build/icon.ico missing/unreadable: ' + e.message); }
+
   fs.rmSync(TEST_ROOT, { recursive: true, force: true });
   relay.ensureDataRoot(TEST_ROOT);
 
