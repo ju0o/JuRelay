@@ -19,7 +19,10 @@ export type ControlRoomOperation =
   | 'controlRoom:laneSet'
   | 'controlRoom:resume'
   | 'controlRoom:holdChoose'
-  | 'controlRoom:approvalAdd';
+  | 'controlRoom:approvalAdd'
+  | 'controlRoom:automationStatus'
+  | 'controlRoom:automationOn'
+  | 'controlRoom:automationOff';
 export type PlanStudioAction = 'get' | 'save' | 'chat' | 'approve';
 export type GateAction = 'list' | 'answer';
 export type ControlRoomErrorCode = 'EXEC_FAILED' | 'REMOTE_FAILED' | 'INVALID_JSON' | 'INVALID_INPUT';
@@ -389,6 +392,17 @@ export async function runControlRoomApprovalAdd(
     execFileImpl,
   );
 }
+
+// 자동 진행 켜기/끄기/상태 — 고정 명령, 사용자 인자 없음.
+const runAutomation = (operation: ControlRoomOperation, verb: string, execFileImpl: ControlRoomExec) =>
+  runSshJson(operation, [...SSH_BASE_ARGS, verb, '--json'], execFileImpl);
+
+export const runControlRoomAutomationStatus = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
+  runAutomation('controlRoom:automationStatus', 'status', execFileImpl);
+export const runControlRoomAutomationOn = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
+  runAutomation('controlRoom:automationOn', 'always', execFileImpl);
+export const runControlRoomAutomationOff = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
+  runAutomation('controlRoom:automationOff', 'stop', execFileImpl);
 
 // ── Control Room "오늘 끝난 일 / 지금 일하는 AI" (R5/R6) ───────────────────
 // Pure helpers — 단위 테스트 대상. board JSON 모양이 바뀌어도 깨지지 않게

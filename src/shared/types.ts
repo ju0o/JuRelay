@@ -147,6 +147,9 @@ export type RelayRequest =
   | { op: 'controlRoom:resume'; project: string }
   | { op: 'controlRoom:holdChoose'; taskId: string; option: 'retry' | 'narrow' | 'skip' }
   | { op: 'controlRoom:approvalAdd'; category: string; summary: string }
+  | { op: 'controlRoom:automationStatus' }
+  | { op: 'controlRoom:automationOn' }
+  | { op: 'controlRoom:automationOff' }
   | { op: 'app:startView' };
 
 /** Standard successful response envelope. */
