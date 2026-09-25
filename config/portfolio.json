@@ -3286,7 +3286,8 @@
             "python3 -m pytest tests/test_board_live_state_truth.py -q",
             "python3 -m pytest -q"
           ],
-          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill"
+          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
+          "title": "ASUS 작업창 연결 상태 정확히 보기"
         },
         {
           "taskId": "ACTL-BOARD-PLAIN-WORDS-R2",
@@ -3299,7 +3300,8 @@
             "python3 -m pytest tests/test_board_plain_words.py -q",
             "python3 -m pytest -q"
           ],
-          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill"
+          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
+          "title": "현황판을 쉬운 우리말로 바꾸기"
         },
         {
           "taskId": "ACTL-WEB-LEAD-EMPTY-FIRSTRUN-R2",
@@ -3312,7 +3314,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux rules 1, 5, 14: 맨 위 한 문장, 빈 화면 이유+다음 행동, 첫 실행 3단계 안내 — web board); src/actl/serve.py:52 'content:'ACTL // REMOTE AGENT CONTROL // SIGNAL LOCKED''"
+          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux rules 1, 5, 14: 맨 위 한 문장, 빈 화면 이유+다음 행동, 첫 실행 3단계 안내 — web board); src/actl/serve.py:52 'content:'ACTL // REMOTE AGENT CONTROL // SIGNAL LOCKED''",
+          "title": "처음 쓰는 분을 위한 안내 화면"
         },
         {
           "taskId": "ACTL-WEB-RESULT-READY-CTA-R2",
@@ -3324,7 +3327,8 @@
           "tests": [
             "python3 -m pytest tests/test_serve_result_ready.py tests/test_serve.py tests/test_serve_plain_cards.py -q"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): 대상 actl serve 웹 보드 — 답 도착, 결과 복사; Tk counterpart ACTL-RESULT-READY-COPY-CTA-R2 done, web still shows '결과 준비' with an always-on '⧉ 복사'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): 대상 actl serve 웹 보드 — 답 도착, 결과 복사; Tk counterpart ACTL-RESULT-READY-COPY-CTA-R2 done, web still shows '결과 준비' with an always-on '⧉ 복사'",
+          "title": "답이 오면 바로 결과 복사하기"
         },
         {
           "taskId": "ACTL-TK-READABLE-SIZES-R2",
@@ -3336,7 +3340,8 @@
           "tests": [
             "python3 -m pytest tests/test_gui_readable_sizes.py tests/test_gui_theme.py -q"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): founder-ux '글자 16px·버튼 44px' for JuActl Board src/actl/gui.py; gui.py:40 FONT = ('Segoe UI', 10), button pady=6/8; ACTL-WEB-READABLE-SIZES covers only serve.py CSS"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): founder-ux '글자 16px·버튼 44px' for JuActl Board src/actl/gui.py; gui.py:40 FONT = ('Segoe UI', 10), button pady=6/8; ACTL-WEB-READABLE-SIZES covers only serve.py CSS",
+          "title": "화면 글씨와 버튼 크게 키우기"
         },
         {
           "taskId": "ACTL-TEST-VERSION-PY310-R2",
@@ -3347,7 +3352,8 @@
           "tests": [
             "python3 -m pytest tests/test_version_one.py -q"
           ],
-          "ssotEvidence": "GitHub Actions run 36096320753 linux-tests (3.10): ModuleNotFoundError: No module named 'tomllib' (PR ju0o/JuActl#1, 2026-09-25)"
+          "ssotEvidence": "GitHub Actions run 36096320753 linux-tests (3.10): ModuleNotFoundError: No module named 'tomllib' (PR ju0o/JuActl#1, 2026-09-25)",
+          "title": "버전 확인 검사가 잘 돌게 하기"
         },
         {
           "taskId": "ACTL-WEB-TOKEN-INLINE-R2",
@@ -3359,7 +3365,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "README.md:43-47 '토큰을 직접 정하지 않으면 ... ?token=... 주소로 처음 접속'; Founder direction 2026-09-23"
+          "ssotEvidence": "README.md:43-47 '토큰을 직접 정하지 않으면 ... ?token=... 주소로 처음 접속'; Founder direction 2026-09-23",
+          "title": "접속 암호를 화면에서 바로 입력하기"
         }
       ],
       "qaRuntime": [
@@ -5369,7 +5376,8 @@
             "npx vitest run tests/sources-cli.test.ts tests/sources-discover.test.ts tests/daily.test.ts",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙(맨 위 한 문장, 시간은 상대/현지 시각)으로 juceipt 명령 출력 점검; src/cli/main.ts:208 prints `마지막 활동 ${source.lastActivity}` from src/sources/discover."
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙(맨 위 한 문장, 시간은 상대/현지 시각)으로 juceipt 명령 출력 점검; src/cli/main.ts:208 prints `마지막 활동 ${source.lastActivity}` from src/sources/discover.",
+          "title": "JuCeipt 기록 출처 점검 다시 맞추기"
         },
         {
           "taskId": "JUCEIPT-SCAN-MEMORY-BOUND-R2",
@@ -5386,7 +5394,8 @@
             "npx vitest run tests/scan-memory-bound.test.ts",
             "npm test"
           ],
-          "ssotEvidence": "OOM 2026-09-25 15:53 (journalctl -b -1 -k: node pid 2216423 rss 1695 MB = juceipt scan --since 30m on integration; swap free 196 kB); src/sources/scan.ts:94,110,133-135"
+          "ssotEvidence": "OOM 2026-09-25 15:53 (journalctl -b -1 -k: node pid 2216423 rss 1695 MB = juceipt scan --since 30m on integration; swap free 196 kB); src/sources/scan.ts:94,110,133-135",
+          "title": "JuCeipt 기록 읽을 때 과부하 막기"
         }
       ],
       "skills": {
