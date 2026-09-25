@@ -7602,6 +7602,20 @@
           ],
           "ssotEvidence": "Hub tester capture 2026-09-25 14:11 run-20260925-1411/01-홈.png, 02-진행.png; founder-ux Skill rule 2",
           "title": "검수 줄의 AI 이름을 보기 좋게"
+        },
+        {
+          "taskId": "JCAPP-HOLD-WAIT-FROM-BOARD",
+          "scope": "operator/public/app.js:554 hardcodes '멈춘 작업 N건 — 30분 안에 고르지 않으면 추천대로 진행해요.' The auto-proceed wait is now 5 minutes (Founder 2026-09-25) and every hold on /api/relay/board carries waitMin. Build the banner from the smallest waitMin of the current holds ('N분 안에', fallback 5), and anywhere else a fixed 30분 is shown for holds. Pure helper + test.",
+          "files": [
+            "operator/public/app.js",
+            "test/hold-wait-from-board.test.mjs"
+          ],
+          "tests": [
+            "node --test test/hold-wait-from-board.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: '그냥 30분 내로 말고 5분내로 바로 자동 실행 추천구조로'; night-hold.py WAIT_MIN=5; board holds[].waitMin",
+          "title": "멈춘 작업 대기 시간을 실제 값으로"
         }
       ],
       "skills": {
