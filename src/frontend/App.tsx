@@ -1272,6 +1272,7 @@ function AppInner(): React.ReactElement {
               >개발 도구 ▾</button>
               {showDevTools && (
                 <div className="devtools-menu">
+                  <p className="muted">앱과 프로젝트를 써 보며 불편했던 점을 남기는 곳이에요. 평소엔 열 필요 없어요.</p>
                   <div className="topbar-shortcuts">
                     <span title="모두 저장"><kbd>Ctrl+S</kbd> 저장</span>
                     <span title="현재 탭 새 런"><kbd>Ctrl+N</kbd> 새 런</span>
@@ -1279,15 +1280,15 @@ function AppInner(): React.ReactElement {
                   </div>
                   <button
                     className={`mini df-toggle${dfMode ? ' on' : ''}`}
-                    title="Agent Relay 앱 자체 개선 기록 (App Dogfooding)"
+                    title="Agent Relay 앱 자체 개선 기록"
                     onClick={() => { setDfMode(m => !m); setPdMode(false); setControlRoomMode(false); setApprovalsMode(false); setPlanStudioMode(false); }}
-                  >App Dogfooding</button>
+                  >앱 사용 기록</button>
                   <button
                     className={`mini df-toggle${pdMode ? ' on' : ''}`}
                     disabled={!project}
-                    title={project ? `"${projectLabel(project)}" 프로젝트 사용성 기록 (Project Dogfooding)` : '프로젝트를 먼저 선택하세요'}
+                    title={project ? `"${projectLabel(project)}" 프로젝트 사용성 기록` : '프로젝트를 먼저 선택하세요'}
                     onClick={() => { setPdMode(m => !m); setDfMode(false); setControlRoomMode(false); setApprovalsMode(false); setPlanStudioMode(false); }}
-                  >Project Dogfooding</button>
+                  >프로젝트 사용 기록</button>
                   <button
                     className="mini qdf-toggle"
                     disabled={!project}

@@ -32,8 +32,11 @@ describe('topbar founder-first', () => {
   });
 
   it('dev tools stay in code with handlers (closed by default)', () => {
-    assert.ok(src.includes('App Dogfooding'), 'missing App Dogfooding');
-    assert.ok(src.includes('Project Dogfooding'), 'missing Project Dogfooding');
+    assert.ok(src.includes('>앱 사용 기록</button>'), 'missing 앱 사용 기록');
+    assert.ok(src.includes('>프로젝트 사용 기록</button>'), 'missing 프로젝트 사용 기록');
+    assert.ok(src.includes('불편했던 점을 남기는 곳이에요'), 'missing dev tools purpose sentence');
+    assert.ok(!/>\s*(App|Project) Dogfooding\s*</.test(src) && !/title=.*Dogfooding\)/.test(src), 'no visible English Dogfooding label');
+    assert.ok(src.includes('setDfMode(m => !m)') && src.includes('setPdMode(m => !m)') && src.includes('setShowQuickDf(true)'), 'handlers unchanged');
     assert.ok(src.includes('피드백'), 'missing 피드백');
     assert.ok(src.includes('Ctrl+S') && src.includes('Ctrl+N') && src.includes('Ctrl+T'), 'missing shortcut hints');
     assert.match(src, /showDevTools.*useState\(false\)|useState\(false\)[\s\S]*showDevTools/, 'dev tools menu should be closed by default');
