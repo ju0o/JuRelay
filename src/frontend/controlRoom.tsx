@@ -4,8 +4,8 @@ import { ModelUsagePanel } from './approvals.js';
 import { InlineConfirm } from './components.js';
 import type { ControlRoomModelUsage } from '../shared/types.js';
 import { controlRoomTaskId, controlRoomTaskTitle, founderTaskTitle, controlRoomHasDoneData, controlRoomTodayCount, controlRoomTodayDone, controlRoomVerifiedDoneTotal, controlRoomWorkingItems, controlRoomRoutingLine, laneAttention } from '../shared/types.js';
-import { PROJECT_LABELS, aiDisplayName, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
-import type { NormalizedHold } from '../shared/projectLabels.js';
+import { PROJECT_LABELS, aiDisplayName, barPercent, envReasonText, envTone, normalizeEnvs, ramText, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
+import type { EnvRow, EnvTone, NormalizedHold } from '../shared/projectLabels.js';
 
 export interface ControlRoomHoldExplain {
   sentence?: unknown;
@@ -203,6 +203,76 @@ function TodayCard({ board }: { board: ControlRoomBoard | null }): React.ReactEl
               </li>
             ))}
           </ul></>}
+    </section>
+  );
+}
+
+const ENV_REFRESH_MS = 30_000;
+const ENV_COLOR: Record<EnvTone, string> = { ok: 'var(--accent)', warn: 'var(--warn)', danger: 'var(--danger)' };
+
+function EnvBar({ label, percent, tone }: { label: string; percent: number; tone: EnvTone }): React.ReactElement {
+  return (
+    <div role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent}
+      style={{ height: 10, borderRadius: 5, background: 'var(--bg3)', border: '1px solid var(--border)', overflow: 'hidden' }}>
+      <div style={{ width: `${percent}%`, height: '100%', background: ENV_COLOR[tone] }} />
+    </div>
+  );
+}
+
+function EnvRowView({ row }: { row: EnvRow }): React.ReactElement {
+  const cpuTone = envTone({ ok: true, cpuPct: row.cpuPct, ramFreeGb: null });
+  const ramTone = envTone({ ok: true, cpuPct: null, ramFreeGb: row.ramFreeGb });
+  return (
+    <li style={{ padding: '10px 0', borderTop: '1px solid var(--border)' }}>
+      <p className="control-card-value" style={{ margin: 0 }}>{row.label}</p>
+      {!row.ok ? <>
+        <p className="muted" style={{ color: ENV_COLOR.warn }}>{envReasonText(row)}</p>
+        {row.rawReason && <details><summary>원문 보기</summary><pre className="mono">{row.rawReason}</pre></details>}
+      </> : <>
+        <p className="muted" style={{ margin: '6px 0 2px' }}>CPU {row.cpuPct === null ? '확인 중' : `${Math.round(row.cpuPct)}% 사용 중`}</p>
+        <EnvBar label={`${row.label} CPU`} percent={barPercent(row.cpuPct)} tone={cpuTone} />
+        <p className="muted" style={{ margin: '6px 0 2px' }}>{ramText(row)}</p>
+        <EnvBar label={`${row.label} 메모리`} percent={barPercent(row.ramFreeGb, row.ramTotalGb ?? 0)} tone={ramTone} />
+        <p className="muted" style={{ margin: '6px 0 0' }}>{row.ais.length ? `쓸 수 있는 AI: ${row.ais.join(' · ')}` : '찾은 AI 프로그램이 없어요.'}</p>
+      </>}
+    </li>
+  );
+}
+
+function EnvsCard(): React.ReactElement {
+  const [rows, setRows] = useState<EnvRow[] | null>(null);
+  const [error, setError] = useState('');
+  const [errorDetail, setErrorDetail] = useState('');
+  const load = useCallback(async (): Promise<void> => {
+    try {
+      setRows(normalizeEnvs(await must<unknown>({ op: 'controlRoom:envs' })));
+      setError('');
+      setErrorDetail('');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+      setErrorDetail((e as { detail?: string })?.detail ?? '');
+    }
+  }, []);
+  useEffect(() => {
+    let alive = true;
+    const refresh = (): void => { if (alive) void load(); };
+    refresh();
+    const timer = window.setInterval(refresh, ENV_REFRESH_MS);
+    return () => { alive = false; window.clearInterval(timer); };
+  }, [load]);
+  return (
+    <section className="control-card" aria-label="실행 환경">
+      <p className="control-card-value">실행 환경</p>
+      <p className="muted">AI가 일하는 컴퓨터들의 여유예요. 30초마다 알아서 새로 고쳐요.</p>
+      {rows === null && !error ? <p className="muted" role="status">불러오는 중…</p>
+        : error && rows === null ? <div role="status">
+          <p style={{ color: ENV_COLOR.warn }}>{error}</p>
+          <p className="muted">잠시 후 자동으로 다시 시도해요.</p>
+          <button className="btn" style={{ minHeight: 44 }} onClick={() => void load()}>다시 시도</button>
+          {errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}
+        </div>
+        : !rows?.length ? <p className="muted" role="status">아직 알려진 실행 환경이 없어요 — 작업 PC가 응답하면 여기에 자동으로 나타나요.</p>
+        : <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>{rows.map(row => <EnvRowView key={row.id} row={row} />)}</ul>}
     </section>
   );
 }
@@ -745,6 +815,7 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
   return (
     <main className="control-room">
       <div className="control-room-head"><div><h1>관제실</h1>{decisionCount > 0 && <p className="control-decision-count">결정 대기 {decisionCount}건</p>}<p className="muted">5초마다 자동으로 새로 고쳐요.</p></div><button className="btn" onClick={onClose}>닫기</button></div>
+      <EnvsCard />
       <TodayCard board={board} />
       <WhoLine board={board} />
       <ModelUsagePanel models={board?.models} />

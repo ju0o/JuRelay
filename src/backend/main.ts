@@ -10,7 +10,7 @@ import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electro
 import * as fs from 'fs';
 import * as path from 'path';
 import * as relay from './fs.js';
-import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneSet, runControlRoomPause, runControlRoomResume, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
+import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomEnvs, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneSet, runControlRoomPause, runControlRoomResume, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
 import { migrateSettings } from './migrate.js';
 import { CaptureReport, parseCapturePath } from '../shared/capture.js';
 import { checkForUpdates, downloadUpdate, initUpdater, installUpdate, updaterSupported } from './updater.js';
@@ -352,6 +352,9 @@ async function handleRequest(req: RelayRequest): Promise<unknown> {
 
     case 'controlRoom:approvals':
       return runControlRoom('approvals');
+
+    case 'controlRoom:envs':
+      return runControlRoomEnvs();
 
     case 'planStudio:get':
       return runPlanStudioGet(req.project);

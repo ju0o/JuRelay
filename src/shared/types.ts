@@ -137,6 +137,7 @@ export type RelayRequest =
  | { op: 'update:install' }
    | { op: 'controlRoom:board' }
   | { op: 'controlRoom:approvals' }
+  | { op: 'controlRoom:envs' }
   | { op: 'planStudio:get'; project: string }
   | { op: 'planStudio:save'; project: string; draft: string }
   | { op: 'planStudio:chat'; project: string; message: string }

@@ -13,6 +13,7 @@ const MAX_OPTION_INDEX = 9999;
 export type ControlRoomOperation =
   | 'board'
   | 'approvals'
+  | 'envs'
   | 'planStudio:get'
   | 'planStudio:save'
   | 'planStudio:chat'
@@ -272,6 +273,11 @@ export async function runControlRoom(
     throw new ControlRoomError('INVALID_JSON', operation, '작업 PC의 응답을 읽지 못했습니다. 잠시 후 자동으로 다시 시도합니다.', cause);
   }
 }
+
+/** 실행 환경(CPU·RAM·AI 프로그램) — `night envs --json`. 원격 점검이 느려 30초까지 기다린다. */
+export const ENVS_TIMEOUT = 30_000;
+export const runControlRoomEnvs = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
+  runSshJson('envs', [...SSH_BASE_ARGS, 'envs', '--json'], execFileImpl, { timeout: ENVS_TIMEOUT });
 
 export async function runPlanStudioGet(
   project: string,

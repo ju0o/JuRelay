@@ -342,3 +342,92 @@ export function holdAutoProceedText(heldSeen: unknown, waitMin: unknown): string
   const pad = (n: number): string => String(n).padStart(2, '0');
   return `아무것도 안 고르면 ${pad(at.getHours())}:${pad(at.getMinutes())}에 추천대로 진행해요`;
 }
+
+// ── 관제실 '실행 환경' 카드 (night envs --json) ─────────────────────────────
+export const ENV_LABELS: Record<string, string> = { asus: 'ASUS (이 컴퓨터)', mainpc: 'MainPC', cloud: '클라우드' };
+export const ENV_RAM_WARN_GB = 3.5;
+export const ENV_RAM_DANGER_GB = 1.5;
+export const ENV_CPU_WARN_PCT = 80;
+export type EnvTone = 'ok' | 'warn' | 'danger';
+
+export interface EnvRow {
+  id: string;
+  label: string;
+  ok: boolean;
+  cpuPct: number | null;
+  ramFreeGb: number | null;
+  ramTotalGb: number | null;
+  ais: string[];
+  /** 원문 이유 (원문 보기용) */
+  rawReason: string;
+}
+
+const envNum = (v: unknown): number | null => {
+  const n = typeof v === 'string' && v.trim() ? Number(v) : v;
+  return typeof n === 'number' && Number.isFinite(n) ? n : null;
+};
+const envFirstNum = (r: Record<string, unknown>, keys: string[]): number | null => {
+  for (const k of keys) { const n = envNum(r[k]); if (n !== null) return n; }
+  return null;
+};
+
+/** 환경 id → 화면 라벨 (대소문자·'-'·'_' 무시). 모르면 id 그대로. */
+export function envLabel(id: string): string {
+  const key = id.trim().toLowerCase().replace(/[-_\s]/g, '');
+  return Object.prototype.hasOwnProperty.call(ENV_LABELS, key) ? ENV_LABELS[key] : id;
+}
+
+/** `night envs --json` 응답({envs:[…]} · […] · {id:{…}})을 행 목록으로 정리한다. Pure. */
+export function normalizeEnvs(payload: unknown): EnvRow[] {
+  const root = payload && typeof payload === 'object' ? (payload as Record<string, unknown>) : {};
+  const source = Array.isArray(payload) ? payload : root.envs ?? root;
+  const list: Array<[string, unknown]> = Array.isArray(source)
+    ? source.map(e => ['', e] as [string, unknown])
+    : source && typeof source === 'object' ? Object.entries(source) : [];
+  const rows: EnvRow[] = [];
+  for (const [key, entry] of list) {
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) continue;
+    const r = entry as Record<string, unknown>;
+    const id = String(r.id ?? r.env ?? r.name ?? key).trim();
+    if (!id) continue;
+    const aiRaw = r.ais ?? r.ai ?? r.agents ?? r.runtimes ?? r.programs;
+    const ais = (Array.isArray(aiRaw) ? aiRaw : []).map(a => (typeof a === 'string' ? aiDisplayName(a) : '')).filter(Boolean);
+    rows.push({
+      id,
+      label: envLabel(id),
+      ok: r.ok !== false,
+      cpuPct: envFirstNum(r, ['cpu_pct', 'cpuPct', 'cpu_percent', 'cpu']),
+      ramFreeGb: envFirstNum(r, ['ram_free_gb', 'ramFreeGb', 'ram_available_gb', 'ram_free']),
+      ramTotalGb: envFirstNum(r, ['ram_total_gb', 'ramTotalGb', 'ram_total']),
+      ais: [...new Set(ais)],
+      rawReason: String(r.reason ?? r.error ?? '').trim(),
+    });
+  }
+  return rows;
+}
+
+/** 막대 길이 0~100 (정수). 값이 없거나 max가 0 이하면 0. Pure. */
+export function barPercent(value: number | null, max = 100): number {
+  if (value === null || !(max > 0)) return 0;
+  return Math.max(0, Math.min(100, Math.round((value / max) * 100)));
+}
+
+/** 색: 여유 → ok(초록), RAM<3.5GB·CPU>80%·연결 안 됨 → warn(주황), RAM<1.5GB만 danger(빨강). Pure. */
+export function envTone(row: Pick<EnvRow, 'ok' | 'cpuPct' | 'ramFreeGb'>): EnvTone {
+  if (!row.ok) return 'warn';
+  if (row.ramFreeGb !== null && row.ramFreeGb < ENV_RAM_DANGER_GB) return 'danger';
+  if ((row.ramFreeGb !== null && row.ramFreeGb < ENV_RAM_WARN_GB) || (row.cpuPct !== null && row.cpuPct > ENV_CPU_WARN_PCT)) return 'warn';
+  return 'ok';
+}
+
+/** 연결 안 된 환경 이유 (영문 원문은 숨기고 쉬운 말로). Pure. */
+export function envReasonText(row: Pick<EnvRow, 'ok'>): string {
+  return row.ok ? '' : '지금은 상태를 가져오지 못했어요. 꺼져 있거나 네트워크가 끊겼을 수 있어요. 켜지면 자동으로 다시 불러와요.';
+}
+
+const envGb = (n: number): string => `${Math.round(n * 10) / 10}GB`;
+/** '메모리 남은 6.2GB / 전체 16GB' — 값이 없으면 '메모리 확인 중'. Pure. */
+export function ramText(row: Pick<EnvRow, 'ramFreeGb' | 'ramTotalGb'>): string {
+  if (row.ramFreeGb === null) return '메모리 확인 중';
+  return `메모리 남은 ${envGb(row.ramFreeGb)}${row.ramTotalGb !== null ? ` / 전체 ${envGb(row.ramTotalGb)}` : ''}`;
+}
