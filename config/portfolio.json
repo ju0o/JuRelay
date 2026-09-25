@@ -5871,6 +5871,20 @@
             "npm run build"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: 빈 화면 이유+다음 행동, 대상 영수증 보기 화면; src/render/index.ts:48,51,61,112 show '없음 (관찰 범위 내)' / '관찰된 결과 없음'"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-TITLE-NARROW-BASEFIX",
+          "scope": "`npm test` already fails on the integration tip 8a35c4a before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output: ded for a large fresh JSONL file 15012ms\n     → Test timed out in 15000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with 'testTimeout'.\n ✓ tests/sources-agent-relay.test.ts (1 test) 120ms\n ✓ tests/receipt-schema.test.ts (3 tests) 372ms\n   ✓ ReceiptSchema > validates the sample receipt 340ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  tests/scan-memory-bound.test.ts > scan memory bound > keeps heap growth bounded for a large fresh JSONL file\nError: Test timed out in 15000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with 'testTimeout'.\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n\n Test Files  1 failed | 24 passed (25)\n      Tests  1 failed | 200 passed (201)\n   Start at  02:40:45\n   Duration  26.53s (transform 6.96s, setup 0ms, collect 22.10s, tests 24.34s, environment 45ms, prepare 25.77s)\n\n",
+          "files": [
+            "tests/sources-agent-relay.test.ts",
+            "tests/receipt-schema.test.ts",
+            "tests/scan-memory-bound.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "skills": {
