@@ -6375,6 +6375,34 @@
           ],
           "ssotEvidence": "README.md §3 at 05d86cf: '내 `registry.json`은 아래를 복사해서 값만 바꾸면 됩니다.' (copy-ready example from the done task JUCONTROLER-QUICKSTART-REGISTRY-EXAMPLE, which no test checks today); Founder direction 2026-09-23 (2) the Quickstart commands must be exactly what works",
           "title": "빠른 시작 예시로 등록 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-INVALID-ENTRY-STEP",
+          "scope": "Add a tenth step run_invalid_registry_entry to scripts/e2e.sh after run_missing_registry (label '목록 내용 오류 안내', next command 'node scripts/status-board.mjs <registry.json>'). The step writes a temp registry with one entry whose workspaceRoot is the relative path 'work' and passes only when status-board exits 1 with empty stdout and the first stderr line is exactly '프로젝트 목록 파일 내용이 올바르지 않아요 — 1번째 항목의 workspaceRoot는 /로 시작하는 절대 경로여야 해요'. Add the step to the expected steps in tests/e2e-script.test.mjs, and in docs/getting-started.md '`bash scripts/e2e.sh` 결과 읽는 법' update the ```json example line, the `next` list and add the bullet '- `run-invalid-registry-entry` (목록 내용 오류 안내)' so the e2e-docs-sync test passes.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/quickstart-next-sync.test.mjs tests/status-board-cli.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): a real end-to-end script that runs the product's main user flow offline and prints one JSON line {ok, steps[], ms}; the '프로젝트 목록 파일 내용이 올바르지 않아요' path in scripts/status-board.mjs korean() is the only registry error it does not cover yet"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-HELP-TWO-LINES",
+          "scope": "Fix README.md section '3. 빠른 시작 (처음 쓰는 법)' step 3. It says `--help` prints '한국어 사용법 한 줄', but scripts/status-board.mjs prints two lines to stdout (the Korean '사용법: …' line, then the English 'Usage: …' line) and exits 0. Change the sentence to plain Korean that matches this and docs/getting-started.md, e.g. '한국어 사용법 줄과 영어 Usage 줄을 보여 주고 정상 종료합니다(종료 코드 0).' Change only this sentence.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node --test tests/quickstart-next-sync.test.mjs tests/quickstart-registry-example.test.mjs tests/reason-table-sync.test.mjs",
+            "node scripts/status-board.mjs --help",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (2): a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that script does; the README must match the code today (JUCONTROLER-README-GITHUB), and scripts/status-board.mjs `usage` is two lines written to stdout for --help"
         }
       ],
       "qaRuntime": [
