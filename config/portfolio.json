@@ -10114,6 +10114,18 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:554 여러 조건에 해당하면 가장 높은 위험도를 적용한다.",
           "title": "위험이 큰 파일부터 먼저 보여주기"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-RISK-HINTS-HIGH-FIRST-BASEFIX",
+          "scope": "`npx tsc -p packages/cli/tsconfig.json --noEmit` already fails on the integration tip b9db532 before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output: \n                                                                               \n                This is not the tsc command you are looking for                \n                                                                               \n\nTo get access to the TypeScript compiler, tsc, from the command line either:\n\n- Use npm install typescript to first add TypeScript to your project before using npx\n- Use yarn to avoid accidentally running code from un-installed packages\n",
+          "files": [
+            "tests/context-risk-hints-high-first.test.mjs"
+          ],
+          "tests": [
+            "npx tsc -p packages/cli/tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
