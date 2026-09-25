@@ -82,3 +82,10 @@ test("controlRoom hold card shows explain sentence with recommended option", asy
   assert.match(source, /추천/);
   assert.match(source, /skip/);
 });
+
+test("controlRoom explains the empty no-project state with its automatic next step", async () => {
+  const source = await read("src/frontend/controlRoom.tsx");
+  assert.doesNotMatch(source, /!sortedLanes\.length \? null/);
+  assert.match(source, /아직 진행 중인 프로젝트가 없어요/);
+  assert.match(source, /프로젝트가 여기에 자동으로 나타나요/);
+});
