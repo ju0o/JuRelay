@@ -4849,6 +4849,50 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 검증 문제 표시 점검, 막힘은 노랑 + 다음 행동이 분명하게 (launch bar: obvious next action)",
           "title": "자동 체크 후 다음 할 일 알려주기"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-SMALL-TEXT-1REM",
+          "scope": "In the STUDIO_STYLE constant in packages/runtime/src/index.ts, raise the Studio text that is still below 16px (the 통과/막힘 .badge at .78rem and the document table header th at .78rem) to font-size:1rem, leave the 44px controls and every other rule as they are, and extend studio-touch-size.test.ts to check both new values.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-touch-size.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux Skill 규칙(… 글자 16px·버튼 44px …)으로 JuPlan Studio 화면(… PRD/WBS/ERD/SSOT 보기, … 검증 문제 표시)을 점검해 어긋난 곳마다 작은 작업으로"
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-KOREAN-SUMMARY",
+          "scope": "Add one plain-Korean summary field to the successful apply-proposal preview/apply result and the undo result in packages/runtime/src/index.ts (for example '항목 3개와 연결 2개를 더하고 항목 1개를 빼요' for a preview, '…더했어요' after apply, '바로 전 상태로 되돌렸어요 · 항목 N개' after undo), so the chat can show the 미리보기 → 적용 → 되돌리기 outcome in one sentence; keep the existing counts, blockers and failure shapes, and update the toEqual expectations in the existing tests to match.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/proposal-remove.test.ts",
+            "packages/runtime/test/undo-json.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: 대상: JuPlan Studio 화면(… 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기 …); founder-ux rule 7: 누르면 1초 안에 결과 문장"
+        },
+        {
+          "taskId": "JUPLAN-PLAN-HTML-TOP-SENTENCE",
+          "scope": "In generateProjections in packages/runtime/src/index.ts, add one plain-Korean sentence under the h1 of exports/plan.html (linked from Studio as 계획 한 장 요약) that says what the page is and what to do next (for example '이 계획을 한 장으로 줄인 요약이에요. 자세한 내용은 Studio 홈에서 보세요.'), keep the escaped project name, lifecycle and count lines unchanged, and assert the sentence in the existing plan.html test.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux Skill 규칙(맨 위 한 문장 …)으로 JuPlan Studio 화면(계획 그림 …)을 하나씩 점검해 어긋난 곳마다 작은 작업으로 나눠 줘"
         }
       ],
       "qaRuntime": [
