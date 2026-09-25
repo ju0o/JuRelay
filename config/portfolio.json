@@ -6403,6 +6403,17 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:79 '| 9 | `t09` / `rcpt_t09` | ... | `review_required` | Human confirmation | Package manifest/lockfile change' vs :133 'recorded human actions exist for t01, t03, t04, t05 (2 actions), t06, and t07' and :100 '`t09` | `ACTIONABLE` | Material impact: package manifest/lockfile change.'; Founder direction 2026-09-25: score decision utility per task",
           "title": "검증 보고서에 빠진 사람 확인 항목 채우기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-CORPUS-FIELDS-FILL",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md, fill the Section 2 validation-corpus table's 'Evidence to record' column. Use only facts already written in the same file: 10 tasks from daily/2026-09-05.json and daily/2026-09-06.json at JuCeipt@402d3ee; receipts rcpt_t01–rcpt_t10 per Section 2.1; the same 10 Receipts as baseline; validator Ju0o___ on 2026-09-24 with task-context knowledge recorded as UNKNOWN; 10/10 captured; summary-first then Receipt drill-down. Do not change Sections 3–7 and do not record any M3 decision.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:21-28 still lists only placeholder prompts ('Receipt identifiers and source artifact paths for all included tasks', 'Validator role, date, and whether the validator knew the underlying task context', '10/10 included, or the missing task and reason'), while Section 2.1 (lines 37-63) and Section 7 (lines 161-163) already record those facts. Founder direction 2026-09-25: 'Complete the seven-task Receipt-versus-summary register'"
         }
       ]
     },
