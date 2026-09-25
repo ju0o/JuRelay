@@ -6311,6 +6311,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (launch bar: plain Korean with an obvious next action; README Quickstart must match what the e2e script really does); follows the sync-test pattern already used at a680773 in tests/quickstart-next-sync.test.mjs, tests/reason-table-sync.test.mjs and tests/getting-started-lines-sync.test.mjs",
           "title": "사용 안내서와 점검 단계 일치 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-MISSING-REGISTRY-STEP",
+          "scope": "Add a ninth step run_missing_registry to scripts/e2e.sh after run_empty_registry (label '목록 파일 없음 안내', next command 'node scripts/status-board.mjs <registry.json>'). It runs status-board on a registry path in the temp dir that does not exist and passes only when the exit code is 1, stdout is empty, and the first stderr line is exactly '프로젝트 목록 파일을 열 수 없어요 — 경로를 확인하세요'. Update the expected steps in tests/e2e-script.test.mjs, and in docs/getting-started.md update the JSON example, the next-command list and add the step bullet so e2e-docs-sync stays green.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/quickstart-next-sync.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md 상태판 안내 문장 table at 05d86cf: '`프로젝트 목록 파일을 열 수 없어요 — 경로를 확인하세요` | 명령에 적은 파일 경로가 맞는지 확인합니다.' is the only registry error line with no e2e step; Founder direction 2026-09-23 (1) the real E2E covers the main user flow offline, and 2026-09-24 launch bar asks for plain Korean with an obvious next action"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-REGISTRY-EXAMPLE-TEST",
+          "scope": "Add one offline test, tests/quickstart-registry-example.test.mjs. It pulls the ```json registry example out of README section '3. 빠른 시작 (처음 쓰는 법)', writes it to a temp file, and checks that loadProjectRegistryEntries from src/project-registry.mjs accepts it with exactly one entry, projectId 'my-project'. It also runs scripts/status-board.mjs on that file and checks exit code 0 and the stderr line '프로젝트 1개 중 1개는 상태를 알 수 없어요: my-project(unavailable: 상태 파일이 없거나 읽을 수 없어요) — README 처음 쓰는 법의 reason 표를 보세요'. This way the example the Founder copies always loads.",
+          "files": [
+            "tests/quickstart-registry-example.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/quickstart-registry-example.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "README.md §3 at 05d86cf: '내 `registry.json`은 아래를 복사해서 값만 바꾸면 됩니다.' (copy-ready example from the done task JUCONTROLER-QUICKSTART-REGISTRY-EXAMPLE, which no test checks today); Founder direction 2026-09-23 (2) the Quickstart commands must be exactly what works"
         }
       ],
       "qaRuntime": [
