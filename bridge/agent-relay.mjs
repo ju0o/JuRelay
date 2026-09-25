@@ -2,8 +2,11 @@
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { spawn } from "node:child_process";
 import { buildCoreV1Snapshot, formatCoreV1Results, loadManifest, parseTaskPacket, PortfolioRunner } from "../src/v2/portfolio-runner/index.mjs";
-import { DEFAULT_DEADLINE, finalizeNightRun, NightRunSupervisor, runPoweroff } from "../src/v2/night-run/index.mjs";
+import { DEFAULT_DEADLINE, finalizeNightRun, NightRunSupervisor, runPoweroff, buildOwnScopeArgs, confirmSupervisorScope } from "../src/v2/night-run/index.mjs";
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
 
 export const PID_LOCK_ACTIVE = "PID_LOCK_ACTIVE";
 export const PID_LOCK_STALE = "PID_LOCK_STALE";
@@ -108,14 +111,24 @@ export function shouldRunBridgeCli({ argv = process.argv, env = process.env } = 
 }
 
 async function runCli() {
-const root = process.env.AGENT_RELAY_DATA_ROOT || join(homedir(), ".local", "share", "AgentRelay", "data", "portfolio-execution");
-const founderOutbox = process.env.AGENT_RELAY_FOUNDER_OUTBOX || join(homedir(), ".local", "share", "AgentRelay", "data", "founder-outbox");
-const manifestPath = process.env.AGENT_RELAY_PORTFOLIO_MANIFEST || new URL("../config/portfolio.json", import.meta.url).pathname;
-const runner = () => loadManifest(manifestPath).then((manifest) => new PortfolioRunner({ manifest, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees"), gateRoot: founderOutbox }));
-const pidPath = join(root, "runner.pid");
-const nightPath = join(root, "LAST_NIGHT_RUN.json");
-const nightPidPath = join(root, "night-run.pid");
-const [area, command, project, decision] = process.argv.slice(2);
+  const root = process.env.AGENT_RELAY_DATA_ROOT || join(homedir(), ".local", "share", "AgentRelay", "data", "portfolio-execution");
+  const founderOutbox = process.env.AGENT_RELAY_FOUNDER_OUTBOX || join(homedir(), ".local", "share", "AgentRelay", "data", "founder-outbox");
+  const manifestPath = process.env.AGENT_RELAY_PORTFOLIO_MANIFEST || new URL("../config/portfolio.json", import.meta.url).pathname;
+  const runner = () => loadManifest(manifestPath).then((manifest) => new PortfolioRunner({ manifest, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees"), gateRoot: founderOutbox }));
+  const pidPath = join(root, "runner.pid");
+  const nightPath = join(root, "LAST_NIGHT_RUN.json");
+  const nightPidPath = join(root, "night-run.pid");
+
+  // If running in own scope (spawned by systemd-run), write PID to ready file immediately
+  if (process.env.AGENT_RELAY_OWN_SCOPE === "1" && process.env.AGENT_RELAY_SCOPE_READY_FILE) {
+    try {
+      await writeFile(process.env.AGENT_RELAY_SCOPE_READY_FILE, String(process.pid));
+    } catch {
+      // Best effort; confirmSupervisorScope will handle missing file
+    }
+  }
+
+  const [area, command, project, decision] = process.argv.slice(2);
 if (!["portfolio", "project", "core-v1", "night-run"].includes(area)) { console.error("usage: agent-relay core-v1 status|results [--json]|start|resume | night-run once|up|status|stop | portfolio pm-intake|result-return|... | project ..."); process.exit(2); }
 const instance = await runner();
 const night = ({ deferPoweroff = false } = {}) => {
@@ -136,6 +149,39 @@ if (area === "night-run" && command === "up") {
   const deadlineIndex = process.argv.indexOf("--deadline");
   const deadline = deadlineIndex >= 0 ? process.argv[deadlineIndex + 1] : DEFAULT_DEADLINE;
   const noPoweroff = process.argv.includes("--no-poweroff");
+
+  // Build argv for the night-run up command (without the node binary and script path)
+  const originalArgv = process.argv.slice(2);
+  const scopeArgs = buildOwnScopeArgs(process.env, originalArgv);
+
+  if (scopeArgs) {
+    // Need to run in own systemd scope
+    const readyFile = join(await mkdtemp(join(tmpdir(), "agent-relay-scope-ready-")), "ready");
+    const unit = scopeArgs[5]; // --unit value is at index 5
+
+    // Spawn systemd-run detached/unref'd with OWN_SCOPE=1 and READY_FILE
+    const child = spawn(scopeArgs[0], scopeArgs.slice(1), {
+      detached: true,
+      stdio: "ignore",
+      env: {
+        ...process.env,
+        AGENT_RELAY_OWN_SCOPE: "1",
+        AGENT_RELAY_SCOPE_READY_FILE: readyFile
+      }
+    });
+    child.unref();
+
+    // Wait for the payload to confirm it entered the scope
+    const confirmation = await confirmSupervisorScope({ readyFile, unit });
+    if (confirmation.ok) {
+      process.exit(0);
+    } else {
+      console.error(confirmation.reason);
+      process.exit(1);
+    }
+  }
+
+  // Already scoped or no INVOCATION_ID - run normally
   { const gate = await checkPidLock({ pidPath: nightPidPath, label: "night run" }); if (!gate.ok) throw pidLockError({ pidPath: nightPidPath, label: "night run", reason: gate.reason, pid: gate.pid ?? undefined, detail: gate.detail }); }
   await mkdir(root, { recursive: true }); await writeFile(nightPidPath, String(process.pid));
   const controller = new AbortController(); const shutdown = async () => { controller.abort(); await instance.stop(); await rm(nightPidPath, { force: true }); process.exit(0); };

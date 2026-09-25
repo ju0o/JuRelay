@@ -12,6 +12,87 @@ const execFile = promisify(nodeExecFile);
 export const DEFAULT_TIMEZONE = "Asia/Seoul";
 export const DEFAULT_DEADLINE = "03:00";
 export const DEFAULT_SEND_TO_MAINPC = "/home/skkse12/.agents/skills/send-to-mainpc/scripts/send-to-mainpc.sh";
+
+/**
+ * Builds the systemd-run arguments for running the night supervisor in its own scope.
+ * Returns null when already scoped (AGENT_RELAY_OWN_SCOPE=1) or when INVOCATION_ID is not set.
+ * @param {object} env - Environment variables
+ * @param {string[]} argv - Original command line arguments (without the node binary and script)
+ * @returns {string[] | null} The systemd-run arguments or null
+ */
+export function buildOwnScopeArgs(env, argv) {
+  if (env.AGENT_RELAY_OWN_SCOPE === "1") return null;
+  if (!env.INVOCATION_ID) return null;
+
+  const timestamp = Date.now();
+  const unit = `agent-relay-night-supervisor-${timestamp}`;
+  const script = argv[0];
+  const originalArgs = argv.slice(1);
+
+  return [
+    "systemd-run",
+    "--user",
+    "--scope",
+    "--collect",
+    "--unit",
+    unit,
+    "--",
+    process.execPath,
+    script,
+    ...originalArgs
+  ];
+}
+
+/**
+ * Confirms that the payload process has moved into the systemd scope.
+ * Polls the ready file for the payload PID, reads that PID's cgroup, and verifies it contains the unit scope.
+ * @param {object} options
+ * @param {string} options.readyFile - Path to the ready file that the payload writes its PID to
+ * @param {string} options.unit - The systemd unit name (e.g., "agent-relay-night-supervisor-1234567890")
+ * @param {number} [options.timeoutMs=5000] - Maximum time to wait
+ * @param {function(number): Promise<string>} [options.readCgroup] - Function to read cgroup for a PID
+ * @returns {Promise<{ok: boolean, pid?: number, reason?: string}>}
+ */
+export async function confirmSupervisorScope({ readyFile, unit, timeoutMs = 5000, readCgroup = (pid) => readFile(`/proc/${pid}/cgroup`, "utf8") }) {
+  const startTime = Date.now();
+  let payloadPid = null;
+
+  while (Date.now() - startTime < timeoutMs) {
+    try {
+      const content = await readFile(readyFile, "utf8");
+      const pid = Number(content.trim());
+      if (Number.isSafeInteger(pid) && pid > 0) {
+        payloadPid = pid;
+        break;
+      }
+    } catch (error) {
+      if (error?.code !== "ENOENT") {
+        return { ok: false, reason: `ready file read error: ${error.message}` };
+      }
+    }
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+
+  if (payloadPid === null) {
+    return { ok: false, reason: "ready file not written within timeout" };
+  }
+
+  const deadline = startTime + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      const cgroupContent = await readCgroup(payloadPid);
+      if (cgroupContent.includes(`${unit}.scope`)) {
+        return { ok: true, pid: payloadPid };
+      }
+    } catch (error) {
+      // Process may have exited or cgroup unreadable
+      return { ok: false, reason: `cgroup read error for pid ${payloadPid}: ${error.message}` };
+    }
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+
+  return { ok: false, reason: `payload pid ${payloadPid} did not enter ${unit}.scope within timeout` };
+}
 const TERMINAL = new Set(["COMPLETE", "V1_COMPLETE", "HOLD", "FOUNDER_GATE", "BLOCKED_SCOPE"]);
 const COMPLETE_REASONS = new Set(["WBS_EXHAUSTED", "DEADLINE_COMPLETE", "DEADLINE_FORCED_CHECKPOINT"]);
 const MAX_LIFECYCLE_EVENTS = 500;

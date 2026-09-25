@@ -8,7 +8,7 @@ import { join } from "node:path";
 import test from "node:test";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
-import { buildNightReport, finalizeNightRun, NightRunSupervisor, NIGHT_CHECKPOINT_CORRUPT, NIGHT_CHECKPOINT_MISSING, corruptCheckpointError, deadlineAt, drainManaged, evaluateExhaustion, isCorruptCheckpointError, readCompletion, requestMainPcShutdown, runPoweroff, sendReportToMainPc } from "../../src/v2/night-run/index.mjs";
+import { buildNightReport, finalizeNightRun, NightRunSupervisor, NIGHT_CHECKPOINT_CORRUPT, NIGHT_CHECKPOINT_MISSING, corruptCheckpointError, deadlineAt, drainManaged, evaluateExhaustion, isCorruptCheckpointError, readCompletion, requestMainPcShutdown, runPoweroff, sendReportToMainPc, buildOwnScopeArgs, confirmSupervisorScope } from "../../src/v2/night-run/index.mjs";
 const { BRIDGE_NO_CLI_ENV, PID_LOCK_ACTIVE, PID_LOCK_CORRUPT, PID_LOCK_MISSING, PID_LOCK_STALE, checkPidLock, isPidLockError, parsePidLock, pidLockError, shouldRunBridgeCli, stopPidLock } = await import("../../bridge/agent-relay.mjs");
 
 const lanes = (states) => ({ projects: states.map(([id, state]) => ({ id, coreV1: true, active: true, state })), tasks: [] });
@@ -313,7 +313,7 @@ test("bridge fails closed on stale/corrupt locks without signaling and stop clea
   const manifestPath = join(root, "portfolio.json");
   await writeFile(manifestPath, JSON.stringify({ projects: [] }));
   const bridgePath = new URL("../../bridge/agent-relay.mjs", import.meta.url).pathname;
-  const { AGENT_RELAY_BRIDGE_NO_CLI: _bridgeNoCli, ...baseEnv } = process.env;
+  const { AGENT_RELAY_BRIDGE_NO_CLI: _bridgeNoCli, INVOCATION_ID: _invocationId, ...baseEnv } = process.env;
   const env = { ...baseEnv, AGENT_RELAY_DATA_ROOT: root, AGENT_RELAY_PORTFOLIO_MANIFEST: manifestPath };
   const nightPidPath = join(root, "night-run.pid");
   const runnerPidPath = join(root, "runner.pid");
@@ -388,7 +388,7 @@ test("import-time CLI runs through symlinks and keepalive imports with fail-clos
   await writeFile(manifestPath, JSON.stringify({ projects: [] }));
   const bridgePath = new URL("../../bridge/agent-relay.mjs", import.meta.url).pathname;
   const bridgeUrl = pathToFileURL(bridgePath).href;
-  const { AGENT_RELAY_BRIDGE_NO_CLI: _optOut, ...baseEnv } = process.env;
+  const { AGENT_RELAY_BRIDGE_NO_CLI: _optOut, INVOCATION_ID: _invocationId, ...baseEnv } = process.env;
   const env = { ...baseEnv, AGENT_RELAY_DATA_ROOT: root, AGENT_RELAY_PORTFOLIO_MANIFEST: manifestPath };
   const nightPidPath = join(root, "night-run.pid");
   const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
@@ -434,4 +434,96 @@ test("MainPC wrapper pulls from ASUS and fails closed before destructive command
   assert.match(wrapper, /ssh @sshArgs/); assert.match(wrapper, /--no-poweroff/); assert.match(wrapper, /scp @transportArgs/);
   assert.match(wrapper, /sha256sum/); assert.match(wrapper, /Get-FileHash/); assert.match(wrapper, /shutdown\.exe \/s \/t 30/); assert.match(wrapper, /sudo -n \/usr\/sbin\/poweroff/); assert.match(wrapper, /shutdown\.exe \/a/);
   assert.match(wrapper, /WBS_EXHAUSTED/); assert.match(wrapper, /DEADLINE_COMPLETE/); assert.match(wrapper, /DEADLINE_FORCED_CHECKPOINT/); assert.doesNotMatch(wrapper, /shutdown"/);
+});
+
+test("buildOwnScopeArgs returns systemd-run args when INVOCATION_ID set and not already scoped", () => {
+  const env = { INVOCATION_ID: "test-123", AGENT_RELAY_OWN_SCOPE: "0" };
+  const argv = ["night-run", "up", "--deadline", "04:00"];
+  const args = buildOwnScopeArgs(env, argv);
+  assert.ok(args, "should return args when INVOCATION_ID set and not scoped");
+  assert.equal(args[0], "systemd-run");
+  assert.equal(args[1], "--user");
+  assert.equal(args[2], "--scope");
+  assert.equal(args[3], "--collect");
+  assert.equal(args[4], "--unit");
+  assert.match(args[5], /^agent-relay-night-supervisor-\d+$/);
+  assert.equal(args[6], "--");
+  assert.equal(args[7], process.execPath);
+  assert.equal(args[8], "night-run");
+  assert.equal(args[9], "up");
+  assert.equal(args[10], "--deadline");
+  assert.equal(args[11], "04:00");
+});
+
+test("buildOwnScopeArgs returns null when already scoped (AGENT_RELAY_OWN_SCOPE=1)", () => {
+  const env = { INVOCATION_ID: "test-123", AGENT_RELAY_OWN_SCOPE: "1" };
+  const argv = ["night-run", "up"];
+  const args = buildOwnScopeArgs(env, argv);
+  assert.equal(args, null, "should return null when already scoped");
+});
+
+test("buildOwnScopeArgs returns null when INVOCATION_ID not set", () => {
+  const env = { AGENT_RELAY_OWN_SCOPE: "0" };
+  const argv = ["night-run", "up"];
+  const args = buildOwnScopeArgs(env, argv);
+  assert.equal(args, null, "should return null when INVOCATION_ID not set");
+});
+
+test("confirmSupervisorScope proves payload moved while waiter stays alive", async () => {
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-scope-test-"));
+  const readyFile = join(root, "ready");
+  const unit = "agent-relay-night-supervisor-1234567890";
+  const payloadPid = 99999;
+
+  // Simulate a still-running child that writes its PID to readyFile
+  await writeFile(readyFile, String(payloadPid));
+
+  // Injected readCgroup that returns the payload PID in the correct scope
+  const readCgroup = async (pid) => {
+    if (pid === payloadPid) {
+      return `0::/user.slice/user-${process.getuid()}.slice/${unit}.scope\n`;
+    }
+    return `0::/user.slice/user-${process.getuid()}.slice/some-other.service\n`;
+  };
+
+  const result = await confirmSupervisorScope({ readyFile, unit, timeoutMs: 1000, readCgroup });
+  assert.equal(result.ok, true);
+  assert.equal(result.pid, payloadPid, "should return the payload PID, not the waiter PID");
+
+  await rm(root, { recursive: true, force: true });
+});
+
+test("confirmSupervisorScope returns false when payload still in launching unit's service cgroup", async () => {
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-scope-test-"));
+  const readyFile = join(root, "ready");
+  const unit = "agent-relay-night-supervisor-1234567890";
+  const payloadPid = 99999;
+
+  await writeFile(readyFile, String(payloadPid));
+
+  // Injected readCgroup that returns the payload PID still in the launching unit's service cgroup
+  const readCgroup = async (pid) => {
+    if (pid === payloadPid) {
+      return `0::/user.slice/user-${process.getuid()}.slice/agent-relay-night-launcher.service\n`;
+    }
+    return `0::/user.slice/user-${process.getuid()}.slice/some-other.service\n`;
+  };
+
+  const result = await confirmSupervisorScope({ readyFile, unit, timeoutMs: 200, readCgroup });
+  assert.equal(result.ok, false);
+  assert.ok(result.reason.includes(unit));
+
+  await rm(root, { recursive: true, force: true });
+});
+
+test("confirmSupervisorScope returns false when ready file never written", async () => {
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-scope-test-"));
+  const readyFile = join(root, "never-written");
+  const unit = "agent-relay-night-supervisor-1234567890";
+
+  const result = await confirmSupervisorScope({ readyFile, unit, timeoutMs: 200 });
+  assert.equal(result.ok, false);
+  assert.equal(result.reason, "ready file not written within timeout");
+
+  await rm(root, { recursive: true, force: true });
 });
