@@ -2940,6 +2940,47 @@
           ],
           "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
           "title": "보드 문구를 쉬운 말로"
+        },
+        {
+          "taskId": "ACTL-BLOCKED-APPROVAL-AMBER",
+          "scope": "Fix the waiting-for-approval state so it shows correctly and in amber. In src/actl/gui.py, change RUNTIME_STATE_LABELS['BLOCKED'] from '연결 끊김' to '승인 기다림' (BLOCKED comes from activity WAITING_INPUT in projection.runtime_state and tui._rows, and the shared tui.STATE_KO already says '승인 기다림'), and change Tk STATUS_COLOR 'DOWN' from BAD to WARN. In src/actl/serve.py BOARD_HTML, change CLS 'BLOCKED' and 'DOWN' from 'bad' to 'warn', so no stuck or disconnected state is red. Update tests to match.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/serve.py",
+            "tests/test_gui_card_plain_header.py",
+            "tests/test_serve_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux: '막힘은 노랑'); src/actl/gui.py:66 '\"BLOCKED\": \"연결 끊김\"' vs src/actl/tui.py:270 '\"BLOCKED\": \"승인 기다림\"'; src/actl/serve.py:142 '\"BLOCKED\":\"bad\"'"
+        },
+        {
+          "taskId": "ACTL-WEB-LEAD-EMPTY-FIRSTRUN",
+          "scope": "Make the actl serve web board explain itself. In src/actl/serve.py BOARD_HTML: add a one-sentence line at the top (#lead) filled in by refresh() from ROWS, for example '승인 기다리는 AI 1개가 있어요. 골라 주세요.' or '지금 하실 일은 없어요. 알아서 진행 중이에요.'. When the agent list is empty, show why and what to do next. Add a 3-step first-run guide (what it is → pick an AI card → send, then copy the result) that can be closed and stays closed via localStorage. Remove the English header::after text 'ACTL // REMOTE AGENT CONTROL // SIGNAL LOCKED'. Cover it with a new offline test.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_first_run.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux rules 1, 5, 14: 맨 위 한 문장, 빈 화면 이유+다음 행동, 첫 실행 3단계 안내 — web board); src/actl/serve.py:52 'content:\"ACTL // REMOTE AGENT CONTROL // SIGNAL LOCKED\"'"
+        },
+        {
+          "taskId": "ACTL-WEB-READABLE-SIZES",
+          "scope": "Change only the CSS in src/actl/serve.py BOARD_HTML: body, card, pane, textarea and button text at least 16px; buttons, select, input and the auto-toggle control at least 44px tall; key numbers in the header counts larger; a narrow-screen rule so nothing scrolls sideways at phone width. Add offline assertions on the CSS strings.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux rule 12: 글자 16px·버튼 44px); src/actl/serve.py:67 'button { ... padding:10px 16px; ... font-size:13px' and :64/:78/:82 font-size 13-14px"
         }
       ],
       "qaRuntime": [
