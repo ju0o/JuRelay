@@ -5827,6 +5827,33 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '각 Github에 따로 따로 올릴거라 영상도 따로따로'; 'Aside가 영상 링크 안 주는 거 같은데' → put each repo's 30s video in the repo itself; overall 60s intro already on YouTube https://youtu.be/tB1cCLzTvIs (Aside upload, 일부 공개)",
           "title": "README에 소개 영상 넣기"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-UNKNOWN-ID-STEP",
+          "scope": "Add a seventh step run_unknown_project_id to scripts/e2e.sh after run_bad_registry (label '없는 프로젝트 ID 안내', next command 'node scripts/status-board.mjs <registry.json>'). It runs status-board on the step-1 temp registry with --project-id nope and passes only when the exit code is 1, stdout is empty, and the first stderr line is exactly '그런 프로젝트 ID가 목록에 없어요 — --project-id 값을 확인하세요 (목록에 있는 ID: repo, plan, receipt, agent-relay, lane, missing)'. Update tests/e2e-script.test.mjs to expect this step, and update the docs/getting-started.md e2e example JSON, the next list and the step list to match.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/status-board-cli.test.mjs tests/quickstart-next-sync.test.mjs tests/getting-started-lines-sync.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: (1) real offline E2E of the main user flow printing {ok, steps[], ms}; launch bar = plain Korean, obvious next action, no raw codes; scripts/status-board.mjs@6403b48 prints the unknown-ID Korean line with known IDs but no e2e step checks it"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-HELP-HINT",
+          "scope": "In README.md section '3. 빠른 시작 (처음 쓰는 법)', add one plain-Korean sentence to step 3: when you forget how to write the command, `node scripts/status-board.mjs --help` (or `-h`) shows the Korean usage line and ends normally (exit code 0). Change no other README text.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node --test tests/quickstart-next-sync.test.mjs tests/reason-table-sync.test.mjs tests/status-board-cli.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: (2) README '처음 쓰는 법' Quickstart commands must match exactly what the code does; scripts/status-board.mjs@6403b48 supports --help/-h (usage to stdout, exit 0), but README Quickstart step 3 does not mention it"
         }
       ],
       "qaRuntime": [
