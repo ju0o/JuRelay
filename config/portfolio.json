@@ -7627,6 +7627,21 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:302-351 '### 6.7 위험도 안내 / #### 낮음 / #### 중간 / #### 높음 / #### 판정 불가 ... 위험도에는 반드시 짧은 근거를 함께 작성한다.'",
           "title": "위험도 단계 이름이 문서끼리 같은지 확인"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-K-CODE-EXPLAIN-ONLY",
+          "scope": "Add tests/results/scenario-k/code-explain.fixture.md, an answer to a request to explain only what one specific file does, written for a non-developer, plus code-explain.test.mjs (offline node:test), modelled on scenario-h. The test checks: the answer does not use the full completion-report headings (for example no # 검증 결과 or # 작업 요약); it names the file and describes its role in terms of features; it does not claim anything was changed or finished (no 수정했습니다 or 완료했습니다); and it stays within the §5.2 length guideline. The fixture must also pass the existing all-fixture term no-repeat and risk-reason tests.",
+          "files": [
+            "tests/results/scenario-k/code-explain.fixture.md",
+            "tests/results/scenario-k/code-explain.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-k/code-explain.test.mjs",
+            "node --test tests/fixture-term-no-repeat.test.mjs",
+            "node --test tests/fixture-risk-reason.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:520 사용자가 특정 파일이나 코드 블록의 역할을 설명해달라고 요청하면 비개발자 눈높이로 설명한다. / :522 이 경우 전체 작업 완료 보고서를 강제로 생성하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
