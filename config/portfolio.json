@@ -5306,6 +5306,23 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "영수증 확인과 실패 안내 쉽게 보기"
+        },
+        {
+          "taskId": "JUCEIPT-SOURCES-RELATIVE-TIME-R2",
+          "scope": "기존 sources 목표를 유지하고 tests/sources-cli.test.ts와 tests/sources-discover.test.ts를 갱신하며, npm test를 막는 tests/daily.test.ts의 기존 요약 기대값을 실제 aggregateDailyReport 결과와 맞춘다.",
+          "files": [
+            "src/cli/main.ts",
+            "src/sources/discover.ts",
+            "tests/sources-cli.test.ts",
+            "tests/sources-discover.test.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npx vitest run tests/sources-cli.test.ts tests/sources-discover.test.ts tests/daily.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙(맨 위 한 문장, 시간은 상대/현지 시각)으로 juceipt 명령 출력 점검; src/cli/main.ts:208 prints `마지막 활동 ${source.lastActivity}` from src/sources/discover."
         }
       ],
       "skills": {
