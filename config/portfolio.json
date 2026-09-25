@@ -6878,6 +6878,37 @@
           ],
           "ssotEvidence": "scripts/status-board.mjs:54 \"reasonWords[row.reason ?? 'stale'] ?? '표에 없는 이유예요'\" (no test covers this fallback; src/project-status.mjs:63 keeps a source-supplied reason); Founder direction 2026-09-24 오후: plain Korean, no raw codes",
           "title": "처음 보는 사유도 그대로 보여주기 점검"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-UNLISTED-REASON-STEP",
+          "scope": "Add a sixteenth step run_unlisted_reason to scripts/e2e.sh after run_source_stale (label '표에 없는 이유 안내', next command 'node scripts/status-board.mjs <registry.json>'). Model it on run_source_stale: write a fresh repository-status-file current.json for project 'custom' with stale:true and reason 'upstream-paused', run status-board, and pass only if stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: custom(upstream-paused: 표에 없는 이유예요) — README 처음 쓰는 법의 reason 표를 보세요'. Add the step to the steps loop, the labels map and the commands map, add ['run-unlisted-reason','표에 없는 이유 안내'] to tests/e2e-script.test.mjs, and list the new step in docs/getting-started.md (the sample JSON line, the step-name list and the step bullets) so e2e-docs-sync stays green",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs",
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "node --test tests/quickstart-next-sync.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 02시 item 1: a real offline end-to-end script that prints one JSON line {ok, steps[], ms}); scripts/status-board.mjs@056e99e fallback text '표에 없는 이유예요' is locked by tests/status-board-cli.test.mjs:103 but no e2e step checks it yet"
+        },
+        {
+          "taskId": "JUCONTROLER-GETTING-STARTED-UNLISTED-REASON-NEXT",
+          "scope": "In the docs/getting-started.md table '상태판 안내 문장 읽는 법', change only the '다음에 할 일' cell of the '프로젝트 <N>개 중 <M>개는 상태를 알 수 없어요: …' row. Keep the current text, and add one plain-Korean sentence: when the meaning in the parentheses is `표에 없는 이유예요`, the source sent a reason this board does not know yet, so the file is not broken; copy that line as it is and send it to a developer. Leave the first column and the other rows unchanged",
+          "files": [
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "node --test tests/getting-started-lines-sync.test.mjs",
+            "node --test tests/reason-table-sync.test.mjs",
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss, with an obvious next action; scripts/status-board.mjs@056e99e prints '표에 없는 이유예요' for unlisted reasons, but docs/getting-started.md:109 gives no next step for that case"
         }
       ],
       "qaRuntime": [
