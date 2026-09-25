@@ -2738,6 +2738,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '보니까 바뀐 기능 및 기능이 많이 구현 되었네 이것들 Github에서 README 파일 다듬고 이후 홍보영상 다시 제작'; portfolio architecture (Founder): actl = 리모컨, Agent Relay = 셋톱박스 (actl 기반), JuControler = 허브 (+JuPlan, JuCeipt, Tester, Skill 만들기); Founder: 비개발자도 카톡·토스처럼 쉽게",
           "title": "GitHub 소개 문서(README) 다듬기"
+        },
+        {
+          "taskId": "ACTL-CLI-AUTO-REMAP-KOREAN-R2",
+          "scope": "In src/actl/cli.py, change every message `_resolve_live_target` prints or raises during `actl send`/`actl copy` ('re-mapped to', 'Backup:', 'auto-mapped to … (newest live pane)', 'Multiple live … panes found', 'Choose pane:', 'No pane matching', 'Invalid pane selection', 'is not currently mapped to a live pane') into plain Korean with a next step, and make `_copy`'s '✗ {exc}' line print that Korean message; leave config.py's ValueError text unchanged; append to the existing tests/test_cli_korean_messages.py one test covering single-match remap output and zero-match failure output. That test may change state ONLY through the runner's `monkeypatch.setattr`, because tests/run_tests.py's MonkeyPatch has no setenv/delattr: no direct module-attribute assignment, no os.environ or sys.modules edits, no importlib.reload, and nothing written to the state/config files. Last attempt's leaked state broke tests/test_tui_one_state.py::test_rows_turn_waiting_input_into_blocked, which runs later alphabetically. Before handing off, confirm that test prints PASS in the full run with 0 failed. Do not edit tui.py or any tui test.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_korean_messages.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "bash scripts/e2e_disposable.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, no raw codes; base src/actl/cli.py:1099 print(f\"✓ {AGENTS[agent].display_name} re-mapped to {matches[0].pane.pane_id}\") and :1129 raise ValueError(f\"{AGENTS[agent].display_name} is not currently mapped to a live pane\")"
         }
       ],
       "qaRuntime": [
