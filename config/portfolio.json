@@ -3044,6 +3044,20 @@
             "python3 -m pytest tests/test_gui_readable_sizes.py tests/test_gui_theme.py -q"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): founder-ux '글자 16px·버튼 44px' for JuActl Board src/actl/gui.py; gui.py:40 FONT = (\"Segoe UI\", 10), button pady=6/8; ACTL-WEB-READABLE-SIZES covers only serve.py CSS"
+        },
+        {
+          "taskId": "ACTL-README-VIDEO",
+          "scope": "Copy the ready-made 30-second intro video /home/skkse12/Desktop/Projects/Team/promo-v3/out/actl-30s.mp4 to docs/media/actl-30s.mp4 and its thumbnail /home/skkse12/Desktop/Projects/Team/promo-v3/out/actl.jpg to docs/media/actl-30s.jpg (binary copies, unchanged). In README.md, right under the one-line intro, add a '## 30초 소개 영상' section: the thumbnail image as a clickable link to docs/media/actl-30s.mp4 (markdown [![30초 소개 영상](docs/media/actl-30s.jpg)](docs/media/actl-30s.mp4)), then one line '전체 소개 (60초): https://youtu.be/tB1cCLzTvIs'. Nothing else changes.",
+          "files": [
+            "docs/media/actl-30s.mp4",
+            "docs/media/actl-30s.jpg",
+            "README.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: '각 Github에 따로 따로 올릴거라 영상도 따로따로'; 'Aside가 영상 링크 안 주는 거 같은데' → put each repo's 30s video in the repo itself; overall 60s intro already on YouTube https://youtu.be/tB1cCLzTvIs (Aside upload, 일부 공개)",
+          "title": "README에 소개 영상 넣기"
         }
       ],
       "qaRuntime": [
