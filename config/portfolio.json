@@ -8764,6 +8764,40 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "처음에도 쉽게 시작하기"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-ONE-WORDING",
+          "scope": "In operator/public/app.js, replace the separate nested liveCard inside relayLaneView (진행) with the 홈 liveCardModel + liveProjectCard so both screens say the same words and use the same colour chips (teal 확인됨/없음, amber 일부 확인/확인하지 못함/확인 필요/결정 필요): same step count per stage, same 확인 상태 at 검수 (today 홈 says '일부 확인 · 검사하는 중' but 진행 says '확인하지 못함 · 아직 검사 전'), and one 다음 단계 sentence for holds, '안 고르면 HH:MM에 추천대로 진행해요'. Keep 진행's own 결정하러 가기 / 멈춘 작업 buttons, keep the 16px text, and make no API changes. Update the test extractors that run relayLaneView so they also load liveCardModel/liveProjectCard and their helpers, and add one test that renders the same lane on 홈 and 진행 and checks the five lines match.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-live-cards.test.mjs",
+            "test/agent-relay-module.test.mjs",
+            "test/lovable-hold-cards.test.mjs",
+            "test/home-working-line.test.mjs",
+            "test/hold-card.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-live-cards.test.mjs test/agent-relay-module.test.mjs test/lovable-hold-cards.test.mjs test/home-working-line.test.mjs test/hold-card.test.mjs",
+            "node --test test/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '허브 홈과 진행 탭에 founder-ux Skill의 Live status card 규칙 그대로 … 같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만)'; operator/public/app.js:1872 '// Same live status card as homeHub (duplicated …)' yet :1895 and :495 give different 확인 상태 words at the same stage"
+        },
+        {
+          "taskId": "JCAPP-ACTL-CARD-STATE-WORD",
+          "scope": "In operator/public/app.js relayPanesPanel, change the busy-pane state label from '작업 중' to '일하는 중', the word the founder-ux actl AI window card uses (일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨), on both 홈 'AI 창' and 진행 'actl 리모컨' (tone, dot colour and the rest of the card stay as they are). Update the tests that pin '작업 중' for panes to the new word.",
+          "files": [
+            "operator/public/app.js",
+            "test/actl-panes-plain.test.mjs",
+            "test/lovable-ai-windows.test.mjs",
+            "test/agent-relay-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/actl-panes-plain.test.mjs test/lovable-ai-windows.test.mjs test/agent-relay-module.test.mjs",
+            "node --test test/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "founder-ux Skill 'Live status card' (For an actl AI window): 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; test/actl-panes-plain.test.mjs:89 is titled 'state words:일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨' but :91 asserts '작업 중'; Founder direction 2026-09-25 15:48 '같은 용어'"
         }
       ],
       "skills": {
