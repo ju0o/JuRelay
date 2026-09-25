@@ -1804,6 +1804,21 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '각 Github에 따로 따로 올릴거라 영상도 따로따로'; 'Aside가 영상 링크 안 주는 거 같은데' → put each repo's 30s video in the repo itself; overall 60s intro already on YouTube https://youtu.be/tB1cCLzTvIs (Aside upload, 일부 공개)",
           "title": "README에 소개 영상 넣기"
+        },
+        {
+          "taskId": "AGENTRELAY-V1-APP-ICON-R3",
+          "scope": "Same goal as AGENTRELAY-V1-APP-ICON-R2 (a valid multi-size Agent Relay build/icon.ico wired into electron.builder.yml win.icon, with a test in test/v03.test.mjs that checks the config points at the file and the ICO header/sizes are valid). R2 held only because its gate ran `npm run build:win` on the Linux runner, where electron-builder's Windows exe editing/signing step cannot run (winPackager.signApp); the Windows build itself is verified by the MainPC Tester. So gate only on npm test and typecheck.",
+          "files": [
+            "electron.builder.yml",
+            "build/icon.ico",
+            "test/v03.test.mjs"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "state AGENTRELAY-V1-APP-ICON-R2 HOLD 2026-09-25: TEST_GATE npm run build:win failed at WinPackager.signApp on Linux (environment, not the icon)",
+          "title": "앱 아이콘 넣기"
         }
       ],
       "qaRuntime": [
