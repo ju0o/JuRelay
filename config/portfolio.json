@@ -9181,7 +9181,8 @@
             "node --test tests/context-unverifiable-wording-parity.test.mjs",
             "node --test tests/context-risk-unknown-no-git.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:462 '> 확인하지 못함: 프로젝트에 확인 가능한 자동 테스트 명령이 없습니다.' and :466 '> 확인하지 못함: Git 기록이 없어 이번 작업의 변경 파일을 자동으로 구분하지 못했습니다.'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:462 '> 확인하지 못함: 프로젝트에 확인 가능한 자동 테스트 명령이 없습니다.' and :466 '> 확인하지 못함: Git 기록이 없어 이번 작업의 변경 파일을 자동으로 구분하지 못했습니다.'",
+          "title": "확인 불가 안내를 일치시켜요"
         },
         {
           "taskId": "JUTELL-EVALUATION-QUESTIONS-PARITY",
@@ -9192,7 +9193,8 @@
           "tests": [
             "node --test tests/evaluation-questions-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:648 '7개 중 6개 이상에 추가 질문 없이 답할 수 있어야 한다.'; docs/BEGINNER_REPORT_SPEC.md:814 '* 7개 질문 중 6개 이상 통과해야 이해 가능'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:648 '7개 중 6개 이상에 추가 질문 없이 답할 수 있어야 한다.'; docs/BEGINNER_REPORT_SPEC.md:814 '* 7개 질문 중 6개 이상 통과해야 이해 가능'",
+          "title": "평가 기준을 일관되게 맞춰요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
