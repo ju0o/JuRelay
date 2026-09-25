@@ -3192,6 +3192,19 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 \"보드 [업데이트] 버튼이 새판을 스스로 받아 교체\"; Founder UX rules 7·9",
           "title": "업데이트 확인을 화면 안에서 바로 하기"
+        },
+        {
+          "taskId": "ACTL-REMOTE-CLAUDE-PROFILE-VALIDATE-R2",
+          "scope": "Retry the unchanged fix, since the last QA failed only because the grok QA runner ran out of balance (HTTP 402) and never judged the code: in src/actl/core/validation.py change `_is_claude` so it takes `found = claude_profile(process)` and `expected = profile.expanduser().resolve(strict=False)`, and returns `found is not None and (found == expected or (tmux.REMOTE_SSH_TARGET and found.name == expected.name))`, reading REMOTE_SSH_TARGET at call time from actl.core.tmux just as claude_profile does, and add four offline tests to tests/test_validation.py that monkeypatch `actl.core.tmux.REMOTE_SSH_TARGET` to 'asus', `validation.process_environment` to return {'CLAUDE_CONFIG_DIR': '/home/remoteuser/<basename of AGENTS[agent].data_dirs[0]>'}, and target_exists, pane_field (_pane_fields) and pane_processes (ProcessInfo(11, 10, 'claude')): test_remote_claude_team_profile_by_basename_is_up and test_remote_claude_pro_profile_by_basename_is_up (validate_target('claude-team'/'claude-pro', '%5').state == 'UP'; both FAIL on base d87e8d4 and PASS after the fix), test_remote_claude_other_profile_is_mismatch (a claude-pro basename on a claude-team target gives MISMATCH), and test_remote_non_claude_process_is_mismatch (ProcessInfo(11, 10, '/x/cursor-agent/index.js') on a claude-team target gives MISMATCH), with no other source edits.",
+          "files": [
+            "src/actl/core/validation.py",
+            "tests/test_validation.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: '원격(--ssh) 보내기 전에 그 창이 실제 그 에이전트인지 확인하는지 검증하고 아니면 막고 … 3) 원격 대상 검증 fail-closed'; src/actl/core/validation.py:209 `return claude_profile(process) == profile.expanduser().resolve(strict=False)` vs :232 `REMOTE_SSH_TARGET and resolved.name == expected.name`"
         }
       ],
       "qaRuntime": [
