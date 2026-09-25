@@ -10145,6 +10145,18 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25",
           "title": "개인정보를 안전하게 가려요"
+        },
+        {
+          "taskId": "JUAI-CHECK-TEXT-TIME",
+          "scope": "Add check.mjs assertions for the untested pure lib.mjs helpers: quote() collapses whitespace, truncates to max and JSON-escapes quotes; stripAnsi() removes ANSI color codes; kstHour/kstDay give KST hour and weekday at the UTC 15:00 day boundary; quotaDay rolls over at 00:00 UTC (09:00 KST); leave lib.mjs unchanged.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 00:04: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs:1 'Pure helpers ... so check.mjs can test them.'"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
