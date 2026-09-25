@@ -5678,6 +5678,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: '영어 작업 제목을 쉬운 한국어 요약으로'; base src/daily/index.ts:28-37 taskTitle matches only Korean keywords, so every English request (e.g. 'Fix login bug') falls through to '작업 내용 확인' in daily output and scan SUMMARY.md",
           "title": "영어 요청도 한국어 제목으로"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-TOP-SENTENCE",
+          "scope": "In renderLevel1/renderHtml of src/render/index.ts, open every receipt view (not only review_required, whose existing notice stays as is) with one plain Korean sentence saying what the verdict means and what to do now (ready/partial/failed/cancelled/unknown); show the request as taskTitle(request_text) from src/daily/index.ts and move the original request text into the existing 원문 보기 details; drop receipt_id from <title>; raise Level 1 CSS text (kicker, h2.request, .state-pill, .block h3, ul.items li, .muted, .meta-label, .meta-val) to at least 16px; add a test that renders each acceptance state and checks for the top sentence, the Korean title, and no English request text or receipt_id outside <details>.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(맨 위 한 문장, 개발자 글자는 원문 보기 안, 글자 16px) — 대상: 영수증 보기 화면, 판정 '확인 후 받기' 같은 말의 뜻, 영어 작업 제목을 쉬운 한국어 요약으로"
+        },
+        {
+          "taskId": "JUCEIPT-MISSING-CHECK-PLAIN-WORDS",
+          "scope": "In buildPresentation in src/receipt/index.ts, build remaining_items text from gap.kind as a plain Korean explanation instead of copying the developer-style gap.title (for example 'Claude 보고 완료, 검증 Evidence 없음: …' becomes 'AI가 끝냈다고 했지만 확인한 기록이 없어요: …', and requested_not_evidenced, partial_or_failed, material_unknown including unknown cost, and human_only_check each get one easy sentence); keep acceptance_gaps titles and the reconciler unchanged; add a test proving each gap kind gives a plain Korean remaining item with no English words such as Evidence.",
+          "files": [
+            "src/receipt/index.ts",
+            "tests/receipt-missing-check-plain.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상: juceipt 명령 출력과 영수증 보기 화면, 빠진 확인 항목의 쉬운 설명"
         }
       ],
       "skills": {
