@@ -6873,6 +6873,29 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:141-146 'Evidence register: M3 Daily Value Validation ... - [ ] Compare Daily view versus reading individual receipts. - [ ] Check whether user knows what needs attention now. - [ ] Check whether value/cost summary is understandable.'",
           "title": "작업계획표 확인 항목에 검증 근거 연결"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HANDOFF-HEADER-MILESTONE-SYNC",
+          "scope": "The headers of docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md (line 6) and docs/handoffs/UNPLANNED_WORK_QUARANTINE_01.md (line 5) still say 'Product milestone remains: M2 — Receipt Value Proof / PM REVIEW'. Add a one-line note under each: the milestone line is how things stood when the handoff was issued, and PM_STATUS_BOARD.md now shows M2 GO with M3 active. For the quarantine handoff, also say it is CLASSIFIED and link docs/decisions/UNPLANNED_WORK_01_DECISION.md. Do not change the handoff body, its scope or any gate.",
+          "files": [
+            "docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md",
+            "docs/handoffs/UNPLANNED_WORK_QUARANTINE_01.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:30-31 '| Active product milestone | **M3 — Daily Agent Value Decision** |' / '| Product decision | **M2 GO** |'; :47 '| Quarantine decision | **CLASSIFIED — no PR / no merge** |'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-CHECK-SOURCE-RECEIPT-IDS",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md Section 4, add a 'Source Receipt IDs' column to the summary-vs-Receipt table, as the instruction at line 122 asks. Take the IDs only from facts already in Sections 2.1, 3 and 3.1: rcpt_t01–rcpt_t10 for all-task checks, t04/t06/t07/t09 for impact_traceability, and t05 for the unknown_safety gaps. Leave every PASS result, the Section 6 mapping and the 'NOT RECORDED HERE' M3 decision unchanged.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:122-123 'For each check, retain the validator's observation, the source Receipt IDs, and a short counterexample when the result is `NO` or `UNKNOWN`.'; Founder direction 2026-09-25 'Complete the seven-task Receipt-versus-summary register'"
         }
       ]
     },
