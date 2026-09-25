@@ -8950,6 +8950,39 @@
           ],
           "ssotEvidence": "founder-ux Skill 'Live status card' (For an actl AI window): 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; test/actl-panes-plain.test.mjs:89 is titled 'state words:일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨' but :91 asserts '작업 중'; Founder direction 2026-09-25 15:48 '같은 용어'",
           "title": "작업 창 상태를 '일하는 중'으로 통일"
+        },
+        {
+          "taskId": "JCAPP-ACTL-ANSWER-COPY",
+          "scope": "Make the actl AI window card's [결과 복사] copy the AI's real last answer instead of the card summary: lastTurn in lib/paneActivity.mjs also returns answer (the lines after the last prompt, trimmed to 4000 chars, only when answerReady, else null); paneTurn in operator/server.mjs clears answer whenever answerReady ends up false; relayPanesPanel in operator/public/app.js uses pane.answer for data-pane-copy when it is there and falls back to today's summary; the ponytail note about the missing answer body is removed; the lastTurn deepEqual pins in test/actl-panes-plain.test.mjs are updated, and new asserts cover the answer text, the 4000 cap, a busy pane getting null, and the button copying the answer.",
+          "files": [
+            "lib/paneActivity.mjs",
+            "operator/server.mjs",
+            "operator/public/app.js",
+            "test/actl-panes-plain.test.mjs"
+          ],
+          "tests": [
+            "node --test test/actl-panes-plain.test.mjs",
+            "node --test test/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2025-09-25 15:48 hub request): actl AI 창 카드 — 기존 /api/panes 사용; founder-ux Live status card: 'whether an answer is ready to copy'; af1ae95:operator/public/app.js:1930 'ponytail: /api/panes carries no answer body, so [결과 복사] copies the card's plain summary; copy the answer itself once the API exposes it.'"
+        },
+        {
+          "taskId": "JCAPP-BOARD-DOWN-PLAIN",
+          "scope": "When /api/relay/board has answered {available:false, reason}, stop showing the endless '프로젝트 현황을 확인 중이에요.' on 홈 지금 상황 (homeHub) and '릴레이 보드를 확인 중이에요…' on 진行 (relayView); show one shared amber three-line block from a new pure boardDownBlock(board) in operator/public/app.js instead — 'Agent Relay 진행 기록을 읽지 못했어요.', then a plain why ('다른 PC가 꺼졌거나 네트워크가 끊긴 것 같아요' for a timeout or connection error, otherwise '켜져 있지만 보드 읽기가 실패했어요'), then '켜 두면 저절로 이어져요.' with the existing [다시 확인] (data-first-run-recheck) and the raw reason only under 원문 보기; a board that is still loading (undefined) keeps the '확인 중' line; tests that extract homeHub/relayView load the helper, and a new test pins both screens, both why lines and that the reason stays off the surface.",
+          "files": [
+            "operator/public/app.js",
+            "test/board-down-plain.test.mjs",
+            "test/lovable-live-cards.test.mjs",
+            "test/agent-relay-module.test.mjs",
+            "test/home-hub.test.mjs"
+          ],
+          "tests": [
+            "node --test test/board-down-plain.test.mjs",
+            "node --test test/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2025-09-25 15:48 hub request): 허브 홈과 진행 탭에 founder-ux 'Live status card' — /api/relay/board 데이터로; founder-ux rule 10 'Explain every error in three short lines … Tell \"the other PC is off / the network dropped\" apart from \"it is on but something failed\"'; af1ae95:operator/public/app.js:518-519 and :1986 show only '확인 중이에요' when board.available is false (lib/relayBoard.mjs:41 sets reason)."
         }
       ],
       "skills": {
