@@ -1728,7 +1728,8 @@
             "node test/topbar-founder-first.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "개발 메뉴를 쉬운 한국어로 안내"
         },
         {
           "taskId": "AGENTRELAY-PLANSTUDIO-ERROR-PLAIN",
@@ -1741,7 +1742,8 @@
             "npm run build:server && node test/planstudio-founder-view.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "계획 오류를 쉽게 알리고 다시 시도"
         },
         {
           "taskId": "AGENTRELAY-APPROVALS-PAST-RULES-PLAIN",
@@ -1754,7 +1756,8 @@
             "node test/approvals-readable.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "지난 승인 기록을 쉬운 말로 보기"
         },
         {
           "taskId": "AGENTRELAY-CONTROLROOM-EMPTY-NEXT-STEP",
@@ -1767,7 +1770,8 @@
             "node test/controlroom-plain-2.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "프로젝트가 없을 때 다음 할 일 안내"
         },
         {
           "taskId": "AGENTRELAY-CONTROLROOM-NO-RAW-IDS",
@@ -2860,7 +2864,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: '9/25 ASUS 실측: discover는 claude-team %0/%11, claude-pro %3, codex %10을 정확히 찾지만 status는 Claude Team 1개만 UP이고 나머지는 UNMAPPED … 1) status/board/serve가 강한 신뢰도 탐지를 자동 반영해 Live Pane을 항상 보여주기'"
+          "ssotEvidence": "Founder direction 2026-09-25: '9/25 ASUS 실측: discover는 claude-team %0/%11, claude-pro %3, codex %10을 정확히 찾지만 status는 Claude Team 1개만 UP이고 나머지는 UNMAPPED … 1) status/board/serve가 강한 신뢰도 탐지를 자동 반영해 Live Pane을 항상 보여주기'",
+          "title": "상태 볼 때 AI 자동으로 연결하기"
         },
         {
           "taskId": "ACTL-REMOTE-CLAUDE-PROFILE-VALIDATE",
@@ -2873,7 +2878,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: '원격(--ssh) 보내기 전에 그 창이 실제 그 에이전트인지 확인하는지 검증하고 아니면 막고 … 3) 원격 대상 검증 fail-closed'; src/actl/core/validation.py:209 `return claude_profile(process) == profile.expanduser().resolve(strict=False)` vs :232 `REMOTE_SSH_TARGET and resolved.name == expected.name`"
+          "ssotEvidence": "Founder direction 2026-09-25: '원격(--ssh) 보내기 전에 그 창이 실제 그 에이전트인지 확인하는지 검증하고 아니면 막고 … 3) 원격 대상 검증 fail-closed'; src/actl/core/validation.py:209 `return claude_profile(process) == profile.expanduser().resolve(strict=False)` vs :232 `REMOTE_SSH_TARGET and resolved.name == expected.name`",
+          "title": "ASUS의 Claude 연결 정상 인식하기"
         },
         {
           "taskId": "ACTL-WEB-FOUNDER-SURFACE",
@@ -2885,7 +2891,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "웹 보드를 쉬운 말과 즉시 결과로"
         },
         {
           "taskId": "ACTL-TK-FIRST-RUN-GUIDE",
@@ -2897,7 +2904,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "윈도우 보드 처음 사용 안내 추가"
         },
         {
           "taskId": "ACTL-BOARD-STARTUP-ERROR-PLAIN",
@@ -2909,7 +2917,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "보드 시작 실패를 쉬운 말로 안내"
         },
         {
           "taskId": "ACTL-BOARD-LIVE-STATE-TRUTH",
@@ -2954,7 +2963,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux: '막힘은 노랑'); src/actl/gui.py:66 '\"BLOCKED\": \"연결 끊김\"' vs src/actl/tui.py:270 '\"BLOCKED\": \"승인 기다림\"'; src/actl/serve.py:142 '\"BLOCKED\":\"bad\"'"
+          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux: '막힘은 노랑'); src/actl/gui.py:66 '\"BLOCKED\": \"연결 끊김\"' vs src/actl/tui.py:270 '\"BLOCKED\": \"승인 기다림\"'; src/actl/serve.py:142 '\"BLOCKED\":\"bad\"'",
+          "title": "승인 기다림을 주황색으로 바로 표시"
         },
         {
           "taskId": "ACTL-WEB-LEAD-EMPTY-FIRSTRUN",
@@ -2967,7 +2977,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux rules 1, 5, 14: 맨 위 한 문장, 빈 화면 이유+다음 행동, 첫 실행 3단계 안내 — web board); src/actl/serve.py:52 'content:\"ACTL // REMOTE AGENT CONTROL // SIGNAL LOCKED\"'"
+          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux rules 1, 5, 14: 맨 위 한 문장, 빈 화면 이유+다음 행동, 첫 실행 3단계 안내 — web board); src/actl/serve.py:52 'content:\"ACTL // REMOTE AGENT CONTROL // SIGNAL LOCKED\"'",
+          "title": "웹 보드에 지금 할 일 한 줄 안내"
         },
         {
           "taskId": "ACTL-WEB-READABLE-SIZES",
@@ -2980,7 +2991,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux rule 12: 글자 16px·버튼 44px); src/actl/serve.py:67 'button { ... padding:10px 16px; ... font-size:13px' and :64/:78/:82 font-size 13-14px"
+          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux rule 12: 글자 16px·버튼 44px); src/actl/serve.py:67 'button { ... padding:10px 16px; ... font-size:13px' and :64/:78/:82 font-size 13-14px",
+          "title": "웹 보드 글자와 버튼 크게 보기"
         }
       ],
       "qaRuntime": [
@@ -4157,7 +4169,8 @@
             "pnpm --filter @juplan/runtime test -- runtime.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "막힌 검사를 노란색 주의로 표시"
         }
       ],
       "qaRuntime": [
@@ -4715,7 +4728,8 @@
             "npm test -- tests/pipeline.test.ts",
             "npm run build"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "영수증 화면을 한눈에 이해하기 쉽게"
         },
         {
           "taskId": "JUCEIPT-SCAN-DAILY-FOUNDER-SUMMARY",
@@ -4731,7 +4745,8 @@
             "npm test -- tests/daily-cli.test.ts tests/scan-summary.test.ts tests/sources-scan-cli.test.ts",
             "npm run build"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "오늘 확인할 일을 한 문장으로 안내"
         },
         {
           "taskId": "JUCEIPT-RUN-OUTPUT-PLAIN-VERDICT",
@@ -4744,7 +4759,8 @@
             "npx vitest run tests/daily-cli.test.ts",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 대상: juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻; founder-ux rule 2 (no enum words on the surface); src/cli/main.ts:148 prints receipt.acceptance.state raw"
+          "ssotEvidence": "Founder direction 2026-09-25: 대상: juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻; founder-ux rule 2 (no enum words on the surface); src/cli/main.ts:148 prints receipt.acceptance.state raw",
+          "title": "작업 결과를 쉬운 한 문장으로 알려주기"
         },
         {
           "taskId": "JUCEIPT-CLI-ERROR-THREE-LINES",
@@ -4757,7 +4773,8 @@
             "npx vitest run tests/daily-cli.test.ts",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '오류 3줄', '개발자 글자는 원문 보기 안'; src/cli/main.ts:268 prints raw err.message (e.g. English ENOENT text) with a generic next line"
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '오류 3줄', '개발자 글자는 원문 보기 안'; src/cli/main.ts:268 prints raw err.message (e.g. English ENOENT text) with a generic next line",
+          "title": "문제가 생기면 이유와 할 일을 쉽게 안내"
         }
       ],
       "skills": {
@@ -5548,7 +5565,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후 (settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes; founder-ux rule 3: Korean labels, and QA should ask for changes when a label is English-only. At base, scripts/e2e.sh prints steps as {name:'build-registry',ok} with only English kebab names, while its labels map ('연습용 목록 만들기', '상태판 실행', …) is used only in `message`."
+          "ssotEvidence": "Founder direction 2026-09-24 오후 (settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes; founder-ux rule 3: Korean labels, and QA should ask for changes when a label is English-only. At base, scripts/e2e.sh prints steps as {name:'build-registry',ok} with only English kebab names, while its labels map ('연습용 목록 만들기', '상태판 실행', …) is used only in `message`.",
+          "title": "점검 단계마다 한국어 이름 표시"
         }
       ],
       "qaRuntime": [
@@ -7268,7 +7286,8 @@
           "tests": [
             "node --test test/approvals-module.test.mjs test/readable-text.test.mjs test/control-tower.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "승인 규칙을 한국어로 골라 추가"
         }
       ],
       "skills": {
@@ -7763,7 +7782,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:113-122 records PASS for summary_context, acceptance_parity, review_queue_utility, outcome_traceability, impact_traceability, unknown_safety, value_layer_separation and scope_drift, while docs/planning/BUSINESS_PRODUCT_WBS.md:124-130 still shows '- [ ] Aggregate task counts and acceptance distribution.' and the other §4.1 items unchecked, with no evidence links; Founder direction 2026-09-25: complete the Receipt-versus-summary register and score decision utility per task"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:113-122 records PASS for summary_context, acceptance_parity, review_queue_utility, outcome_traceability, impact_traceability, unknown_safety, value_layer_separation and scope_drift, while docs/planning/BUSINESS_PRODUCT_WBS.md:124-130 still shows '- [ ] Aggregate task counts and acceptance distribution.' and the other §4.1 items unchecked, with no evidence links; Founder direction 2026-09-25: complete the Receipt-versus-summary register and score decision utility per task",
+          "title": "묶음 모델 점검 항목에 검증 근거 연결"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-VALUE-MODEL-COVERAGE-TRACE",
@@ -7774,7 +7794,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:132-133 '## 4.2 Value model / - [ ] Separate Usage / Delivery / Value Estimate.'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:121 'value_layer_separation — both daily .cost objects total unknown: 5; receipts .cost.status is unknown for all 10'; Founder direction 2026-09-25 score decision utility per task"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:132-133 '## 4.2 Value model / - [ ] Separate Usage / Delivery / Value Estimate.'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:121 'value_layer_separation — both daily .cost objects total unknown: 5; receipts .cost.status is unknown for all 10'; Founder direction 2026-09-25 score decision utility per task",
+          "title": "가치 모델 항목별 검증 근거 정리"
         },
         {
           "taskId": "JUCEIPTPLAN-WBS-M3-DECISION-ITEM-EVIDENCE-LINK",
@@ -7785,7 +7806,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:147 '- [ ] GO / DEFER / KILL Daily Report productization.' has no evidence link, while lines 144-146 each link to M3 validation sections; docs/validation/M3_DAILY_VALUE_VALIDATION.md:189 'Actionable day-level value bar | Founder condition: `GO` only if the day-level view adds clear actionable value.'; Founder direction 2026-09-25"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:147 '- [ ] GO / DEFER / KILL Daily Report productization.' has no evidence link, while lines 144-146 each link to M3 validation sections; docs/validation/M3_DAILY_VALUE_VALIDATION.md:189 'Actionable day-level value bar | Founder condition: `GO` only if the day-level view adds clear actionable value.'; Founder direction 2026-09-25",
+          "title": "하루 보고서 출시 결정에 근거 연결"
         },
         {
           "taskId": "JUCEIPTPLAN-INDEX-M3-VALIDATION-ARTIFACT",
@@ -7796,7 +7818,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:6-17 lists 8 canonical artifacts with no M3 validation artifact (git grep M3_DAILY_VALUE_VALIDATION finds only WBS and P0 report); docs/validation/M3_DAILY_VALUE_VALIDATION.md:3-6 'Status: PLANNING-ONLY VALIDATION ARTIFACT ... Decision: NOT RECORDED BY THIS ARTIFACT'; docs/operations/PM_STATUS_BOARD.md:27 'Active product milestone | M3 — Daily Agent Value Decision'"
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:6-17 lists 8 canonical artifacts with no M3 validation artifact (git grep M3_DAILY_VALUE_VALIDATION finds only WBS and P0 report); docs/validation/M3_DAILY_VALUE_VALIDATION.md:3-6 'Status: PLANNING-ONLY VALIDATION ARTIFACT ... Decision: NOT RECORDED BY THIS ARTIFACT'; docs/operations/PM_STATUS_BOARD.md:27 'Active product milestone | M3 — Daily Agent Value Decision'",
+          "title": "하루 가치 검증 문서를 목차에 등록"
         }
       ]
     },
@@ -8325,7 +8348,8 @@
             "node --test tests/results/scenario-n/preexisting-changes.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:440 '### 7.6 기존 변경 보호 원칙 — 작업 시작 전부터 존재한 변경과 이번 작업으로 발생한 변경을 가능한 범위에서 구분한다 … 기존 변경을 임의로 삭제하거나 되돌리지 않는다'; docs/BEGINNER_REPORT_SPEC.md:589 '## 14. 작업 시작 기준 상태 … 나머지는 `출처 구분 불가`로 표시'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:440 '### 7.6 기존 변경 보호 원칙 — 작업 시작 전부터 존재한 변경과 이번 작업으로 발생한 변경을 가능한 범위에서 구분한다 … 기존 변경을 임의로 삭제하거나 되돌리지 않는다'; docs/BEGINNER_REPORT_SPEC.md:589 '## 14. 작업 시작 기준 상태 … 나머지는 `출처 구분 불가`로 표시'",
+          "title": "작업 전 변경과 새 변경 구분해 보고"
         },
         {
           "taskId": "JUTELL-MAIN-FILES-EXCLUDE-PARITY",
@@ -8339,7 +8363,8 @@
             "node --test tests/skill-report-contract.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:642 '### 15.2 제외 우선 파일 — 자동 생성 파일, 단순 잠금 파일, 기능 변화가 없는 포맷 수정, 단순 스냅샷, 기능에 직접 영향을 주지 않는 보조 파일 … 단, 의존성, 보안 또는 배포에 영향을 주면 주요 파일로 포함할 수 있다'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:642 '### 15.2 제외 우선 파일 — 자동 생성 파일, 단순 잠금 파일, 기능 변화가 없는 포맷 수정, 단순 스냅샷, 기능에 직접 영향을 주지 않는 보조 파일 … 단, 의존성, 보안 또는 배포에 영향을 주면 주요 파일로 포함할 수 있다'",
+          "title": "사소한 파일은 주요 파일에서 빼기"
         },
         {
           "taskId": "JUTELL-BASELINE-STATE-SKILL-PARITY",
@@ -8354,7 +8379,8 @@
             "node --test tests/info-system-scope-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:589 '## 14. 작업 시작 기준 상태 — Git 저장소 여부, 현재 변경 파일, 추적되지 않은 파일, 현재 브랜치, 기존 테스트 실패 여부 … 기존 변경을 되돌리거나 덮어쓰지 않음'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:589 '## 14. 작업 시작 기준 상태 — Git 저장소 여부, 현재 변경 파일, 추적되지 않은 파일, 현재 브랜치, 기존 테스트 실패 여부 … 기존 변경을 되돌리거나 덮어쓰지 않음'",
+          "title": "작업 전 상태 확인과 기존 변경 보호"
         },
         {
           "taskId": "JUTELL-SCENARIO-O-CONDITIONAL-ITEMS",
@@ -8369,7 +8395,8 @@
             "node --test tests/fixture-term-no-repeat.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:205 '### 6.3 조건부 보고 항목 — 다음 항목은 작업이 복잡하거나 관련 정보가 있을 때만 추가한다. * 새로 생성된 파일 * 삭제된 파일 …'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:205 '### 6.3 조건부 보고 항목 — 다음 항목은 작업이 복잡하거나 관련 정보가 있을 때만 추가한다. * 새로 생성된 파일 * 삭제된 파일 …'",
+          "title": "새로 만든 파일과 지운 파일 알려주기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
