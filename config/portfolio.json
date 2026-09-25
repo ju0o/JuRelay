@@ -9720,6 +9720,6 @@
   "memoryDelivery": true,
   "minFreeMemoryMb": 3500,
   "pausedRuntimes": {
-    "grok": "2026-09-25 excluded by Founder (\"Grok은 배제하고 다른 Agent로 진행\")"
+    "grok": "2026-09-25 Grok Build balance exhausted (402); notifier grok_tick re-adds it when a probe succeeds (Founder: 리미트 복구 되면 다시 끼고)"
   }
 }
