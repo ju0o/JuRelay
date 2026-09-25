@@ -5533,6 +5533,22 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): plain Korean, obvious next action, inline feedback, no raw codes; follows the done JUCONTROLER-GETTING-STARTED-CLI-MESSAGES table and the JUCONTROLER-REASON-TABLE-SYNC-TEST pattern",
           "title": "안내서와 상태판 문구 일치 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-STEP-KO-LABEL",
+          "scope": "Add a plain-Korean `label` to each entry of the `steps` array in the one JSON line that scripts/e2e.sh prints (for example {\"name\":\"build-registry\",\"label\":\"연습용 목록 만들기\",\"ok\":true}), reusing the script's existing `labels` map so the step names and the `message` sentence use the same words; keep schema jucontroler.e2e.v1, the step order, the checks, the key order and the exit codes as they are; update the exact `steps` assertion in tests/e2e-script.test.mjs, and update the example line and step list in docs/getting-started.md so each step shows its Korean label.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후 (settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes; founder-ux rule 3: Korean labels, and QA should ask for changes when a label is English-only. At base, scripts/e2e.sh prints steps as {name:'build-registry',ok} with only English kebab names, while its labels map ('연습용 목록 만들기', '상태판 실행', …) is used only in `message`."
         }
       ],
       "qaRuntime": [
