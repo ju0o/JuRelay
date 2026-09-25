@@ -9596,6 +9596,18 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:676-680 '고정된 글자 수를 강제하지 않지만 다음 기준을 사용한다. * 단순 작업: 짧은 요약 중심 * 중간 규모 작업: 주요 기능과 검증 중심 * 복잡하거나 위험한 작업: 필요한 세부정보 추가'; docs/BEGINNER_REPORT_SPEC.md:114 '## 5. 보고서 길이 기준'",
           "title": "작업 규모별 안내 기준을 일치시킴"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-TIER-PROFILE-LIMITS-PARITY-R2",
+          "scope": "Add a new offline node:test that reads packages/cli/src/commands/context.ts, apps/local-admin/server/config/schema.ts, apps/local-admin/src/lib/catalog.ts and docs/FEATURE_CONFIGURATION.md as plain text (no imports or builds). For all four profiles it checks that maxMainFiles, maxGlossaryTerms and compactReportMaxSentences match exactly between the two preset files and the FEATURE_CONFIGURATION §4 profile table: minimal=3/1/8, balanced=5/3/12, learning=5/6/12, detailed=5/6/18. It also checks that each classifyTier return pair (minimal/8, balanced/12, detailed/18) equals that profile's compactReportMaxSentences, and that learning never appears as a classifyTier suggestedProfile. The test must fail with a message naming the profile and field if any single limit value in any of the four sources is changed.",
+          "files": [
+            "tests/context-tier-profile-limits-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-tier-profile-limits-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/DECISIONS.md:9 'T3: 작업 등급 분류 (trivial ≤2파일·≤30줄·low만 → minimal/8문장, risky ... → detailed/18문장, 나머지 balanced/12문장)'; docs/FEATURE_CONFIGURATION.md:74 '| `minimal` | ... | 주요 파일 3개, 용어 1개, 8문장 |'; docs/FEATURE_CONFIGURATION.md:76 '| `learning` | 모두 켬 | 주요 파일 5개, 용어 6개, 12문장 |'; docs/BEGINNER_REPORT_SPEC.md:130 '* 주요 파일은 최대 3개'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
