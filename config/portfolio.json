@@ -1819,6 +1819,19 @@
           ],
           "ssotEvidence": "state AGENTRELAY-V1-APP-ICON-R2 HOLD 2026-09-25: TEST_GATE npm run build:win failed at WinPackager.signApp on Linux (environment, not the icon)",
           "title": "앱 아이콘 넣기"
+        },
+        {
+          "taskId": "AGENTRELAY-CONTROLROOM-LIVE-STATUS-CARD",
+          "scope": "관제실 각 프로젝트 카드에 지금 하는 일·여기까지 끝남·확인 상태·대표님 할 일·다음 단계를 쉬운 한국어로 표시하고 개발자 원문은 접어 둔다.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "test/controlroom-today.test.mjs"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: A) 관제실 레인마다 founder-ux Skill의 'Live status card' (지금 하는 일·여기까지 끝남·확인 상태·대표님 할 일·다음 단계)"
         }
       ],
       "qaRuntime": [
