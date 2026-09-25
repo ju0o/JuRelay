@@ -8547,7 +8547,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:149-150 'This trace records coverage of the six WBS §4.2 value-model items using only facts already recorded in this artifact. It records no M3 decision.'; docs/planning/BUSINESS_PRODUCT_WBS.md:132-138 '## 4.2 Value model' items have no evidence links, while §4.1 lines 124-130 do"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:149-150 'This trace records coverage of the six WBS §4.2 value-model items using only facts already recorded in this artifact. It records no M3 decision.'; docs/planning/BUSINESS_PRODUCT_WBS.md:132-138 '## 4.2 Value model' items have no evidence links, while §4.1 lines 124-130 do",
+          "title": "가치 점검 항목마다 검증 결과 연결"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML04-HISTORY-BANNER",
@@ -8558,7 +8559,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:86 'Earlier `docs/visual/04_BUSINESS_SYSTEM_ERD_WBS.html` is retained only as draft/history. 05 is canonical.'; docs/planning/BUSINESS_SYSTEM_INDEX.md:24 'retained as an earlier draft/history artifact'; docs/visual/04_BUSINESS_SYSTEM_ERD_WBS.html:30-32 still says 'PM 시각 SSOT' and 'CURRENT · M2 Receipt Value Proof / PR #4 PM Review'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:86 'Earlier `docs/visual/04_BUSINESS_SYSTEM_ERD_WBS.html` is retained only as draft/history. 05 is canonical.'; docs/planning/BUSINESS_SYSTEM_INDEX.md:24 'retained as an earlier draft/history artifact'; docs/visual/04_BUSINESS_SYSTEM_ERD_WBS.html:30-32 still says 'PM 시각 SSOT' and 'CURRENT · M2 Receipt Value Proof / PR #4 PM Review'",
+          "title": "옛 설계 화면에 지난 자료라는 안내 달기"
         }
       ]
     },
