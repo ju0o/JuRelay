@@ -3058,6 +3058,18 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '각 Github에 따로 따로 올릴거라 영상도 따로따로'; 'Aside가 영상 링크 안 주는 거 같은데' → put each repo's 30s video in the repo itself; overall 60s intro already on YouTube https://youtu.be/tB1cCLzTvIs (Aside upload, 일부 공개)",
           "title": "README에 소개 영상 넣기"
+        },
+        {
+          "taskId": "ACTL-TEST-VERSION-PY310",
+          "scope": "tests/test_version_one.py imports tomllib (Python 3.11+), so GitHub CI linux-tests (3.10) fails although pyproject requires-python >= 3.10. Read the version from pyproject.toml with a regex (^version\\s*=\\s*\"([^\"]+)\") instead of tomllib; nothing else.",
+          "files": [
+            "tests/test_version_one.py"
+          ],
+          "tests": [
+            "python3 -m pytest tests/test_version_one.py -q"
+          ],
+          "ssotEvidence": "GitHub Actions run 36096320753 linux-tests (3.10): ModuleNotFoundError: No module named 'tomllib' (PR ju0o/JuActl#1, 2026-09-25)",
+          "title": "버전 시험을 Python 3.10에서도 돌게"
         }
       ],
       "qaRuntime": [
