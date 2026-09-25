@@ -6381,6 +6381,23 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes",
           "title": "오류 안내를 쉬운 말로 보여주기"
+        },
+        {
+          "taskId": "JCAPP-TAB-WORDS-MATCH-MENU",
+          "scope": "The menu already calls the relay tab '진행' (PRIMARY_NAV), so in operator/public/app.js make every on-screen mention match it and remove leftover jargon and raw paths: 'Agent Relay 탭' → '진행 탭' in skillSavedMarkup, the data-skill-next line, the approvals hold-jump line and the JuPlan no-projects line; the 'Agent Relay 보기'/'Agent Relay 탭 열기' buttons → '진행 보기'/'진행 탭 열기'; '멈춘 레인이 없어요' → '멈춘 작업이 없어요'; skillSavedMarkup stops printing the raw saved file path; update the existing assertions to match the new wording, keeping every data-* hook and handler unchanged.",
+          "files": [
+            "operator/public/app.js",
+            "test/skill-save.test.mjs",
+            "test/skill-draft-id.test.mjs",
+            "test/approvals-module.test.mjs",
+            "test/juplan-module.test.mjs",
+            "test/control-tower.test.mjs"
+          ],
+          "tests": [
+            "node --test test/skill-save.test.mjs test/skill-draft-id.test.mjs test/approvals-module.test.mjs test/juplan-module.test.mjs test/control-tower.test.mjs test/menu-five.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = plain Korean, obvious next action, no raw codes; operator/public/app.js:7 PRIMARY_NAV ['relay','진행'] vs app.js:2016 '저장했어요 · Agent Relay 탭에서 역할별로 켤 수 있어요' + esc(file), app.js:2117 '멈춘 레인이 없어요'"
         }
       ]
     },
