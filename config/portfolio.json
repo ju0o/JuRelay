@@ -6996,7 +6996,12 @@
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후, settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base lib/relayBoard.mjs:53 laneChainSentence = `${project} 프로젝트의 ${role === 'qa' ? 'QA' : 'Worker'} 순서를 ${chain.join(' → ')}(으)로 바꿀게요.`",
           "title": "작업·검수 담당 순서를 쉬운 말로 보여주기"
         }
-      ]
+      ],
+      "skills": {
+        "pm": [
+          "founder-ux"
+        ]
+      }
     },
     {
       "id": "juceipt-planning",
