@@ -10189,6 +10189,17 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 00:04: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs:1 'Pure helpers ... so check.mjs can test them.'",
           "title": "글자 정리와 한국 시간 계산 자동 점검"
+        },
+        {
+          "taskId": "JUAI-README-COMMANDS",
+          "scope": "README에 bot.mjs의 멤버 명령어 !도움말, !남은횟수, !구독/!구독목록/!구독취소를 짧게 안내하는 한 줄을 추가한다.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
