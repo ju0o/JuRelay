@@ -4448,6 +4448,24 @@
       ],
       "tasks": [
         {
+          "taskId": "JUCEIPT-SCAN-MEMORY-BOUND",
+          "scope": "src/sources/scan.ts scanSessions() calls importSessions(home) which reads EVERY Claude/Codex/other session file whole (fs.readFile), every OpenCode row and the Agent Relay state, keeps all events of all sessions in one array, and only then filters by --since. On the Founder's ASUS (Claude 1.4 GB, Codex 1.1 GB, OpenCode db 1.5 GB, Grok 1.6 GB) `juceipt scan --since 6h` did not finish in 5 min and one node process reached 1.7 GB, which with other work filled RAM+swap and the OOM killer took the machine down (2026-09-25 15:53). Fix: pass the cutoff into importSessions; stat each file and skip it when mtimeMs < cutoff before opening it; read JSONL files line by line (readline over createReadStream) instead of readFile; query OpenCode rows only newer than the cutoff in SQL; process one session at a time (parse → receipt → write → drop) instead of collecting all sessions first; same for readOtherSessions. Add a test that builds a temp home with one old large file (e.g. 30 MB, mtime 2 days ago) and one fresh small session, runs scanSessions({since:'1h'}) and asserts only the fresh one is produced and the old file was never opened (spy or fs.open count) — plus heapUsed growth stays under 50 MB.",
+          "files": [
+            "src/sources/scan.ts",
+            "src/sources/others.ts",
+            "src/sources/opencode.ts",
+            "src/sources/claude.ts",
+            "tests/scan-memory-bound.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npx vitest run tests/scan-memory-bound.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "OOM 2026-09-25 15:53 (journalctl -b -1 -k: node pid 2216423 rss 1695 MB = juceipt scan --since 30m on integration; swap free 196 kB); src/sources/scan.ts:94,110,133-135",
+          "title": "영수증 만들기가 메모리를 다 쓰지 않게"
+        },
+        {
           "taskId": "JUCEIPT-M2-011-DEPENDENCY-IMPACT",
           "scope": "Surface the newly added runtime dependency as a dependency_change material impact in m2-011 while preserving explicit temporary verification-install exclusions.",
           "files": [
@@ -5069,24 +5087,6 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '각 Github에 따로 따로 올릴거라 영상도 따로따로'; 'Aside가 영상 링크 안 주는 거 같은데' → put each repo's 30s video in the repo itself; overall 60s intro already on YouTube https://youtu.be/tB1cCLzTvIs (Aside upload, 일부 공개)",
           "title": "README에 소개 영상 넣기"
-        },
-        {
-          "taskId": "JUCEIPT-SCAN-MEMORY-BOUND",
-          "scope": "src/sources/scan.ts scanSessions() calls importSessions(home) which reads EVERY Claude/Codex/other session file whole (fs.readFile), every OpenCode row and the Agent Relay state, keeps all events of all sessions in one array, and only then filters by --since. On the Founder's ASUS (Claude 1.4 GB, Codex 1.1 GB, OpenCode db 1.5 GB, Grok 1.6 GB) `juceipt scan --since 6h` did not finish in 5 min and one node process reached 1.7 GB, which with other work filled RAM+swap and the OOM killer took the machine down (2026-09-25 15:53). Fix: pass the cutoff into importSessions; stat each file and skip it when mtimeMs < cutoff before opening it; read JSONL files line by line (readline over createReadStream) instead of readFile; query OpenCode rows only newer than the cutoff in SQL; process one session at a time (parse → receipt → write → drop) instead of collecting all sessions first; same for readOtherSessions. Add a test that builds a temp home with one old large file (e.g. 30 MB, mtime 2 days ago) and one fresh small session, runs scanSessions({since:'1h'}) and asserts only the fresh one is produced and the old file was never opened (spy or fs.open count) — plus heapUsed growth stays under 50 MB.",
-          "files": [
-            "src/sources/scan.ts",
-            "src/sources/others.ts",
-            "src/sources/opencode.ts",
-            "src/sources/claude.ts",
-            "tests/scan-memory-bound.test.ts"
-          ],
-          "tests": [
-            "npm run build",
-            "npx vitest run tests/scan-memory-bound.test.ts",
-            "npm test"
-          ],
-          "ssotEvidence": "OOM 2026-09-25 15:53 (journalctl -b -1 -k: node pid 2216423 rss 1695 MB = juceipt scan --since 30m on integration; swap free 196 kB); src/sources/scan.ts:94,110,133-135",
-          "title": "영수증 만들기가 메모리를 다 쓰지 않게"
         }
       ],
       "skills": {
