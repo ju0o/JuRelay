@@ -36,6 +36,7 @@ function packetLine(text, prefix) {
 // A quota/rate-limit failure moves the lane to the next runtime in its chain instead of holding the task.
 export const QUOTA_ERROR = /\b402\b|Payment Required|balance exhausted|rate.?limit|quota|usage limit|limit (reached|exceeded)|hit your [a-z ]*limit|weekly limit|too many requests|\b429\b|insufficient[_ ]quota|out of credits|credit balance|exceeded your/i;
 // Provider-side outages (free models overload): the next runtime in the chain takes the turn, like a quota hit.
+export const ENV_MISSING = /not the tsc command|command not found|Cannot find module|ERR_MODULE_NOT_FOUND|Cannot find package|No module named|npm ERR! missing/i;
 export const TRANSIENT_ERROR = /\b50[234]\b|\b426\b|Upgrade Required|failed to connect to websocket|ECONNREFUSED|stream disconnected|error sending request|overloaded|temporarily unavailable|service unavailable|upstream error|ECONNRESET|ETIMEDOUT|socket hang up|model not found|hook dispatch failed|session not found/i; // last two: a misconfigured runtime (cline 2026-09-23) — the next runtime takes over; cline "session not found" 2026-09-26
 // Lane config: runtime / qaRuntime may be one id or an ordered fallback list, e.g. ["opencode", "codex"].
 const chainOf = (value) => [value].flat().filter(Boolean);
@@ -529,7 +530,7 @@ export class PortfolioRunner {
         if (!task.testGate.ok) task.qa = { ...task.qa, verdict: "REQUEST_CHANGES", findings: [...(task.qa.findings || []), failed ? `TEST_GATE: \`${failed.cmd}\` exit ${failed.code}: ${failed.tail}` : "TEST_GATE: tests changed HEAD"] };
         // 토큰 감지 (Founder 2026-09-25): when the base already fails the same command, rebuilding this task can never pass.
         // Hold it without a rebuild and park the lane until the integration tip moves (a -BASEFIX task still runs).
-        if (failed && !moved && head && builder.base && await this.baseFails(builder.path, builder.base, head, failed.cmd, signal)) {
+        if (failed && !moved && head && builder.base && !/-BASEFIX(-R\d+)?$/.test(task.taskId) && await this.baseFails(builder.path, builder.base, head, failed.cmd, signal)) {
           state.baseBroken = { ...(state.baseBroken || {}), [project.id]: { base: builder.base, cmd: failed.cmd, taskId: task.taskId, tail: String(failed.tail || "").slice(-1500), at: new Date().toISOString() } };
           task.state = "HOLD"; task.error = `BASE_BROKEN: \`${failed.cmd}\` already fails on ${builder.base.slice(0, 7)} before this change`; await this.publishResult(task); break;
         }
@@ -549,7 +550,8 @@ export class PortfolioRunner {
   // Run one failing gate command on the task's base commit inside the same worktree (keeps installed deps), then restore HEAD.
   async baseFails(path, base, head, cmd, signal) {
     try { await exec("git", ["-C", path, "checkout", "-q", "--detach", base]); } catch { return false; }
-    try { return !(await this.testGate(path, [cmd], { signal })).ok; }
+    // a missing tool/dependency is the worktree's environment, not a broken base (jutell 2026-09-26: npx tsc without typescript)
+    try { const r = await this.testGate(path, [cmd], { signal }); return !r.ok && !ENV_MISSING.test(String(r.results?.at(-1)?.tail || "")); }
     finally { await exec("git", ["-C", path, "checkout", "-q", "--detach", head]).catch(() => {}); }
   }
 
@@ -558,7 +560,7 @@ export class PortfolioRunner {
     for (const [pid, b] of Object.entries(state.baseBroken || {})) {
       const project = this.manifest.projects?.find((item) => item.id === pid);
       const tip = project?.path ? await gitRef(project.path, INTEGRATION_REF) : null;
-      if (project && (!tip || tip === b.base)) continue;
+      if (project && (!tip || tip === b.base) && !ENV_MISSING.test(String(b.tail || ""))) continue;
       delete state.baseBroken[pid];
       for (const t of state.tasks) if (t.projectId === pid && t.state === "HOLD" && String(t.error || "").startsWith("BASE_BROKEN")) { t.state = "QUEUED"; t.attempts = 0; t.qaAttempts = 0; t.error = null; t.baseRequeued = true; }
     }

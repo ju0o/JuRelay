@@ -487,9 +487,11 @@ test("base broken: a gate command that already fails on the base parks the lane 
   assert.equal(await runner.baseFails(repo, base, head, "grep -q 1 ok"), true);   // base has ok=0 → fails
   assert.equal(git("rev-parse", "HEAD"), head);                                      // HEAD restored
   assert.equal(await runner.baseFails(repo, base, head, "test -f ok"), false);
+  assert.equal(await runner.baseFails(repo, base, head, "echo 'This is not the tsc command you are looking for'; exit 1"), false);  // missing tool ≠ broken base
   git("update-ref", "refs/heads/agent-relay/integration", base);
   const state = { baseBroken: { p: { base } }, tasks: [{ taskId: "T", projectId: "p", state: "HOLD", error: "BASE_BROKEN: x", attempts: 3 }, { taskId: "U", projectId: "p", state: "HOLD", error: "other" }] };
   await runner.clearBaseBroken(state); assert.ok(state.baseBroken.p);                // tip unchanged → still parked
+  const env = { baseBroken: { p: { base, tail: "bash: tsc: command not found" } }, tasks: [] }; await runner.clearBaseBroken(env); assert.equal(env.baseBroken.p, undefined);
   git("update-ref", "refs/heads/agent-relay/integration", head);
   await runner.clearBaseBroken(state);
   assert.equal(state.baseBroken.p, undefined); assert.equal(state.tasks[0].state, "QUEUED"); assert.equal(state.tasks[0].attempts, 0); assert.equal(state.tasks[1].state, "HOLD");
