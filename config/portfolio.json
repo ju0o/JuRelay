@@ -1536,7 +1536,8 @@
             "node --test test/project-labels.test.mjs test/controlroom-plain-2.test.mjs test/founder-copy-ko.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24: launch bar = plain Korean, no raw codes; test/controlroom-plain-2.test.mjs:11 expects '통합 관제 화면' but src/shared/projectLabels.ts:13 has '통합 관제 화면 (jucontroler-app)'"
+          "ssotEvidence": "Founder direction 2026-09-24: launch bar = plain Korean, no raw codes; test/controlroom-plain-2.test.mjs:11 expects '통합 관제 화면' but src/shared/projectLabels.ts:13 has '통합 관제 화면 (jucontroler-app)'",
+          "title": "관제 화면 이름을 쉬운 말로 정리"
         },
         {
           "taskId": "AGENTRELAY-HOLD-FALLBACK-NO-RAW",
@@ -1550,7 +1551,8 @@
             "node --test test/hold-option-buttons.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24: HOLD cards show one Korean sentence summary with the raw QA finding collapsed; src/shared/projectLabels.ts:40-41 embeds cleanReason in the headline"
+          "ssotEvidence": "Founder direction 2026-09-24: HOLD cards show one Korean sentence summary with the raw QA finding collapsed; src/shared/projectLabels.ts:40-41 embeds cleanReason in the headline",
+          "title": "보류 안내를 쉬운 한국어로 표시"
         },
         {
           "taskId": "AGENTRELAY-CHAIN-ARIA-KO",
@@ -1563,7 +1565,8 @@
             "node --test test/a11y-guard.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, no raw codes, Hermes style everywhere (A-21); src/frontend/controlRoom.tsx:307 aria-label={`${role} runtime 순서 선택`}"
+          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, no raw codes, Hermes style everywhere (A-21); src/frontend/controlRoom.tsx:307 aria-label={`${role} runtime 순서 선택`}",
+          "title": "작업 순서 고르기 음성 안내 한국어로"
         },
         {
           "taskId": "AGENTRELAY-PLANSTUDIO-ARIA-PLACEHOLDER-KO",
@@ -1577,7 +1580,8 @@
             "node --test test/inline-confirm.test.mjs test/planstudio-founder-view.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = plain Korean, no raw codes, Hermes style everywhere (A-21); base planStudio.tsx:466/470/489/585/638/655 aria-label=\"project list\"/\"projects\"/\"goal card\"/\"run policy\"/\"pm chat\"/\"selected node detail\", :645 placeholder=\"예: 3번 작업을 QA 먼저로 바꿔줘\""
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = plain Korean, no raw codes, Hermes style everywhere (A-21); base planStudio.tsx:466/470/489/585/638/655 aria-label=\"project list\"/\"projects\"/\"goal card\"/\"run policy\"/\"pm chat\"/\"selected node detail\", :645 placeholder=\"예: 3번 작업을 QA 먼저로 바꿔줘\"",
+          "title": "기획 화면 음성 안내와 예시 한국어로"
         },
         {
           "taskId": "AGENTRELAY-MODEL-USAGE-AI-NAMES",
@@ -1593,7 +1597,8 @@
             "node --test test/cr08.test.mjs test/record-screen-plain.test.mjs test/project-labels.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, no raw codes; A-22 AI 자동 배정 (subscribed AIs first) — base approvals.tsx:87 renders raw <span className=\"model-usage-id\">{row.runtimeId}</span> (e.g. 'claude-team') in the 관제실 모델 사용량 panel"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, no raw codes; A-22 AI 자동 배정 (subscribed AIs first) — base approvals.tsx:87 renders raw <span className=\"model-usage-id\">{row.runtimeId}</span> (e.g. 'claude-team') in the 관제실 모델 사용량 panel",
+          "title": "사용량 목록에 제품 이름 보여주기"
         },
         {
           "taskId": "AGENTRELAY-APPROVAL-NO-RAW-JSON",
@@ -1608,7 +1613,8 @@
             "node --test test/approvals-readable.test.mjs test/approvals-category-ko.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes; base approvals.tsx:43/105 and App.tsx:256 fall back to JSON.stringify(rule/item) as the visible card text"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes; base approvals.tsx:43/105 and App.tsx:256 fall back to JSON.stringify(rule/item) as the visible card text",
+          "title": "설명 없는 승인 규칙 쉽게 보여주기"
         },
         {
           "taskId": "AGENTRELAY-HOLD-CARD-EASY",
@@ -1664,7 +1670,8 @@
             "node --test test/founder-copy-ko.test.mjs",
             "node --test test/approvals-readable.test.mjs"
           ],
-          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md"
+          "ssotEvidence": "Founder 2026-09-24 20시: '나머지 작업들 이어서 계속'; dogfood round 2 report reports/bugs/BUGS_dogfood2_20260924.md",
+          "title": "짧은 작업 보고서 프로젝트 이름 추가"
         },
         {
           "taskId": "AGENTRELAY-README-GITHUB",
@@ -6483,7 +6490,8 @@
             "node --test test/skill-save.test.mjs test/skill-draft-id.test.mjs test/approvals-module.test.mjs test/juplan-module.test.mjs test/control-tower.test.mjs test/menu-five.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = plain Korean, obvious next action, no raw codes; operator/public/app.js:7 PRIMARY_NAV ['relay','진행'] vs app.js:2016 '저장했어요 · Agent Relay 탭에서 역할별로 켤 수 있어요' + esc(file), app.js:2117 '멈춘 레인이 없어요'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): launch bar = plain Korean, obvious next action, no raw codes; operator/public/app.js:7 PRIMARY_NAV ['relay','진행'] vs app.js:2016 '저장했어요 · Agent Relay 탭에서 역할별로 켤 수 있어요' + esc(file), app.js:2117 '멈춘 레인이 없어요'",
+          "title": "화면 안내 문구를 메뉴 이름과 맞추기"
         },
         {
           "taskId": "JCAPP-README-GITHUB",
@@ -6884,7 +6892,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:30-31 '| Active product milestone | **M3 — Daily Agent Value Decision** |' / '| Product decision | **M2 GO** |'; :47 '| Quarantine decision | **CLASSIFIED — no PR / no merge** |'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:30-31 '| Active product milestone | **M3 — Daily Agent Value Decision** |' / '| Product decision | **M2 GO** |'; :47 '| Quarantine decision | **CLASSIFIED — no PR / no merge** |'",
+          "title": "인수인계 문서에 현재 단계 안내 추가"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-CHECK-SOURCE-RECEIPT-IDS",
@@ -6895,7 +6904,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:122-123 'For each check, retain the validator's observation, the source Receipt IDs, and a short counterexample when the result is `NO` or `UNKNOWN`.'; Founder direction 2026-09-25 'Complete the seven-task Receipt-versus-summary register'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:122-123 'For each check, retain the validator's observation, the source Receipt IDs, and a short counterexample when the result is `NO` or `UNKNOWN`.'; Founder direction 2026-09-25 'Complete the seven-task Receipt-versus-summary register'",
+          "title": "일일 가치 검증표에 근거 영수증 표시"
         }
       ]
     },
@@ -7294,7 +7304,8 @@
             "node --test tests/results/scenario-g/unknown-risk-report.test.mjs",
             "node --test tests/fixture-risk-reason.test.mjs tests/fixture-term-no-repeat.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:345-351 '#### 판정 불가 / 변경 범위나 실행 환경을 충분히 확인하지 못해 위험도를 판단할 수 없는 상태다. / 위험도에는 반드시 짧은 근거를 함께 작성한다.'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:345-351 '#### 판정 불가 / 변경 범위나 실행 환경을 충분히 확인하지 못해 위험도를 판단할 수 없는 상태다. / 위험도에는 반드시 짧은 근거를 함께 작성한다.'",
+          "title": "변경 기록 없을 때 위험도 판정 불가 보고 확인"
         },
         {
           "taskId": "JUTELL-PLAN-ONLY-RESPONSE-FIXTURE",
@@ -7307,7 +7318,8 @@
             "node --test tests/results/scenario-h/plan-only.test.mjs",
             "node --test tests/fixture-term-no-repeat.test.mjs tests/fixture-risk-reason.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:524-533 '### 8.4 계획만 요청한 경우 ... 무엇을 바꿀 예정인지 / 어떤 기능이 영향을 받을 수 있는지 / 어떤 파일을 확인할 예정인지 / 어떤 검증이 필요할지 / 실제로 변경하지 않은 내용을 완료된 것처럼 작성하지 않는다.'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:524-533 '### 8.4 계획만 요청한 경우 ... 무엇을 바꿀 예정인지 / 어떤 기능이 영향을 받을 수 있는지 / 어떤 파일을 확인할 예정인지 / 어떤 검증이 필요할지 / 실제로 변경하지 않은 내용을 완료된 것처럼 작성하지 않는다.'",
+          "title": "작업 전 계획만 알려주는 답변 확인"
         },
         {
           "taskId": "JUTELL-SCENARIO-I-NO-TOOL-PARTIAL-REPORT",
@@ -7320,7 +7332,8 @@
             "node --test tests/results/scenario-i/no-tool-partial-report.test.mjs",
             "node --test tests/fixture-risk-reason.test.mjs tests/fixture-term-no-repeat.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:441-447 '### 11.2 실행 권한 또는 도구가 없는 경우 ... 핵심 검증을 일부만 수행함: `일부 확인`'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:441-447 '### 11.2 실행 권한 또는 도구가 없는 경우 ... 핵심 검증을 일부만 수행함: `일부 확인`'",
+          "title": "도구가 없어 일부만 확인한 보고 점검"
         },
         {
           "taskId": "JUTELL-RISK-LEVEL-LABELS-PARITY",
@@ -7331,7 +7344,8 @@
           "tests": [
             "node --test tests/risk-level-labels-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:302-351 '### 6.7 위험도 안내 / #### 낮음 / #### 중간 / #### 높음 / #### 판정 불가 ... 위험도에는 반드시 짧은 근거를 함께 작성한다.'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:302-351 '### 6.7 위험도 안내 / #### 낮음 / #### 중간 / #### 높음 / #### 판정 불가 ... 위험도에는 반드시 짧은 근거를 함께 작성한다.'",
+          "title": "위험도 단계 이름이 문서끼리 같은지 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
