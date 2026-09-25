@@ -492,7 +492,14 @@ test("base broken: a gate command that already fails on the base parks the lane 
   const state = { baseBroken: { p: { base } }, tasks: [{ taskId: "T", projectId: "p", state: "HOLD", error: "BASE_BROKEN: x", attempts: 3 }, { taskId: "U", projectId: "p", state: "HOLD", error: "other" }] };
   await runner.clearBaseBroken(state); assert.ok(state.baseBroken.p);                // tip unchanged → still parked
   const env = { baseBroken: { p: { base, tail: "bash: tsc: command not found" } }, tasks: [] }; await runner.clearBaseBroken(env); assert.equal(env.baseBroken.p, undefined);
+  const slow = { baseBroken: { p: { base, tail: "Error: Test timed out in 15000ms." } }, tasks: [] }; await runner.clearBaseBroken(slow); assert.equal(slow.baseBroken.p, undefined);  // a slow machine is not a broken base
   git("update-ref", "refs/heads/agent-relay/integration", head);
   await runner.clearBaseBroken(state);
   assert.equal(state.baseBroken.p, undefined); assert.equal(state.tasks[0].state, "QUEUED"); assert.equal(state.tasks[0].attempts, 0); assert.equal(state.tasks[1].state, "HOLD");
+});
+
+test("base broken: the parked lane queues its -BASEFIX before the task that is parked", () => {
+  const runner = new PortfolioRunner({ manifest: { projects: [{ id: "p", path: "/nonexistent", tasks: [{ taskId: "A", title: "a" }, { taskId: "A-BASEFIX", title: "fix" }] }] }, statePath: "/nonexistent/s.json", worktreeRoot: "/nonexistent/w" });
+  const state = { baseBroken: { p: { base: "x" } }, tasks: [] };
+  runner.queueNext(state); assert.deepEqual(state.tasks.map((t) => t.taskId), ["A-BASEFIX"]);
 });
