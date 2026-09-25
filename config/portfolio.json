@@ -5953,6 +5953,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24: (2) README '처음 쓰는 법' Quickstart commands must match exactly what the code does; scripts/status-board.mjs@6403b48 supports --help/-h (usage to stdout, exit 0), but README Quickstart step 3 does not mention it",
           "title": "명령어 쓰는 법을 바로 알아요"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-EMPTY-REGISTRY-STEP",
+          "scope": "Add an eighth step run_empty_registry to scripts/e2e.sh after run_unknown_project_id: it writes a temp registry {\"projects\":[]}, runs status-board and passes only when the exit code is 0, stdout is exactly `[]`, and stderr is exactly '목록에 프로젝트가 없어요 — registry.json의 projects에 항목을 넣으세요 (README 처음 쓰는 법 예시 참고)'. Use label '빈 목록 안내' and next command `board`. Update tests/e2e-script.test.mjs so its expected steps include the new step, and update the example JSON line, the next bullet and the step list in docs/getting-started.md.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 02시 goal 1: scripts/e2e.sh runs the main user flow offline and prints {ok, steps[], ms}); scripts/status-board.mjs@a680773 prints '목록에 프로젝트가 없어요 …' for an empty registry, docs/getting-started.md lists that line, and no e2e step checks it yet"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-DOCS-STEPS-SYNC-TEST",
+          "scope": "Add one offline test, tests/e2e-docs-sync.test.mjs. It reads the `const labels = { … }` map in the source text of scripts/e2e.sh. It then asserts two things in docs/getting-started.md section '`bash scripts/e2e.sh` 결과 읽는 법': the steps array of the example ```json line lists every label key in the same order, with name set to the key with '_' replaced by '-' and label set to the map value; and each step has a bullet written as `name` (label). Documentation step drift then fails the test suite.",
+          "files": [
+            "tests/e2e-docs-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (launch bar: plain Korean with an obvious next action; README Quickstart must match what the e2e script really does); follows the sync-test pattern already used at a680773 in tests/quickstart-next-sync.test.mjs, tests/reason-table-sync.test.mjs and tests/getting-started-lines-sync.test.mjs"
         }
       ],
       "qaRuntime": [
