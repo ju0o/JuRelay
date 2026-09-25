@@ -1491,6 +1491,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 오후: 'Agent Relay: independent QA (never self-review)'; portfolio-runner/index.mjs:396 runs QA with the same `adapter` as the worker while snapshot line 110 already reports project.qaRuntime",
           "title": "검수를 따로 정한 담당이 맡도록"
+        },
+        {
+          "taskId": "AGENTRELAY-RUNNER-QA-NOT-SELF",
+          "scope": "In src/v2/portfolio-runner/index.mjs runOne, stop with a recorded TASK_FAILED lifecycle event when project.qaRuntime is set and resolves to the same runtime key as project.runtime || project.owner, marking the task BLOCKED_QA_NOT_INDEPENDENT before any worktree is created or any builder/QA runs, and make the status snapshot qa.runtime (line ~110) report the runtime that actually runs QA (project.qaRuntime || project.runtime || project.owner) instead of the hard-coded 'codex' fallback; leave the existing behavior for a missing qaRuntime unchanged, and add a discriminating test for both changes in test/v2/portfolio-runner.test.mjs.",
+          "files": [
+            "src/v2/portfolio-runner/index.mjs",
+            "test/v2/portfolio-runner.test.mjs"
+          ],
+          "tests": [
+            "node --test test/v2/portfolio-runner.test.mjs",
+            "npm run test:v2:runner",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: 'Agent Relay: independent QA (never self-review)'; src/v2/portfolio-runner/index.mjs:385-386 currently lets qaRuntime equal the worker adapter, and :110 reports qa runtime as 'codex' when qaRuntime is absent"
+        },
+        {
+          "taskId": "AGENTRELAY-CHAIN-QA-NOT-SELF-UI",
+          "scope": "In the Control Room 검수하는 AI 바꾸기 editor (src/frontend/controlRoom.tsx ChainEditor, lines ~266-325 and ~592-593), pass the lane's worker chain to the QA editor and, using a new pure exported helper isSelfReviewChain(worker, qa) in src/shared/projectLabels.ts that returns true when the first QA AI equals the first worker AI, show the inline Korean sentence '만든 AI가 스스로 검수할 수 없어요. 다른 AI를 첫 번째로 골라 주세요.' and disable 'AI 순서 저장' while it is true; change nothing else, including the worker editor, and extend test/project-labels.test.mjs with source checks for the helper and the warning.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/shared/projectLabels.ts",
+            "test/project-labels.test.mjs"
+          ],
+          "tests": [
+            "node --test test/project-labels.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: 'Agent Relay: independent QA (never self-review)' + 'inline feedback, obvious next action'; src/frontend/controlRoom.tsx:276-296 lets any runtime be saved as first QA, even the worker's own"
         }
       ],
       "qaRuntime": [
