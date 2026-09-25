@@ -5659,7 +5659,8 @@
             "npx vitest run tests/sources-scan-cli.test.ts",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 대상: juceipt 명령 출력(scan, daily, receipt) — 맨 위 한 문장, 빈 화면 이유+다음 행동; base src/cli/main.ts:244-249 prints raw '세션: N개' with no verdict sentence and no empty-state guidance"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 대상: juceipt 명령 출력(scan, daily, receipt) — 맨 위 한 문장, 빈 화면 이유+다음 행동; base src/cli/main.ts:244-249 prints raw '세션: N개' with no verdict sentence and no empty-state guidance",
+          "title": "작업 확인 결과 한 줄로 보기"
         },
         {
           "taskId": "JUCEIPT-TASK-TITLE-ENGLISH-KOREAN",
@@ -5675,7 +5676,8 @@
             "npx vitest run tests/daily.test.ts tests/daily-corpus.test.ts tests/scan-summary.test.ts",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: '영어 작업 제목을 쉬운 한국어 요약으로'; base src/daily/index.ts:28-37 taskTitle matches only Korean keywords, so every English request (e.g. 'Fix login bug') falls through to '작업 내용 확인' in daily output and scan SUMMARY.md"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '영어 작업 제목을 쉬운 한국어 요약으로'; base src/daily/index.ts:28-37 taskTitle matches only Korean keywords, so every English request (e.g. 'Fix login bug') falls through to '작업 내용 확인' in daily output and scan SUMMARY.md",
+          "title": "영어 요청도 한국어 제목으로"
         }
       ],
       "skills": {
@@ -6741,7 +6743,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): a real end-to-end script that runs the product's main user flow offline in a temp dir and prints one JSON line {ok, steps[], ms}; today e2e covers the 'hold' needs-action line (run_needs_action) but not the 'human-gate' one, which src/adapters/agent-relay.mjs:29-30 returns and scripts/status-board.mjs prints on its 확인이 필요한 프로젝트 line"
+          "ssotEvidence": "Founder direction 2026-09-24 02시 (1): a real end-to-end script that runs the product's main user flow offline in a temp dir and prints one JSON line {ok, steps[], ms}; today e2e covers the 'hold' needs-action line (run_needs_action) but not the 'human-gate' one, which src/adapters/agent-relay.mjs:29-30 returns and scripts/status-board.mjs prints on its 확인이 필요한 프로젝트 line",
+          "title": "사람 확인이 필요한 일 알림 점검"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-SOURCE-STALE-LINE-TEST",
@@ -6754,7 +6757,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, no raw codes; the source-stale wording in scripts/status-board.mjs reasonWords ('원본이 오래된 값이라고 알렸어요') and the docs/getting-started.md advice for stale·source-stale are not checked by any CLI test at base; source-stale is only checked at the adapter level in tests/juplan-adapter.test.mjs:52-53"
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, no raw codes; the source-stale wording in scripts/status-board.mjs reasonWords ('원본이 오래된 값이라고 알렸어요') and the docs/getting-started.md advice for stale·source-stale are not checked by any CLI test at base; source-stale is only checked at the adapter level in tests/juplan-adapter.test.mjs:52-53",
+          "title": "오래된 상태 정보 표시 점검"
         }
       ],
       "qaRuntime": [
@@ -9437,7 +9441,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:164-165 'The daily value summary is integrated for 10 tasks. The canonical receipt count is **4 `받아도 됨` / 10 `확인 후 받기`**' vs docs/validation/M3_DAILY_VALUE_VALIDATION.md:75 'Daily `t01`–`t10` | not committed with these task IDs | 10 | 0' and :134 '9 `review_required`, 1 `unknown`, 0 `ready`'; Founder direction 2026-09-26 (board says 10 tasks, register names seven; reconcile which have both a Claude final and a Receipt)"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:164-165 'The daily value summary is integrated for 10 tasks. The canonical receipt count is **4 `받아도 됨` / 10 `확인 후 받기`**' vs docs/validation/M3_DAILY_VALUE_VALIDATION.md:75 'Daily `t01`–`t10` | not committed with these task IDs | 10 | 0' and :134 '9 `review_required`, 1 `unknown`, 0 `ready`'; Founder direction 2026-09-26 (board says 10 tasks, register names seven; reconcile which have both a Claude final and a Receipt)",
+          "title": "현황판의 일일 검증 결과 바로잡기"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-CLOSEOUT-RECONCILE-PROVENANCE",
@@ -9448,7 +9453,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:215-216 'Completed by | `Ju0o___` — register commits `b4cd138`, `04c7373`, and `a77257a`' / 'Validation date | `2026-09-24`' while `git log 99c8500` shows 2412f80 'docs: reconcile M3 seven-task artifact join' and 99c8500 'docs: reconcile M3 final and receipt evidence' dated 2026-09-26; Founder direction 2026-09-26"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:215-216 'Completed by | `Ju0o___` — register commits `b4cd138`, `04c7373`, and `a77257a`' / 'Validation date | `2026-09-24`' while `git log 99c8500` shows 2412f80 'docs: reconcile M3 seven-task artifact join' and 99c8500 'docs: reconcile M3 final and receipt evidence' dated 2026-09-26; Founder direction 2026-09-26",
+          "title": "일일 검증 마감 기록에 근거 추가"
         }
       ]
     },
@@ -10219,7 +10225,8 @@
             "node --test tests/skill-report-contract.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:836 '## 20. 금지 표현 … 근거가 없으면 다음 표현을 사용하지 않는다. * 완벽하게 작동합니다 … * 배포해도 됩니다'; Founder direction 2026-09-23 (choice 2026-09-26)"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:836 '## 20. 금지 표현 … 근거가 없으면 다음 표현을 사용하지 않는다. * 완벽하게 작동합니다 … * 배포해도 됩니다'; Founder direction 2026-09-23 (choice 2026-09-26)",
+          "title": "쓰면 안 되는 말이 보고서에 없는지 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -10357,7 +10364,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "README.md:40 \"`lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)\"; Founder direction 2026-09-25: \"SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검) ... 작은 변경만\""
+          "ssotEvidence": "README.md:40 \"`lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)\"; Founder direction 2026-09-25: \"SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검) ... 작은 변경만\"",
+          "title": "관리 명령과 도움말 동작 점검 보강"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
