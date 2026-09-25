@@ -3,7 +3,7 @@
 import { createHash } from "node:crypto";
 import { execFileSync, spawn } from "node:child_process";
 import { appendFile, mkdir, readdir, readFile, rename, rm, stat, symlink, unlink, writeFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { realpath } from "node:fs/promises";
@@ -22,6 +22,7 @@ export function discoverCodexCommand(env = process.env) {
 
 function processAlive(pid) { if (!pid) return false; try { process.kill(pid, 0); return true; } catch { return false; } }
 
+function memAvailableMb() { try { return Number(/MemAvailable:\s+(\d+)/.exec(readFileSync("/proc/meminfo", "utf8"))[1]) / 1024; } catch { return Infinity; } }
 function runtimeLaunchFailure(error) { return /(?:spawn|ENOENT|runtime command missing|cannot execute)/i.test(String(error?.message || error)); }
 
 const sleep = (ms) => new Promise((resolvePromise) => setTimeout(resolvePromise, ms));
@@ -568,7 +569,9 @@ export class PortfolioRunner {
     const inflight = new Map(); const state = await this.reconcile(); this._continuous = true;
     for (;;) {
       if (!signal?.aborted && Date.now() < Number(dispatchUntil) && !this.draining()) {
-        const slots = Math.max(1, Number(this.manifest.maxBuilders) || 2) - inflight.size;
+        // RAM guard (2026-09-25 15:53: swap full → OOM killer → ASUS went down): start nothing new while MemAvailable is low
+        const lowMemory = memAvailableMb() < (Number(this.manifest.minFreeMemoryMb) || 2500);
+        const slots = lowMemory ? 0 : Math.max(1, Number(this.manifest.maxBuilders) || 2) - inflight.size;
         // One task per lane at a time: tasks of one project edit the same files, so parallel ones conflict at integration.
         const busyLanes = new Set(state.tasks.filter((item) => inflight.has(item.taskId)).map((item) => item.projectId));
         const paused = (id) => existsSync(join(resolve(this.statePath, ".."), "lane-pause", id));  // R-09: pause also holds tasks already QUEUED

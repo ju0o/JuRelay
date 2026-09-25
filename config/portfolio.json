@@ -28,7 +28,7 @@
     "qaRequired": true,
     "ssotRequired": true
   },
-  "maxBuilders": 6,
+  "maxBuilders": 4,
   "maxQa": 4,
   "projects": [
     {
