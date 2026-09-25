@@ -7111,6 +7111,28 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 'score decision utility per task, and issue M3 GO only if the day-level view adds clear actionable value'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:185 basis cites only the source scorecard, while :103 'Tally: 7 ACTIONABLE, 3 UNKNOWN/UNVERIFIED GAP' is not cited in the closeout",
           "title": "하루 요약 가치 판단 근거 정리"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-M3-CORPUS-COUNT-SYNC",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md, change only the factual M3 integration-count lines (Control Tower row line 36, evidence bullet line 153, and the 'M3 daily value integration' sentence line 164) from '7 tasks' to the committed 10-task / 10-receipt corpus at JuCeipt@402d3ee, as the M3 validation artifact records; leave the M3 milestone state, Next steps, Next PM Moves and any GO/DEFER/KILL wording untouched.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 '| M3 integration | daily value summary integrated for 7 tasks |' vs docs/validation/M3_DAILY_VALUE_VALIDATION.md:5 'Scope: integrated 10-task Daily Value summary' and :27 'Capture completeness | 10/10 captured'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-TALLY-BAR-POINTER-FIX",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md Section 3.1 (lines 108-109), point the tally's cross-reference at the Section 7 'Actionable day-level value bar' row, which is the row that actually traces the 7 ACTIONABLE / 3 UNKNOWN tally to the Founder GO condition, instead of the 'Proposed mapping basis' row (which cites only the source scorecard); record no M3 decision.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:108 'See the Section 7 `Proposed mapping basis` row for the closeout trace from this tally to the Founder GO condition' vs :189 'Actionable day-level value bar | Founder condition: `GO` only if the day-level view adds clear actionable value. The Section 3.1 tally records `7 ACTIONABLE`...'; Founder direction 2026-09-25"
         }
       ]
     },
