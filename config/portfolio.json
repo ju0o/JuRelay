@@ -9721,6 +9721,17 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux Live status card: '여기까지 끝남: … 계획 → 만들기 → 검사 → 시험 → 반영' and 'No pane ids, task ids, or English status words on the card'; base f9121ad operator/public/app.js:1834,1837 label chips and sentence with STAGE_KO (작업/검수/사람 확인) and test/agent-relay-module.test.mjs:63 pins '지금 검수 단계예요. 담당: cline'",
           "title": "진행 단계 이름 쉬운 말로 다시 맞추기"
+        },
+        {
+          "taskId": "JCAPP-ACTL-STATE-FROM-TAIL-R2",
+          "scope": "In operator/public/app.js relayPanesPanel only, when an AI pane observedState is UNKNOWN or unmapped, use existing /api/panes tail data: answerReady true shows muted '쉬는 중', otherwise a lastRequest without a ready answer shows teal '일하는 중', while preserving '조용해요' only when unreadable, busy(), readiness text, and raw state under 원문 보기; defer test assertion updates to a follow-up task.",
+          "files": [
+            "operator/public/app.js"
+          ],
+          "tests": [
+            "node --test test/actl-panes-plain.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '(2) actl AI 창 카드 … 그 전엔 기존 /api/panes'; founder-ux actl AI window card: 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; base f9121adb9fff9846c7eb26f5ebfb9fae86d3661a operator/public/app.js:1942 falls back to '조용해요' and test/actl-panes-plain.test.mjs:38-39 pins 'Claude Team · Team 폴더 | 조용해요'"
         }
       ],
       "skills": {
