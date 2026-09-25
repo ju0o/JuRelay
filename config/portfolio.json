@@ -8537,6 +8537,28 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:150 'The day-level view must answer: **“오늘 Agent들에게 시킨 일 중 뭘 받았고, 뭘 확인해야 하며, 구독/사용 대비 가치가 있었나?”**' has no link, and docs/validation/M3_DAILY_VALUE_VALIDATION.md '### 4.1 M3 exit-question and Daily Level 1 trace' traces those three parts; Founder direction 2026-09-25",
           "title": "3단계 완료 질문에 근거 연결"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-VALUE-MODEL-EVIDENCE-LINKS",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md §4.2 Value model (lines 132-138), add a link at the end of each of the six checklist items to the matching row of ../validation/M3_DAILY_VALUE_VALIDATION.md#42-wbs-value-model-coverage-trace, labelled with that row's recorded coverage (PASS for the first item, UNKNOWN for the other five), matching the §4.1 link style; leave the item wording and the [ ] checkbox states unchanged, and record no M3 decision.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:149-150 'This trace records coverage of the six WBS §4.2 value-model items using only facts already recorded in this artifact. It records no M3 decision.'; docs/planning/BUSINESS_PRODUCT_WBS.md:132-138 '## 4.2 Value model' items have no evidence links, while §4.1 lines 124-130 do"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML04-HISTORY-BANNER",
+          "scope": "In docs/visual/04_BUSINESS_SYSTEM_ERD_WBS.html, add one visible banner at the top of the hero section saying this file is an earlier draft/history artifact, that its CURRENT/NEXT pills and status tables (for example 'CURRENT · M2 Receipt Value Proof / PR #4 PM Review' and 'M3 BLOCKED') are outdated, and that the current state lives in 05_BUSINESS_SYSTEM_COMPLETE_MAP.html and docs/operations/PM_STATUS_BOARD.md; also change the hero sentence that calls this file 'PM 시각 SSOT' to call it a history draft; leave every historical status value untouched.",
+          "files": [
+            "docs/visual/04_BUSINESS_SYSTEM_ERD_WBS.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:86 'Earlier `docs/visual/04_BUSINESS_SYSTEM_ERD_WBS.html` is retained only as draft/history. 05 is canonical.'; docs/planning/BUSINESS_SYSTEM_INDEX.md:24 'retained as an earlier draft/history artifact'; docs/visual/04_BUSINESS_SYSTEM_ERD_WBS.html:30-32 still says 'PM 시각 SSOT' and 'CURRENT · M2 Receipt Value Proof / PR #4 PM Review'"
         }
       ]
     },
