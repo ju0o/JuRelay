@@ -4852,6 +4852,36 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '오류 3줄', '개발자 글자는 원문 보기 안'; src/cli/main.ts:268 prints raw err.message (e.g. English ENOENT text) with a generic next line",
           "title": "문제가 생기면 이유와 할 일을 쉽게 안내"
+        },
+        {
+          "taskId": "JUCEIPT-SOURCES-RELATIVE-TIME",
+          "scope": "Make the human-readable output of `juceipt sources` Founder-readable. Open with one plain Korean sentence saying how many places with AI work records were found, for example 'AI 작업 기록이 있는 곳 N군데를 찾았어요'. Show the last activity as a relative time such as '3분 전' or '2일 전' instead of the locale-dependent toLocaleString text. To support that, discover.ts should store lastActivity as an ISO string, which --json output keeps. Change the next action to the plain Korean step that makes receipts (`juceipt scan`). Update both tests so they assert the first sentence, the relative time, the absence of ISO or locale timestamps in the human output, and ISO lastActivity in --json.",
+          "files": [
+            "src/cli/main.ts",
+            "src/sources/discover.ts",
+            "tests/sources-cli.test.ts",
+            "tests/sources-discover.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npx vitest run tests/sources-cli.test.ts tests/sources-discover.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙(맨 위 한 문장, 시간은 상대/현지 시각)으로 juceipt 명령 출력 점검; src/cli/main.ts:208 prints `마지막 활동 ${source.lastActivity}` from src/sources/discover.ts:64 `new Date(latest).toLocaleString()`"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-CMD-PLAIN-OUTPUT",
+          "scope": "In receiptCommand in src/cli/main.ts, replace the success line '완료: HTML을 렌더링했습니다: <path>' with a plain Korean first sentence built from receipt.presentation.acceptance_label, for example '영수증 화면을 새로 만들었어요 — 판정: 확인 후 받기', followed by one line on what that verdict means and then the copyable HTML path and one next action. Also turn the missing receipt.json error into three short plain Korean lines (what happened, why, what to do) while keeping exit code 1. Cover both paths in a new offline vitest file that uses a temp run dir.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npx vitest run tests/receipt-cli.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 대상 juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻, 오류 3줄; src/cli/main.ts:178 `console.log(\"완료: HTML을 렌더링했습니다: \" + outHtml ...)` and :174 single-line `오류: receipt.json을 찾을 수 없습니다`"
         }
       ],
       "skills": {
