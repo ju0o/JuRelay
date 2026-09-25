@@ -10301,6 +10301,17 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:159 '**GO (2026-09-23, A-14).** The two trust fixes are complete'; docs/operations/PM_STATUS_BOARD.md:187 'M2 is closed by the A-14 GO decision; the scorecard remains the evidence record.'; README.md:111 'docs/decisions/DECISION_LOG.md — durable product/architecture decisions' (the log at b56ee56 ends at D-021 and has no M2 GO entry)",
           "title": "두 번째 단계 진행 결정을 기록"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-M4-DEPENDENCY-SYNC",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md, change only the Control Tower 'Next product milestone' cell at line 43 from 'after M3 validation' to say that M4 depends on M2 GO (matching MASTER_ROADMAP line 467, WBS §1 line 44 and canonical HTML line 85) and that the M4 gate stays locked. Do not open M4, do not record any M3 decision, and do not change the next-move rows at lines 175 and 268.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:467 '| M4 MVP Usability | installation + capture + latest Receipt usable | M2 | ⏳ |' and docs/planning/BUSINESS_PRODUCT_WBS.md:44 '| M4 | MVP Usability | ... | M2 GO | ... | BLOCKED |' vs docs/operations/PM_STATUS_BOARD.md:43 '| Next product milestone | M4 — MVP Usability / packaging, after M3 validation |'"
         }
       ]
     },
