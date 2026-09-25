@@ -6442,6 +6442,36 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 02시 (2): a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that script does; the README must match the code today (JUCONTROLER-README-GITHUB), and scripts/status-board.mjs `usage` is two lines written to stdout for --help",
           "title": "첫 사용 안내의 도움말 설명 바로잡기"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-HELP-STEP",
+          "scope": "Add an eleventh step run_help to scripts/e2e.sh after run_invalid_registry_entry (label '사용법 안내', next command 'node scripts/status-board.mjs <registry.json>'). It runs `node scripts/status-board.mjs --help` and passes only on exit 0, an empty stderr, and a stdout that is exactly the two lines '사용법: node scripts/status-board.mjs <프로젝트 목록 파일.json> [--project-id <프로젝트 ID>]' and 'Usage: status-board.mjs <registry.json> [--project-id <id>]'. Also add the step to the ordered steps in tests/e2e-script.test.mjs, and in docs/getting-started.md add it to the ```json example, the `next` board list and a bullet '- `run-help` (사용법 안내): …'.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs",
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "node --test tests/quickstart-next-sync.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23/24: (1) a real end-to-end script that runs the product's main user flow offline and prints one JSON line {ok, steps[], ms}; README 3. 빠른 시작 step 3 at 4bbda8a promises that `--help` prints the Korean and English usage lines and exits 0, but no e2e step checks it"
+        },
+        {
+          "taskId": "JUCONTROLER-GETTING-STARTED-FALLBACK-LINE",
+          "scope": "In docs/getting-started.md section '상태판 안내 문장 읽는 법', add a table row for the catch-all stderr line that scripts/status-board.mjs prints at base, `상태판을 불러오지 못했어요 — 아래 내용을 확인하세요`, with a plain-Korean next step: read the English line below it, or send it to a developer. Then change the sentence under the table from '아래 네 가지 오류(열 수 없음, JSON 아님, 내용 오류, 없는 ID)' to name all five cases, because this line also prints an English line below it and exits 1.",
+          "files": [
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "node --test tests/getting-started-lines-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = a non-developer uses it as easily as KakaoTalk/Toss, with plain Korean and an obvious next action; scripts/status-board.mjs korean() at 4bbda8a returns '상태판을 불러오지 못했어요 — 아래 내용을 확인하세요' as its fallback, but the getting-started table leaves this line out"
         }
       ],
       "qaRuntime": [
