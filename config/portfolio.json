@@ -3272,6 +3272,21 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "처음부터 쉽게 쓰는 안내"
+        },
+        {
+          "taskId": "ACTL-BOARD-LIVE-STATE-TRUTH-R2",
+          "scope": "Install the missing pytest tool, then merge fake remote discovery into the JuActl Board card model so every live ASUS pane including Claude Pro shows its truthful connection state and folder project, and the discovery banner resolves; tests/test_board_live_state_truth.py must fail on base 43f7a2e2d5f63292082f98aeb637106d355b7912 and pass after the fix.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/core/status.py",
+            "src/actl/core/remote.py",
+            "tests/test_board_live_state_truth.py"
+          ],
+          "tests": [
+            "python3 -m pytest tests/test_board_live_state_truth.py -q",
+            "python3 -m pytest -q"
+          ],
+          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill"
         }
       ],
       "qaRuntime": [
