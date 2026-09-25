@@ -2133,7 +2133,8 @@
             "npm test",
             "npm run build:server && node --test test/connection-state.test.mjs test/automation-toggle.test.mjs test/asus-error-vs-offline.test.mjs test/topbar-founder-first.test.mjs"
           ],
-          "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'. Founder rewrite choice 2026-09-26: 범위 줄이기 — 연결 상태 표시만 먼저 — 화면 디자인은 뒤로 미루고 상태 표시부터 바로잡아요. Required test test/connection-state.test.mjs (imports dist/server/shared/connectionState.js) must fail on the last attempt's behaviour and pass on the new code: a REMOTE_FAILED message ('작업 PC는 켜져 있는데…') and an INVALID_JSON message ('…응답을 읽지 못했습니다') must NOT give '작업 PC에 연결할 수 없어요' or '확인 중', only an EXEC_FAILED message ('…연결할 수 없습니다') gives it; a toggle failure must return the Korean e.message as the visible text, not the fixed '실패했어요 — 작업 PC가 응답하지 않았을 수 있어요'."
+          "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'. Founder rewrite choice 2026-09-26: 범위 줄이기 — 연결 상태 표시만 먼저 — 화면 디자인은 뒤로 미루고 상태 표시부터 바로잡아요. Required test test/connection-state.test.mjs (imports dist/server/shared/connectionState.js) must fail on the last attempt's behaviour and pass on the new code: a REMOTE_FAILED message ('작업 PC는 켜져 있는데…') and an INVALID_JSON message ('…응답을 읽지 못했습니다') must NOT give '작업 PC에 연결할 수 없어요' or '확인 중', only an EXEC_FAILED message ('…연결할 수 없습니다') gives it; a toggle failure must return the Korean e.message as the visible text, not the fixed '실패했어요 — 작업 PC가 응답하지 않았을 수 있어요'.",
+          "title": "작업 PC 연결 상태 알려주기"
         }
       ],
       "qaRuntime": [
@@ -3666,7 +3667,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "ROOT_CAUSE_REPORT.md:65-75 'produced 19 remote wrapper operations: … `tmux display-message` | 12'; Founder direction 2026-09-26 'Fold the 12 per-agent display-message calls into the existing single list-panes -F query, and add a test that counts wrapper calls per _rows()'"
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:65-75 'produced 19 remote wrapper operations: … `tmux display-message` | 12'; Founder direction 2026-09-26 'Fold the 12 per-agent display-message calls into the existing single list-panes -F query, and add a test that counts wrapper calls per _rows()'",
+          "title": "현황판 새로고침을 더 빠르게"
         },
         {
           "taskId": "ACTL-SERVE-LIVE-CARDS",
@@ -3680,7 +3682,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:46 'actl serve에 같은 카드 데이터를 주는 실시간 API(허브 JuControler가 나중에 그대로 씀)' and founder-ux 'For an actl AI window, the card says: which AI and folder … 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨 … whether an answer is ready to copy'"
+          "ssotEvidence": "Founder direction 2026-09-25 15:46 'actl serve에 같은 카드 데이터를 주는 실시간 API(허브 JuControler가 나중에 그대로 씀)' and founder-ux 'For an actl AI window, the card says: which AI and folder … 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨 … whether an answer is ready to copy'",
+          "title": "작업 창마다 지금 상태 카드 보기"
         },
         {
           "taskId": "ACTL-TK-CARD-HEADER-AI-FOLDER",
@@ -3694,7 +3697,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:46 'AI 창 카드마다: 어떤 AI·어느 폴더, 일하는 중/쉬는 중/답 기다림/연결 안 됨'; founder-ux Live status card 'which AI and folder it is (\"Claude Team · Team 폴더\")'"
+          "ssotEvidence": "Founder direction 2026-09-25 15:46 'AI 창 카드마다: 어떤 AI·어느 폴더, 일하는 중/쉬는 중/답 기다림/연결 안 됨'; founder-ux Live status card 'which AI and folder it is (\"Claude Team · Team 폴더\")'",
+          "title": "창 제목에 폴더와 상태 함께 보기"
         },
         {
           "taskId": "ACTL-TK-PANE-BOARD-INLINE-ERRORS-R2",
@@ -3706,7 +3710,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "전체 화면 안내를 팝업 없이 보여주기"
         }
       ],
       "qaRuntime": [
@@ -6196,7 +6201,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(한국어 동사, 개발자 글자는 원문 보기 안) — 대상: 영수증 보기 화면·daily 출력의 '빠진 확인 항목의 쉬운 설명'"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(한국어 동사, 개발자 글자는 원문 보기 안) — 대상: 영수증 보기 화면·daily 출력의 '빠진 확인 항목의 쉬운 설명'",
+          "title": "다음 할 일 안내를 쉬운 말로 바꾸기"
         },
         {
           "taskId": "JUCEIPT-SCAN-SUMMARY-OPEN-RECEIPT-LINK",
@@ -6209,7 +6215,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(도움 없이 끝낼 수 있게, 개발자 글자는 원문 보기 안) — 대상: juceipt scan 출력(SUMMARY.md)"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(도움 없이 끝낼 수 있게, 개발자 글자는 원문 보기 안) — 대상: juceipt scan 출력(SUMMARY.md)",
+          "title": "확인할 영수증을 한 번에 바로 열기"
         }
       ],
       "skills": {
@@ -7468,7 +7475,8 @@
             "node --test tests/*.test.mjs",
             "bash scripts/e2e.sh"
           ],
-          "ssotEvidence": "README.md §2 '파일이 없거나 오래됐으면(기본 5분) 추측하지 않고 `UNKNOWN`/`stale`' and docs/getting-started.md '(기본 5분)'; src/project-status.mjs:74 'freshnessMs ?? 5 * 60 * 1000'; Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target"
+          "ssotEvidence": "README.md §2 '파일이 없거나 오래됐으면(기본 5분) 추측하지 않고 `UNKNOWN`/`stale`' and docs/getting-started.md '(기본 5분)'; src/project-status.mjs:74 'freshnessMs ?? 5 * 60 * 1000'; Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target",
+          "title": "5분 지난 상태는 모름으로 표시"
         },
         {
           "taskId": "JUCONTROLER-PROJECT-STATUS-SCHEMA-CONTRACT-TEST",
@@ -7480,7 +7488,8 @@
             "node --test tests/project-status-schema-contract.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md '약속(계약) 파일': '`node --test tests/*.test.mjs`는 아래 파일의 모양도 확인합니다' listing '`integration/project-status.schema.json` | 상태판 한 줄(`project-status.v1`) 모양'; git grep finds no test at e5672ff that references project-status.schema.json; Founder direction 2026-09-26"
+          "ssotEvidence": "docs/getting-started.md '약속(계약) 파일': '`node --test tests/*.test.mjs`는 아래 파일의 모양도 확인합니다' listing '`integration/project-status.schema.json` | 상태판 한 줄(`project-status.v1`) 모양'; git grep finds no test at e5672ff that references project-status.schema.json; Founder direction 2026-09-26",
+          "title": "현황판 항목이 약속한 형식대로인지 확인"
         }
       ],
       "qaRuntime": [
@@ -9648,7 +9657,8 @@
             "node --test test/agent-relay-module.test.mjs test/idle-lane-meaning.test.mjs test/lovable-live-cards.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux Live status card: '여기까지 끝남: … 계획 → 만들기 → 검사 → 시험 → 반영' and 'No pane ids, task ids, or English status words on the card'; base f9121ad operator/public/app.js:1837 prints '담당: ' + raw current.worker and test/agent-relay-module.test.mjs:63 pins '지금 검수 단계예요. 담당: cline'"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux Live status card: '여기까지 끝남: … 계획 → 만들기 → 검사 → 시험 → 반영' and 'No pane ids, task ids, or English status words on the card'; base f9121ad operator/public/app.js:1837 prints '담당: ' + raw current.worker and test/agent-relay-module.test.mjs:63 pins '지금 검수 단계예요. 담당: cline'",
+          "title": "진행 단계 이름을 쉬운 말로 통일"
         },
         {
           "taskId": "JCAPP-ACTL-STATE-FROM-TAIL",
@@ -9662,7 +9672,8 @@
             "node --test test/actl-panes-plain.test.mjs test/lovable-ai-windows.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48: '(2) actl AI 창 카드 … 그 전엔 기존 /api/panes'; founder-ux actl AI window card: 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; base f9121ad operator/public/app.js:1942 falls back to '조용해요' and test/actl-panes-plain.test.mjs:38-39 pins 'Claude Team · Team 폴더 | 조용해요'"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '(2) actl AI 창 카드 … 그 전엔 기존 /api/panes'; founder-ux actl AI window card: 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; base f9121ad operator/public/app.js:1942 falls back to '조용해요' and test/actl-panes-plain.test.mjs:38-39 pins 'Claude Team · Team 폴더 | 조용해요'",
+          "title": "AI 창 상태를 더 정확히 보여주기"
         },
         {
           "taskId": "JCAPP-LIVE-CARD-HUMAN-STEP-TODO",
@@ -9676,7 +9687,8 @@
             "node --test test/agent-relay-module.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): 허브 홈과 진행 탭에 founder-ux 'Live status card' 규칙 그대로 — 대표님 할 일(없음/확인 필요/결정 필요/설정 필요, 있으면 버튼), 다음 단계; operator/public/app.js:477 at f9121ad maps stage 5 to '대표님 확인을 기다리는' while todo (line 497) only checks hubGateCount/HUMAN_GATE"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): 허브 홈과 진행 탭에 founder-ux 'Live status card' 규칙 그대로 — 대표님 할 일(없음/확인 필요/결정 필요/설정 필요, 있으면 버튼), 다음 단계; operator/public/app.js:477 at f9121ad maps stage 5 to '대표님 확인을 기다리는' while todo (line 497) only checks hubGateCount/HUMAN_GATE",
+          "title": "대표님 확인 단계를 할 일로 알려주기"
         },
         {
           "taskId": "JCAPP-RELAY-LANE-ONE-NOW-LINE",
@@ -9692,7 +9704,8 @@
             "node --test test/lovable-live-cards.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; operator/public/app.js:1911 at f9121ad renders relay-now with STAGE_KO ('작업'/'검수') directly before liveProjectCard, which uses '만드는'/'검사하는'"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; operator/public/app.js:1911 at f9121ad renders relay-now with STAGE_KO ('작업'/'검수') directly before liveProjectCard, which uses '만드는'/'검사하는'",
+          "title": "진행 화면의 겹치는 안내 한 줄 정리"
         },
         {
           "taskId": "JCAPP-RELAY-FLOW-LIVE-WORDS-R2",
@@ -9706,7 +9719,8 @@
             "node --test test/agent-relay-module.test.mjs test/idle-lane-meaning.test.mjs test/lovable-live-cards.test.mjs",
             "node --test test/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux Live status card: '여기까지 끝남: … 계획 → 만들기 → 검사 → 시험 → 반영' and 'No pane ids, task ids, or English status words on the card'; base f9121ad operator/public/app.js:1834,1837 label chips and sentence with STAGE_KO (작업/검수/사람 확인) and test/agent-relay-module.test.mjs:63 pins '지금 검수 단계예요. 담당: cline'"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux Live status card: '여기까지 끝남: … 계획 → 만들기 → 검사 → 시험 → 반영' and 'No pane ids, task ids, or English status words on the card'; base f9121ad operator/public/app.js:1834,1837 label chips and sentence with STAGE_KO (작업/검수/사람 확인) and test/agent-relay-module.test.mjs:63 pins '지금 검수 단계예요. 담당: cline'",
+          "title": "진행 단계 이름 쉬운 말로 다시 맞추기"
         }
       ],
       "skills": {
@@ -10505,7 +10519,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:467 '| M4 MVP Usability | installation + capture + latest Receipt usable | M2 | ⏳ |' and docs/planning/BUSINESS_PRODUCT_WBS.md:44 '| M4 | MVP Usability | ... | M2 GO | ... | BLOCKED |' vs docs/operations/PM_STATUS_BOARD.md:43 '| Next product milestone | M4 — MVP Usability / packaging, after M3 validation |'"
+          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:467 '| M4 MVP Usability | installation + capture + latest Receipt usable | M2 | ⏳ |' and docs/planning/BUSINESS_PRODUCT_WBS.md:44 '| M4 | MVP Usability | ... | M2 GO | ... | BLOCKED |' vs docs/operations/PM_STATUS_BOARD.md:43 '| Next product milestone | M4 — MVP Usability / packaging, after M3 validation |'",
+          "title": "현황판에 다음 단계 잠금 조건 바로잡기"
         },
         {
           "taskId": "JUCEIPTPLAN-ROADMAP-PM-DIRECTIVE-M3-SYNC",
@@ -10516,7 +10531,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:264 '1 | The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` ... M3 decision is pending.' and :268 'M4 installation/usability Handoff depends on M2 GO and remains locked until the M4 gate opens'; the stale text is at docs/product/MASTER_ROADMAP.md:561 '4. Validate the integrated 10-task Daily Report summary and record M3 GO/DEFER/KILL.' and :562 '5. Only after M3 validation should Worker receive the installation/usability implementation handoff.'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:264 '1 | The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` ... M3 decision is pending.' and :268 'M4 installation/usability Handoff depends on M2 GO and remains locked until the M4 gate opens'; the stale text is at docs/product/MASTER_ROADMAP.md:561 '4. Validate the integrated 10-task Daily Report summary and record M3 GO/DEFER/KILL.' and :562 '5. Only after M3 validation should Worker receive the installation/usability implementation handoff.'",
+          "title": "로드맵에 영수증 검증 결과 반영하기"
         }
       ]
     },
