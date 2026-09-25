@@ -5674,6 +5674,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 오후 (settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, no raw codes; founder-ux rule 3: Korean labels, and QA should ask for changes when a label is English-only. At base, scripts/e2e.sh prints steps as {name:'build-registry',ok} with only English kebab names, while its labels map ('연습용 목록 만들기', '상태판 실행', …) is used only in `message`.",
           "title": "점검 단계마다 한국어 이름 표시"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-BAD-REGISTRY-STEP",
+          "scope": "Add a sixth step run_bad_registry to scripts/e2e.sh after run_needs_action (label '목록 파일 오류 안내', next command 'node scripts/status-board.mjs <registry.json>'). It writes a temp registry.json that is not valid JSON, runs status-board, and passes only when the exit code is 1, stdout is empty, and the first stderr line is exactly '프로젝트 목록 파일이 올바른 JSON이 아니에요 — 쉼표·따옴표·괄호를 확인하세요'. Update the expected steps in tests/e2e-script.test.mjs and the example JSON, next list and step list in docs/getting-started.md to match.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, no raw codes; (1) a real end-to-end script that runs the product's main user flow offline and prints one JSON line {ok, steps[], ms}"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-NEXT-SYNC-TEST",
+          "scope": "Add one offline test, tests/quickstart-next-sync.test.mjs. It reads the `tests` and `board` command strings that the source text of scripts/e2e.sh uses for the `next` field, and checks that each one appears in the ```sh block of README.md section '3. 빠른 시작 (처음 쓰는 법)', so the command the Founder is told to run after a failure is always one the Quickstart shows.",
+          "files": [
+            "tests/quickstart-next-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/quickstart-next-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 02시: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e script runs]; README.md at 7a8957a section 3 lists 'node --test tests/*.test.mjs' and 'node scripts/status-board.mjs <registry.json> [--project-id <id>]', which match the e2e.sh `tests`/`board` next commands"
         }
       ],
       "qaRuntime": [
