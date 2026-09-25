@@ -8776,6 +8776,36 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:205 '### 6.3 조건부 보고 항목 — 다음 항목은 작업이 복잡하거나 관련 정보가 있을 때만 추가한다. * 새로 생성된 파일 * 삭제된 파일 …'",
           "title": "새로 만든 파일과 지운 파일 알려주기"
+        },
+        {
+          "taskId": "JUTELL-BROWSER-CHECK-LABELS-PARITY",
+          "scope": "Add the five BEGINNER_REPORT_SPEC §13 browser-check labels (브라우저로 확인함, 일부 화면만 확인함, 브라우저 도구가 없음, 브라우저 확인을 실행하지 않음, 브라우저 실행 실패) and the rule that visual results are not stated as certain without a browser check as one short line under the browser bullet in SKILL.md step 8, plus an offline node:test that reads the §13 bullet list and checks every label appears in SKILL.md.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/browser-check-labels-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/browser-check-labels-parity.test.mjs",
+            "node --test tests/token-diet-guidance-parity.test.mjs",
+            "node --test tests/baseline-state-skill-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:569 '## 13. 브라우저 사용 범위 … 브라우저 확인 여부는 다음처럼 구분한다. 브라우저로 확인함 / 일부 화면만 확인함 / 브라우저 도구가 없음 / 브라우저 확인을 실행하지 않음 / 브라우저 실행 실패 … 브라우저를 확인하지 않았다면 시각적 결과를 확정적으로 표현하지 않는다.'"
+        },
+        {
+          "taskId": "JUTELL-FINAL-CHECKLIST-SPEC-PARITY",
+          "scope": "Add the BEGINNER_REPORT_SPEC §21 final-check items that are missing from SKILL.md step 16 (기능 중심 요약, 근거 출처와 확인 상태 구분, 위험도와 검증 상태 분리, 기존 변경을 이번 작업으로 단정하지 않음, 비밀정보를 명령 전·출력 처리 중·보고 전 확인, 사용자가 직접 할 일 명확, 같은 내용 반복 없음) as short bullets, plus an offline node:test that maps each of the 11 §21 checklist lines to a key phrase and checks that phrase appears in the step 16 block of SKILL.md.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/final-checklist-spec-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/final-checklist-spec-parity.test.mjs",
+            "node --test tests/token-diet-guidance-parity.test.mjs",
+            "node --test tests/baseline-state-skill-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:857 '## 21. 최종 점검 … 위험도와 검증 상태를 분리했는가 … 기존 변경을 이번 작업으로 단정하지 않았는가 … 비밀정보를 명령 전, 출력 처리 중, 보고 전 확인했는가 … 사용자가 직접 할 일이 명확한가 … 같은 내용을 반복하지 않았는가'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
