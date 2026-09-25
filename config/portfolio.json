@@ -7947,6 +7947,59 @@
           ],
           "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 (2026-09-25); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2, PRODUCT_SSOT_v0.4 O-01/O-10, LATEST_DECISIONS_v0.4 §1 §4 §9",
           "title": "고위험 행동 승인 규칙 ALLOW/REQUIRE_APPROVAL/DENY"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-PROFILE-POLICY-LINK-R2",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). Task 2 retry: prior promotion 0b2521f added worker_profiles.policy_id but /api/owner/policies routes have no owner auth, so any caller can read a policy by id or link another owner's policy. Make policy connector-scoped: migrations/0005_worker_policy_connector.sql adds worker_policies.agent_connector_id uuid UNIQUE REFERENCES agent_connectors(id). Replace the unauthenticated POST /api/owner/policies, GET /api/owner/policies/:id, POST /api/owner/policies/:id/check and /actions/check with routes under /api/owner/connectors/:id (x-owner-token, same 404 rule as the profile routes): PUT /policy upserts the single policy of that connector and sets worker_profiles.policy_id in the same transaction; GET /policy; POST /policy/check; POST /policy/actions/check; GET /worker returns one object {connector:{id,runtime,status}, profile:{display_name,capabilities}, policy:{...}} for that one worker identity. The profile PUT must reject a policy_id that does not belong to the same connector (400 INVALID_PROFILE). Update tests: roundtrip worker -> capabilities -> linked policy as one identity; connector A cannot attach or read connector B policy; missing/wrong token 404; existing rejection-matrix and approval tests moved to the new routes and still pass on PGlite and TEST_DB=postgres.",
+          "files": [
+            "migrations/0005_worker_policy_connector.sql",
+            "src/server/owner.ts",
+            "src/server/owner-policy.ts",
+            "tests/integration/owner-policy.test.ts",
+            "tests/integration/owner-connector.test.ts",
+            "tests/unit/open-database.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck",
+            "npm run test:pg"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 (2026-09-25); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2, PRODUCT_SSOT_v0.4 O-01/O-10, LATEST_DECISIONS_v0.4 §1 §4 §9",
+          "title": "Worker 하나에 connector·capability·policy 묶기 + 교차 연결 거부"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-O09-PERSIST-R2",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). Task 3 retry: prior promotion 2e9d591 POSTs a new unlinked policy on every save and never reloads it. Owner app pairing: O06 AI 연결 registers a connector via POST /api/owner/connectors for the chosen runtime and keeps only {id, token} in localStorage (per-viewer convenience, wrapped in try/catch, like job tokens in src/web/api.ts); the server DB stays the source of truth. O09 안전과 비용: on entry GET /api/owner/connectors/:id/policy and fill the form; save with PUT /api/owner/connectors/:id/policy including daily limit, per-task limit, max runtime minutes, allowed task types, available hours, and approval decisions for FILE_DELETE, EXTERNAL_SEND and EXTERNAL_UPLOAD (ALLOW / 확인 필요 / 차단 choices); the 결제 row is shown fixed as 차단. Show Korean errors for client-side invalid values and for a 400 from the server. Without a paired connector O09 shows a primary action to go to O06 instead of a local-only form. E2E tests/e2e/owner.spec.ts: pair on O06, fill O09, save, leave to home, re-enter O09 and see the saved values, reload the page and still see them, confirm via a direct GET request that the DB holds them, and an invalid value is rejected; keep the no-internal-terms and one-primary-button checks.",
+          "files": [
+            "src/web/Owner.tsx",
+            "src/web/api.ts",
+            "tests/e2e/owner.spec.ts"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm test",
+            "npm run test:e2e"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 (2026-09-25); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2, PRODUCT_SSOT_v0.4 O-01/O-10, LATEST_DECISIONS_v0.4 §1 §4 §9",
+          "title": "안전과 비용 화면 → API/DB 저장 → 재진입 시 복원"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-OWNER-HOME-R2",
+          "scope": "Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01, Base SHA 688e4c1 (agent-relay/integration tip). Task 4 retry: prior promotion 1bd74ad only shows a hardcoded 이번 달 수익 0원 card. Add GET /api/owner/connectors/:id/activity (x-owner-token) returning counts for this worker from real tables: preview proposals (proposals.worker_id), build contracts in progress (implementation_contracts.worker_id with state ACTIVE or QA), and today's pilot value = sum of quote_amount_minor of this worker's SELECTED proposals created today (0 when none; never invented numbers). Owner home (O00) with a paired connector shows: connection status ONLINE/OFFLINE from the connector GET, 오늘 AI가 만든 예상 가치 labeled as 시범 운영 예상 가치 (지급 대상 아님), 진행 중 작업 count, 시안 활동 and 제작 활동 counts, an evidence-ready 놓친 작업 area that says records will appear once real matching starts, and the PilotBadge. Remove the 이번 달 수익 wording. The screen must not contain 출금 가능, 지급 가능, 보장, or any balance a user could withdraw. Without a pairing, home shows the O06 entry. Tests: integration test for the activity route (zeros for a fresh connector, 404 for wrong token) on PGlite and TEST_DB=postgres, and E2E assertions for the labels and the absent words.",
+          "files": [
+            "src/server/owner.ts",
+            "src/web/Owner.tsx",
+            "tests/integration/owner-connector.test.ts",
+            "tests/e2e/owner.spec.ts"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm test",
+            "npm run test:pg",
+            "npm run test:e2e"
+          ],
+          "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 (2026-09-25); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2, PRODUCT_SSOT_v0.4 O-01/O-10, LATEST_DECISIONS_v0.4 §1 §4 §9",
+          "title": "Owner 홈 — 시범 가치·진행 중·Preview/Build 활동·놓친 작업 영역"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
