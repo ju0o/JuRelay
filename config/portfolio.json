@@ -1921,23 +1921,6 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay gui프로그램 안에 \"어떤 환경에서 진행할건지\"선택하는 것도 넣고 그리고 각 환경마다 남은 cpu|ram도 환경 확인하게'; ASUS OOM 15:53; ASUS night envs --json (skill) returns {kind:'ENVS', envs:[{id,label,ok,cpuPct,cpus,ramFreeGb,ramTotalGb,ais[] | reason}]}",
           "title": "실행 환경별 CPU·RAM 보기"
-        },
-        {
-          "taskId": "AGENTRELAY-ENV-PICKER",
-          "scope": "Desktop app: per project (lane) an '어디서 돌릴까요?' picker with options 자동 (추천: 남은 RAM이 많은 곳) / ASUS / MainPC / 클라우드, shown in the lane view next to 담당 AI. Saving runs `ssh … night lane env <project> auto|asus|mainpc|cloud --json` (validate the value; execFile, no shell) and shows '저장했어요 ✓' inline. Environments that are not reachable (from the envs op) are shown disabled with the reason. Test the value validation and the fake exec call.",
-          "files": [
-            "src/backend/controlRoom.ts",
-            "src/frontend/controlRoom.tsx",
-            "src/shared/types.ts",
-            "test/env-picker.test.mjs"
-          ],
-          "tests": [
-            "npm run build:server",
-            "node --test test/env-picker.test.mjs",
-            "npm run typecheck"
-          ],
-          "ssotEvidence": "Founder 2026-09-25: 'Agent-Relay gui프로그램 안에 \"어떤 환경에서 진행할건지\"선택하는 것도 넣고 그리고 각 환경마다 남은 cpu|ram도 환경 확인하게'; ASUS OOM 15:53; ASUS night envs --json (skill) returns {kind:'ENVS', envs:[{id,label,ok,cpuPct,cpus,ramFreeGb,ramTotalGb,ais[] | reason}]}",
-          "title": "어디서 돌릴지 고르기"
         }
       ],
       "qaRuntime": [
