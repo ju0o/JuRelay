@@ -9144,6 +9144,17 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27 '| Active product milestone | **M3 — Daily Agent Value Decision** |'; docs/product/MASTER_ROADMAP.md:229 '## Phase M3 — Daily Agent Value Decision'",
           "title": "3단계 목표 이름을 문서마다 똑같이 맞추기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-ROADMAP-M3-OUTCOME-VOCAB-MAP",
+          "scope": "In docs/product/MASTER_ROADMAP.md Phase M3 'Decision outcomes' table (lines 262-267), add an 'M3 decision' column mapping Clearly useful → GO, Useful but distracting → DEFER, Mostly duplicates Receipts → KILL, plus one sentence saying RETRY/SCALE stay reserved for the §10 milestone vocabulary and pointing to ../validation/M3_DAILY_VALUE_VALIDATION.md Section 6; change no status line, scope or gate, and record no M3 decision.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/qa/P0_ROADMAP_WBS_GATE_QA.md:19 RQ-03 'Define one mapping at the contract boundary: useful → `GO`, useful-but-distracting → `DEFER`, duplicates → `KILL`; reserve `RETRY`/`SCALE` for the separately defined milestone decision vocabulary.'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:185-187 already uses this mapping"
         }
       ]
     },
