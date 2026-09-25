@@ -7366,6 +7366,17 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/qa/P0_ROADMAP_WBS_GATE_QA.md:24-25 \"Add one normative note at the schema/presentation boundary: lowercase JSON enum values are canonical on disk/API; uppercase labels are display/PM vocabulary.\""
+        },
+        {
+          "taskId": "JUCEIPTPLAN-ROADMAP-M3-CORPUS-COUNT-SYNC",
+          "scope": "In docs/product/MASTER_ROADMAP.md, change only the outdated M3 corpus count '7 tasks'/'7-task' to the committed 10-task count (§2 M3 status line 96, Phase result line 179, next-steps item line 559), leaving status words, gates and the M3 decision untouched.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 'M3 integration | daily value summary integrated for 10 tasks' vs docs/product/MASTER_ROADMAP.md:96 'M3 status: daily value summary integrated for 7 tasks'"
         }
       ]
     },
