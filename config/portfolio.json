@@ -7502,6 +7502,30 @@
           ],
           "ssotEvidence": "docs/getting-started.md '약속(계약) 파일': '`node --test tests/*.test.mjs`는 아래 파일의 모양도 확인합니다' listing '`integration/project-status.schema.json` | 상태판 한 줄(`project-status.v1`) 모양'; git grep finds no test at e5672ff that references project-status.schema.json; Founder direction 2026-09-26",
           "title": "현황판 항목이 약속한 형식대로인지 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-THREE-STEPS",
+          "scope": "README의 빠른 시작을 비개발자용 3단계 안내(무엇인지→목록 파일 하나 설정→다음 명령)로 정리하고 기존 명령 순서 동기 검사를 유지한다.",
+          "files": [
+            "README.md",
+            "tests/quickstart-next-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/quickstart-next-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: \"Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior.\""
+        },
+        {
+          "taskId": "JUCONTROLER-GETTING-STARTED-FIRST-RUN",
+          "scope": "상세 시작 문서 맨 앞에 무엇인지·필요한 설정·다음에 일어날 일을 설명하는 plain-Korean 3단계 안내를 추가하고 문서 동기 검사를 유지한다.",
+          "files": [
+            "docs/getting-started.md",
+            "tests/getting-started-lines-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-lines-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: \"Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior.\""
         }
       ],
       "qaRuntime": [
