@@ -1724,7 +1724,12 @@
         "claude-pro",
         "codex"
       ],
-      "autoContinue": true
+      "autoContinue": true,
+      "skills": {
+        "pm": [
+          "founder-ux"
+        ]
+      }
     },
     {
       "id": "juactl",
