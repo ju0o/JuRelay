@@ -5121,7 +5121,8 @@
             "pnpm --filter @juplan/runtime test:run",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: real PRD/ERD/WBS/API/QA documents from the graph; founder-ux 규칙의 개발자 글자는 원문 보기 안에 둔다."
+          "ssotEvidence": "Founder direction 2026-09-23: real PRD/ERD/WBS/API/QA documents from the graph; founder-ux 규칙의 개발자 글자는 원문 보기 안에 둔다.",
+          "title": "계획 원본을 쉽게 읽기"
         },
         {
           "taskId": "JUPLAN-STUDIO-MAP-ACCESSIBLE-DETAIL",
@@ -5134,7 +5135,8 @@
             "pnpm --filter @juplan/runtime test:run",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: per-type diagrams; 비개발자 UX 고도화 대상에 계획 그림 포함."
+          "ssotEvidence": "Founder direction 2026-09-23: per-type diagrams; 비개발자 UX 고도화 대상에 계획 그림 포함.",
+          "title": "계획 항목을 키보드로 고르기"
         },
         {
           "taskId": "JUPLAN-PROPOSAL-NEXT-STEP",
@@ -5148,7 +5150,8 @@
             "pnpm --filter @juplan/runtime test:run",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: JuPlan validates and applies AI change proposals (apply-proposal with preview/undo); founder-ux 규칙의 클릭 결과와 다음 행동을 즉시 보여 준다."
+          "ssotEvidence": "Founder direction 2026-09-23: JuPlan validates and applies AI change proposals (apply-proposal with preview/undo); founder-ux 규칙의 클릭 결과와 다음 행동을 즉시 보여 준다.",
+          "title": "변경 결과와 다음 행동 보기"
         }
       ],
       "qaRuntime": [
@@ -6094,7 +6097,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rule 1 (맨 위 한 문장: 무엇을 할지) for juceipt daily output; src/daily/index.ts:100 at 9fa4dea is still the fixed generic sentence, while scan got the count-based sentence in 80e85ca"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rule 1 (맨 위 한 문장: 무엇을 할지) for juceipt daily output; src/daily/index.ts:100 at 9fa4dea is still the fixed generic sentence, while scan got the count-based sentence in 80e85ca",
+          "title": "확인할 일과 받을 일 한눈에 보기"
         },
         {
           "taskId": "JUCEIPT-HELP-FIRST-RUN-GUIDE",
@@ -6107,7 +6111,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rules 1 and 14 (맨 위 한 문장, 첫 실행 3단계 안내) for the juceipt command output; src/cli/main.ts:293-301 at 9fa4dea prints only '사용법:' and the raw flag syntax"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rules 1 and 14 (맨 위 한 문장, 첫 실행 3단계 안내) for the juceipt command output; src/cli/main.ts:293-301 at 9fa4dea prints only '사용법:' and the raw flag syntax",
+          "title": "처음부터 영수증 만들기"
         }
       ],
       "skills": {
@@ -7340,7 +7345,8 @@
           "tests": [
             "node --test tests/quickstart-next-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 기존 오프라인 E2E와 한국어 Quickstart를 다음 수용 대상으로 삼고 새 런타임 동작은 만들지 않음"
+          "ssotEvidence": "Founder direction 2026-09-23: 기존 오프라인 E2E와 한국어 Quickstart를 다음 수용 대상으로 삼고 새 런타임 동작은 만들지 않음",
+          "title": "빠른 시작을 그대로 따라하기"
         },
         {
           "taskId": "JUCONTROLER-E2E-OUTPUT-CONTRACT",
@@ -7351,7 +7357,8 @@
           "tests": [
             "node --test tests/e2e-script.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 기존 오프라인 E2E와 한국어 Quickstart를 다음 수용 대상으로 삼고 새 런타임 동작은 만들지 않음"
+          "ssotEvidence": "Founder direction 2026-09-23: 기존 오프라인 E2E와 한국어 Quickstart를 다음 수용 대상으로 삼고 새 런타임 동작은 만들지 않음",
+          "title": "실행 결과를 한 줄로 확인"
         }
       ],
       "qaRuntime": [
@@ -9488,7 +9495,8 @@
             "node --test test/home-working-line.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48: 허브 홈과 진행 탭에 founder-ux 'Live status card' 규칙 그대로 — 지금 하는 일 … 대표님 할 일(없음/확인 필요/결정 필요/설정 필요) … 같은 용어·같은 색(빨강 진짜 위험만); ~/.agents/skills/auto-night-orchestrator/scripts/night-board.py:103 emits lane state 'HUMAN_GATE', which relayLaneView (app.js:1910) shows as '확인 중'"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: 허브 홈과 진행 탭에 founder-ux 'Live status card' 규칙 그대로 — 지금 하는 일 … 대표님 할 일(없음/확인 필요/결정 필요/설정 필요) … 같은 용어·같은 색(빨강 진짜 위험만); ~/.agents/skills/auto-night-orchestrator/scripts/night-board.py:103 emits lane state 'HUMAN_GATE', which relayLaneView (app.js:1910) shows as '확인 중'",
+          "title": "결정을 기다리는 이유를 알려줘"
         },
         {
           "taskId": "JCAPP-ACTL-CARD-ASK-ALWAYS",
@@ -9503,7 +9511,8 @@
             "node --test test/lovable-ai-windows.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48: (2) actl AI 창 카드 — founder-ux 'For an actl AI window, the card says: … what it was last asked, in one line; whether an answer is ready to copy'; base app.js:1944 note() returns only '복사할 답 있음' / '답변 만드는 중이에요' when ready or busy, dropping the last request"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: (2) actl AI 창 카드 — founder-ux 'For an actl AI window, the card says: … what it was last asked, in one line; whether an answer is ready to copy'; base app.js:1944 note() returns only '복사할 답 있음' / '답변 만드는 중이에요' when ready or busy, dropping the last request",
+          "title": "마지막 지시와 답변 상태를 보여줘"
         }
       ],
       "skills": {
@@ -10290,7 +10299,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:159 '**GO (2026-09-23, A-14).** The two trust fixes are complete'; docs/operations/PM_STATUS_BOARD.md:187 'M2 is closed by the A-14 GO decision; the scorecard remains the evidence record.'; README.md:111 'docs/decisions/DECISION_LOG.md — durable product/architecture decisions' (the log at b56ee56 ends at D-021 and has no M2 GO entry)"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:159 '**GO (2026-09-23, A-14).** The two trust fixes are complete'; docs/operations/PM_STATUS_BOARD.md:187 'M2 is closed by the A-14 GO decision; the scorecard remains the evidence record.'; README.md:111 'docs/decisions/DECISION_LOG.md — durable product/architecture decisions' (the log at b56ee56 ends at D-021 and has no M2 GO entry)",
+          "title": "두 번째 단계 진행 결정을 기록"
         }
       ]
     },
