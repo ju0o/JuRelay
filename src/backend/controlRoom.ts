@@ -25,6 +25,9 @@ export type ControlRoomOperation =
   | 'controlRoom:laneSet'
   | 'controlRoom:resume'
   | 'controlRoom:pause'
+  | 'controlRoom:scheduleSet'
+  | 'controlRoom:scheduleList'
+  | 'controlRoom:scheduleCancel'
   | 'controlRoom:holdChoose'
   | 'controlRoom:approvalAdd'
   | 'controlRoom:automationStatus'
@@ -42,6 +45,7 @@ export type ControlRoomExec = (
 
 export const PROJECT_ID_PATTERN = /^[a-z][a-z0-9-]{1,40}$/;
 export const TASK_ID_PATTERN = /^[A-Za-z][A-Za-z0-9-]{1,40}$/;
+export const SCHEDULE_TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 export const HOLD_OPTIONS = ['retry', 'narrow', 'skip'] as const;
 export type HoldOption = (typeof HOLD_OPTIONS)[number];
 export const GATE_ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
@@ -420,6 +424,23 @@ export async function runControlRoomPause(
     execFileImpl,
   );
 }
+
+export async function runControlRoomScheduleSet(
+  time: string,
+  execFileImpl: ControlRoomExec = execFile,
+): Promise<unknown> {
+  const operation: ControlRoomOperation = 'controlRoom:scheduleSet';
+  if (typeof time !== 'string' || !SCHEDULE_TIME_PATTERN.test(time)) {
+    throw invalidInput(operation, '시간은 00:00부터 23:59 사이의 HH:MM 형식이어야 합니다.');
+  }
+  return runSshJson(operation, [...SSH_BASE_ARGS, 'schedule', time, '--json'], execFileImpl);
+}
+
+export const runControlRoomScheduleList = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
+  runSshJson('controlRoom:scheduleList', [...SSH_BASE_ARGS, 'schedule', 'list', '--json'], execFileImpl);
+
+export const runControlRoomScheduleCancel = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
+  runSshJson('controlRoom:scheduleCancel', [...SSH_BASE_ARGS, 'schedule', 'cancel', '--json'], execFileImpl);
 
 export async function runControlRoomHoldChoose(
   taskId: string,

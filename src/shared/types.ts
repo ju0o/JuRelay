@@ -149,6 +149,9 @@ export type RelayRequest =
   | { op: 'controlRoom:laneSet'; project: string; role: string; runtimes: string[] }
   | { op: 'controlRoom:resume'; project: string }
   | { op: 'controlRoom:pause'; project: string }
+  | { op: 'controlRoom:scheduleSet'; time: string }
+  | { op: 'controlRoom:scheduleList' }
+  | { op: 'controlRoom:scheduleCancel' }
   | { op: 'controlRoom:holdChoose'; taskId: string; option: 'retry' | 'narrow' | 'skip' }
   | { op: 'controlRoom:approvalAdd'; category: string; summary: string }
   | { op: 'controlRoom:automationStatus' }
