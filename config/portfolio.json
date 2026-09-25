@@ -6361,6 +6361,17 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 'Complete the seven-task Receipt-versus-summary register, score decision utility per task, and issue M3 GO only if the day-level view adds clear actionable value'; docs/operations/PM_STATUS_BOARD.md:58 'M3 ... Exit Gate: daily value summary adds decision/value utility'; docs/validation/M3_DAILY_VALUE_VALIDATION.md:123 'Clearly useful: adds actionable day-level context beyond individual Receipts | GO'",
           "title": "하루 요약이 판단에 도움되는지 작업별 채점"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-T09-HUMAN-ACTION-PARITY",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md, fix two lines that leave out t09's recorded human action: add t09 to the Section 5 'What must I check now?' human-action list (line 133) and add 'Recorded human action' to the §3.1 t09 score reason (line 100), so both match register row 9 ('Human confirmation') and JuCeipt@402d3ee daily/2026-09-06.json needs_human_review (t09 has 1 human_action); keep the 7 ACTIONABLE / 3 UNKNOWN tally unchanged and record no M3 decision.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:79 '| 9 | `t09` / `rcpt_t09` | ... | `review_required` | Human confirmation | Package manifest/lockfile change' vs :133 'recorded human actions exist for t01, t03, t04, t05 (2 actions), t06, and t07' and :100 '`t09` | `ACTIONABLE` | Material impact: package manifest/lockfile change.'; Founder direction 2026-09-25: score decision utility per task"
         }
       ]
     },
