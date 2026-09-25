@@ -3958,6 +3958,31 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 (settled): 'launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes'. Base 173e804 src/cli/main.ts sourcesCommand prints `sessions=${source.sessionCount}`, `last=${source.lastActivity ?? \"none\"}`, `size=${source.totalSize}`.",
           "title": "Agent Relay 기록을 쉽게 확인"
+        },
+        {
+          "taskId": "JUCEIPT-SOURCES-ALL-CLAUDE-HOMES",
+          "scope": "Make discoverSources in src/sources/discover.ts find every ~/.claude*/projects directory (read-only readdir of the home dir: keep the existing Claude Code/.claude, Claude Team/.claude-team and Claude Pro/.claude-pro entries with the same labels and order, and add one entry per other .claude* home dir that has a projects subdir), skip symlinks and auth/login paths as it does now, and update tests/sources-discover.test.ts with a synthetic .claude-extra/projects fixture while the empty-home case still returns the 9 fixed sources.",
+          "files": [
+            "src/sources/discover.ts",
+            "tests/sources-discover.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-discover.test.ts tests/sources-cli.test.ts",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (A-28): 'Claude Code transcripts (~/.claude*/projects/**/*.jsonl)' — base src/sources/discover.ts hardcodes only .claude, .claude-team, .claude-pro"
+        },
+        {
+          "taskId": "JUCEIPT-README-DAILY-SOURCES-USAGE",
+          "scope": "Fill in the README.md '## CLI usage' block (currently only run/receipt) and the '## 한국어 빠른 시작' section with the existing `juceipt daily` and `juceipt sources [--json]` commands, using the exact syntax from src/cli/main.ts help text, one plain-Korean line each on what it does and that it runs read-only and local only; do not document the unshipped scan command.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "git diff --check",
+            "npx vitest run tests/sources-cli.test.ts tests/daily-cli.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: 'launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action' — base README.md:162-166 CLI usage lists only run/receipt, though main.ts already ships daily and sources"
         }
       ]
     },
