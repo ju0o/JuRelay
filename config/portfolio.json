@@ -4734,6 +4734,48 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "밝은 화면·어두운 화면 모두 잘 보이게"
+        },
+        {
+          "taskId": "JUPLAN-PLAN-MAP-LIGHT-BOX",
+          "scope": "In packages/runtime/src/index.ts renderPlanMapSvg, the node boxes are hard-coded fill=\"#1f2937\" (dark) while .map-label text uses var(--text), which is near-black in the light theme, so labels on the 계획 지도 and diagram views can't be read in a light system theme; replace the inline dark fill with a CSS class in STUDIO_STYLE that uses the theme variables (for example var(--background)) so box and label contrast pass in both light and dark, and add a regression test that the SVG has no hard-coded dark rect fill and that the light theme defines the box fill.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-theme-contrast.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화, 대상: 계획 그림): founder-ux rule 12 'Contrast must pass in light and dark'; packages/runtime/src/index.ts renderPlanMapSvg `<rect ... fill=\"#1f2937\"` vs `.plan-map .map-label{fill:var(--text)}` with light `--text:#15181D`"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-FOLD-LABEL-UNIFY",
+          "scope": "Change the folded developer-text summary that renderTechInfo in packages/runtime/src/index.ts prints from '기술 정보' to the founder-ux standard '원문 보기', which the diagram view already uses, so the Studio home (version id, finding codes, lifecycle banner CLI, evidence path) has one consistent fold label; update the existing Studio test expectations to match, with no other copy or data changes.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/studio-finding-korean.test.ts",
+            "packages/runtime/test/studio-founder-banner.test.ts",
+            "packages/runtime/test/studio-raw-text-fold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08: '개발자 글자는 원문 보기 안'); founder-ux rule 2 'Keep all of these behind one folded \"원문 보기\"'; index.ts renderTechInfo `<summary>기술 정보</summary>` vs renderDiagramViewPage `<summary>원문 보기</summary>`"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-REFRESH-FAIL-VISIBLE",
+          "scope": "When the Studio live refresh fails, STUDIO_LIVE_SECTIONS_SCRIPT in packages/runtime/src/index.ts writes '계획을 새로 고치지 못했어요.' only into the sr-only #map-live element, so sighted users get no sign of it; add a visible amber status line, hidden by default, that the script reveals on failure with three short plain-Korean lines (what happened, a likely reason, what to do) and a 44px '다시 불러오기' button that calls refreshStudioSections, then hide it again after the next successful refresh; extend the live-sections test to assert the hidden status markup, the button label and the script's show/hide wiring.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-live-sections.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08: '누르면 1초 안에 결과 문장, 오류 3줄, 막힘은 노랑'); founder-ux rules 7, 10 and 11; index.ts STUDIO_LIVE_SECTIONS_SCRIPT `.catch(function(){announceLive(\"계획을 새로 고치지 못했어요.\")})` into `<p class=\"sr-only\" id=\"map-live\">`"
         }
       ],
       "qaRuntime": [
