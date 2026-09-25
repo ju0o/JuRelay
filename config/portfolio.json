@@ -9671,6 +9671,18 @@
           ],
           "ssotEvidence": "docs/DECISIONS.md:9 'T3: 작업 등급 분류 (trivial ≤2파일·≤30줄·low만 → minimal/8문장, risky ... → detailed/18문장, 나머지 balanced/12문장)'; docs/FEATURE_CONFIGURATION.md:74 '| `minimal` | ... | 주요 파일 3개, 용어 1개, 8문장 |'; docs/FEATURE_CONFIGURATION.md:76 '| `learning` | 모두 켬 | 주요 파일 5개, 용어 6개, 12문장 |'; docs/BEGINNER_REPORT_SPEC.md:130 '* 주요 파일은 최대 3개'",
           "title": "단계별 보고 분량 한도 일치 확인"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-GLOSSARY-NO-CHANGES",
+          "scope": "In packages/cli/src/commands/context.ts, make buildContext return an empty glossaryTerms list when Git is unavailable or no files changed, so terms are not matched from package.json dependency or script names alone, and add vitest cases for both situations in packages/cli/tests/context.test.ts.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "packages/cli/tests/context.test.ts"
+          ],
+          "tests": [
+            "npm test --prefix packages/cli -- tests/context.test.ts"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:290-294 \"다음 조건에 해당하는 용어만 쉬운 설명을 제공한다. * 사용자가 작업 결과를 이해하는 데 필요한 용어\" + Founder direction 2026-09-23 (PRODUCT_SCOPE §6.6 필요한 용어만)"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
