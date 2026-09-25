@@ -30,7 +30,7 @@ Safety setup is intentionally Founder-run: see `docs/CORE_V1_AUTO_NIGHT_RUN.md`.
 - [x] 편집 탭 미저장 내용이 프로젝트 세션 전환/앱 종료 시 유실됨 → 세션 전환 확인 + 앱 종료 경고 (`will-prevent-unload` + `beforeunload`) (778c6ab, src/frontend/App.tsx:896-918, src/backend/main.ts:485-494)
 - [x] Dogfooding 피드백 검색/Type 필터는 미지원 → 검색 + Type 필터 추가 (06a212f, src/frontend/dogfooding.tsx)
 - [x] drag-out은 사용자 제스처(mousedown)가 필요 — 키보드만으로는 불가 → 키보드(Enter/Space)로 결과 전달 폴백 실행 가능 (ca0052f, src/frontend/App.tsx GPT로 드래그 버튼 onKeyDown)
-- [ ] 앱 아이콘 미설정 — electron-builder 기본 Electron 아이콘 사용 중 (build/ 리소스 필요; electron.builder.yml에 icon 없음)
+- [x] 앱 아이콘 미설정 → 다중 크기 build/icon.ico 추가 + electron.builder.yml `win.icon: build/icon.ico` 연결, test/v03.test.mjs가 설정·ICO 헤더/크기 검사 (Windows 빌드 결과는 MainPC Tester가 확인)
 - [x] Work Tab 순서 영구 저장 — v0.3은 session-only → `settings:setWorkTabOrder`로 영구 저장 (96436e2, src/backend/main.ts:133-138, src/shared/types.ts:31)
 - [x] 마지막 작업 탭(active tab)/선택 Agent까지 재실행 시 복원 — lastProject만 복원됨 → 마지막 선택 Agent 저장 + workTabOrder로 탭 복원 (25103eb + 96436e2, `agent-relay:last-agent` in src/frontend/App.tsx:125-131, 적용은 applySettings)
 - [x] Drag Reorder 터치 지원 — v0.3은 HTML5 mouse DnD만 → Pointer Events fallback으로 터치/펜 지원 (b80232b + 80f08c5, src/frontend/App.tsx shouldStartPointerReorder/resolvePointerDropIndex)

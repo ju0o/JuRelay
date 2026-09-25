@@ -65,7 +65,7 @@ actl (리모컨)
 - **프로젝트·역할별 Skill과 승인한 기억 전달**은 이 저장소 코드에는 아직 없어요.
 - 자동 진행까지 기다리는 시간은 작업마다 달라요. 고정 30분이 아니에요.
 - macOS·Linux용 앱은 없어요(Windows 설치형과 Portable만). 코드 서명도 아직 없어요.
-- 앱 아이콘은 기본 Electron 아이콘이에요.
+- 앱 아이콘은 Agent Relay 전용 아이콘(build/icon.ico)이에요. Windows 설치 파일에 실제로 들어갔는지는 MainPC에서 확인해요.
 - actl의 마지막 Windows 확인 등 일부 프로젝트는 사람이 직접 확인해야 끝나요.
 
 더 자세한 내용: [기록 저장·피드백 상세](docs/RECORDS_AND_DOGFOODING.md) · [남은 개선 목록](BACKLOG.md)
