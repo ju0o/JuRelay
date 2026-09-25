@@ -1521,6 +1521,47 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 오후: 'Agent Relay: independent QA (never self-review)' + 'inline feedback, obvious next action'; src/frontend/controlRoom.tsx:276-296 lets any runtime be saved as first QA, even the worker's own",
           "title": "만든 AI가 스스로 검수 못 하게 안내"
+        },
+        {
+          "taskId": "AGENTRELAY-LABELS-NO-RAW-ID",
+          "scope": "Take the raw lane ids out of the display names for 'jucontroler-app' and 'juceipt-planning' in src/shared/projectLabels.ts (use '통합 관제 화면' and 'JuCeipt 기획'), and change test/project-labels.test.mjs to expect those plain names, so it agrees with the controlroom-plain-2 and founder-copy-ko tests that currently fail at base.",
+          "files": [
+            "src/shared/projectLabels.ts",
+            "test/project-labels.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/project-labels.test.mjs test/controlroom-plain-2.test.mjs test/founder-copy-ko.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: launch bar = plain Korean, no raw codes; test/controlroom-plain-2.test.mjs:11 expects '통합 관제 화면' but src/shared/projectLabels.ts:13 has '통합 관제 화면 (jucontroler-app)'"
+        },
+        {
+          "taskId": "AGENTRELAY-HOLD-FALLBACK-NO-RAW",
+          "scope": "Change the holdCardMessage fallback in src/shared/projectLabels.ts so it no longer puts the raw English reason into the hold card headline ('작업이 보류되었습니다: ${cleanReason}' becomes one plain Korean sentence), leave the raw reason only in the existing 원문 보기 details, and add a test showing an English QA reason does not appear in the headline.",
+          "files": [
+            "src/shared/projectLabels.ts",
+            "test/hold-option-buttons.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/hold-option-buttons.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: HOLD cards show one Korean sentence summary with the raw QA finding collapsed; src/shared/projectLabels.ts:40-41 embeds cleanReason in the headline"
+        },
+        {
+          "taskId": "AGENTRELAY-CHAIN-ARIA-KO",
+          "scope": "Change the screen-reader label on the Control Room AI order picker in src/frontend/controlRoom.tsx (~line 307, `${role} runtime 순서 선택`) to plain Korean ('만드는 AI 순서 선택' / '검수하는 AI 순서 선택'), and add an a11y-guard assertion that controlRoom.tsx has no 'runtime 순서' label; display-only, no logic change.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "test/a11y-guard.test.mjs"
+          ],
+          "tests": [
+            "node --test test/a11y-guard.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24: plain Korean, no raw codes, Hermes style everywhere (A-21); src/frontend/controlRoom.tsx:307 aria-label={`${role} runtime 순서 선택`}"
         }
       ],
       "qaRuntime": [
