@@ -4740,8 +4740,9 @@
         "M2 PM REVIEW remains open"
       ],
       "qaRuntime": [
-        "opencode",
-        "codex"
+        "claude-pro",
+        "claude-team",
+        "opencode"
       ],
       "tasks": [
         {
@@ -6411,9 +6412,10 @@
         }
       ],
       "qaRuntime": [
-        "opencode",
+        "claude-pro",
+        "codex",
         "cline",
-        "codex"
+        "opencode"
       ],
       "skills": {
         "pm": [
@@ -6441,9 +6443,10 @@
         "codex"
       ],
       "qaRuntime": [
-        "opencode",
+        "claude-pro",
+        "codex",
         "cline",
-        "codex"
+        "opencode"
       ],
       "state": "READY",
       "blockers": [
@@ -8377,8 +8380,9 @@
         "opencode"
       ],
       "qaRuntime": [
-        "opencode",
-        "codex"
+        "claude-pro",
+        "claude-team",
+        "opencode"
       ],
       "state": "QUEUED",
       "tasks": [
@@ -8956,9 +8960,10 @@
         "claude-team"
       ],
       "qaRuntime": [
-        "opencode",
-        "codex",
-        "cline"
+        "claude-pro",
+        "claude-team",
+        "cline",
+        "opencode"
       ],
       "tasks": [
         {
@@ -9637,9 +9642,10 @@
         "claude-team"
       ],
       "qaRuntime": [
-        "opencode",
-        "codex",
-        "cline"
+        "claude-pro",
+        "claude-team",
+        "cline",
+        "opencode"
       ],
       "tasks": [
         {
@@ -9729,9 +9735,10 @@
         "claude-team"
       ],
       "qaRuntime": [
-        "opencode",
-        "codex",
-        "cline"
+        "claude-pro",
+        "claude-team",
+        "cline",
+        "opencode"
       ],
       "tasks": [
         {
@@ -10133,9 +10140,10 @@
         "claude-team"
       ],
       "qaRuntime": [
-        "opencode",
-        "codex",
-        "cline"
+        "claude-pro",
+        "claude-team",
+        "cline",
+        "opencode"
       ],
       "tasks": [
         {
