@@ -42,8 +42,10 @@
       "ssot": "repository:BACKLOG.md + config/portfolio.json",
       "owner": "codex",
       "runtime": [
-        "opencode",
-        "codex"
+        "claude-pro",
+        "cursor",
+        "cline",
+        "claude"
       ],
       "state": "QUEUED",
       "tasks": [
