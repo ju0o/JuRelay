@@ -9708,6 +9708,29 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:218 'Evidence conflicts resolved | NO — the seven-task join evidence is missing; see Section 2.2' vs docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 'CURRENT · EVIDENCE REGISTER COMPLETE · DECISION PENDING'; docs/operations/PM_STATUS_BOARD.md:36 '0 Founder seven-task-register rows join both a final and a Receipt'",
           "title": "사업 지도의 가치 검증 상태 문구 정정"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-ROADMAP-M3-JOIN-GAP-SYNC",
+          "scope": "In docs/product/MASTER_ROADMAP.md, change only the three outdated M3 status lines (§2 M3 status line 96, Phase result line 179, milestone table status cell line 466) from 'validation next' to the wording already committed in PM_STATUS_BOARD line 36 and the canonical HTML line 17 pill (10-receipt register filled; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED per M3_DAILY_VALUE_VALIDATION §2.2/§7; M3 decision pending), without recording any GO/DEFER/KILL or changing roadmap scope or gates.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 'no committed Claude final under these task IDs; 0 Founder seven-task-register rows join both a final and a Receipt (see docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.2)' vs docs/product/MASTER_ROADMAP.md:96 'M3 status: daily value summary integrated for 10 tasks; validation and GO/DEFER/KILL decision next'; Founder direction 2026-09-26"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-BOARD-M3-STATE-CELL-JOIN-GAP-SYNC",
+          "scope": "Change only two M3 status cells: in docs/planning/BUSINESS_PRODUCT_WBS.md §1 Master WBS M3 row (line 43, 'ACTIVE — integrated 10-task Daily Value summary; 10/10 receipts at 402d3ee; decision pending') and in docs/operations/PM_STATUS_BOARD.md milestone table M3 row (line 58, 'INTEGRATED — VALIDATION NEXT'), add that the register is filled, 0 Founder seven-task rows join both a Claude final and a Receipt, and the mapping is UNDECIDED (link M3_DAILY_VALUE_VALIDATION.md §2.2), matching board line 36; do not record any M3 decision.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md",
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping ... UNDECIDED — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts' vs docs/operations/PM_STATUS_BOARD.md:58 'INTEGRATED — VALIDATION NEXT'; Founder direction 2026-09-26"
         }
       ]
     },
