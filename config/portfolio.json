@@ -3888,7 +3888,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 (settled): 'launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes'. Base 173e804 src/cli/main.ts sourcesCommand prints `sessions=${source.sessionCount}`, `last=${source.lastActivity ?? \"none\"}`, `size=${source.totalSize}`."
+          "ssotEvidence": "Founder direction 2026-09-24 (settled): 'launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes'. Base 173e804 src/cli/main.ts sourcesCommand prints `sessions=${source.sessionCount}`, `last=${source.lastActivity ?? \"none\"}`, `size=${source.totalSize}`.",
+          "title": "Agent Relay 기록을 쉽게 확인"
         }
       ]
     },
@@ -6413,7 +6414,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:21-28 still lists only placeholder prompts ('Receipt identifiers and source artifact paths for all included tasks', 'Validator role, date, and whether the validator knew the underlying task context', '10/10 included, or the missing task and reason'), while Section 2.1 (lines 37-63) and Section 7 (lines 161-163) already record those facts. Founder direction 2026-09-25: 'Complete the seven-task Receipt-versus-summary register'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:21-28 still lists only placeholder prompts ('Receipt identifiers and source artifact paths for all included tasks', 'Validator role, date, and whether the validator knew the underlying task context', '10/10 included, or the missing task and reason'), while Section 2.1 (lines 37-63) and Section 7 (lines 161-163) already record those facts. Founder direction 2026-09-25: 'Complete the seven-task Receipt-versus-summary register'",
+          "title": "매일 영수증 검증 결과 기록"
         }
       ]
     },
@@ -6745,7 +6747,8 @@
           "tests": [
             "node --test tests/fixture-risk-reason.test.mjs tests/results/scenario-d/tests-not-run-report.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:349 위험도에는 반드시 짧은 근거를 함께 작성한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:349 위험도에는 반드시 짧은 근거를 함께 작성한다.",
+          "title": "위험도를 이해할 근거를 보여줘요"
         },
         {
           "taskId": "JUTELL-SCENARIO-F-MINIMAL-REPORT",
@@ -6757,7 +6760,8 @@
           "tests": [
             "node --test tests/results/scenario-f/minimal-report.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:543 대신 다음 최소 정보는 짧게 제공한다. (작업 완료 여부, 주요 수정 파일, 중요한 실패 또는 확인하지 못한 항목; 핵심 검증 실패는 숨기지 않는다)"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:543 대신 다음 최소 정보는 짧게 제공한다. (작업 완료 여부, 주요 수정 파일, 중요한 실패 또는 확인하지 못한 항목; 핵심 검증 실패는 숨기지 않는다)",
+          "title": "실패를 숨기지 않는 짧은 보고"
         },
         {
           "taskId": "JUTELL-MINIMAL-REPORT-SPEC-PARITY",
@@ -6768,7 +6772,8 @@
           "tests": [
             "node --test tests/minimal-report-spec-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:543 대신 다음 최소 정보는 짧게 제공한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:543 대신 다음 최소 정보는 짧게 제공한다.",
+          "title": "짧은 보고 기준을 똑같이 맞춰요"
         },
         {
           "taskId": "JUTELL-INFO-SYSTEM-SCOPE-PARITY",
@@ -6779,7 +6784,8 @@
           "tests": [
             "node --test tests/info-system-scope-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:261 근거 출처, 확인 상태, 사용자 행동, 보고서 상태를 같은 의미로 사용하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:261 근거 출처, 확인 상태, 사용자 행동, 보고서 상태를 같은 의미로 사용하지 않는다.",
+          "title": "정보 표시 기준을 일관되게 맞춰요"
         },
         {
           "taskId": "JUTELL-CONTEXT-RISK-UNKNOWN-NO-GIT",
@@ -6794,7 +6800,8 @@
             "node --test tests/context-main-files-cap-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:347 \"변경 범위나 실행 환경을 충분히 확인하지 못해 위험도를 판단할 수 없는 상태다.\""
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:347 \"변경 범위나 실행 환경을 충분히 확인하지 못해 위험도를 판단할 수 없는 상태다.\"",
+          "title": "변경 범위를 모를 때 알려줘요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
