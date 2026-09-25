@@ -1768,6 +1768,23 @@
             "npm run typecheck"
           ],
           "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "AGENTRELAY-CONTROLROOM-NO-RAW-IDS",
+          "scope": "Control Room (src/frontend/controlRoom.tsx, src/shared/projectLabels.ts) still shows raw text on the surface: '지금 일하는 AI' rows end with task ids like 'JUCEIPT-CODEX-TOOL-MASKING' when no Korean title exists (show '새 작업 (이름 짓는 중)' instead, id only under 원문 보기); runtime ids are lowercase ('cursor', 'codex', 'opencode', 'claude-team' chips) → friendly names Cursor, Codex, OpenCode, Claude Team, Claude Pro, Grok, Cline, 무료 모델; '쉬는 AI: opencode(2026-09-25T12:12까지)' → 'OpenCode (12:12까지 쉼)' local time; lane tab 'jutell' → 'JuTell' via PROJECT_LABELS; lane tab badge '보류' in red → amber '멈춘 작업 N'; '이름 준비 중인 작업' → '새 작업 (이름 짓는 중)'. Pure helpers + test.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/shared/projectLabels.ts",
+            "src/frontend/style.css",
+            "test/controlroom-no-raw-ids.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node --test test/controlroom-no-raw-ids.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill",
+          "title": "관제실의 작업 번호·영문 이름·긴 시각 없애기"
         }
       ],
       "qaRuntime": [
