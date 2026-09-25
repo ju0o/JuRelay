@@ -3300,6 +3300,19 @@
             "python3 -m pytest -q"
           ],
           "ssotEvidence": "Founder GUI capture 2026-09-25 13:21 on MainPC (PrintWindow, Founder-approved 10 min): JuActl Board 0.2.0 and Agent Relay app; Founder: '진짜 비개발자도 보면 이해가 되게', founder-ux Skill"
+        },
+        {
+          "taskId": "ACTL-WEB-LEAD-EMPTY-FIRSTRUN-R2",
+          "scope": "In src/actl/serve.py, implement the existing board lead, empty-state guidance, dismissible localStorage first-run guide, and removal of the English header text, ensuring closing the guide visibly confirms '안내를 닫았어요 ✓'; add or update tests/test_serve_first_run.py to fail on the base behavior and pass on this behavior.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_first_run.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (founder-ux rules 1, 5, 14: 맨 위 한 문장, 빈 화면 이유+다음 행동, 첫 실행 3단계 안내 — web board); src/actl/serve.py:52 'content:'ACTL // REMOTE AGENT CONTROL // SIGNAL LOCKED''"
         }
       ],
       "qaRuntime": [
