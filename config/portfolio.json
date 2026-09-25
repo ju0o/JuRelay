@@ -6890,6 +6890,22 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후): plain Korean, inline feedback, no raw codes; Hermes style everywhere (A-21)",
           "title": "막힌 전환을 쉽게 다시 시도하게 해줘요"
+        },
+        {
+          "taskId": "JCAPP-AI-ORDER-PLAIN",
+          "scope": "In the 진행 tab's '담당 AI 순서 (고급)' block, the reorder buttons, the confirm sentence and the success line still show raw words: 'juactl 프로젝트의 Worker 순서를 opencode/big-pickle → codex(으)로 바꿀게요.', 'Worker 순서'/'QA 순서', 'opencode/big-pickle 앞으로' and '순서를 바꿨어요: a,b'. Make them plain Korean everywhere: the labels become '작업 AI 순서'/'검수 AI 순서' and '<AI 이름> 앞으로', and the confirm sentence becomes '<프로젝트 한국어 이름> 작업|검수 AI 순서를 <AI 이름> → …(으)로 바꿀게요.' Build that sentence identically in operator/public/app.js relayChainSentence and in lib/relayBoard.mjs laneChainSentence, because the server rebuilds it word for word to check the confirmation. For AI names, lift the name mapping from aiRoutingRows into one top-level helper: runtimeName, the two known free models, else '무료 AI' for opencode/* and '이름 모를 AI' for anything else. Put the same mapping in lib/relayBoard.mjs. Keep the raw ids only in data-* attributes and in the argv sent to night lane set. Update the test expectations: the agent-relay-module line-57 wording and the line-142 sentence, and add the new const name to the extracted consts list.",
+          "files": [
+            "operator/public/app.js",
+            "lib/relayBoard.mjs",
+            "test/agent-relay-module.test.mjs",
+            "test/ai-routing-view.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/ai-routing-view.test.mjs test/inline-actions.test.mjs test/home-working-line.test.mjs",
+            "node --test test/",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후, settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base lib/relayBoard.mjs:53 laneChainSentence = `${project} 프로젝트의 ${role === 'qa' ? 'QA' : 'Worker'} 순서를 ${chain.join(' → ')}(으)로 바꿀게요.`"
         }
       ]
     },
