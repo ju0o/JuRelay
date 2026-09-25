@@ -4361,6 +4361,49 @@
           ],
           "ssotEvidence": "Founder 2026-09-25: '각 Github에 따로 따로 올릴거라 영상도 따로따로'; 'Aside가 영상 링크 안 주는 거 같은데' → put each repo's 30s video in the repo itself; overall 60s intro already on YouTube https://youtu.be/tB1cCLzTvIs (Aside upload, 일부 공개)",
           "title": "README에 소개 영상 넣기"
+        },
+        {
+          "taskId": "JUPLAN-DOC-CELL-KOREAN",
+          "scope": "In packages/runtime/src/documents.ts, write the English enum values that land in Founder document table cells as plain Korean: WbsTask level (phase/workstream/task → 단계/작업 묶음/작업), implementationStatus (each ImplementationStatus value in packages/plan-core/src/envelope.ts, e.g. NOT_IMPLEMENTED → 아직 안 만듦), QaCase kind (unit/integration/e2e/manual → 단위 시험/연결 시험/전체 흐름 시험/사람이 확인) and Event direction (emits/consumes → 보냄/받음); leave every other output and the Mermaid/DBML exports unchanged, and update or add the vitest assertions that cover these cells.",
+          "files": [
+            "packages/runtime/src/documents.ts",
+            "packages/runtime/test/documents.test.ts",
+            "packages/runtime/test/wbs-doc-direction.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대상 PRD/WBS/ERD/SSOT 보기; founder-ux rule 2 (enum words such as HOLD, QUEUED … behind 원문 보기) and rule 3 (Korean labels)"
+        },
+        {
+          "taskId": "JUPLAN-VIEW-PAGE-TOP-SENTENCE",
+          "scope": "In packages/runtime/src/index.ts, give renderDocViewPage and renderDiagramViewPage one plain-Korean sentence under the h1 saying what the page is for and what to do now (for example '이 계획으로 만든 작업 순서표예요. 위에서부터 차례로 읽어 보세요.', with a short fallback sentence for any doc or diagram name that has no entry), change VIEW_BACK_LINK text from '← JuPlan Studio' to '← Studio 홈으로', and make the plan-map edge <title> tooltip show the two node labels plus a Korean edge-type word instead of the raw node ids and English edge type, with a new vitest file covering all three.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-view-top-sentence.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 대상 계획 그림, PRD/WBS/ERD/SSOT 보기; founder-ux rule 1 (one sentence at the top: what this screen is for, and what to do now) and rule 2 (no task IDs or enum words on the surface)"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-FIRST-RUN-GUIDE",
+          "scope": "In packages/runtime/src/index.ts, replace the single-paragraph renderNoProjectPage with a numbered plain-Korean 3-step first-run guide (1. JuPlan이 무엇인지 한 줄, 2. 필요한 한 가지: 프로젝트 이름과 한 문장 아이디어를 JuControler 계획 탭에 말하기, 3. 그다음 일어나는 일: 계획 지도와 문서가 이 화면에 자동으로 생김), with no CLI command, path or English on the surface; keep the existing HTTP status, and add a vitest test that checks the three steps are present and no command text appears.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-first-run-guide.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux Skill 규칙 … 첫 실행 3단계 안내, 대상 JuPlan Studio 화면; founder-ux rule 14 (first run gives a 3-step guide: what it is → the one setting needed → what happens next)"
         }
       ],
       "qaRuntime": [
