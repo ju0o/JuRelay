@@ -4519,6 +4519,9 @@
       "skills": {
         "pm": [
           "founder-ux"
+        ],
+        "worker": [
+          "founder-ux"
         ]
       }
     },
