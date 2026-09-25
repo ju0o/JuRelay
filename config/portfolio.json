@@ -6321,7 +6321,8 @@
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/quickstart-next-sync.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md 상태판 안내 문장 table at 05d86cf: '`프로젝트 목록 파일을 열 수 없어요 — 경로를 확인하세요` | 명령에 적은 파일 경로가 맞는지 확인합니다.' is the only registry error line with no e2e step; Founder direction 2026-09-23 (1) the real E2E covers the main user flow offline, and 2026-09-24 launch bar asks for plain Korean with an obvious next action"
+          "ssotEvidence": "docs/getting-started.md 상태판 안내 문장 table at 05d86cf: '`프로젝트 목록 파일을 열 수 없어요 — 경로를 확인하세요` | 명령에 적은 파일 경로가 맞는지 확인합니다.' is the only registry error line with no e2e step; Founder direction 2026-09-23 (1) the real E2E covers the main user flow offline, and 2026-09-24 launch bar asks for plain Korean with an obvious next action",
+          "title": "목록 파일이 없을 때 안내"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-REGISTRY-EXAMPLE-TEST",
@@ -6333,7 +6334,8 @@
             "node --test tests/quickstart-registry-example.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "README.md §3 at 05d86cf: '내 `registry.json`은 아래를 복사해서 값만 바꾸면 됩니다.' (copy-ready example from the done task JUCONTROLER-QUICKSTART-REGISTRY-EXAMPLE, which no test checks today); Founder direction 2026-09-23 (2) the Quickstart commands must be exactly what works"
+          "ssotEvidence": "README.md §3 at 05d86cf: '내 `registry.json`은 아래를 복사해서 값만 바꾸면 됩니다.' (copy-ready example from the done task JUCONTROLER-QUICKSTART-REGISTRY-EXAMPLE, which no test checks today); Founder direction 2026-09-23 (2) the Quickstart commands must be exactly what works",
+          "title": "빠른 시작 예시로 등록 확인"
         }
       ],
       "qaRuntime": [
@@ -9512,7 +9514,8 @@
             "node --test tests/context-tier-profile-limits-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/DECISIONS.md:9 'T3: 작업 등급 분류 (trivial ≤2파일·≤30줄·low만 → minimal/8문장, risky ... → detailed/18문장, 나머지 balanced/12문장)'; docs/FEATURE_CONFIGURATION.md:74 '| `minimal` | ... | 주요 파일 3개, 용어 1개, 8문장 |'; docs/BEGINNER_REPORT_SPEC.md:130 '* 주요 파일은 최대 3개'"
+          "ssotEvidence": "docs/DECISIONS.md:9 'T3: 작업 등급 분류 (trivial ≤2파일·≤30줄·low만 → minimal/8문장, risky ... → detailed/18문장, 나머지 balanced/12문장)'; docs/FEATURE_CONFIGURATION.md:74 '| `minimal` | ... | 주요 파일 3개, 용어 1개, 8문장 |'; docs/BEGINNER_REPORT_SPEC.md:130 '* 주요 파일은 최대 3개'",
+          "title": "보고서 상세 수준을 일관되게 관리"
         },
         {
           "taskId": "JUTELL-LENGTH-TIERS-SCOPE-PARITY",
@@ -9524,7 +9527,8 @@
             "node --test tests/length-tiers-scope-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:676-680 '고정된 글자 수를 강제하지 않지만 다음 기준을 사용한다. * 단순 작업: 짧은 요약 중심 * 중간 규모 작업: 주요 기능과 검증 중심 * 복잡하거나 위험한 작업: 필요한 세부정보 추가'; docs/BEGINNER_REPORT_SPEC.md:114 '## 5. 보고서 길이 기준'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:676-680 '고정된 글자 수를 강제하지 않지만 다음 기준을 사용한다. * 단순 작업: 짧은 요약 중심 * 중간 규모 작업: 주요 기능과 검증 중심 * 복잡하거나 위험한 작업: 필요한 세부정보 추가'; docs/BEGINNER_REPORT_SPEC.md:114 '## 5. 보고서 길이 기준'",
+          "title": "작업 규모별 안내 기준을 일치시킴"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
