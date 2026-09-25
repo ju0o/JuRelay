@@ -2497,6 +2497,47 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-24 오후: 'plain Korean, obvious next action, inline feedback, no raw codes'; src/actl/cli.py:1507-1515@2bc798a: 'print(\"empty prompt\", file=sys.stderr)' / 'print(str(exc), file=sys.stderr)'; src/actl/cli.py:278 guard_direct_writer: 'raise RuntimeError(f\"{denied.code}: {denied.detail}\")'",
           "title": "보내기 실패 때 다음 할 일 안내하기"
+        },
+        {
+          "taskId": "ACTL-CLI-AUTO-REMAP-KOREAN",
+          "scope": "In src/actl/cli.py, change the messages that `_resolve_live_target` prints or raises during `actl send`/`actl copy` to plain Korean with a next step: 're-mapped to', 'Backup:', 'auto-mapped to … (newest live pane)', 'Multiple live … panes found', 'Choose pane:', 'No pane matching', 'Invalid pane selection', 'is not currently mapped to a live pane'; also make `_copy`'s '✗ {exc}' line print the Korean message. Leave config.py's ValueError text as it is (tests/test_config.py checks it), and add one test in tests/test_cli_korean_messages.py covering the single-match remap and zero-match failure output.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_korean_messages.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "bash scripts/e2e_disposable.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: launch bar = non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, no raw codes; base src/actl/cli.py:1099 print(f\"✓ {AGENTS[agent].display_name} re-mapped to {matches[0].pane.pane_id}\") and :1129 raise ValueError(f\"{AGENTS[agent].display_name} is not currently mapped to a live pane\")"
+        },
+        {
+          "taskId": "ACTL-VERIFY-ROW-PLAIN",
+          "scope": "Make tui._verify_row, which the TUI, the Tk board and the web board all use, return only plain Korean with an obvious next step: no raw validation.state (STALE/…), English validation.detail, exception text or extractor source names (e.g. 'codex-rollout'), and no TUI-only 'm 눌러' hint on the shared line. Change the web board pane title suffix '— live' in src/actl/serve.py to Korean, and add a test in a new tests/test_verify_row_plain.py.",
+          "files": [
+            "src/actl/tui.py",
+            "src/actl/serve.py",
+            "tests/test_verify_row_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: plain Korean, obvious next action, no raw codes; base src/actl/tui.py:393 return f\"매핑: {validation.state} — {validation.detail} (m 눌러 재매핑)\" and :399 f\"매핑: 정상 · 복사: 가능 ({len(result.text)}자, {result.source})\"; serve.py:216 `▚ ${d.display} ${d.target} — live`"
+        },
+        {
+          "taskId": "ACTL-CLI-STATUS-ERROR-PLAIN",
+          "scope": "In src/actl/cli.py `_print_status` text mode, replace the '<name> ERROR {exc}' row with a plain Korean row plus a next step (e.g. '확인 필요 — actl doctor 로 점검하세요'), and replace the English 'cmd=' / 'path=' labels with Korean ones. Keep the raw exception only in the --json 'detail' field. Add a test in tests/test_cli_korean_messages.py where agent_status raises.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_korean_messages.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-24 오후: no raw codes, obvious next action; base src/actl/cli.py:69 print(f\"{AGENTS[name].display_name:<12} ERROR {exc}\") and :64 f\"... cmd={s['command']:<14} path={s['path']}\""
         }
       ],
       "qaRuntime": [
