@@ -9334,6 +9334,20 @@
           ],
           "ssotEvidence": "founder-ux rule 3 'Korean labels' and the Live status card rule 'the AI in its friendly name'; test/agent-relay-module.test.mjs:181 at a6afa17 pins the ungrammatical surface text 'Cline가 검사하는 중' (aiGa at operator/public/app.js:175 uses /[bcdgklmnpqt]$/i, which misses Cline's final ㄴ).",
           "title": "AI 이름 뒤 조사를 자연스럽게"
+        },
+        {
+          "taskId": "JCAPP-ACTL-PANES-DOWN-PLAIN",
+          "scope": "In operator/public/app.js relayPanesPanel, split 'still loading' (paneData undefined → keep the 확인 중 line) from 'answered available:false' on both 홈 'AI 창' and 진행 'AI 창 · actl 리모컨'. Today 진행 says 'actl 창 목록을 확인 중이에요.' forever and 홈 gives one bare line. The down case shows one amber block: 'AI 창 목록을 읽지 못했어요.' / '이 PC의 actl 창(tmux)을 읽지 못했어요 — 꺼져 있을 수 있어요.' / '켜 두면 저절로 이어져요.', then the existing [다시 확인] (data-first-run-recheck), with any reason only under 원문 보기. test/actl-panes-plain.test.mjs gets asserts for loading vs down on both branches and that the reason stays off the surface.",
+          "files": [
+            "operator/public/app.js",
+            "test/actl-panes-plain.test.mjs",
+            "test/lovable-ai-windows.test.mjs"
+          ],
+          "tests": [
+            "node --test test/actl-panes-plain.test.mjs test/lovable-ai-windows.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): actl AI 창 카드 — 그 전엔 기존 /api/panes, founder-ux 'Live status card' 규칙과 같은 용어·같은 색; founder-ux rule 10 (오류 3줄, 꺼짐/실패 구분, 버튼) and rule 7 (no silent state)"
         }
       ],
       "skills": {
