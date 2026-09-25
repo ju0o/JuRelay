@@ -3337,6 +3337,17 @@
             "python3 -m pytest tests/test_gui_readable_sizes.py tests/test_gui_theme.py -q"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): founder-ux '글자 16px·버튼 44px' for JuActl Board src/actl/gui.py; gui.py:40 FONT = ('Segoe UI', 10), button pady=6/8; ACTL-WEB-READABLE-SIZES covers only serve.py CSS"
+        },
+        {
+          "taskId": "ACTL-TEST-VERSION-PY310-R2",
+          "scope": "In tests/test_version_one.py, replace tomllib with regex parsing of pyproject.toml version; install pytest in the fresh worktree environment before running the existing test command.",
+          "files": [
+            "tests/test_version_one.py"
+          ],
+          "tests": [
+            "python3 -m pytest tests/test_version_one.py -q"
+          ],
+          "ssotEvidence": "GitHub Actions run 36096320753 linux-tests (3.10): ModuleNotFoundError: No module named 'tomllib' (PR ju0o/JuActl#1, 2026-09-25)"
         }
       ],
       "qaRuntime": [
