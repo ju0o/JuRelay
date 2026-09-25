@@ -10408,6 +10408,17 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/product/MASTER_ROADMAP.md:467 '| M4 MVP Usability | installation + capture + latest Receipt usable | M2 | ⏳ |' and docs/planning/BUSINESS_PRODUCT_WBS.md:44 '| M4 | MVP Usability | ... | M2 GO | ... | BLOCKED |' vs docs/operations/PM_STATUS_BOARD.md:43 '| Next product milestone | M4 — MVP Usability / packaging, after M3 validation |'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-ROADMAP-PM-DIRECTIVE-M3-SYNC",
+          "scope": "In docs/product/MASTER_ROADMAP.md §12 'Current PM directive', change only items 4 and 5 (lines 561-562): item 4 should say the 10-receipt register and final-versus-Receipt reconciliation are complete, 0 Founder seven-task rows join both a Claude final and a Receipt, the mapping is UNDECIDED per M3_DAILY_VALUE_VALIDATION §2.2/§7 and the M3 GO/DEFER/KILL decision is still to be recorded; item 5 should say M4 depends on M2 GO and the installation/usability handoff stays locked until the M4 gate opens, reusing the wording already in PM_STATUS_BOARD. Do not record any M3 decision and do not change scope or gates.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:264 '1 | The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` ... M3 decision is pending.' and :268 'M4 installation/usability Handoff depends on M2 GO and remains locked until the M4 gate opens'; the stale text is at docs/product/MASTER_ROADMAP.md:561 '4. Validate the integrated 10-task Daily Report summary and record M3 GO/DEFER/KILL.' and :562 '5. Only after M3 validation should Worker receive the installation/usability implementation handoff.'"
         }
       ]
     },
