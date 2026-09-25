@@ -3019,7 +3019,8 @@
           "tests": [
             "python3 -m pytest tests/test_serve_stuck_amber.py tests/test_serve.py tests/test_serve_plain_cards.py tests/test_serve_board_counts.py -q"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06 비개발자 UX 고도화): founder-ux rule 11 '막힘은 노랑' — actl serve 웹 보드 오류 안내; serve.py BOARD_HTML CLS has \"BLOCKED\":\"bad\""
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06 비개발자 UX 고도화): founder-ux rule 11 '막힘은 노랑' — actl serve 웹 보드 오류 안내; serve.py BOARD_HTML CLS has \"BLOCKED\":\"bad\"",
+          "title": "승인 기다리는 에이전트를 주황색으로 표시"
         },
         {
           "taskId": "ACTL-WEB-RESULT-READY-CTA",
@@ -3031,7 +3032,8 @@
           "tests": [
             "python3 -m pytest tests/test_serve_result_ready.py tests/test_serve.py tests/test_serve_plain_cards.py -q"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): 대상 actl serve 웹 보드 — 답 도착, 결과 복사; Tk counterpart ACTL-RESULT-READY-COPY-CTA-R2 done, web still shows '결과 준비' with an always-on '⧉ 복사'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): 대상 actl serve 웹 보드 — 답 도착, 결과 복사; Tk counterpart ACTL-RESULT-READY-COPY-CTA-R2 done, web still shows '결과 준비' with an always-on '⧉ 복사'",
+          "title": "답이 오면 알려주고 결과 복사 버튼 강조"
         },
         {
           "taskId": "ACTL-TK-READABLE-SIZES",
@@ -3043,7 +3045,8 @@
           "tests": [
             "python3 -m pytest tests/test_gui_readable_sizes.py tests/test_gui_theme.py -q"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): founder-ux '글자 16px·버튼 44px' for JuActl Board src/actl/gui.py; gui.py:40 FONT = (\"Segoe UI\", 10), button pady=6/8; ACTL-WEB-READABLE-SIZES covers only serve.py CSS"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:06): founder-ux '글자 16px·버튼 44px' for JuActl Board src/actl/gui.py; gui.py:40 FONT = (\"Segoe UI\", 10), button pady=6/8; ACTL-WEB-READABLE-SIZES covers only serve.py CSS",
+          "title": "현황판 글자와 버튼을 크고 보기 쉽게"
         },
         {
           "taskId": "ACTL-README-VIDEO",
@@ -4261,7 +4264,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화: 개발자 글자는 원문 보기 안 — JuPlan Studio 화면)"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화: 개발자 글자는 원문 보기 안 — JuPlan Studio 화면)",
+          "title": "스튜디오 첫 화면을 쉬운 말로 정리"
         },
         {
           "taskId": "JUPLAN-STUDIO-EMPTY-ERROR-GUIDE",
@@ -4275,7 +4279,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화: 빈 화면 이유+다음 행동, 오류 3줄 — JuPlan Studio 화면)"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화: 빈 화면 이유+다음 행동, 오류 3줄 — JuPlan Studio 화면)",
+          "title": "빈 화면·오류 때 이유와 다음 할 일 안내"
         },
         {
           "taskId": "JUPLAN-STUDIO-TOUCH-TEXT-SIZE",
@@ -4288,7 +4293,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화: 글자 16px·버튼 44px — JuPlan Studio 화면)"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화: 글자 16px·버튼 44px — JuPlan Studio 화면)",
+          "title": "누르기 쉬운 버튼과 읽기 편한 글씨"
         },
         {
           "taskId": "JUPLAN-README-VIDEO",
@@ -4923,7 +4929,8 @@
             "npx vitest run tests/sources-cli.test.ts tests/sources-discover.test.ts",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙(맨 위 한 문장, 시간은 상대/현지 시각)으로 juceipt 명령 출력 점검; src/cli/main.ts:208 prints `마지막 활동 ${source.lastActivity}` from src/sources/discover.ts:64 `new Date(latest).toLocaleString()`"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙(맨 위 한 문장, 시간은 상대/현지 시각)으로 juceipt 명령 출력 점검; src/cli/main.ts:208 prints `마지막 활동 ${source.lastActivity}` from src/sources/discover.ts:64 `new Date(latest).toLocaleString()`",
+          "title": "AI 작업 기록 위치와 최근 활동 쉽게 보기"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-CMD-PLAIN-OUTPUT",
@@ -4937,7 +4944,8 @@
             "npx vitest run tests/receipt-cli.test.ts",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 대상 juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻, 오류 3줄; src/cli/main.ts:178 `console.log(\"완료: HTML을 렌더링했습니다: \" + outHtml ...)` and :174 single-line `오류: receipt.json을 찾을 수 없습니다`"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 대상 juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻, 오류 3줄; src/cli/main.ts:178 `console.log(\"완료: HTML을 렌더링했습니다: \" + outHtml ...)` and :174 single-line `오류: receipt.json을 찾을 수 없습니다`",
+          "title": "영수증 만든 뒤 판정을 쉬운 말로 안내"
         },
         {
           "taskId": "JUCEIPT-SCAN-RELAY-MASKING-R2",
@@ -4951,7 +4959,8 @@
             "npx vitest run tests/sources-scan.test.ts tests/sources-claude.test.ts tests/sources-agent-relay.test.ts",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (A-28): mask token-like strings in every receipt; nothing leaves the machine; at base 99f4bb3, scan.ts relay() does `if (typeof item.hook_event_name === 'string') return [item as RawHookEvent];` unmasked, and scan.ts mask regex omits the base64 branch present in claude/codex/opencode/others TOKEN"
+          "ssotEvidence": "Founder direction 2026-09-23 (A-28): mask token-like strings in every receipt; nothing leaves the machine; at base 99f4bb3, scan.ts relay() does `if (typeof item.hook_event_name === 'string') return [item as RawHookEvent];` unmasked, and scan.ts mask regex omits the base64 branch present in claude/codex/opencode/others TOKEN",
+          "title": "작업 기록 속 비밀 열쇠 더 꼼꼼히 가리기"
         },
         {
           "taskId": "JUCEIPT-README-VIDEO",
@@ -5773,7 +5782,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, no raw codes; (1) a real end-to-end script that runs the product's main user flow offline and prints one JSON line {ok, steps[], ms}"
+          "ssotEvidence": "Founder direction 2026-09-24: launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, no raw codes; (1) a real end-to-end script that runs the product's main user flow offline and prints one JSON line {ok, steps[], ms}",
+          "title": "목록 파일이 깨졌을 때 안내 확인"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-NEXT-SYNC-TEST",
@@ -5786,7 +5796,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-24 02시: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e script runs]; README.md at 7a8957a section 3 lists 'node --test tests/*.test.mjs' and 'node scripts/status-board.mjs <registry.json> [--project-id <id>]', which match the e2e.sh `tests`/`board` next commands"
+          "ssotEvidence": "Founder direction 2026-09-24 02시: (2) a README '처음 쓰는 법' (Quickstart) section whose commands are exactly what that [e2e script runs]; README.md at 7a8957a section 3 lists 'node --test tests/*.test.mjs' and 'node scripts/status-board.mjs <registry.json> [--project-id <id>]', which match the e2e.sh `tests`/`board` next commands",
+          "title": "실패 안내와 빠른 시작 설명 일치 확인"
         },
         {
           "taskId": "JUCONTROLER-README-VIDEO",
@@ -7533,7 +7544,8 @@
           "tests": [
             "node --test test/memory-studio.test.mjs test/memory-proposals-plain.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 더보기 안 화면(… 기억 …) 점검 — founder-ux rule 2 '개발자 글자는 원문 보기 안' / raw project id input (same class as 승인 'all 또는 프로젝트 id' fix)"
+          "ssotEvidence": "Founder direction 2026-09-25: 더보기 안 화면(… 기억 …) 점검 — founder-ux rule 2 '개발자 글자는 원문 보기 안' / raw project id input (same class as 승인 'all 또는 프로젝트 id' fix)",
+          "title": "기억 추가 때 프로젝트를 목록에서 고르기"
         },
         {
           "taskId": "JCAPP-TESTER-HEAD-KOREAN",
@@ -7545,7 +7557,8 @@
           "tests": [
             "node --test test/tester-module.test.mjs test/tester-summary.test.mjs test/tester-runs.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: founder-ux rule 3 Korean labels (시험) and rule 5 empty states give a reason and the next step; progressTabs already labels this view '시험 결과' (operator/public/app.js:11 at b59c85c)"
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux rule 3 Korean labels (시험) and rule 5 empty states give a reason and the next step; progressTabs already labels this view '시험 결과' (operator/public/app.js:11 at b59c85c)",
+          "title": "시험 결과 화면 제목과 안내 문구 맞추기"
         },
         {
           "taskId": "JCAPP-README-VIDEO",
@@ -8102,7 +8115,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:226 '| M2 → M3 | M3 blocked on M2 GO. OK |' vs :28 'M2 is **GO** (A-14, 2026-09-23)' and docs/operations/PM_STATUS_BOARD.md:27 'Active product milestone | **M3 — Daily Agent Value Decision**'"
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:226 '| M2 → M3 | M3 blocked on M2 GO. OK |' vs :28 'M2 is **GO** (A-14, 2026-09-23)' and docs/operations/PM_STATUS_BOARD.md:27 'Active product milestone | **M3 — Daily Agent Value Decision**'",
+          "title": "보고서의 단계 연결 상태 최신화"
         },
         {
           "taskId": "JUCEIPTPLAN-WBS-M3-EXIT-QUESTION-EVIDENCE-LINK",
@@ -8113,7 +8127,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:150 'The day-level view must answer: **“오늘 Agent들에게 시킨 일 중 뭘 받았고, 뭘 확인해야 하며, 구독/사용 대비 가치가 있었나?”**' has no link, and docs/validation/M3_DAILY_VALUE_VALIDATION.md '### 4.1 M3 exit-question and Daily Level 1 trace' traces those three parts; Founder direction 2026-09-25"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:150 'The day-level view must answer: **“오늘 Agent들에게 시킨 일 중 뭘 받았고, 뭘 확인해야 하며, 구독/사용 대비 가치가 있었나?”**' has no link, and docs/validation/M3_DAILY_VALUE_VALIDATION.md '### 4.1 M3 exit-question and Daily Level 1 trace' traces those three parts; Founder direction 2026-09-25",
+          "title": "3단계 완료 질문에 근거 연결"
         }
       ]
     },
