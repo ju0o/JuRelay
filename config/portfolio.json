@@ -7228,6 +7228,17 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:108 'See the Section 7 `Proposed mapping basis` row for the closeout trace from this tally to the Founder GO condition' vs :189 'Actionable day-level value bar | Founder condition: `GO` only if the day-level view adds clear actionable value. The Section 3.1 tally records `7 ACTIONABLE`...'; Founder direction 2026-09-25",
           "title": "실행 가능한 가치 기준 확인하기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-RECEIPT-ENUM-WIRE-VOCAB",
+          "scope": "문서 계약 경계에 JSON 소문자 enum과 표시·PM 대문자 상태 용어의 정규 매핑을 한 줄의 규범적 주석으로 명시한다.",
+          "files": [
+            "docs/product/RECEIPT_SCHEMA.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/qa/P0_ROADMAP_WBS_GATE_QA.md:24-25 \"Add one normative note at the schema/presentation boundary: lowercase JSON enum values are canonical on disk/API; uppercase labels are display/PM vocabulary.\""
         }
       ]
     },
