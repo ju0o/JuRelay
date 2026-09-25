@@ -3195,7 +3195,6 @@
         }
       ],
       "qaRuntime": [
-        "grok",
         "cline",
         "codex"
       ],
@@ -9550,7 +9549,6 @@
       "claude-pro",
       "cursor",
       "opencode",
-      "grok",
       "cline"
     ],
     "free": [
@@ -9559,5 +9557,8 @@
     "note": "AI 자동 배정 (Founder 2026-09-24, A-22): lane chain first, then other subscribed AIs, free models last"
   },
   "memoryDelivery": true,
-  "minFreeMemoryMb": 3500
+  "minFreeMemoryMb": 3500,
+  "pausedRuntimes": {
+    "grok": "2026-09-25 Grok Build usage balance exhausted (402) — Founder tops up, then re-add to pool"
+  }
 }
