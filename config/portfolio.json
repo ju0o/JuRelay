@@ -6338,6 +6338,114 @@
       "pmState": "NIGHT_PLAN_PM",
       "tasks": [
         {
+          "taskId": "JCAPP-LOVABLE-SHELL",
+          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 1 (shell): replace the CSS design tokens with the reference's (styles.css :root values converted to hex/rgb vars: background, card, border, foreground, muted, primary teal, warning amber, success-soft, warning-soft, surface-raised, radius 0.875rem), load Noto Sans KR + JetBrains Mono, restyle buttons (h 44px, radius lg, semibold, active scale .98, variants default/outline/ghost/warning). Rebuild navigation like the reference DesktopRail (fixed 232px left rail: brand tile + 'JuControler / AI 팀 관제', 5 items 홈·진행·계획·승인·더보기 with the active one tinted, bottom status box '전체 연결됨 · 마지막 확인 · 방금 전' from the existing connection state) and MobileTabs (fixed bottom 5-column bar under 768px, safe-area padding). Main column max-width 1480px with the reference paddings. Pure helpers + a test that the nav renders 5 items and the active state.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "operator/public/index.html",
+            "test/lovable-shell.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-shell.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
+          "title": "새 디자인: 색·글꼴·왼쪽 메뉴·휴대폰 탭"
+        },
+        {
+          "taskId": "JCAPP-LOVABLE-HOME-TOP",
+          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 2 (home top): header like the reference (small teal date line in Korean e.g. '금요일 · 9월 25일', big '오늘의 운영 상태'); the one-sentence banner — amber with warning icon when there are holds ('멈춘 작업 N건' + 'M분 안에 고르지 않으면 추천대로 진행해요' using the smallest holds[].waitMin, button [멈춘 작업 보기] scrolling to the holds section), teal '지금 하실 일은 없어요. 알아서 진행 중이에요.' otherwise; the 4-stat strip (오늘 끝난 작업 = board done today count in teal mono, 지금 일하는 AI = lanes with a RUNNING/QA current task, 멈춘 작업 = holds count amber, 대기 = queued count muted) — all from /api/relay/board. Pure helpers + test with a board fixture.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/lovable-home-top.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-home-top.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
+          "dependsOn": [
+            "JCAPP-LOVABLE-SHELL"
+          ],
+          "title": "새 디자인: 홈 맨 위 안내·숫자 4개"
+        },
+        {
+          "taskId": "JCAPP-LOVABLE-LIVE-CARDS",
+          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 3 ('지금 상황'): the reference ProjectCard grid (2 columns ≥1280px, 1 column below) with section title + '프로젝트 N개'. Each card: name + mono 'N 끝남 · 멈춤 M' (멈춤 amber when >0); five InfoLine rows with the 124px label column: 지금 하는 일 (bold Korean task title + muted line '<AI friendly name>가 <step verb> 중 · N분째' from lane.current worker/qa and startedAt, or '다음 작업을 기다리는 중'), 여기까지 끝남 (5-step stepper 계획·만들기·검사·시험·반영 with ✓/●/○ exactly like the reference + '마지막으로 끝난 일: <title> · N분 전' from the lane's latest done item), 확인 상태 (chip 확인됨 teal if the last finished task had QA ACCEPT and a passing test gate, 일부 확인 amber while QA/gate is running or partial, 확인하지 못함 amber otherwise, + short evidence like '시험 N개 통과' when available), 대표님 할 일 (결정 필요 when the lane has an open gate/direction question, 확인 필요 when it has a hold waiting for a choice, else 없음 in teal; one outline button 고르기/확인하기 that jumps to that item, turning into '열었어요 ✓'), 다음 단계 (next queued task title, or '5분 뒤 추천대로 다시 설계해요' for holds). Friendly AI names (Codex, Claude Team, Claude Pro, Cursor, OpenCode, Cline, 무료 모델) and lane labels; no raw ids on the surface. This replaces the current home project list. Pure helpers + test with a board fixture covering each state.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/lovable-live-cards.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-live-cards.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
+          "dependsOn": [
+            "JCAPP-LOVABLE-HOME-TOP"
+          ],
+          "title": "새 디자인: 프로젝트별 지금 상황 카드"
+        },
+        {
+          "taskId": "JCAPP-LOVABLE-HOLD-CARDS",
+          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 4 ('멈춘 작업'): restyle holdCard exactly like the reference HoldCard (amber-bordered card; stepper with the stuck step as amber '!'; bold title; the plain explain.sentence in 18px leading-8; 'Then 그래서 <underlined amber chip with the recommended label ▾> 할게요.' that expands the 3 options as radio rows with '추천' on the first; full-width amber [이대로 진행] posting the existing /api/relay/hold-choice; success state '선택했어요 ✓ · 곧 다시 설계해요' in a teal-soft row; small line '안 고르면 HH:MM에 추천대로 진행해요' from heldSeen+waitMin; folded '원문 보기' with the raw reason in mono). Section header '멈춘 작업' + '대표님 선택 N건'. Keep the current validation and error handling. Test the render helper.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/lovable-hold-cards.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-hold-cards.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
+          "dependsOn": [
+            "JCAPP-LOVABLE-LIVE-CARDS"
+          ],
+          "title": "새 디자인: 멈춘 작업 카드"
+        },
+        {
+          "taskId": "JCAPP-LOVABLE-AI-WINDOWS",
+          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 5 ('AI 창 · actl 리모컨'): the reference AiCard grid (3 columns ≥1024px): bot tile, state dot + label (작업 중 teal / 답 기다림 amber / 쉬는 중 muted / 연결 안 됨 muted), AI friendly name, folder name, a divider line with the last instruction or '복사할 답 있음', and an outline [결과 복사] using the existing copy path that turns into '복사했어요 ✓'. Data from /api/panes (the fields the actl live-card task already exposes); pane ids only under 원문 보기. Test the render helper.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/lovable-ai-windows.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-ai-windows.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
+          "dependsOn": [
+            "JCAPP-LOVABLE-HOLD-CARDS",
+            "JCAPP-ACTL-LIVE-STATUS-CARD"
+          ],
+          "title": "새 디자인: AI 창 카드(actl)"
+        },
+        {
+          "taskId": "JCAPP-LOVABLE-ENV-PANEL",
+          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 6 ('실행 환경'): add GET /api/envs in operator/server.mjs that runs `~/.agents/skills/auto-night-orchestrator/scripts/night envs --json` via execFile (no shell, 30s timeout, cached 30s) and returns its JSON ({envs:[{id,label,ok,cpuPct,ramFreeGb,ramTotalGb,ais[]|reason}]}). Render the reference MachineRow list: name + note, CPU bar (%), RAM bar with 'X/Y GB 남음', amber when RAM free < 3.5 GB, the plain reason when ok=false; header note '두 컴퓨터 모두 정상' or what is wrong. Tests for the server route (fake execFile) and the render helper.",
+          "files": [
+            "operator/server.mjs",
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/lovable-env-panel.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-env-panel.test.mjs",
+            "node --test test/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
+          "dependsOn": [
+            "JCAPP-LOVABLE-AI-WINDOWS"
+          ],
+          "title": "새 디자인: 실행 환경 CPU·RAM"
+        },
+        {
           "taskId": "JCAPP-RELAY-BOARD-API",
           "scope": "Read-only Agent Relay source for the operator: new lib/relayBoard.mjs exporting readRelayBoard({exec, now}) that runs the local Agent Relay board command (~/.agents/skills/auto-night-orchestrator/scripts/night board, via an injectable execFile, no shell, 8s timeout), parses its JSON (kind BOARD: runner, lanes[{id,state,workerChain,qaChain,counts,current{taskId,stage,attempts,worker,qa},holds,humanGate}], models) and returns it with fetchedAt and a 5s in-memory cache; on any failure returns {available:false, reason} (never throws, never guesses). Wire GET /api/relay/board in operator/server.mjs api(). Tests in test/relay-board.test.mjs with a fake exec: success, cache hit, timeout/garbage -> available:false.",
           "files": [
@@ -8125,114 +8233,6 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-24 오후, settled): launch bar = a non-developer uses it as easily as KakaoTalk/Toss — plain Korean, obvious next action, inline feedback, no raw codes; base lib/relayBoard.mjs:53 laneChainSentence = `${project} 프로젝트의 ${role === 'qa' ? 'QA' : 'Worker'} 순서를 ${chain.join(' → ')}(으)로 바꿀게요.`",
           "title": "작업과 검수 담당 순서 바꾸기"
-        },
-        {
-          "taskId": "JCAPP-LOVABLE-SHELL",
-          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 1 (shell): replace the CSS design tokens with the reference's (styles.css :root values converted to hex/rgb vars: background, card, border, foreground, muted, primary teal, warning amber, success-soft, warning-soft, surface-raised, radius 0.875rem), load Noto Sans KR + JetBrains Mono, restyle buttons (h 44px, radius lg, semibold, active scale .98, variants default/outline/ghost/warning). Rebuild navigation like the reference DesktopRail (fixed 232px left rail: brand tile + 'JuControler / AI 팀 관제', 5 items 홈·진행·계획·승인·더보기 with the active one tinted, bottom status box '전체 연결됨 · 마지막 확인 · 방금 전' from the existing connection state) and MobileTabs (fixed bottom 5-column bar under 768px, safe-area padding). Main column max-width 1480px with the reference paddings. Pure helpers + a test that the nav renders 5 items and the active state.",
-          "files": [
-            "operator/public/app.js",
-            "operator/public/app.css",
-            "operator/public/index.html",
-            "test/lovable-shell.test.mjs"
-          ],
-          "tests": [
-            "node --test test/lovable-shell.test.mjs",
-            "node --test test/*.test.mjs"
-          ],
-          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
-          "title": "새 디자인: 색·글꼴·왼쪽 메뉴·휴대폰 탭"
-        },
-        {
-          "taskId": "JCAPP-LOVABLE-HOME-TOP",
-          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 2 (home top): header like the reference (small teal date line in Korean e.g. '금요일 · 9월 25일', big '오늘의 운영 상태'); the one-sentence banner — amber with warning icon when there are holds ('멈춘 작업 N건' + 'M분 안에 고르지 않으면 추천대로 진행해요' using the smallest holds[].waitMin, button [멈춘 작업 보기] scrolling to the holds section), teal '지금 하실 일은 없어요. 알아서 진행 중이에요.' otherwise; the 4-stat strip (오늘 끝난 작업 = board done today count in teal mono, 지금 일하는 AI = lanes with a RUNNING/QA current task, 멈춘 작업 = holds count amber, 대기 = queued count muted) — all from /api/relay/board. Pure helpers + test with a board fixture.",
-          "files": [
-            "operator/public/app.js",
-            "operator/public/app.css",
-            "test/lovable-home-top.test.mjs"
-          ],
-          "tests": [
-            "node --test test/lovable-home-top.test.mjs",
-            "node --test test/*.test.mjs"
-          ],
-          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
-          "dependsOn": [
-            "JCAPP-LOVABLE-SHELL"
-          ],
-          "title": "새 디자인: 홈 맨 위 안내·숫자 4개"
-        },
-        {
-          "taskId": "JCAPP-LOVABLE-LIVE-CARDS",
-          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 3 ('지금 상황'): the reference ProjectCard grid (2 columns ≥1280px, 1 column below) with section title + '프로젝트 N개'. Each card: name + mono 'N 끝남 · 멈춤 M' (멈춤 amber when >0); five InfoLine rows with the 124px label column: 지금 하는 일 (bold Korean task title + muted line '<AI friendly name>가 <step verb> 중 · N분째' from lane.current worker/qa and startedAt, or '다음 작업을 기다리는 중'), 여기까지 끝남 (5-step stepper 계획·만들기·검사·시험·반영 with ✓/●/○ exactly like the reference + '마지막으로 끝난 일: <title> · N분 전' from the lane's latest done item), 확인 상태 (chip 확인됨 teal if the last finished task had QA ACCEPT and a passing test gate, 일부 확인 amber while QA/gate is running or partial, 확인하지 못함 amber otherwise, + short evidence like '시험 N개 통과' when available), 대표님 할 일 (결정 필요 when the lane has an open gate/direction question, 확인 필요 when it has a hold waiting for a choice, else 없음 in teal; one outline button 고르기/확인하기 that jumps to that item, turning into '열었어요 ✓'), 다음 단계 (next queued task title, or '5분 뒤 추천대로 다시 설계해요' for holds). Friendly AI names (Codex, Claude Team, Claude Pro, Cursor, OpenCode, Cline, 무료 모델) and lane labels; no raw ids on the surface. This replaces the current home project list. Pure helpers + test with a board fixture covering each state.",
-          "files": [
-            "operator/public/app.js",
-            "operator/public/app.css",
-            "test/lovable-live-cards.test.mjs"
-          ],
-          "tests": [
-            "node --test test/lovable-live-cards.test.mjs",
-            "node --test test/*.test.mjs"
-          ],
-          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
-          "dependsOn": [
-            "JCAPP-LOVABLE-HOME-TOP"
-          ],
-          "title": "새 디자인: 프로젝트별 지금 상황 카드"
-        },
-        {
-          "taskId": "JCAPP-LOVABLE-HOLD-CARDS",
-          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 4 ('멈춘 작업'): restyle holdCard exactly like the reference HoldCard (amber-bordered card; stepper with the stuck step as amber '!'; bold title; the plain explain.sentence in 18px leading-8; 'Then 그래서 <underlined amber chip with the recommended label ▾> 할게요.' that expands the 3 options as radio rows with '추천' on the first; full-width amber [이대로 진행] posting the existing /api/relay/hold-choice; success state '선택했어요 ✓ · 곧 다시 설계해요' in a teal-soft row; small line '안 고르면 HH:MM에 추천대로 진행해요' from heldSeen+waitMin; folded '원문 보기' with the raw reason in mono). Section header '멈춘 작업' + '대표님 선택 N건'. Keep the current validation and error handling. Test the render helper.",
-          "files": [
-            "operator/public/app.js",
-            "operator/public/app.css",
-            "test/lovable-hold-cards.test.mjs"
-          ],
-          "tests": [
-            "node --test test/lovable-hold-cards.test.mjs",
-            "node --test test/*.test.mjs"
-          ],
-          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
-          "dependsOn": [
-            "JCAPP-LOVABLE-LIVE-CARDS"
-          ],
-          "title": "새 디자인: 멈춘 작업 카드"
-        },
-        {
-          "taskId": "JCAPP-LOVABLE-AI-WINDOWS",
-          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 5 ('AI 창 · actl 리모컨'): the reference AiCard grid (3 columns ≥1024px): bot tile, state dot + label (작업 중 teal / 답 기다림 amber / 쉬는 중 muted / 연결 안 됨 muted), AI friendly name, folder name, a divider line with the last instruction or '복사할 답 있음', and an outline [결과 복사] using the existing copy path that turns into '복사했어요 ✓'. Data from /api/panes (the fields the actl live-card task already exposes); pane ids only under 원문 보기. Test the render helper.",
-          "files": [
-            "operator/public/app.js",
-            "operator/public/app.css",
-            "test/lovable-ai-windows.test.mjs"
-          ],
-          "tests": [
-            "node --test test/lovable-ai-windows.test.mjs",
-            "node --test test/*.test.mjs"
-          ],
-          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
-          "dependsOn": [
-            "JCAPP-LOVABLE-HOLD-CARDS",
-            "JCAPP-ACTL-LIVE-STATUS-CARD"
-          ],
-          "title": "새 디자인: AI 창 카드(actl)"
-        },
-        {
-          "taskId": "JCAPP-LOVABLE-ENV-PANEL",
-          "scope": "Port the approved Lovable design into the existing vanilla hub (operator/public/app.js, app.css, index.html) — same look (dark Hermes tokens, 14px radius cards with 1px border, teal done / amber needs-a-look, Noto Sans KR + JetBrains Mono numbers, body 16px, buttons ≥44px, fade-slide-in 0.38s, prefers-reduced-motion), but every value comes from our real APIs; never hard-code the sample data. Keep all existing behaviour, routes, APIs and tests working; no new npm dependencies; no React. Reference: /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable. Step 6 ('실행 환경'): add GET /api/envs in operator/server.mjs that runs `~/.agents/skills/auto-night-orchestrator/scripts/night envs --json` via execFile (no shell, 30s timeout, cached 30s) and returns its JSON ({envs:[{id,label,ok,cpuPct,ramFreeGb,ramTotalGb,ais[]|reason}]}). Render the reference MachineRow list: name + note, CPU bar (%), RAM bar with 'X/Y GB 남음', amber when RAM free < 3.5 GB, the plain reason when ok=false; header note '두 컴퓨터 모두 정상' or what is wrong. Tests for the server route (fake execFile) and the render helper.",
-          "files": [
-            "operator/server.mjs",
-            "operator/public/app.js",
-            "operator/public/app.css",
-            "test/lovable-env-panel.test.mjs"
-          ],
-          "tests": [
-            "node --test test/lovable-env-panel.test.mjs",
-            "node --test test/*.test.mjs"
-          ],
-          "ssotEvidence": "Founder 2026-09-25: 'JuControler는 이 디자인 그대로 … 디자인만 가져와서 우리 ERD 등을 전부 연동한 뒤, 이 디자인으로 진행'. Approved Lovable design (read-only reference, do not copy React/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-desktop.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/ref-phone.png, /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/jucontroler-lovable/src-export/src/data/control-center.ts (shape of the data only — real values come from our APIs). founder-ux Skill 'Live status card'.",
-          "dependsOn": [
-            "JCAPP-LOVABLE-AI-WINDOWS"
-          ],
-          "title": "새 디자인: 실행 환경 CPU·RAM"
         }
       ],
       "skills": {
