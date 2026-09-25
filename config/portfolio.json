@@ -4422,6 +4422,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (A-28): 'Agent Relay task state (~/.local/share/AgentRelay/data/portfolio-execution/state.json) ... one `juceipt scan` command that finds sources and writes receipts for recent sessions'",
           "title": "Agent Relay 작업 기록을 한눈에 확인"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-ALL-CLAUDE-HOMES",
+          "scope": "Make importSessions in src/sources/scan.ts read transcripts from every Claude home, not just ~/.claude/projects: ~/.claude-team, ~/.claude-pro and any other ~/.claude*/projects directory that discoverSources in src/sources/discover.ts already finds. Label each agent the same way discover does (Claude Code / Claude Team / Claude Pro / claudeLabel), keep skipping auth/login paths and symlinks, and add a synthetic ~/.claude-team session to the scan regression test.",
+          "files": [
+            "src/sources/scan.ts",
+            "src/sources/discover.ts",
+            "tests/sources-scan.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-scan.test.ts tests/sources-discover.test.ts tests/sources-scan-cli.test.ts",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (A-28): receipts from ALL work records incl. Claude Code transcripts (~/.claude*/projects/**/*.jsonl); at base 99f4bb3, scan.ts importSessions only reads path.join(home, \".claude\", \"projects\") while discover.ts already finds .claude-team/.claude-pro/.claude*"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-RELAY-MASKING",
+          "scope": "Close two token-masking gaps in the Agent Relay path of src/sources/scan.ts. First, relay() returns items that already have hook_event_name without masking them; pass them through a recursive mask. Second, the local mask regex lacks the long base64 branch ([A-Za-z0-9+/]{32,}={0,2}) that the other importers use; reuse the full TOKEN masking (e.g. export and reuse maskClaudeText from src/sources/claude.ts). Extend the scan regression test so a hook-shaped relay event and a base64-like token in a relay task scope/summary both come out as <redacted>.",
+          "files": [
+            "src/sources/scan.ts",
+            "src/sources/claude.ts",
+            "tests/sources-scan.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-scan.test.ts tests/sources-claude.test.ts tests/sources-agent-relay.test.ts",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (A-28): mask token-like strings in every receipt; nothing leaves the machine; at base 99f4bb3, scan.ts relay() does `if (typeof item.hook_event_name === \"string\") return [item as RawHookEvent];` unmasked, and scan.ts mask regex omits the base64 branch present in claude/codex/opencode/others TOKEN"
         }
       ]
     },
