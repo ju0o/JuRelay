@@ -9312,6 +9312,17 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:33-35 'Recheck with `git -C ../JuCeipt show 402d3ee:<path>`; this validation repository does not copy those source artifacts.'",
           "title": "검증 근거 출처 표기 바로잡기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-CLOSEOUT-SCORECARD-REF-FORMAT",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md Section 7 line 202 ('Proposed mapping basis' row), replace the broken markdown link whose target is `../JuCeipt@402d3ee:docs/qa/M3_DAILY_VALUE_SCORECARD.md` with the plain code-span reference `402d3ee:docs/qa/M3_DAILY_VALUE_SCORECARD.md` already used in Section 4 lines 122-123; keep every other word and the 'NOT RECORDED HERE' decision boundary unchanged.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:202 '[`docs/qa/M3_DAILY_VALUE_SCORECARD.md`](../JuCeipt@402d3ee:docs/qa/M3_DAILY_VALUE_SCORECARD.md)' is the only `](../JuCeipt@` link left at base (git grep); the Section 4 lines 122-123 format is 'scorecard `402d3ee:docs/qa/M3_DAILY_VALUE_SCORECARD.md`'"
         }
       ]
     },
