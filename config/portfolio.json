@@ -3088,6 +3088,42 @@
           ],
           "ssotEvidence": "GitHub Actions run 36096320753 linux-tests (3.10): ModuleNotFoundError: No module named 'tomllib' (PR ju0o/JuActl#1, 2026-09-25)",
           "title": "버전 시험을 Python 3.10에서도 돌게"
+        },
+        {
+          "taskId": "ACTL-WEB-TOKEN-INLINE",
+          "scope": "웹 보드의 prompt() 토큰 입력을 화면 안 한국어 입력 영역으로 바꾸고 인증 재시도와 성공·실패 안내를 즉시 표시한다.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "README.md:43-47 \"토큰을 직접 정하지 않으면 ... ?token=... 주소로 처음 접속\"; Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "ACTL-TK-ORIGINAL-DISCLOSURE",
+          "scope": "Tk 보드에 보이는 Machine·Command·PID 같은 원문 진단을 일반 화면에서 숨기고 ‘원문 보기’ 안에서만 펼쳐지게 한다.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 \"개발자 글자는 원문 보기 안\"; README.md:8-15"
+        },
+        {
+          "taskId": "ACTL-TK-UPDATER-INLINE",
+          "scope": "Windows Board 업데이트의 native messagebox 확인창을 화면 안 한국어 확인 영역과 즉시 결과 안내로 바꾸고 기존 검증된 자동 업데이트 흐름은 재사용한다.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_visible_feedback.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 \"보드 [업데이트] 버튼이 새판을 스스로 받아 교체\"; Founder UX rules 7·9"
         }
       ],
       "qaRuntime": [
