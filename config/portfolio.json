@@ -5776,6 +5776,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상: juceipt 명령 출력과 영수증 보기 화면, 빠진 확인 항목의 쉬운 설명",
           "title": "빠진 확인 항목을 쉬운 말로 설명"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-ERROR-THREE-LINES",
+          "scope": "In the main() catch block and unknown-command branch of src/cli/main.ts, replace the generic '명령을 실행하지 못했어요 / 실행 중 문제가 생겼어요' output with three specific plain Korean lines: for scan with a bad --since value, say 무슨 일: 기간을 알아듣지 못했어요 / 왜: --since에는 24h, 7d 같은 값이 필요해요 / 할 일: juceipt scan --since 24h로 다시 실행하세요; for an unknown command, say what happened, why, and to run juceipt --help. Keep the English error text only on the final '원문:' line, keep exit codes 1 and 2 as they are, leave the existing daily error wording unchanged, and add vitest cases for both paths.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-scan-cli.test.ts tests/daily-cli.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙 '오류 3줄' 대상 'juceipt 명령 출력(scan, daily, receipt)'; base src/cli/main.ts: non-daily errors print the generic '왜: 실행 중 문제가 생겼어요', and scan.ts throws the English '--since must be a duration such as 24h'"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-TITLE-NARROW",
+          "scope": "In renderHtml and the CSS of src/render/index.ts, change the English browser tab title 'Juceipt Receipt' to a plain Korean title built from the existing taskTitle and acceptance_label (for example 'JuCeipt 영수증 · <쉬운 제목> · <판정>'), and add a narrow-screen media query that turns the 3-column .meta-row into one column so the page has no horizontal scroll at phone width. Leave everything else in the view unchanged, and add assertions to the existing founder render test.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면을 founder-ux 규칙(한국어 라벨, 휴대폰 폭에서 가로 스크롤 없음)으로 점검; base src/render/index.ts: '<title>Juceipt Receipt</title>' and '.meta-row{display:grid;grid-template-columns:repeat(3,1fr)...}' with no media query"
         }
       ],
       "skills": {
