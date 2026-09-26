@@ -6395,6 +6395,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): juceipt 명령 출력(daily) 비개발자 UX — 개발자 글자는 원문 보기 안; src/daily/index.ts:105 `${IMPACT_SEVERITY_LABEL[impact.severity]} — ${impact.title}` prints raw titles like '패키지 설치 명령 관찰: npm install …'",
           "title": "하루 요약의 중요 영향을 쉬운 말로 정리"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-DELIVERED-PLAIN-WORDS",
+          "scope": "In koreanSummary in src/daily/index.ts, change the '전달 결과:' line so it no longer lists raw outcome titles (commands, file names, English text such as 'changed'/'checked') and instead counts outcomes by kind in plain Korean through a new OUTCOME_KIND_LABEL map (feature_change 기능 변경, documentation_change 문서 변경, configuration_change 설정 변경, validation 검사·시험, artifact 결과물, other/unknown 기타 결과), e.g. '전달 결과: 기능 변경 1건, 검사·시험 1건' or '없음', the same way the finished DAILY-IMPACT-PLAIN-WORDS change handles '중요 영향:'; move the raw outcome titles into the existing 원문 보기 details block, and update the '전달 결과' expectation in tests/daily.test.ts while keeping the daily-corpus and daily-m2-corpus assertions passing.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — founder-ux rule 2 '개발자 글자는 원문 보기 안', target 'juceipt 명령 출력(scan, daily, receipt)'; src/daily/index.ts:139 `전달 결과: ${delivered}` prints outcome.title raw (tests/daily.test.ts:48 expects 'changed [근거 관찰됨]; checked [근거 검증됨]')"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-BROKEN-JSON-ERROR",
+          "scope": "In dailyCommand and the main() catch block of src/cli/main.ts, stop a broken or non-receipt .json file in the receipts folder from being reported with the wrong reason '왜: 지정한 폴더에 영수증 JSON 파일이 없어요.': parse each file separately and, when parsing fails, print three plain Korean lines (무슨 일: 영수증 파일 하나를 읽지 못했어요. / 왜: 파일 내용이 깨졌거나 영수증 형식이 아니에요. / 할 일: 그 파일을 빼거나 juceipt scan으로 다시 만든 뒤 다시 실행하세요.) plus the '원문:' line that names the file, keep exit code 1, leave the empty-folder and missing-folder messages unchanged, and add a test in tests/daily-cli.test.ts that writes a temp folder with one malformed .json file.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rule 10 '오류 3줄' (what happened, why, what to do) for juceipt 명령 출력 daily; src/cli/main.ts dailyCommand parses with JSON.parse unguarded, and the catch block's non-ENOENT daily branch always says '왜: 지정한 폴더에 영수증 JSON 파일이 없어요.', which is wrong when the file exists but is broken"
         }
       ],
       "skills": {
