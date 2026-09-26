@@ -13612,6 +13612,51 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:91 \"코드 변경 작업의 기본 보고서는 다음 6개 항목을 사용한다.\"; :762 \"## 18. 최종 보고 예시 구조\"",
           "title": "최종 보고 예시 틀이 규칙과 맞는지 확인"
+        },
+        {
+          "taskId": "JUTELL-FIXTURE-EVIDENCE-SOURCE-LABELS",
+          "scope": "In the scenario-b, scenario-e and scenario-o fixtures, rename the risk-reason line right under `위험도:` from `근거 출처:` to `위험도 근거:`, and reword the e/o `근거 출처:` values in 검증 결과 so each names at least one PRODUCT_SCOPE §6.4 source (파일, Git, 명령, 브라우저 또는 실제 실행, 코드 예상, 사용자 제공 정보); then add a new offline node:test, tests/fixture-evidence-source-labels.test.mjs, that reads every tests/results/scenario-*/*.fixture.md and checks two things: no `근거 출처:` line comes directly after a `위험도:` line, and every `근거 출처:` value contains one of the six §6.4 labels.",
+          "files": [
+            "tests/results/scenario-b/general-report.fixture.md",
+            "tests/results/scenario-e/main-files-cap.fixture.md",
+            "tests/results/scenario-o/conditional-items.fixture.md",
+            "tests/fixture-evidence-source-labels.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/fixture-evidence-source-labels.test.mjs",
+            "node --test tests/fixture-risk-reason.test.mjs",
+            "node --test tests/results/scenario-b/general-report.test.mjs tests/results/scenario-e/main-files-cap.test.mjs tests/results/scenario-o/conditional-items.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:261 \"근거 출처, 확인 상태, 사용자 행동, 보고서 상태를 같은 의미로 사용하지 않는다.\""
+        },
+        {
+          "taskId": "JUTELL-CHANGE-ORIGIN-LABELS-SKILL-PARITY",
+          "scope": "Add one sub-bullet under SKILL.md 실행 절차 step 4 listing the three PRODUCT_SCOPE §7.6 change-origin labels (작업 시작 전부터 있던 변경, 이번 작업으로 발생한 변경, 어느 작업에서 발생했는지 판단하기 어려운 변경), plus a new offline node:test, tests/change-origin-labels-parity.test.mjs, that pulls the three `*` bullets from PRODUCT_SCOPE `### 7.6` and checks that SKILL.md contains all three, in the same order.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/change-origin-labels-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/change-origin-labels-parity.test.mjs",
+            "node --test tests/baseline-state-skill-parity.test.mjs tests/final-checklist-spec-parity.test.mjs tests/token-diet-guidance-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:448 \"* 어느 작업에서 발생했는지 판단하기 어려운 변경\" (§7.6 기존 변경 보호 원칙)"
+        },
+        {
+          "taskId": "JUTELL-MINIMAL-CHANGE-SKILL-PARITY",
+          "scope": "Add one short sub-bullet under SKILL.md 실행 절차 step 2 carrying the PRODUCT_SCOPE §7.5 minimal-change rules (only change what the request directly needs, no unrequested refactoring, no database or API changes for a design request, touch shared files only when needed, don't widen the scope by guessing), plus a new offline node:test, tests/minimal-change-skill-parity.test.mjs, that checks §7.5 still lists these bullets and that SKILL.md has a matching phrase for each, using an explicit mapping.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/minimal-change-skill-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/minimal-change-skill-parity.test.mjs",
+            "node --test tests/baseline-state-skill-parity.test.mjs tests/final-checklist-spec-parity.test.mjs tests/token-diet-guidance-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:434-435 \"* 요청하지 않은 리팩터링을 함께 진행하지 않음 / * 디자인 요청 때문에 데이터베이스나 API를 수정하지 않음\" (§7.5 최소 변경 원칙)"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
