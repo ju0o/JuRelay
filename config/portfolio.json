@@ -4095,7 +4095,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild)."
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "작업판 예산 표시를 바로잡아요"
         }
       ],
       "qaRuntime": [
@@ -6175,7 +6176,8 @@
             "pnpm --filter @juplan/runtime test -- studio-live-sections.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: live refresh with gentle motion"
+          "ssotEvidence": "Founder direction 2026-09-23: live refresh with gentle motion",
+          "title": "계획과 다음 행동을 실시간으로 안내"
         },
         {
           "taskId": "JUPLAN-STUDIO-DOC-TABLE-SCROLL-HINT",
@@ -6188,7 +6190,8 @@
             "pnpm --filter @juplan/runtime test -- studio-doc-tables.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 및 글자 16px·휴대폰 폭 대응"
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 및 글자 16px·휴대폰 폭 대응",
+          "title": "넓은 표를 옆으로 밀어 쉽게 보기"
         }
       ],
       "qaRuntime": [
@@ -7687,7 +7690,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 대상 juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻; base src/daily/index.ts koreanSummary top sentence shows '문제 있음 ${issueCount}개' while its '상태 뜻' line never defines 문제 있음, whereas src/sources/summary.ts already does ('문제 있음은 판단할 수 없음·일부 완료·실패·중단됨을 합친 수예요.')"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 대상 juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻; base src/daily/index.ts koreanSummary top sentence shows '문제 있음 ${issueCount}개' while its '상태 뜻' line never defines 문제 있음, whereas src/sources/summary.ts already does ('문제 있음은 판단할 수 없음·일부 완료·실패·중단됨을 합친 수예요.')",
+          "title": "매일 상태 뜻을 쉽게 알려줘"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-PILL-COUNT-TITLE",
@@ -7700,7 +7704,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면 — 빠진 확인 항목의 쉬운 설명, founder-ux 규칙 '글자 16px·핵심 숫자는 크게'; base src/render/index.ts:81 renders `p.acceptance_label + \" · \" + p.review_count + \"건\"` and :170 styles h2.request at font-size:16px color:#64748b"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면 — 빠진 확인 항목의 쉬운 설명, founder-ux 규칙 '글자 16px·핵심 숫자는 크게'; base src/render/index.ts:81 renders `p.acceptance_label + \" · \" + p.review_count + \"건\"` and :170 styles h2.request at font-size:16px color:#64748b",
+          "title": "빠진 확인 수를 크게 보여줘"
         }
       ],
       "skills": {
@@ -9552,7 +9557,8 @@
             "node --test tests/e2e-docs-sync.test.mjs tests/e2e-script.test.mjs tests/e2e-cleanup.test.mjs tests/e2e-failure-output.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, no runtime integration or new product behavior; src/project-status.mjs (352c569) loadAgentRelayBoard returns unknownEntry('missing-lane'), which is covered by the CLI test at tests/status-board-cli.test.mjs:171 but has no E2E step"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, no runtime integration or new product behavior; src/project-status.mjs (352c569) loadAgentRelayBoard returns unknownEntry('missing-lane'), which is covered by the CLI test at tests/status-board-cli.test.mjs:171 but has no E2E step",
+          "title": "없는 작업 구역을 쉽게 알려줘요"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-INVALID-BOARD-LINE-TEST",
@@ -9565,7 +9571,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; src/project-status.mjs (352c569) loadAgentRelayBoard returns unknownEntry('invalid') when projectAgentRelayBoard throws, and scripts/status-board.mjs:11 maps invalid to '상태 파일 모양이 깨졌어요', but no CLI test or E2E step checks that line yet"
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; src/project-status.mjs (352c569) loadAgentRelayBoard returns unknownEntry('invalid') when projectAgentRelayBoard throws, and scripts/status-board.mjs:11 maps invalid to '상태 파일 모양이 깨졌어요', but no CLI test or E2E step checks that line yet",
+          "title": "잘못된 작업판을 알려줘요"
         },
         {
           "taskId": "JUCONTROLER-E2E-BOARD-KIND",
@@ -9579,7 +9586,8 @@
             "bash scripts/e2e.sh",
             "node --test tests/e2e-docs-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target; no runtime integration or new product behavior"
+          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target; no runtime integration or new product behavior",
+          "title": "작업판 오류를 한국어로 알려줘요"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-FAILURE-HINT",
@@ -9591,7 +9599,8 @@
           "tests": [
             "node --test tests/quickstart-next-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target; no runtime integration or new product behavior"
+          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target; no runtime integration or new product behavior",
+          "title": "실패할 때 다음 할 일을 알려줘요"
         }
       ],
       "qaRuntime": [
@@ -12362,7 +12371,8 @@
           "tests": [
             "node --test test/live-status-projection.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 홈과 진행에 하나의 shared live-status projection을 정의하고 focused fixture tests를 추가"
+          "ssotEvidence": "Founder direction 2026-09-23: 홈과 진행에 하나의 shared live-status projection을 정의하고 focused fixture tests를 추가",
+          "title": "홈과 진행 상태를 똑같이 보여줘요"
         }
       ],
       "skills": {
@@ -13270,7 +13280,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/decisions/UNPLANNED_WORK_01_DECISION.md:86 '3. Finish M2 PR #4 value review.' vs docs/operations/PM_STATUS_BOARD.md:155 'M2 is closed by the A-14 GO decision.' and docs/validation/M3_DAILY_VALUE_VALIDATION.md §7 'The evidence-bounded result is `UNDECIDED` (`0 joined rows`); the PM records the M3 decision separately.'"
+          "ssotEvidence": "docs/decisions/UNPLANNED_WORK_01_DECISION.md:86 '3. Finish M2 PR #4 value review.' vs docs/operations/PM_STATUS_BOARD.md:155 'M2 is closed by the A-14 GO decision.' and docs/validation/M3_DAILY_VALUE_VALIDATION.md §7 'The evidence-bounded result is `UNDECIDED` (`0 joined rows`); the PM records the M3 decision separately.'",
+          "title": "현재 진행 상태를 한눈에 안내"
         }
       ]
     },
@@ -14366,7 +14377,8 @@
             "node --test tests/minimal-report-spec-parity.test.mjs tests/final-checklist-spec-parity.test.mjs tests/skill-report-contract.test.mjs tests/token-diet-guidance-parity.test.mjs tests/minimal-change-skill-parity.test.mjs tests/baseline-state-skill-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:60 '## 3. 사용자 요청 우선 원칙 — 사용자가 결과 보고 형식을 명시하면 가능한 범위에서 해당 형식을 따른다. 다만 다음 규칙은 생략하지 않는다.'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:60 '## 3. 사용자 요청 우선 원칙 — 사용자가 결과 보고 형식을 명시하면 가능한 범위에서 해당 형식을 따른다. 다만 다음 규칙은 생략하지 않는다.'",
+          "title": "내 보고서 형식에도 안전 기준 유지"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
