@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { must } from './bridge.js';
 import { PROJECT_LABELS } from '../shared/projectLabels.js';
-import { founderTaskTitle, isPlanStudioTaskDone, sortPlanStudioTasks } from '../shared/types.js';
+import { founderTaskTitle, isPlanStudioTaskDone, isPlanStudioTaskHold, sortPlanStudioTasks } from '../shared/types.js';
 import { InlineConfirm } from './components.js';
 
 const FLOW = ['계획', '확인', '작업', '검수', '시험', '사람 확인', '반영'] as const;
@@ -35,6 +35,8 @@ interface StudioGate {
   gateId: string;
   title: string;
   options: string[];
+  recommendedIndex: number;
+  autoAt: string;
 }
 
 interface StudioDraft {
@@ -97,18 +99,24 @@ function stageIndex(stage: number | string): number {
   return 0;
 }
 
-function formatDoneDate(value: unknown): string {
+/** 끝난 시각을 '3분 전' 또는 '오후 2:10'으로. 화면에는 ISO 시각을 올리지 않는다. */
+function formatDoneDate(value: unknown, now = Date.now()): string {
   if (typeof value !== 'string' || !value.trim()) return '';
-  const text = value.trim();
-  const parsed = new Date(text);
-  if (!Number.isNaN(parsed.getTime()) && /^\d{4}-\d{2}-\d{2}/.test(text)) return text.slice(0, 10);
-  if (!Number.isNaN(parsed.getTime())) {
-    const year = parsed.getFullYear();
-    const month = String(parsed.getMonth() + 1).padStart(2, '0');
-    const day = String(parsed.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-  return text;
+  const parsed = Date.parse(value.trim());
+  if (Number.isNaN(parsed)) return '';
+  const diff = now - parsed;
+  if (diff >= 0 && diff < 60_000) return '방금';
+  if (diff >= 0 && diff < 3_600_000) return `${Math.floor(diff / 60_000)}분 전`;
+  if (diff >= 0 && diff < 86_400_000) return `${Math.floor(diff / 3_600_000)}시간 전`;
+  const when = new Date(parsed);
+  const clockNow = new Date(now);
+  const hour = when.getHours();
+  const minute = String(when.getMinutes()).padStart(2, '0');
+  const clock = `${hour < 12 ? '오전' : '오후'} ${hour % 12 || 12}:${minute}`;
+  const monthDay = `${when.getMonth() + 1}월 ${when.getDate()}일`;
+  return when.getFullYear() === clockNow.getFullYear()
+    ? `${monthDay} ${clock}`
+    : `${when.getFullYear()}년 ${monthDay} ${clock}`;
 }
 
 function doneLabel(task: StudioTask): string {
@@ -206,7 +214,14 @@ function normalizeGates(raw: unknown): StudioGate[] {
     const options = Array.isArray(rawOptions)
       ? rawOptions.map(o => typeof o === 'string' ? o : label((o as Record<string, unknown>)?.label ?? (o as Record<string, unknown>)?.title, '')).filter(Boolean)
       : [];
-    out.push({ gateId, title, options: options.length ? options : ['승인', '반려'] });
+    const choices = options.length ? options : ['승인', '반려'];
+    out.push({
+      gateId,
+      title,
+      options: choices,
+      recommendedIndex: recommendedOptionIndex(choices, r.recommendedIndex ?? r.recommended),
+      autoAt: str(r.autoAt ?? r.deadline ?? r.answerBy),
+    });
   }
   return out;
 }
@@ -220,7 +235,74 @@ function gateFromLane(lane: BoardLane | undefined): StudioGate | null {
   const title = str(gate.ask ?? gate.title ?? gate.question, '사람 확인이 필요해요.');
   const rawOptions = gate.options ?? gate.choices;
   const options = Array.isArray(rawOptions) ? rawOptions.map(o => label(o)).filter(o => o !== '—') : [];
-  return { gateId, title, options: options.length ? options : ['승인', '반려'] };
+  const choices = options.length ? options : ['승인', '반려'];
+  return {
+    gateId,
+    title,
+    options: choices,
+    recommendedIndex: recommendedOptionIndex(choices, gate.recommendedIndex ?? gate.recommended),
+    autoAt: str(gate.autoAt ?? gate.deadline ?? gate.answerBy),
+  };
+}
+
+export type PlanChipTone = 'teal' | 'amber' | 'muted';
+
+export interface PlanTaskChip {
+  label: '끝남' | '진행 중' | '확인 필요' | '대기';
+  tone: PlanChipTone;
+}
+
+/**
+ * 작업 한 줄의 상태 칩. 끝남·진행은 청록, 확인이 필요하면 호박색, 대기는 흐린색.
+ * 막힌 상태를 빨강으로 올리지 않는다.
+ */
+export function planTaskStateChip(task: { stage?: number | string; blocker?: string } | null | undefined): PlanTaskChip {
+  if (isPlanStudioTaskDone(task)) return { label: '끝남', tone: 'teal' };
+  if (isPlanStudioTaskHold(task)) return { label: '확인 필요', tone: 'amber' };
+  if (stageIndex((task?.stage ?? 0) as number | string) === 0) return { label: '대기', tone: 'muted' };
+  return { label: '진행 중', tone: 'teal' };
+}
+
+export interface PlanAnswerChoice {
+  option: string;
+  index: number;
+  recommended: boolean;
+}
+
+/** 사람 확인 답. 추천을 맨 앞에 두고, 범위를 벗어나면 첫 답을 추천으로 본다. */
+export function planAnswersRecommendedFirst(options: readonly string[], recommendedIndex = 0): PlanAnswerChoice[] {
+  const rows = options.map((option, index) => ({
+    option,
+    index,
+    recommended: index === recommendedIndex && recommendedIndex >= 0 && recommendedIndex < options.length,
+  }));
+  if (!rows.some(row => row.recommended) && rows[0]) rows[0] = { ...rows[0], recommended: true };
+  const recommended = rows.find(row => row.recommended);
+  if (!recommended) return rows;
+  return [recommended, ...rows.filter(row => row.index !== recommended.index)];
+}
+
+/** 보내기 버튼 문구. 성공하면 그 자리에서 '보냈어요 ✓'. */
+export function planSendButtonLabel(sent: boolean, busy = false): string {
+  if (busy) return '보내는 중...';
+  return sent ? '보냈어요 ✓' : '보내기';
+}
+
+/** 안 고르면 언제 추천대로 가는지. 시각이 없거나 이미 지났으면 빈 문자열. */
+export function planGateAutoLine(autoAt: string, now = Date.now()): string {
+  if (!autoAt.trim()) return '';
+  const at = Date.parse(autoAt);
+  if (!Number.isFinite(at) || at <= now) return '';
+  const when = new Date(at);
+  const hour = String(when.getHours()).padStart(2, '0');
+  const minute = String(when.getMinutes()).padStart(2, '0');
+  return `안 고르면 ${hour}:${minute}에 추천대로 진행해요`;
+}
+
+function recommendedOptionIndex(options: readonly string[], raw: unknown): number {
+  if (typeof raw === 'number' && Number.isInteger(raw) && raw >= 0 && raw < options.length) return raw;
+  const marked = options.findIndex(option => option.includes('추천'));
+  return marked >= 0 ? marked : 0;
 }
 
 type PlanFailure = { what: string; why: string; raw: string; retry: () => void };
@@ -246,6 +328,9 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
   const [draft, setDraft] = useState<StudioDraft>(EMPTY_DRAFT);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [chat, setChat] = useState('');
+  const [requestText, setRequestText] = useState('');
+  const [requestSent, setRequestSent] = useState(false);
+  const [gateSent, setGateSent] = useState('');
   const [gates, setGates] = useState<StudioGate[]>([]);
   const [gatePick, setGatePick] = useState<Record<string, number>>({});
   const [failure, setFailure] = useState<PlanFailure | null>(null);
@@ -253,7 +338,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
   const [boardAttempt, setBoardAttempt] = useState(0);
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState<'chat' | 'save' | 'approve' | 'gate' | null>(null);
+  const [busy, setBusy] = useState<'chat' | 'request' | 'save' | 'approve' | 'gate' | null>(null);
   const [showDone, setShowDone] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [pendingApprove, setPendingApprove] = useState(false);
@@ -267,6 +352,8 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
     setPendingApprove(reset.pendingApprove);
     setPendingDeleteId(reset.pendingDeleteId);
     setPendingPolicy(reset.pendingPolicy);
+    setRequestSent(false);
+    setGateSent('');
   }, [project]);
 
   // Board polling — task progress rows are fed by controlRoom:board.
@@ -361,6 +448,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
   const selected = tasks.find(t => t.id === selectedId) ?? tasks[0] ?? null;
   const projectLane = lanes.find(l => str(l.project ?? l.id) === project);
   const presentation = projectPresentation(project, projectLane);
+  const goalText = draft.goal.trim() || presentation.goal;
   const activeLane = useMemo(
     () => lanes.find(l => str(l.current?.taskId ?? l.id) === (selected?.id ?? '') || str(l.current?.taskId ?? l.id) === (selected?.title ?? '')),
     [lanes, selected],
@@ -386,7 +474,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
     setFailure(planFailure(what, e, retry));
   }
 
-  async function persist(next: StudioDraft, what: 'chat' | 'save' | 'approve' | 'gate'): Promise<void> {
+  async function persist(next: StudioDraft, what: 'chat' | 'request' | 'save' | 'approve' | 'gate'): Promise<void> {
     setBusy(what);
     try {
       const payload = JSON.stringify(toRoadmapPayload(next));
@@ -425,6 +513,24 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
     } catch (err) { flashError(err, 'PM에게 보낸 말이 반영되지 않았어요', () => void submitChat(message)); } finally { setBusy(null); }
   }
 
+  async function submitRequest(message: string): Promise<void> {
+    if (!message || busy) return;
+    setBusy('request');
+    setRequestSent(false);
+    try {
+      await must({ op: 'planStudio:request', project, text: message });
+      const fresh = await must<unknown>({ op: 'planStudio:get', project });
+      const next = normalizeDraft(fresh);
+      setDraft(next);
+      setSelectedId(prev => (prev && next.tasks.some(t => t.id === prev) ? prev : next.tasks[0]?.id ?? null));
+      setRequestText('');
+      setRequestSent(true);
+      flashInfo('보냈어요 ✓');
+    } catch (err) {
+      flashError(err, 'PM에게 보낸 말이 반영되지 않았어요', () => void submitRequest(message));
+    } finally { setBusy(null); }
+  }
+
   async function approve(): Promise<void> {
     setBusy('approve');
     try {
@@ -434,13 +540,14 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
     } catch (e) { flashError(e, '계획을 승인하지 못했어요', () => void approve()); } finally { setBusy(null); setPendingApprove(false); }
   }
 
-  async function answerGate(gateId: string): Promise<void> {
-    const optionIndex = gatePick[gateId] ?? 0;
+  async function answerGate(gateId: string, optionIndex = gatePick[gateId] ?? 0): Promise<void> {
     setBusy('gate');
+    setGatePick(prev => ({ ...prev, [gateId]: optionIndex }));
     try {
       await must({ op: 'gates:answer', gateId, optionIndex });
-      flashInfo('응답 제출됨');
-    } catch (e) { flashError(e, '응답을 보내지 못했어요', () => void answerGate(gateId)); } finally { setBusy(null); }
+      setGateSent(gateId);
+      flashInfo('보냈어요 ✓');
+    } catch (e) { flashError(e, '응답을 보내지 못했어요', () => void answerGate(gateId, optionIndex)); } finally { setBusy(null); }
   }
 
   function requestDelete(task: StudioTask): void {
@@ -491,9 +598,8 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
       {info && <div className="flash ok">{info}</div>}
       <div className="plan-studio-grid">
         <section className="control-card plan-projects" aria-label="프로젝트 목록">
-          <h3>프로젝트</h3>
           {projects.length === 0
-            ? <p className="muted">아직 표시할 프로젝트가 없어요.</p>
+            ? <p className="muted">아직 프로젝트가 없어요. 보드에 프로젝트가 생기면 여기에 나타나요.</p>
             : <div className="plan-project-list" role="listbox" aria-label="프로젝트">
               {projects.map(name => {
                 const lane = lanes.find(l => str(l.project ?? l.id) === name);
@@ -505,11 +611,10 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
                   aria-selected={name === project}
                   className={`plan-project${name === project ? ' active' : ''}`}
                   onClick={() => setProject(name)}
-                ><span>{item.name}</span><small style={{ display: 'block', marginTop: 4 }}>{item.goal}</small></button>
+                >{item.name}</button>
                 );
               })}
             </div>}
-          <p className="muted">선택: <strong>{presentation.name}</strong></p>
         </section>
 
         <section className="plan-center" aria-label="목표와 작업 순서">
@@ -518,7 +623,8 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
             {loading
               ? <p className="muted">불러오는 중...</p>
               : <>
-                <p className="control-card-value" style={{ fontSize: 14 }}>{presentation.goal}</p>
+                <p className="plan-goal">{goalText}</p>
+                <p className="muted">선택한 프로젝트: {presentation.name}</p>
                 <details>
                   <summary>원문 보기</summary>
                   <pre className="mono">{rawText(projectLane ?? draft)}</pre>
@@ -529,20 +635,28 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
           <article className="control-card" aria-label="작업 순서">
             <h3>작업 순서 ({tasks.length}개)</h3>
             {tasks.length === 0
-              ? <p className="muted">아직 작업이 없어요.</p>
+              ? <p className="muted">아직 작업 순서가 없어요. PM에게 바꿔 달라고 말하면 여기에 생겨요.</p>
               : <>
                 {remainingCount === 0 && <p className="muted" role="status">모두 끝났어요 — 남은 작업이 없습니다.</p>}
                 <ol className="plan-tasks">
                 {visibleTasks.map(task => {
                   const current = stageIndex(task.stage);
                   const done = isPlanStudioTaskDone(task);
+                  const chip = planTaskStateChip(task);
+                  const number = tasks.findIndex(item => item.id === task.id) + 1;
                   const editable = isNotStarted(task) && !done && !task.registered;
                   return (
                     <li key={task.id} className={`plan-task${selected?.id === task.id ? ' selected' : ''}`}>
-                      <button className="plan-task-head" onClick={() => setSelectedId(task.id)} title="상세 보기">
-                        <span className="plan-task-title">{founderTaskTitle(task)}</span>
-                        <span className="muted">{done ? doneLabel(task) : `${FLOW[current]} · ${current + 1}/7`}</span>
-                      </button>
+                      <div className="plan-seq-row">
+                        <button className="plan-task-head" onClick={() => setSelectedId(task.id)} title="상세 보기">
+                          <span className="plan-seq-num" aria-hidden="true">{number}</span>
+                          <span className="plan-task-title">{founderTaskTitle(task)}</span>
+                        </button>
+                        <span className={`cr-chip ${chip.tone}`}>{chip.label}</span>
+                      </div>
+                      {done ? <p className="muted plan-seq-done">{doneLabel(task)}</p> : null}
+                      <details className="plan-steps-fold">
+                        <summary>단계 보기</summary>
                       <div className="control-flow plan-steps" aria-label={`${task.title} 진행 단계`}>
                         {FLOW.map((name, index) => {
                           const state = done ? 'done' : task.blocker && index === current ? 'blocked' : index < current ? 'done' : index === current ? 'active' : 'pending';
@@ -554,6 +668,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
                           );
                         })}
                       </div>
+                      </details>
                       <details><summary>원문 보기</summary><p className="muted mono">ID: {task.id}</p><p className="muted mono">범위: {task.scope || '—'}</p></details>
                       {editable && (
                         <div className="plan-task-edit">
@@ -609,6 +724,61 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
               </>}
           </article>
 
+          <article className="control-card" aria-label="PM에게 바꿔 달라고 말하기">
+            <h3>PM에게 바꿔 달라고 말하기</h3>
+            <form
+              className="plan-request-form"
+              aria-label="PM에게 요청"
+              onSubmit={e => { e.preventDefault(); void submitRequest(requestText.trim()); }}
+            >
+              <input
+                aria-label="PM에게 계획 수정 요청"
+                value={requestText}
+                onChange={e => { setRequestText(e.target.value); setRequestSent(false); }}
+                placeholder="예: 3번 작업을 먼저 검수해 줘"
+              />
+              <button className="btn primary plan-send" type="submit" disabled={!requestText.trim() || busy === 'request'}>
+                {planSendButtonLabel(requestSent, busy === 'request')}
+              </button>
+            </form>
+            {requestSent && <p className="plan-inline-ok" role="status">보냈어요 ✓</p>}
+            <p className="muted">PM이 답하면 작업 순서가 새로 그려져요.</p>
+          </article>
+
+          <article className="control-card plan-human" aria-label="사람 확인">
+            <h3>사람 확인</h3>
+            {visibleGates.length === 0
+              ? <p className="muted">지금 답할 것이 없어요.</p>
+              : visibleGates.map(gate => {
+                const answers = planAnswersRecommendedFirst(gate.options, gate.recommendedIndex);
+                const picked = gatePick[gate.gateId] ?? gate.recommendedIndex;
+                const autoLine = planGateAutoLine(gate.autoAt);
+                return (
+                  <div key={gate.gateId} className="plan-gate">
+                    <p className="plan-gate-ask">{gate.title}</p>
+                    <details><summary>원문 보기</summary><p className="muted mono" style={{ fontSize: 11 }}>{gate.gateId}</p></details>
+                    <div className="plan-answers" role="group" aria-label="사람 확인 답">
+                      {answers.map(answer => (
+                        <button
+                          key={`${gate.gateId}-${answer.index}`}
+                          type="button"
+                          className={`btn plan-answer${answer.recommended ? ' recommended' : ''}${picked === answer.index ? ' on' : ''}`}
+                          disabled={busy === 'gate'}
+                          onClick={() => void answerGate(gate.gateId, answer.index)}
+                        >
+                          {answer.option}{answer.recommended ? ' · 추천' : ''}
+                        </button>
+                      ))}
+                    </div>
+                    {autoLine && <p className="muted plan-auto">{autoLine}</p>}
+                    {gateSent === gate.gateId && <p className="plan-inline-ok" role="status">보냈어요 ✓</p>}
+                  </div>
+                );
+              })}
+          </article>
+
+          <details className="plan-advanced">
+            <summary>고급 (개발용)</summary>
           <article className="control-card" aria-label="진행 방식">
             <h3>진행 방식</h3>
             <label className="plan-radio">
@@ -659,9 +829,6 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
               />
             )}
           </article>
-        </section>
-
-        <aside className="plan-side" aria-label="PM 요청과 작업 상세">
           <article className="control-card" aria-label="PM에게 요청">
             <h3>PM에게 요청</h3>
             <form onSubmit={e => void sendChat(e)} className="plan-chat-form">
@@ -694,33 +861,8 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
                 {selected.expectedRisk.trim() ? <p>예상 리스크: <strong>{selected.expectedRisk}</strong></p> : null}
               </>}
           </article>
-
-          <article className="control-card human" aria-label="사람 확인">
-            <h3>사람 확인</h3>
-            {visibleGates.length === 0
-              ? <p className="muted">지금 답할 것이 없어요.</p>
-              : visibleGates.map(gate => (
-                <form key={gate.gateId} onSubmit={e => { e.preventDefault(); void answerGate(gate.gateId); }}>
-                  <fieldset className="plan-gate">
-                    <legend>{gate.title}</legend>
-                    <details><summary>원문 보기</summary><p className="muted mono" style={{ fontSize: 11 }}>{gate.gateId}</p></details>
-                    {gate.options.map((option, index) => (
-                      <label key={`${gate.gateId}-${index}`} className="plan-radio">
-                        <input
-                          type="radio"
-                          name={`gate-${gate.gateId}`}
-                          checked={(gatePick[gate.gateId] ?? 0) === index}
-                          onChange={() => setGatePick(prev => ({ ...prev, [gate.gateId]: index }))}
-                        />
-                        {option}
-                      </label>
-                    ))}
-                    <button className="btn primary" type="submit" disabled={busy === 'gate'}>답변 제출</button>
-                  </fieldset>
-                </form>
-              ))}
-          </article>
-        </aside>
+          </details>
+        </section>
       </div>
     </main>
   );

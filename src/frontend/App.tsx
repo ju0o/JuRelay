@@ -21,9 +21,9 @@ import {
 } from '../shared/connectionState.js';
 import { shellEnvLine, shellFailureLine, shellPageCopy, shellToggleLabel, type ShellNavId } from './components.js';
 import {
-  decodeLaneNames, encodeLaneNames, isLaneOn, laneErrorLines, laneErrorRaw, laneResultRaw, laneRowLabel, laneRowName, newLaneIdFor, newLaneProblem,
+  decodeLaneNames, encodeLaneNames, isLaneOn, laneErrorKind, laneErrorLines, laneErrorRaw, laneResultRaw, laneRowLabel, laneRowName, newLaneIdFor, newLaneProblem,
 } from '../shared/projectManager.js';
-import { approvalCategoryLabel, approvalUsedCount, dedupeApprovalRules, groupRulesByCategory, partitionSupersededApprovalRules, ApprovalRuleCard, SupersededApprovals, UnusedApprovalRules } from './approvals.js';
+import { approvalFailureLines, approvalGroupHeading, approvalUsedCount, dedupeApprovalRules, groupRulesByCategory, partitionSupersededApprovalRules, ApprovalAddForm, ApprovalRuleCard, SupersededApprovals, UnusedApprovalRules } from './approvals.js';
 import type { ApprovalRuleJson } from '../shared/types.js';
 import { PlanStudio } from './planStudio.js';
 import { renderMd } from './md.js';
@@ -152,6 +152,142 @@ function todayLocal(): string {
 }
 function copyText(text: string): void { void navigator.clipboard.writeText(text); }
 
+export interface RecordLogSource {
+  date: string;
+  prompt: string;
+  result: string;
+}
+
+export interface RecordLogEntry {
+  key: string;
+  line: string;
+}
+
+export interface RecordLogGroup {
+  date: string;
+  label: string;
+  entries: RecordLogEntry[];
+}
+
+function collapseRecordLine(text: string): string {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+/** 지시와 결과를 한 줄로 잇는다. 비어 있으면 왜 비었는지 말한다. */
+export function recordPairLine(prompt: string, result: string): string {
+  const ask = collapseRecordLine(prompt) || '지시가 아직 없어요';
+  const out = collapseRecordLine(result) || '결과가 아직 없어요';
+  return `${ask} → ${out}`;
+}
+
+function localYmd(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+/** 기록 묶음 제목. 오늘은 '오늘', 어제는 '어제', 그 외는 로컬 날짜. */
+export function recordDateLabel(date: string, now = new Date()): string {
+  if (date === localYmd(now)) return '오늘';
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  if (date === localYmd(yesterday)) return '어제';
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+  if (!match) return '날짜 없음';
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  return year === now.getFullYear() ? `${month}월 ${day}일` : `${year}년 ${month}월 ${day}일`;
+}
+
+/** 날짜별 지시 → 결과. 최신 날짜가 위이고, 같은 날은 들어온 순서를 유지한다. */
+export function recordLogGroups(items: readonly RecordLogSource[], now = new Date()): RecordLogGroup[] {
+  const order: string[] = [];
+  const buckets = new Map<string, RecordLogEntry[]>();
+  items.forEach((item, index) => {
+    const date = item.date || '';
+    if (!buckets.has(date)) {
+      buckets.set(date, []);
+      order.push(date);
+    }
+    buckets.get(date)!.push({ key: `${date}-${index}`, line: recordPairLine(item.prompt, item.result) });
+  });
+  return order
+    .sort((a, b) => b.localeCompare(a))
+    .map(date => ({ date, label: recordDateLabel(date, now), entries: buckets.get(date) ?? [] }));
+}
+
+/** 기록 불러오기 실패 세 줄. 꺼진 PC와 켜져 있는데 실패한 경우를 가른다. */
+export function recordFailureLines(raw: string): [string, string, string] {
+  const kind = laneErrorKind(raw);
+  if (kind === 'offline') {
+    return [
+      '작업 기록을 불러오지 못했어요.',
+      '다른 컴퓨터가 꺼져 있거나 네트워크가 끊긴 것 같아요.',
+      '컴퓨터를 켠 뒤 다시 시도해 주세요.',
+    ];
+  }
+  if (kind === 'remote-failed' || kind === 'bad-reply') {
+    return [
+      '작업 기록을 불러오지 못했어요.',
+      '다른 컴퓨터는 켜져 있는데, 기록을 읽다 문제가 났어요.',
+      '잠시 뒤 다시 시도해 주세요.',
+    ];
+  }
+  return [
+    '작업 기록을 불러오지 못했어요.',
+    '기록을 아직 읽지 못한 것 같아요.',
+    '다시 시도해 주세요. 자세한 내용은 원문 보기에 있어요.',
+  ];
+}
+
+/** 날짜별 작업 기록. 복사 결과는 누른 줄 옆에 바로 보여 준다. */
+export function RecordLog({
+  groups,
+  copiedKey,
+  onCopy,
+  loading,
+  emptyText,
+  failure,
+  onRetry,
+}: {
+  groups: readonly RecordLogGroup[];
+  copiedKey: string | null;
+  onCopy: (key: string, text: string) => void;
+  loading: boolean;
+  emptyText: string;
+  failure: { lines: [string, string, string]; raw: string } | null;
+  onRetry: () => void;
+}): React.ReactElement {
+  return (
+    <div className="record-log">
+      {failure && (
+        <div className="lovable-error" role="alert">
+          <p>{failure.lines[0]}</p>
+          <p>{failure.lines[1]}</p>
+          <p>{failure.lines[2]}</p>
+          <button type="button" className="btn" onClick={onRetry}>다시 시도</button>
+          {failure.raw && <details><summary>원문 보기</summary><p className="muted">{failure.raw}</p></details>}
+        </div>
+      )}
+      {loading ? <p className="muted">기록을 읽고 있어요.</p>
+        : groups.length === 0 ? <p className="control-empty">{emptyText}</p>
+        : groups.map(group => (
+          <section key={group.date || group.label} className="record-group" aria-label={group.label}>
+            <h3>{group.label}</h3>
+            <div className="record-rows">
+              {group.entries.map(entry => (
+                <div key={entry.key} className="record-row">
+                  <p>{entry.line}</p>
+                  <button type="button" className="btn record-copy" onClick={() => onCopy(entry.key, entry.line)}>
+                    {copiedKey === entry.key ? '복사했어요 ✓' : '복사'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+    </div>
+  );
+}
+
 /**
  * 기록 화면 에이전트 칩 필터 — board/model usage에 존재하는 런타임만 보여준다.
  * 설정되지 않은 에이전트(Kiro/Devin/CommandCode 등)는 board models와
@@ -202,14 +338,22 @@ class ErrorBoundary extends Component<{ children: React.ReactNode }, { err: stri
 // 승인 규칙: 기존 controlRoom:approvals 읽기 전용 조회 결과를 그대로 보여준다.
 function ApprovalsPanel({ onClose }: { onClose: () => void }): React.ReactElement {
   const [items, setItems] = useState<unknown>(null);
-  const [error, setError] = useState('');
+  const [failure, setFailure] = useState<{ lines: [string, string, string]; raw: string } | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const [notice, setNotice] = useState('');
   useEffect(() => {
     let alive = true;
     void must<unknown>({ op: 'controlRoom:approvals' }).then(next => {
-      if (alive) setItems(next);
-    }).catch(e => { if (alive) setError(e instanceof Error ? e.message : String(e)); });
+      if (!alive) return;
+      setItems(next);
+      setFailure(null);
+    }).catch(e => {
+      if (!alive) return;
+      const raw = e instanceof Error ? e.message : String(e);
+      setFailure({ lines: approvalFailureLines(raw), raw });
+    });
     return () => { alive = false; };
-  }, []);
+  }, [attempt]);
   const list = Array.isArray(items) ? items : items == null ? [] : [items];
   // Approval rules carry optional usedCount/lastUsedAt — normalize to rule
   // objects, group by category and sort each group by usedCount (desc).
@@ -253,18 +397,28 @@ function ApprovalsPanel({ onClose }: { onClose: () => void }): React.ReactElemen
   const unusedRules = activeRules.filter(rule => approvalUsedCount(rule) === 0);
   const groups = groupRulesByCategory(usedRules);
   return (
-    <main className="control-room">
-      <div className="control-room-head"><div><h1>승인 규칙</h1><p className="muted">Agent Relay가 묻지 않고 알아서 처리하도록 허락한 규칙입니다.</p></div><button className="btn" onClick={onClose}>닫기</button></div>
-      {error && <div className="flash err">{error}</div>}
-      {items === null && !error ? <div className="control-empty">불러오는 중...</div>
-        : list.length === 0 ? <div className="control-empty">표시할 승인 내역이 없습니다.</div>
+    <main className="control-room lovable-page">
+      <div className="control-room-head"><div><h1>승인 규칙</h1><p className="muted">알아서 진행해도 되는 규칙이에요. 고치거나, 아래에 새 규칙을 추가해 주세요.</p></div><button className="btn" onClick={onClose}>닫기</button></div>
+      {failure && (
+        <div className="lovable-error" role="alert">
+          <p>{failure.lines[0]}</p>
+          <p>{failure.lines[1]}</p>
+          <p>{failure.lines[2]}</p>
+          <button type="button" className="btn" onClick={() => setAttempt(value => value + 1)}>다시 시도</button>
+          <details><summary>원문 보기</summary><p className="muted">{failure.raw}</p></details>
+        </div>
+      )}
+      {notice && <p className="rule-result" role="status">{notice}</p>}
+      {items === null && !failure ? <div className="control-empty">불러오는 중...</div>
         : <>
+          {list.length === 0 && <div className="control-empty">아직 승인 규칙이 없어요. 아래에서 문장을 추가하면 여기에 모여요.</div>}
           {groups.map(group => (
-            <section className="approval-group" key={group.category} aria-label={`승인 규칙 ${approvalCategoryLabel(group.category)}`}>
-              <h3 className="approval-category">{approvalCategoryLabel(group.category)}</h3>
-              <div className="control-cards">{group.rules.map((rule, i) => <ApprovalRuleCard key={i} rule={rule} />)}</div>
+            <section className="approval-group rule-group" key={group.category} aria-label={`승인 규칙 ${approvalGroupHeading(group.category)}`}>
+              <h3 className="approval-category">{approvalGroupHeading(group.category)}</h3>
+              <div className="control-cards">{group.rules.map((rule, i) => <ApprovalRuleCard key={`${group.category}-${i}`} rule={rule} onSaved={() => { setNotice('고쳤어요 ✓'); setAttempt(value => value + 1); }} />)}</div>
             </section>
           ))}
+          <ApprovalAddForm onAdded={() => { setNotice('추가했어요 ✓'); setAttempt(value => value + 1); }} />
           <UnusedApprovalRules rules={unusedRules} />
           <SupersededApprovals rules={allRules} />
           {otherEntries.length > 0 && <div className="control-cards">{otherEntries.map((item, i) => (
@@ -569,6 +723,76 @@ function AppInner(): React.ReactElement {
   }, [history, treeSearch]);
 
   const tree = useMemo(() => buildTree(filteredHistory), [filteredHistory]);
+  const [recordBodies, setRecordBodies] = useState<Record<string, { prompt: string; result: string }>>({});
+  const [recordCopied, setRecordCopied] = useState<string | null>(null);
+  const [recordFailure, setRecordFailure] = useState<{ lines: [string, string, string]; raw: string } | null>(null);
+  const [recordAttempt, setRecordAttempt] = useState(0);
+  const [recordLoading, setRecordLoading] = useState(false);
+  const historyKey = history.map(item => item.folder).join('\n');
+  const recordGroups = useMemo(
+    () => recordLogGroups(history.map(item => ({
+      date: item.date,
+      prompt: recordBodies[item.folder]?.prompt ?? '',
+      result: recordBodies[item.folder]?.result ?? '',
+    }))),
+    [history, recordBodies],
+  );
+
+  useEffect(() => {
+    let alive = true;
+    if (history.length === 0) {
+      setRecordBodies({});
+      setRecordFailure(null);
+      setRecordLoading(false);
+      return;
+    }
+    setRecordLoading(true);
+    void (async () => {
+      const next: Record<string, { prompt: string; result: string }> = {};
+      const failures: string[] = [];
+      await Promise.all(history.map(async item => {
+        if (!item.folder) return;
+        try {
+          const rec = await must<{ prompt?: string; result?: string }>({ op: 'run:read', folder: item.folder });
+          next[item.folder] = { prompt: rec.prompt ?? '', result: rec.result ?? '' };
+        } catch (e) {
+          next[item.folder] = { prompt: '', result: '' };
+          failures.push(e instanceof Error ? e.message : String(e));
+        }
+      }));
+      if (!alive) return;
+      setRecordBodies(next);
+      setRecordLoading(false);
+      if (failures.length > 0 && failures.length === history.filter(item => item.folder).length && failures[0]) {
+        setRecordFailure({ lines: recordFailureLines(failures[0]), raw: failures[0] });
+      } else {
+        setRecordFailure(null);
+      }
+    })();
+    return () => { alive = false; };
+  }, [historyKey, recordAttempt]);
+
+  function copyRecordLine(key: string, text: string): void {
+    const write = navigator.clipboard?.writeText?.bind(navigator.clipboard);
+    if (!write) {
+      setRecordCopied(null);
+      setRecordFailure({
+        lines: ['복사하지 못했어요.', '이 화면에서 클립보드를 열 수 없어요.', '다시 시도해 주세요.'],
+        raw: '',
+      });
+      return;
+    }
+    void write(text).then(() => {
+      setRecordCopied(key);
+    }, (e: unknown) => {
+      const raw = e instanceof Error ? e.message : String(e);
+      setRecordCopied(null);
+      setRecordFailure({
+        lines: ['복사하지 못했어요.', '클립보드가 잠깐 막힌 것 같아요.', '다시 시도해 주세요.'],
+        raw,
+      });
+    });
+  }
 
   // 사이드바 프로젝트 목록 — 저장된 projectOrder 순서를 반영해 표시 (UI 전용)
   const sortedProjects = useMemo(
@@ -1599,6 +1823,19 @@ function AppInner(): React.ReactElement {
           <div className="record-head">
             <h2>작업 기록 — AI에게 준 지시와 받은 결과를 날짜별로 모아 둬요</h2>
           </div>
+          <RecordLog
+            groups={recordGroups}
+            copiedKey={recordCopied}
+            onCopy={copyRecordLine}
+            loading={recordLoading}
+            emptyText={project
+              ? '아직 작업 기록이 없어요. AI에게 지시를 남기면 날짜별로 여기에 모여요.'
+              : '아직 프로젝트가 없어요. 프로젝트를 고르면 그 기록이 여기에 모여요.'}
+            failure={recordFailure}
+            onRetry={() => setRecordAttempt(value => value + 1)}
+          />
+          <details className="record-advanced">
+            <summary>고급 (개발용)</summary>
           {/* ── 프로젝트 세션 탭 바 (Drag Reorder — 순서는 settings에 저장) ── */}
           <div className="proj-tab-bar">
             {sessions.map((sess, i) => {
@@ -2052,6 +2289,7 @@ function AppInner(): React.ReactElement {
               )}
             </div>
           </main>
+          </details>
             </>
           )}
                 </div>
