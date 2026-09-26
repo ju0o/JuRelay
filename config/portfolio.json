@@ -8621,6 +8621,33 @@
             "npm test"
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면 — 판정 '확인 후 받기' 같은 말의 뜻, 빠진 확인 항목의 쉬운 설명; git show d182bc9:src/render/index.ts noticeText.review_required refers to '아래 빠진 확인' unconditionally while remainingBlock can render '빠진 확인을 판단할 기록이 없어요'"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-FAILED-NO-DEAD-REF",
+          "scope": "In the renderLevel1 verdictSentence of src/render/index.ts, the failed sentence always says '아래 빠진 확인과 받기 전 내가 할 일을 보고 다시 맡겨 주세요' even when p.remaining_items and p.human_next_actions are empty and those blocks show only their empty-state text; name only the blocks that actually have items (빠진 확인 only, 받기 전 내가 할 일 only, or both), and fall back to a plain 해요체 next step like '무엇이 잘못됐는지 AI에게 물어본 뒤 다시 맡겨 주세요' when both are empty, the same way the done JUCEIPT-RECEIPT-VIEW-REVIEW-NOTICE-NO-DEAD-REF handled review_required; keep the current sentence for the case where both have items, and add tests for the three cases in tests/receipt-render-founder.test.ts.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run build"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux 규칙으로 영수증 보기 화면 점검 — 빈 화면 이유+다음 행동; base 7af6453 src/render/index.ts:49 failed: \"작업이 끝나지 않았어요. 아래 빠진 확인과 받기 전 내가 할 일을 보고 다시 맡겨 주세요.\""
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SUMMARY-TITLE-HEADING",
+          "scope": "In buildScanSummary in src/sources/summary.ts, SUMMARY.md prints the one-sentence guide above the '# Juceipt 일일 스캔 요약' title, and '작업 제목' is a plain line while every other section is a '##' heading; put the title first with the count sentence directly under it, and change '작업 제목' to '## 작업 제목' with a blank line before its list; keep all other text as it is, and update tests/scan-summary.test.ts plus any scan regression test that asserts the old order.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts",
+            "tests/scan.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run build"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux rule 1 (맨 위 한 문장) applied to juceipt scan output; base 7af6453 src/sources/summary.ts:113-116 return [topSentence, \"# Juceipt 일일 스캔 요약\", \"\", \"작업 제목\", ...]"
         }
       ],
       "skills": {
