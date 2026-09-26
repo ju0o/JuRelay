@@ -9304,6 +9304,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target; scripts/status-board.mjs:22 \"'missing-observedAt': '관찰 시각이 없거나 틀렸어요'\"; src/adapters/juplan.mjs:44 \"const staleReason = age === undefined ? 'missing-observedAt'\"",
           "title": "확인 시각이 없을 때 안내 점검"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-MISSING-OBSERVED-AT",
+          "scope": "오프라인 E2E에 관찰 시각이 없는 JuPlan 상태의 UNKNOWN·한국어 안내 검사를 추가하고 Quickstart 예시와 단계 목록을 동기화한다.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-AGENT-RELAY-MISSING-RUNNER",
+          "scope": "오프라인 E2E에 Agent Relay board의 runner 없음과 day/night 모드 없음이 각각 UNKNOWN으로 안내되는 검사를 추가하고 Quickstart 예시와 단계 목록을 동기화한다.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "qaRuntime": [
