@@ -7219,7 +7219,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-packet-schema.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 'bounded task intake/result routing'; docs/agent-relay/AR-JUPLAN-001.md:44-53,74-81,103-109 packet shapes are prose-only, no validator exists"
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 'bounded task intake/result routing'; docs/agent-relay/AR-JUPLAN-001.md:44-53,74-81,103-109 packet shapes are prose-only, no validator exists",
+          "title": "작업 약속을 빠짐없이 확인"
         },
         {
           "taskId": "JUPLAN-AR-LANE-STATUS-MAP",
@@ -7232,7 +7233,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-lane-status.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 'lane status ... mapping' deliverable; nothing exists yet per repo grep for 'lane status' at beb642c"
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 'lane status ... mapping' deliverable; nothing exists yet per repo grep for 'lane status' at beb642c",
+          "title": "JuPlan 진행 상태를 한눈에 확인"
         },
         {
           "taskId": "JUPLAN-AR-GATE-PACKET-MAP",
@@ -7245,7 +7247,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-gate-packet.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 'Founder Gate packet mapping' deliverable; docs/agent-relay/AR-JUPLAN-001.md:118,130,147,161 mentions FOUNDER_GATE only in prose, no manifest exists; CONTROL_TOWER.md:29 keeps DEC-G012/b80e0aa separately Founder-gated"
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 'Founder Gate packet mapping' deliverable; docs/agent-relay/AR-JUPLAN-001.md:118,130,147,161 mentions FOUNDER_GATE only in prose, no manifest exists; CONTROL_TOWER.md:29 keeps DEC-G012/b80e0aa separately Founder-gated",
+          "title": "검토가 필요한 순간을 정확히 알림"
         }
       ],
       "qaRuntime": [
@@ -15114,7 +15117,8 @@
           "tests": [
             "node --test test/idle-lane-meaning.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js:1993-1994 relayFlowRow's stageSentence ignores current.state === 'QUEUED' (only `who` at line 1989 is special-cased), so a queued task shows '지금 만들기 단계예요.' plus '아직 시작 전이에요.' in the same sentence, contradicting sibling railRowModel:579 ('차례 기다림') and liveCardModel:515 ('차례를 기다리는 중') for the identical case; Founder direction 2026-09-26 'one shared live-status projection for Home and Progress ... add focused fixture tests'"
+          "ssotEvidence": "operator/public/app.js:1993-1994 relayFlowRow's stageSentence ignores current.state === 'QUEUED' (only `who` at line 1989 is special-cased), so a queued task shows '지금 만들기 단계예요.' plus '아직 시작 전이에요.' in the same sentence, contradicting sibling railRowModel:579 ('차례 기다림') and liveCardModel:515 ('차례를 기다리는 중') for the identical case; Founder direction 2026-09-26 'one shared live-status projection for Home and Progress ... add focused fixture tests'",
+          "title": "차례를 기다리는 상태를 바로 알려줘"
         },
         {
           "taskId": "JCAPP-CHAT-BUBBLE-NO-UNKNOWN",
@@ -15126,7 +15130,8 @@
           "tests": [
             "node --test test/conversation-detail-fields.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js:1513 conversationTurn renders esc(item.ownerText || 'UNKNOWN') and app.js:1536 patchConversationTurn sets founderText.textContent = item.ownerText || 'UNKNOWN', printing the literal English enum word as if it were the Founder's own quoted message; founder-ux SKILL rule 2 'No developer text on the surface ... enum words such as HOLD, QUEUED, VERIFIED_DONE, UNMAPPED, unknown' must stay behind 원문 보기, never on the primary bubble"
+          "ssotEvidence": "operator/public/app.js:1513 conversationTurn renders esc(item.ownerText || 'UNKNOWN') and app.js:1536 patchConversationTurn sets founderText.textContent = item.ownerText || 'UNKNOWN', printing the literal English enum word as if it were the Founder's own quoted message; founder-ux SKILL rule 2 'No developer text on the surface ... enum words such as HOLD, QUEUED, VERIFIED_DONE, UNMAPPED, unknown' must stay behind 원문 보기, never on the primary bubble",
+          "title": "내 지시 내용을 알아보기 쉽게 보여줘"
         },
         {
           "taskId": "JCAPP-HOME-WORKING-GUESS-NAME",
@@ -15138,7 +15143,8 @@
           "tests": [
             "node --test test/home-working-line.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js:744 `const guessed = !c.worker && guess && runtimeName(guess) !== 'UNKNOWN' ? ' — 맡은 AI: ' + runtimeName(guess) + ' (예상)' : '';` vs the assignment line using aiGa/aiName; runtimeName('claude-team')='Claude Team Opus' but aiName('claude-team')='Claude Team' (only mismatched id in both maps)"
+          "ssotEvidence": "operator/public/app.js:744 `const guessed = !c.worker && guess && runtimeName(guess) !== 'UNKNOWN' ? ' — 맡은 AI: ' + runtimeName(guess) + ' (예상)' : '';` vs the assignment line using aiGa/aiName; runtimeName('claude-team')='Claude Team Opus' but aiName('claude-team')='Claude Team' (only mismatched id in both maps)",
+          "title": "맡은 인공지능 이름을 똑같이 알려줘"
         },
         {
           "taskId": "JCAPP-LIVE-STATUS-PAUSED-HOLD-FIXTURE",
@@ -15154,7 +15160,8 @@
             "node --test test/live-status-colors.test.mjs",
             "node --test test/live-status-card-html.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js:518 `const paused = lane.paused === true && !gated && !open.length;` and :568 `const paused = !holds && !gated && lane.paused === true;` — hold suppresses paused in both, but test/fixtures/live-status/board.json has 5 paused:true lanes and none with a non-empty holds[]; Founder direction 2026-09-26 'add focused fixture tests'"
+          "ssotEvidence": "operator/public/app.js:518 `const paused = lane.paused === true && !gated && !open.length;` and :568 `const paused = !holds && !gated && lane.paused === true;` — hold suppresses paused in both, but test/fixtures/live-status/board.json has 5 paused:true lanes and none with a non-empty holds[]; Founder direction 2026-09-26 'add focused fixture tests'",
+          "title": "멈춘 작업의 진행 상황을 정확히 알려줘"
         }
       ],
       "skills": {
@@ -18333,7 +18340,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:156-158 `let best = null, score = min; for (const r of rows) { const s = similarity(...); if (s >= score) { best = r; score = s; } }` — no existing check.mjs case has two rows with an identical score"
+          "ssotEvidence": "lib.mjs:156-158 `let best = null, score = min; for (const r of rows) { const s = similarity(...); if (s >= score) { best = r; score = s; } }` — no existing check.mjs case has two rows with an identical score",
+          "title": "같은 점수에서는 최신 답변을 선택"
         },
         {
           "taskId": "JUAI-CHECK-QUOTA-MSG-BONUS-CONST",
@@ -18344,7 +18352,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:77 `daily: ... 하루 최대 ${LIMITS.bonusMax}회 ...` reads the outer LIMITS constant, not a limits value carried on q — untested with a customLimits-produced daily result"
+          "ssotEvidence": "lib.mjs:77 `daily: ... 하루 최대 ${LIMITS.bonusMax}회 ...` reads the outer LIMITS constant, not a limits value carried on q — untested with a customLimits-produced daily result",
+          "title": "일일 보너스 한도를 일정하게 안내"
         },
         {
           "taskId": "JUAI-CHECK-REDACT-PHONE-LOOKBEHIND",
@@ -18355,7 +18364,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:90 PII phone pattern `/(?<!\\d)010(?:-\\d{4}-\\d{4}|\\d{8})(?!\\d)/g` — the leading (?<!\\d) branch has no assertion in check.mjs"
+          "ssotEvidence": "lib.mjs:90 PII phone pattern `/(?<!\\d)010(?:-\\d{4}-\\d{4}|\\d{8})(?!\\d)/g` — the leading (?<!\\d) branch has no assertion in check.mjs",
+          "title": "연속된 번호를 실수로 가리지 않음"
         },
         {
           "taskId": "JUAI-CHECK-OPENDB-WAL",
@@ -18366,7 +18376,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "db.mjs:18 `db.exec(\"PRAGMA journal_mode=WAL\")` in openDb has no assertion in check.mjs's existing openDb migration test"
+          "ssotEvidence": "db.mjs:18 `db.exec(\"PRAGMA journal_mode=WAL\")` in openDb has no assertion in check.mjs's existing openDb migration test",
+          "title": "동시에 사용해도 데이터 저장이 안정적"
         },
         {
           "taskId": "JUAI-CHECK-KV-KEY-SPECIAL-CHARS",
@@ -18377,7 +18388,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "db.mjs:22-23 kvGet/kvSet use `db.prepare(...).get(key)`/`.run(key,...)` with `?` placeholders, untested with special-character keys"
+          "ssotEvidence": "db.mjs:22-23 kvGet/kvSet use `db.prepare(...).get(key)`/`.run(key,...)` with `?` placeholders, untested with special-character keys",
+          "title": "특수문자가 든 이름도 안전하게 저장"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
