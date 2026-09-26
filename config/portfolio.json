@@ -12943,6 +12943,17 @@
           ],
           "ssotEvidence": "docs/business/GROWTH_MONETIZATION_GTM.md:338 '| B0 Core Value Proof | M2 Receipt Value Proof; alias-vs-separate-demand-gate choice unresolved | ACTIVE — M2 GO (A-14) |' vs docs/operations/PM_STATUS_BOARD.md:199 '| B0 | Core value proof | M2 | 🟢 ACTIVE DEPENDENCY |'",
           "title": "사업 준비 상태를 정확히 확인"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-REPORT-B1-BOARD-ROW-SYNC",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md §B.1, change only two things: the PM_STATUS_BOARD row at line 59, whose 'M3 validation; B0 active dep' should now say what the board says at base ('B0 ACTIVE — M2 GO (A-14)'; M3 10-receipt register filled, 0 Founder seven-task rows join both a Claude final and a Receipt, mapping UNDECIDED, decision pending), and the line-64 sentence saying MASTER_ROADMAP §1–§2 and §12 still call Dogfood 01 / PR #3 'current', which should now say that roadmap status was refreshed (§2 line 96, §12 lines 561-562 now show the M3 join-gap state); no scope, gate or decision change.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:199 '| B0 | Core value proof | M2 | 🟢 ACTIVE — M2 GO (A-14) |'; docs/operations/PM_STATUS_BOARD.md:173 '0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` ... M3 decision is pending'; docs/product/MASTER_ROADMAP.md:96 'M3 status: 10-receipt register filled; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED'"
         }
       ]
     },
