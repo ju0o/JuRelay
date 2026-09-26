@@ -15885,6 +15885,20 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:171 '보고서에서는 다음 네 가지를 서로 다른 정보로 취급한다.' followed by ### 6.1 근거 출처 … ### 6.4 보고서 상태 and '이 네 가지를 같은 표현으로 섞지 않는다.'",
           "title": "보고서 네 가지 분류가 문서마다 같은지 확인"
+        },
+        {
+          "taskId": "JUTELL-FILE-ROLE-EXPECTATION-PARITY",
+          "scope": "Add one bullet to report-format.md `## 3. 일반 작업 보고` with the GLOSSARY_POLICY §8 file-role rules: describe each main file's role in one sentence instead of just listing the path; use a definite wording when the file content or its links were checked; use an expectation wording when the role is judged from the file name alone; describe auto-generated and lock files in detail only when their role was checked. Then add a new offline node:test, tests/file-role-expectation-parity.test.mjs, that reads GLOSSARY_POLICY `## 8. 파일 역할 설명` and report-format.md §3 (up to `## 4. 최소 보고`) and checks, with an explicit mapping, that each of the four §8 rules has its matching phrase in §3.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/file-role-expectation-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/file-role-expectation-parity.test.mjs",
+            "node --test tests/conditional-items-scope-parity.test.mjs tests/main-files-exclude-parity.test.mjs tests/main-files-tiebreak-parity.test.mjs tests/report-length-limits-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:148-155 \"## 8. 파일 역할 설명 — 주요 파일은 경로만 나열하지 않고 역할을 한 문장으로 설명한다. 파일 내용이나 연결 관계를 확인한 경우 확정 표현을 사용함 / 파일명만 보고 판단한 경우 예상 표현을 사용함 …\""
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
