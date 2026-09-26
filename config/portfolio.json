@@ -4557,6 +4557,70 @@
           ],
           "ssotEvidence": "Supervisor probe from ASUS 2026-09-26 23:0x: ssh main ok; wsl -l → Ubuntu, docker-desktop; wsl -d Ubuntu -- tmux ls → 2 sessions",
           "title": "윈도우에서 리눅스 화면 목록 보기"
+        },
+        {
+          "taskId": "ACTL-LOVABLE-THEME-LAYOUT",
+          "scope": "Port the approved design into the existing Tk board (src/actl/gui.py) — same look: dark #0b0d10 background, cards #12151a with 1px #232830 border, teal #7dd3c0 for connected/답 준비됨, amber #e8c170 for 확인/연결 안 됨 (never red), muted #8b93a1, Korean font (Malgun Gothic / Noto Sans KR fallback), 16px body, ≥44px buttons. Every value comes from the existing data (rows, environments, token card); never hard-code the sample data; keep every existing action (send, copy, remap, ASUS 화면 전환, pane 관리) reachable; keep tests green; no new dependencies. Step 1: theme constants in one place, three columns (연결된 환경 ~230px | AI 창 | 선택한 창 ~370px) that resize, top bar with 'actl 보드', one status sentence ('연결된 환경 N곳 · AI 창 N개 · 답이 온 창 N개' from the rows) and a '새 환경 찾기' button (existing scan action, or disabled with '곧 지원' if not present). Remove the old long intro paragraph (keep a one-line first-run hint only until dismissed). Pure helper for the status sentence + test.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/gui_theme.py",
+            "tests/test_lovable_theme_layout.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-board.png.",
+          "title": "actl 새 디자인 1: 색·글꼴·3칸 배치·맨 위 한 줄"
+        },
+        {
+          "taskId": "ACTL-LOVABLE-CARDS",
+          "scope": "Port the approved design into the existing Tk board (src/actl/gui.py) — same look: dark #0b0d10 background, cards #12151a with 1px #232830 border, teal #7dd3c0 for connected/답 준비됨, amber #e8c170 for 확인/연결 안 됨 (never red), muted #8b93a1, Korean font (Malgun Gothic / Noto Sans KR fallback), 16px body, ≥44px buttons. Every value comes from the existing data (rows, environments, token card); never hard-code the sample data; keep every existing action (send, copy, remap, ASUS 화면 전환, pane 관리) reachable; keep tests green; no new dependencies. Step 2: middle column 'AI 창 · 답이 준비된 창부터 보여 드려요' — cards grouped under environment headers ('이 컴퓨터 2', 'ASUS (SSH) 4', 'WSL Ubuntu 1'; single environment → one header), sorted 답 준비됨 → 일하는 중 → 쉬는 중 → 연결 안 된 창; each card: bold AI name · 'X 폴더', one state chip (답 준비됨 teal / 일하는 중 amber / 쉬는 중 muted / 연결 안 된 창 muted with [연결하기]), '마지막 지시: …' and '답: …' one line each (ellipsis). Selected card has a teal outline. Pure view-model (group, sort, chip) + test.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/live_card.py",
+            "tests/test_lovable_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-board.png.",
+          "dependsOn": [
+            "ACTL-LOVABLE-THEME-LAYOUT"
+          ],
+          "title": "actl 새 디자인 2: 환경별로 묶인 AI 창 카드"
+        },
+        {
+          "taskId": "ACTL-LOVABLE-SEND-PANEL",
+          "scope": "Port the approved design into the existing Tk board (src/actl/gui.py) — same look: dark #0b0d10 background, cards #12151a with 1px #232830 border, teal #7dd3c0 for connected/답 준비됨, amber #e8c170 for 확인/연결 안 됨 (never red), muted #8b93a1, Korean font (Malgun Gothic / Noto Sans KR fallback), 16px body, ≥44px buttons. Every value comes from the existing data (rows, environments, token card); never hard-code the sample data; keep every existing action (send, copy, remap, ASUS 화면 전환, pane 관리) reachable; keep tests green; no new dependencies. Step 3: right column for the selected card — '선택한 창' + name, big '보낼 내용' box, full-width [보내기] with 'Ctrl+Enter' hint and inline '보냈어요 ✓ · 답을 기다리는 중'; '최근 답' card with teal '답이 준비됐어요' / muted '아직 답이 없어요', answer preview, [답 복사] → '복사했어요 ✓', folded '원문 보기'; below, the existing token card restyled: two big numbers (보낸 토큰 / 받은 토큰 or 새로 쓴/캐시) and up to 3 amber warning rows with '왜:' and '할 일:'. Advanced actions (ASUS 화면 전환, pane 관리) move into a small '더 보기' menu. Tests for the panel state helpers.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_lovable_send_panel.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-board.png.",
+          "dependsOn": [
+            "ACTL-LOVABLE-CARDS"
+          ],
+          "title": "actl 새 디자인 3: 오른쪽 보내기·답 복사·토큰 칸"
+        },
+        {
+          "taskId": "ACTL-LOVABLE-ENV-COLUMN",
+          "scope": "Port the approved design into the existing Tk board (src/actl/gui.py) — same look: dark #0b0d10 background, cards #12151a with 1px #232830 border, teal #7dd3c0 for connected/답 준비됨, amber #e8c170 for 확인/연결 안 됨 (never red), muted #8b93a1, Korean font (Malgun Gothic / Noto Sans KR fallback), 16px body, ≥44px buttons. Every value comes from the existing data (rows, environments, token card); never hard-code the sample data; keep every existing action (send, copy, remap, ASUS 화면 전환, pane 관리) reachable; keep tests green; no new dependencies. Step 4: left column '연결된 환경 N' — one row per environment from the environments model (teal dot + '창 N개', or amber '연결할 수 없어요 — [다시 연결]'); the first-run/scan question appears as a dismissible amber-bordered card at the top ('WSL(Ubuntu)도 찾았어요. 연결할까요?' [연결하기] [나중에]) using the existing ENV-FIRST-RUN-ASK logic; clicking a row filters the middle column to that environment (click again = all). With only one environment show just that row. Tests for the row model and filter.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/core/sources.py",
+            "tests/test_lovable_env_column.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-board.png.",
+          "dependsOn": [
+            "ACTL-LOVABLE-SEND-PANEL"
+          ],
+          "title": "actl 새 디자인 4: 왼쪽 '연결된 환경'과 연결 질문 카드"
         }
       ],
       "qaRuntime": [
