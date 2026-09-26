@@ -2230,6 +2230,22 @@
           ],
           "ssotEvidence": "Founder 2026-09-26: 'Agent-Relay안에서 내가 켰을 때 프로젝트 선택도 있음, 또는 뺄 프로젝트 및 다른 추가할 프로젝트 이런 기능들' + 'ASUS 켜면 항상 프로젝트 설정'. Backend already exists: `night board --json` lanes[] carry id, name, paused; `night roadmap pause <id>` / `night roadmap resume <id>` (persists across reboot, the runner skips paused lanes); `night lane add <id> <git repo path> [name]` lays a new rail (the PM plans its first tasks on the next idle re-plan).",
           "title": "설정: 돌릴 프로젝트 고르기·추가하기"
+        },
+        {
+          "taskId": "AGENTRELAY-V2-PROJECT-SCOPE-R2",
+          "scope": "Filtering only; the page-header project name and the pause/resume control move to a later task. (1) Add a new pure file src/shared/projectScope.ts that exports scopeBoard(board, projectId). An empty projectId returns the board unchanged. Otherwise it returns a new board with the lanes whose id/project matches the projectId (compare ignoring case, like projectDisplayName in src/shared/projectLabels.ts). The holds, todayDone, token findings and work records in the result must belong only to those lanes. It never changes the input, and other sessions' lanes (jutell, juai, ai-agent-marketplace, juradar) are left exactly as they are. (2) In the ControlRoom loader in src/frontend/controlRoom.tsx, apply scopeBoard(board, projectFromSearch(window.location.search)) right after the board is normalized. This is the only change to controlRoom.tsx, so the main window without ?project stays the all-projects view. (3) Add a new behavioural test, test/v2/project-scope.test.mjs, that loads the built dist/server/shared/projectScope.js through createRequire and runs scopeBoard on a multi-lane board fixture built inside the test. It must check that only the chosen lane's lanes, holds and todayDone remain, that an empty projectId returns the board unchanged, and that the input is not changed. It must not regex-scan any .tsx source (that caused the earlier false failure at test/v2-project-scope.test.mjs:83). On the base code it fails because the module does not exist; with the change it passes. (4) Add that test to the test:v2:founder script in package.json so npm test runs it. Keep every existing feature, IPC contract and test; add no new npm dependencies; use no hard-coded sample data in src.",
+          "files": [
+            "src/shared/projectScope.ts",
+            "src/frontend/controlRoom.tsx",
+            "test/v2/project-scope.test.mjs",
+            "package.json"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 V2 direction: one Agent Relay per project in its own window, several at once; they share one RAM/AI-seat limit (engine already shares manifest maxBuilders=3 + minFreeMemoryMb RAM guard across lanes); JuControler supervises all with a Supervisor per project plus Tester/QA and Skill harness; Agent Relay stays the rail (plan→build→check→test→apply) and still works alone. Founder: '그렇게 모두 진행'."
         }
       ],
       "qaRuntime": [
