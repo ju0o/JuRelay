@@ -11458,6 +11458,22 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 15:48: '허브 홈과 진행 탭에 ... (2) actl AI 창 카드 — ... 기존 /api/panes'; founder-ux Live status card: actl card shows '일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨' and 'whether an answer is ready to copy'",
           "title": "홈에 답 나온 창부터 먼저 보여주기"
+        },
+        {
+          "taskId": "JCAPP-RAW-FOLD-ONE-WORD",
+          "scope": "In operator/public/app.js, rename every fold that hides raw developer data (JSON.stringify, paths, pane/runtime/epoch ids) to the founder-ux word '원문 보기' — the <summary> labels 원본 기록 보기, 원본 기록과 담당 정보 보기, 원문 기록 보기, 기술 세부 정보, 기술 정보 (bindingMarkup), 상세 (conversation-details), 자세히 보기 (founder-agent), 파일 위치 (JuPlan where) and 전달 세부 정보 — and point the hint text '원본 기록 보기에서 볼 수 있어요' at 원문 보기; leave the plain-text or form folds unchanged (더 보기, 요약 전체 보기, 판단 근거 보기, 실시간 연결 상태, 새 …, 담당 AI 순서 (고급)); update the pins in test/binding-honest, memory-proposals-plain, more-advanced and juplan-module to the new label and add one assert that no old label remains in app.js",
+          "files": [
+            "operator/public/app.js",
+            "test/binding-honest.test.mjs",
+            "test/memory-proposals-plain.test.mjs",
+            "test/more-advanced.test.mjs",
+            "test/juplan-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/binding-honest.test.mjs test/memory-proposals-plain.test.mjs test/more-advanced.test.mjs test/juplan-module.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: founder-ux 규칙 '개발자 글자는 원문 보기 안'); founder-ux Skill rule 2 'Keep all of these behind one folded \"원문 보기\"'"
         }
       ],
       "skills": {
