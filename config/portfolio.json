@@ -18042,6 +18042,39 @@
             "node check.mjs"
           ],
           "ssotEvidence": "README.md:34-35 \"layout.mjs 서버 구조(역할·채널·포럼 태그·입장 질문·안내문)를 데이터로\"; \"setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)\""
+        },
+        {
+          "taskId": "JUAI-CHECK-REDACT-SECRETS",
+          "scope": "Add check.mjs assertions for the JWT, GitHub token, AWS key, and private-key SECRETS patterns in redact() that currently have no test coverage",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:83-86 defines JWT/gh_*/AKIA*/PRIVATE KEY regexes in SECRETS, but check.mjs:185-186 only exercises the sk- and Discord-bot-token patterns"
+        },
+        {
+          "taskId": "JUAI-CHECK-PRUNE-CALENDAR-INVALID",
+          "scope": "Add a check.mjs assertion that pruneState keeps a usage row whose day is format-valid but calendar-invalid ('2026-02-30') since Date.parse of it is NaN",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "check.mjs:300 inserts usage row ('invalid-day','2026-02-30',1,0) and calls pruneState on line 301, but no assertion checks its usage-table count afterward; lib.mjs:16-19 olderThan() relies on Number.isFinite(Date.parse(date))"
+        },
+        {
+          "taskId": "JUAI-README-HELP-COMMANDS",
+          "scope": "Extend README's member-commands line to also name !익명, 리뷰해줘, !봇수다, and @멘션 answers, which bot.mjs already implements and layout.mjs's own HELP_TEXT already documents",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 lists only !도움말·!남은횟수·!구독 family; layout.mjs:162-176 HELP_TEXT documents !익명 (bot.mjs:221-243), 리뷰해줘 (bot.mjs), !봇수다 (bot.mjs:356-360), and @멘션 answers as real member commands absent from README's overview line"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
