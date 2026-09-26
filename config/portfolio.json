@@ -18317,6 +18317,39 @@
             "node check.mjs"
           ],
           "ssotEvidence": "lib.mjs:77 `daily: ... 하루 최대 ${LIMITS.bonusMax}회 ...` reads the outer LIMITS constant, not a limits value carried on q — untested with a customLimits-produced daily result"
+        },
+        {
+          "taskId": "JUAI-CHECK-REDACT-PHONE-LOOKBEHIND",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) that redact()'s phone-number negative lookbehind rejects a 010 digit sequence immediately preceded by another digit, leaving it unredacted.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:90 PII phone pattern `/(?<!\\d)010(?:-\\d{4}-\\d{4}|\\d{8})(?!\\d)/g` — the leading (?<!\\d) branch has no assertion in check.mjs"
+        },
+        {
+          "taskId": "JUAI-CHECK-OPENDB-WAL",
+          "scope": "Add a check.mjs assertion only (no db.mjs change) that openDb() sets SQLite journal_mode to wal via a PRAGMA journal_mode query on the opened db.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "db.mjs:18 `db.exec(\"PRAGMA journal_mode=WAL\")` in openDb has no assertion in check.mjs's existing openDb migration test"
+        },
+        {
+          "taskId": "JUAI-CHECK-KV-KEY-SPECIAL-CHARS",
+          "scope": "Add check.mjs assertions only (no db.mjs change) that kvSet/kvGet round-trip a key containing a single quote and other SQL-special characters, since both use parameterized `?` placeholders.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "db.mjs:22-23 kvGet/kvSet use `db.prepare(...).get(key)`/`.run(key,...)` with `?` placeholders, untested with special-character keys"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
