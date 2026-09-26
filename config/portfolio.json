@@ -15188,6 +15188,31 @@
           ],
           "ssotEvidence": "operator/public/app.js:518 `const paused = lane.paused === true && !gated && !open.length;` and :568 `const paused = !holds && !gated && lane.paused === true;` — hold suppresses paused in both, but test/fixtures/live-status/board.json has 5 paused:true lanes and none with a non-empty holds[]; Founder direction 2026-09-26 'add focused fixture tests'",
           "title": "멈춘 작업의 진행 상황을 정확히 알려줘"
+        },
+        {
+          "taskId": "JCAPP-RELAY-FLOW-GATE-IGNORE-CURRENT",
+          "scope": "Make relayLaneView pass lane.current to relayFlowRow only when lane.state is RUNNING (matching liveCardModel/railRowModel's own gating), so a HUMAN_GATE lane with a leftover current never shows a contradictory stage sentence under a card that says 대표님 결정을 기다리는 중",
+          "files": [
+            "operator/public/app.js",
+            "test/relay-flow-row-gate.test.mjs"
+          ],
+          "tests": [
+            "node --test test/relay-flow-row-gate.test.mjs",
+            "node --test test/live-status-sentences.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js:2071 `relayFlowRow(lane.current, idle)` vs. app.js:504/570 `const c = lane.state === 'RUNNING' && lane.current || null;` and test/live-status-sentences.test.mjs 'HUMAN_GATE ignores lane.current entirely ... a populated current here must read exactly like plain human-gate'"
+        },
+        {
+          "taskId": "JCAPP-PROJECT-CARD-VERSION-GOAL-PLAIN",
+          "scope": "Stop founderVersion/founderGoal from returning the literal word UNKNOWN onto the visible Progress project card; return a plain Korean not-set sentence instead, keeping the existing 원문 보기 fold showing the raw value unchanged",
+          "files": [
+            "operator/public/app.js",
+            "test/project-summary-version-goal.test.mjs"
+          ],
+          "tests": [
+            "node --test test/project-summary-version-goal.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js:110-119 founderVersion/founderGoal `if (!raw || raw === 'UNKNOWN') return raw || 'UNKNOWN';` rendered via projectSummary (app.js:420) esc(founderVersion(version))/esc(founderGoal(goal)) into the visible <span>/<dd>, not the details fold; founder-ux SKILL.md rule 2: 'No developer text on the surface ... enum words such as HOLD, QUEUED, VERIFIED_DONE, UNMAPPED, unknown'"
         }
       ],
       "skills": {
