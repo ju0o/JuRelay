@@ -6497,6 +6497,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: explain what verdicts such as '확인 후 받기' mean in juceipt command output (scan, daily, receipt); src/types.ts:365 ACCEPTANCE_LABEL unknown '판단할 수 없음' is shown in daily output but missing from its 상태 뜻 line",
           "title": "판정 이름과 뜻을 모두 쉽게 설명하기"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SUMMARY-MISSING-CHECK-LINE",
+          "scope": "In buildScanSummary in src/sources/summary.ts, add one indented plain Korean line under each '우선 확인할 영수증' entry that shows the receipt's first presentation.remaining_items text (already plain Korean) as '빠진 확인: …', plus '외 N건' when there are more, or '빠진 확인은 없어요' when the list is empty; keep raw ids and request text inside the existing 원문 보기 block, and extend tests/scan-summary.test.ts to cover both the missing-check case and the no-missing-check case.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts tests/sources-scan.test.ts tests/sources-scan-cli.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '대상: juceipt 명령 출력(scan, daily, receipt)… 빠진 확인 항목의 쉬운 설명'"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-LABEL-MEANING-ALL",
+          "scope": "In renderLevel1 of src/render/index.ts, the notice that explains what the verdict word means only appears for review_required; add a short plain Korean notice for the other states too, one each for 받아도 됨, 일부 완료, 실패, 중단됨 and 판단할 수 없음, taken from ACCEPTANCE_LABEL in src/types.ts. Leave the review_required text as it is. Use amber styling for everything except failed, and extend tests/receipt-render-founder.test.ts so every state's meaning appears in the view above 원문 보기.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts tests/pipeline.test.ts tests/receipt-cli.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '영수증 보기 화면 — 판정 \\'확인 후 받기\\' 같은 말의 뜻'"
         }
       ],
       "skills": {
