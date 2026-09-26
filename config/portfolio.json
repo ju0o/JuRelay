@@ -8717,6 +8717,37 @@
             "npm test"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): '진짜 비개발자도 보면 이해가 되게' — founder-ux 규칙 3 (product names kept as-is: JuCeipt) and 맨 위 한 문장; src/sources/summary.ts:113 at 56caecd prints '# Juceipt 일일 스캔 요약' regardless of --since"
+        },
+        {
+          "taskId": "JUCEIPT-MISSING-CHECK-NO-REPEAT",
+          "scope": "In buildPresentation in src/receipt/index.ts, drop repeated remaining_items entries that have the same text, using the same findIndex filter already used for delivered_items and human_next_actions (several English requests all become the same 'requested content not confirmed yet: 작업 내용 확인' line today, so the Founder sees the same sentence 3 times). Set presentation.review_count to the length of that de-duplicated list so the receipt view's pill ('빠진 확인 N건') and heading ('빠진 확인 · N건') match the lines shown. In runCommand in src/cli/main.ts, build the '빠진 확인 N건을 보고 받으세요.' count from receipt.presentation.review_count instead of reconciled.gaps.length. Keep acceptance_gaps and the schema unchanged, and do not edit any committed m2/ or examples/ corpus file. Add a test in tests/receipt-missing-check-plain.test.ts: two requested_not_evidenced gaps whose English subjects map to the same title give one remaining item and review_count 1, and distinct gaps keep their full count.",
+          "files": [
+            "src/receipt/index.ts",
+            "src/cli/main.ts",
+            "tests/receipt-missing-check-plain.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 영수증 보기 화면의 빠진 확인 항목의 쉬운 설명, 영어 작업 제목을 쉬운 한국어 요약으로"
+        },
+        {
+          "taskId": "JUCEIPT-MEANING-LINE-ONLY-PRESENT",
+          "scope": "In buildScanSummary in src/sources/summary.ts and koreanSummary in src/daily/index.ts, stop printing the long fixed '상태 뜻:' line, which explains every verdict even when none of them apply. Build it from the real counts, the way scanCommand's '판정 뜻:' line already does: keep the existing plain 해요체 sentence for each verdict (받아도 됨, 확인 후 받기, 판단할 수 없음, 일부 완료·실패·중단됨, and 문제 있음 as their total) but include only the ones whose count is above 0. Leave the line out when there are no receipts. Update the expected strings in tests/scan-summary.test.ts, tests/daily.test.ts, tests/daily-cli.test.ts and tests/sources-scan-cli.test.ts. Add one case each for scan and daily: an all-ready set shows only the 받아도 됨 meaning, and a mixed set shows only the verdicts that are present.",
+          "files": [
+            "src/sources/summary.ts",
+            "src/daily/index.ts",
+            "tests/scan-summary.test.ts",
+            "tests/daily.test.ts",
+            "tests/daily-cli.test.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 대상 juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻"
         }
       ],
       "skills": {
