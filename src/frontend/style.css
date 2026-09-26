@@ -1200,7 +1200,9 @@ h1 { font-size: 22px; }
 .pm-row { padding: 10px 0; border-top: 1px solid var(--border); }
 .pm-row-main { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .pm-row-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 16px; }
-.pm-state { color: var(--warn); }
+.project-manager { --pm-warn: var(--warn); }
+.app[data-theme="light"] .project-manager { --pm-warn: #8a4b00; }
+.pm-state { color: var(--pm-warn); }
 .pm-state.on { color: var(--accent); }
 .pm-switch { min-width: 88px; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 2px solid var(--border); background: var(--bg3); color: var(--fg); font-size: 16px; font-weight: 700; cursor: pointer; }
 .pm-switch.on { border-color: var(--accent); background: var(--accent); color: var(--bg); }
@@ -1208,7 +1210,12 @@ h1 { font-size: 22px; }
 .pm-note { margin: 8px 0 0; font-size: 16px; }
 .pm-note p { margin: 2px 0; }
 .pm-note.ok { color: var(--accent); }
-.pm-note.err { color: var(--warn); }
+.pm-note.err { color: var(--pm-warn); }
+.project-manager .btn { min-height: 44px; padding: 0 16px; font-size: 16px; }
+.project-manager .inline-confirm p { font-size: 16px; }
+.project-manager .inline-confirm-actions { flex-wrap: wrap; gap: 8px; }
+.pm-advanced { margin-top: 4px; }
+.pm-advanced summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: 16px; }
 .pm-note pre { white-space: pre-wrap; word-break: break-all; font-size: 12px; color: var(--muted, inherit); }
 .pm-add { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
 .pm-add h4 { margin: 0; font-size: 16px; }

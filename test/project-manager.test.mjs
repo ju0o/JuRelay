@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { ControlRoomError, runControlRoomLaneAdd } from "../dist/server/backend/controlRoom.js";
-import { isLaneOn, laneErrorLines, laneRowLabel, newLaneProblem, suggestLaneId } from "../dist/server/shared/projectManager.js";
+import { isLaneOn, laneErrorLines, laneRowLabel, laneRowName, newLaneIdFor, newLaneProblem, suggestLaneId } from "../dist/server/shared/projectManager.js";
 
 const BASE = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=5", "asus", "~/.agents/skills/auto-night-orchestrator/scripts/night"];
 
@@ -21,6 +21,21 @@ test("id suggestion", () => {
   assert.equal(suggestLaneId("영수증 앱"), "");
   assert.equal(suggestLaneId("9lives"), "lives");
   assert.equal(suggestLaneId(42), "");
+});
+
+test("row name never shows the english id", () => {
+  assert.equal(laneRowName("receipt-app", "영수증 앱"), "영수증 앱");
+  assert.equal(laneRowName("jucontroler-app"), "통합 관제 화면");
+  assert.equal(laneRowName("receipt-app"), "이름 없는 프로젝트");
+  assert.equal(laneRowName("receipt-app", "  "), "이름 없는 프로젝트");
+});
+
+test("id is always made for the user, even from a Korean-only name", () => {
+  assert.equal(newLaneIdFor("Receipt App"), "receipt-app");
+  assert.equal(newLaneIdFor("Receipt App", ["receipt-app"]), "receipt-app-2");
+  assert.equal(newLaneIdFor("영수증 앱"), "project-2");
+  assert.equal(newLaneIdFor("영수증 앱", ["project-2"]), "project-3");
+  assert.equal(newLaneProblem({ id: newLaneIdFor("영수증 앱"), path: "/a", name: "영수증 앱" }), null);
 });
 
 test("new lane validation", () => {
@@ -72,5 +87,12 @@ test("settings screen wires the manager with Korean confirm, no native dialogs",
   assert.match(block, /쉬게 했어요 ✓/);
   assert.match(block, /추가했어요 ✓ · 곧 첫 계획을 세워요/);
   assert.match(block, /원문 보기/);
+  assert.doesNotMatch(block, /laneRowName\(lane\.id\)/);
+  assert.match(block, /고급 \(개발용\)/);
+  assert.match(block, /rawView\(loadError\.detail/);
+  const css = await readFile(new URL("../src/frontend/style.css", import.meta.url), "utf8");
+  assert.match(css, /\.project-manager \.btn \{ min-height: 44px/);
+  assert.match(css, /\.project-manager \.inline-confirm p \{ font-size: 16px/);
+  assert.match(css, /data-theme="light"\] \.project-manager \{ --pm-warn: #8a4b00/);
   assert.doesNotMatch(block, /\b(alert|confirm|prompt)\(/);
 });
