@@ -7855,6 +7855,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target (README.md:77,123 and docs/getting-started.md:3,106,135,151,153 at 8b100d5 link to docs/getting-started.md, docs/architecture.md, integration/PROJECT_STATUS_CONTRACT.md and #프로젝트-목록registryjson-규칙, and no test checks those links)",
           "title": "안내 문서 속 깨진 링크 점검"
+        },
+        {
+          "taskId": "JUCONTROLER-README-ENGLISH-SUMMARY-SYNC-TEST",
+          "scope": "Add one offline test to tests/quickstart-next-sync.test.mjs that reads the backticked commands in the 'Run …' line of README section '6. English summary' and asserts they are exactly the first three Quickstart commands, in order, built from the `tests` and `board` constants in scripts/e2e.sh (bash scripts/e2e.sh, then tests, then board), so the English summary cannot drift from the Korean Quickstart; no change to README or scripts unless the new test fails at base.",
+          "files": [
+            "tests/quickstart-next-sync.test.mjs",
+            "README.md"
+          ],
+          "tests": [
+            "node --test tests/quickstart-next-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; README.md:152 'Run `bash scripts/e2e.sh`, then `node --test tests/*.test.mjs`, then `node scripts/status-board.mjs registry.json`.'"
+        },
+        {
+          "taskId": "JUCONTROLER-DOCS-DEFAULT-FRESHNESS-SYNC-TEST",
+          "scope": "Add one offline test, tests/docs-default-freshness-sync.test.mjs, that reads the default freshness `5 * 60 * 1000` from the source text of src/project-status.mjs and asserts that the '기본 5분' claims match it: the README '2. 지금 되는 것' bullet, the README reason table `stale` row, and the docs/getting-started.md registry rule on `freshnessMs`; no change to docs or code unless the new test fails at base.",
+          "files": [
+            "tests/docs-default-freshness-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/docs-default-freshness-sync.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; README.md:17 '파일이 없거나 오래됐으면(기본 5분)'; src/project-status.mjs:74 'optionsObject.freshnessMs ?? 5 * 60 * 1000'"
         }
       ],
       "qaRuntime": [
