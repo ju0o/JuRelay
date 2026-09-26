@@ -6407,7 +6407,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — founder-ux rule 2 '개발자 글자는 원문 보기 안', target 'juceipt 명령 출력(scan, daily, receipt)'; src/daily/index.ts:139 `전달 결과: ${delivered}` prints outcome.title raw (tests/daily.test.ts:48 expects 'changed [근거 관찰됨]; checked [근거 검증됨]')"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — founder-ux rule 2 '개발자 글자는 원문 보기 안', target 'juceipt 명령 출력(scan, daily, receipt)'; src/daily/index.ts:139 `전달 결과: ${delivered}` prints outcome.title raw (tests/daily.test.ts:48 expects 'changed [근거 관찰됨]; checked [근거 검증됨]')",
+          "title": "전달 결과를 종류별 개수로 쉽게 보여주기"
         },
         {
           "taskId": "JUCEIPT-DAILY-BROKEN-JSON-ERROR",
@@ -6420,7 +6421,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rule 10 '오류 3줄' (what happened, why, what to do) for juceipt 명령 출력 daily; src/cli/main.ts dailyCommand parses with JSON.parse unguarded, and the catch block's non-ENOENT daily branch always says '왜: 지정한 폴더에 영수증 JSON 파일이 없어요.', which is wrong when the file exists but is broken"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rule 10 '오류 3줄' (what happened, why, what to do) for juceipt 명령 출력 daily; src/cli/main.ts dailyCommand parses with JSON.parse unguarded, and the catch block's non-ENOENT daily branch always says '왜: 지정한 폴더에 영수증 JSON 파일이 없어요.', which is wrong when the file exists but is broken",
+          "title": "깨진 영수증 파일을 정확한 이유로 알려주기"
         },
         {
           "taskId": "JUCEIPT-DAILY-NEXT-LINE-MATCHES-STATE",
@@ -6433,7 +6435,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: founder-ux rules (one top sentence saying what to do now, empty states give reason plus next action) applied to juceipt command output (daily)"
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux rules (one top sentence saying what to do now, empty states give reason plus next action) applied to juceipt command output (daily)",
+          "title": "다음 할 일을 실제 상황에 맞게 안내하기"
         },
         {
           "taskId": "JUCEIPT-DAILY-VERDICT-MEANING-ALL-LABELS",
@@ -6448,7 +6451,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: explain what verdicts such as '확인 후 받기' mean in juceipt command output (scan, daily, receipt); src/types.ts:365 ACCEPTANCE_LABEL unknown '판단할 수 없음' is shown in daily output but missing from its 상태 뜻 line"
+          "ssotEvidence": "Founder direction 2026-09-25: explain what verdicts such as '확인 후 받기' mean in juceipt command output (scan, daily, receipt); src/types.ts:365 ACCEPTANCE_LABEL unknown '판단할 수 없음' is shown in daily output but missing from its 상태 뜻 line",
+          "title": "판정 이름과 뜻을 모두 쉽게 설명하기"
         }
       ],
       "skills": {
@@ -7760,7 +7764,8 @@
             "node --test tests/*.test.mjs",
             "bash scripts/e2e.sh"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; docs/getting-started.md at 08d0d27 promises 'message — 실패하면 처음 멈춘 단계를 알려 줍니다(예: `상태판 실행 단계에서 멈췄어요 — next의 명령을 직접 실행해 보세요`)' and 'next — 실패했을 때만 나옵니다', but tests/e2e-script.test.mjs only covers the success path"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; docs/getting-started.md at 08d0d27 promises 'message — 실패하면 처음 멈춘 단계를 알려 줍니다(예: `상태판 실행 단계에서 멈췄어요 — next의 명령을 직접 실행해 보세요`)' and 'next — 실패했을 때만 나옵니다', but tests/e2e-script.test.mjs only covers the success path",
+          "title": "상태판이 멈출 때 안내 문구 확인"
         },
         {
           "taskId": "JUCONTROLER-E2E-DOCS-EXAMPLE-OUTPUT-SYNC",
@@ -7774,7 +7779,8 @@
             "node --test tests/*.test.mjs",
             "bash scripts/e2e.sh"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; at 08d0d27, tests/e2e-docs-sync.test.mjs compares only the example's steps name/label (`JSON.parse(json).steps.map(({ name, label }) => ...)`), so the documented projects/statuses/key order are never checked against real output"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; at 08d0d27, tests/e2e-docs-sync.test.mjs compares only the example's steps name/label (`JSON.parse(json).steps.map(({ name, label }) => ...)`), so the documented projects/statuses/key order are never checked against real output",
+          "title": "시작 안내서 예시를 실제 결과와 맞추기"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-CURRENT-JSON-EXAMPLE",
@@ -7789,7 +7795,8 @@
             "bash scripts/e2e.sh",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target (README.md step 2 at 8b100d5 says '상태 파일은 `<dataRoot>/current.json`에 둡니다' but gives no example, so the copied registry alone always ends in UNKNOWN/unavailable per tests/quickstart-registry-example.test.mjs)"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target (README.md step 2 at 8b100d5 says '상태 파일은 `<dataRoot>/current.json`에 둡니다' but gives no example, so the copied registry alone always ends in UNKNOWN/unavailable per tests/quickstart-registry-example.test.mjs)",
+          "title": "빠른 시작에 현재 상태 예시 추가"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-LINKS-TEST",
@@ -7802,7 +7809,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target (README.md:77,123 and docs/getting-started.md:3,106,135,151,153 at 8b100d5 link to docs/getting-started.md, docs/architecture.md, integration/PROJECT_STATUS_CONTRACT.md and #프로젝트-목록registryjson-규칙, and no test checks those links)"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target (README.md:77,123 and docs/getting-started.md:3,106,135,151,153 at 8b100d5 link to docs/getting-started.md, docs/architecture.md, integration/PROJECT_STATUS_CONTRACT.md and #프로젝트-목록registryjson-규칙, and no test checks those links)",
+          "title": "안내 문서 속 깨진 링크 점검"
         }
       ],
       "qaRuntime": [
@@ -10127,7 +10135,8 @@
             "node --test test/lovable-live-cards.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; operator/public/app.js:1911 at f9121ad renders relay-now with STAGE_KO ('작업'/'검수') directly before liveProjectCard, which uses '만드는'/'검사하는'"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; operator/public/app.js:1911 at f9121ad renders relay-now with STAGE_KO ('작업'/'검수') directly before liveProjectCard, which uses '만드는'/'검사하는'",
+          "title": "진행 화면에 지금 하는 일 한 줄만 보이기"
         }
       ],
       "skills": {
@@ -10974,7 +10983,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 '1. The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` per `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.2/§7; M3 decision is pending.'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 '1. The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` per `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.2/§7; M3 decision is pending.'",
+          "title": "매일 가치 화면 대기 사유 최신화"
         },
         {
           "taskId": "JUCEIPTPLAN-CANONICAL-HTML-NEXT-AGENT-M3-JOIN-GAP-SYNC",
@@ -10985,7 +10995,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 '1. The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` per `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.2/§7; M3 decision is pending.'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 '1. The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` per `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.2/§7; M3 decision is pending.'",
+          "title": "사업 전체 지도에 3단계 진행상황 반영"
         }
       ]
     },
@@ -11820,7 +11831,8 @@
             "node --test tests/next-action-suggestions-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:361 `nextActionSuggestions`가 활성일 때 보고서 마지막에 다음 행동 제안을 **최대 3개**만 추가한다. 다음 경우에만 제안한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:361 `nextActionSuggestions`가 활성일 때 보고서 마지막에 다음 행동 제안을 **최대 3개**만 추가한다. 다음 경우에만 제안한다.",
+          "title": "다음 할 일 제안 규칙이 문서마다 같은지 확인"
         },
         {
           "taskId": "JUTELL-MAIN-FILES-TIEBREAK-PARITY",
@@ -11835,7 +11847,8 @@
             "node --test tests/skill-report-contract.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:629 같은 우선순위에 해당하는 파일은 다음 순서로 선정한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:629 같은 우선순위에 해당하는 파일은 다음 순서로 선정한다.",
+          "title": "주요 파일을 고르는 순서 통일"
         },
         {
           "taskId": "JUTELL-NOT-APPLICABLE-SCOPE-PARITY",
@@ -11847,7 +11860,8 @@
             "node --test tests/not-applicable-scope-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:49-53 ### 2.5 적용하지 않는 경우 — 다음 상황에는 전체 보고서 형식을 강제로 적용하지 않는다. * 일반적인 개발 개념 질문"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:49-53 ### 2.5 적용하지 않는 경우 — 다음 상황에는 전체 보고서 형식을 강제로 적용하지 않는다. * 일반적인 개발 개념 질문",
+          "title": "보고서를 쓰지 않는 경우가 문서마다 같은지 확인"
         },
         {
           "taskId": "JUTELL-PLAN-REQUEST-ITEMS-PARITY",
@@ -11860,7 +11874,8 @@
             "node --test tests/results/scenario-h/plan-only.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:524-533 ### 8.4 계획만 요청한 경우 — 사용자가 구현 전에 계획을 요청하면 완료 보고서가 아니라 다음 내용을 제공한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:524-533 ### 8.4 계획만 요청한 경우 — 사용자가 구현 전에 계획을 요청하면 완료 보고서가 아니라 다음 내용을 제공한다.",
+          "title": "계획 요청 항목이 문서마다 같은지 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
