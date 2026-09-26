@@ -2507,6 +2507,54 @@
           ],
           "ssotEvidence": "Founder 2026-09-26 'Agent-Relay에 필요없는 정보들은 좀 정리' + '버그도 먼저 다 수정하고 고쳐'; MainPC Tester vchk0926 approvals.png",
           "title": "승인 규칙·계획·작업 기록 화면도 제목 중복·닫기 버튼 정리"
+        },
+        {
+          "taskId": "AGENTRELAY-TEST-WIRE-NIGHT-BUTTONS",
+          "scope": "Add npm script test:night-buttons chaining automation-toggle/lane-pause/night-schedule/night-schedule-card/hub-promote/hub-promote-button tests and include it in the test aggregate so unattended npm test covers the Founder's night-control buttons",
+          "files": [
+            "package.json"
+          ],
+          "tests": [
+            "node test/automation-toggle.test.mjs && node test/lane-pause.test.mjs && node test/night-schedule.test.mjs && node test/night-schedule-card.test.mjs && node test/hub-promote.test.mjs && node test/hub-promote-button.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "package.json:23 test script omits these files; Founder direction 2026-09-25 09:09 (자동화 켜기/끄기, 레인 멈추기/다시켜기, 밤 작업 예약, 허브 반영하기 buttons)"
+        },
+        {
+          "taskId": "AGENTRELAY-TEST-WIRE-PLAN-REQUEST",
+          "scope": "Add npm script test:plan-request chaining plan-request/plan-request-result/plan-save-shape/plan-confirm-reset/launch-project-pick tests and include it in the test aggregate so unattended npm test covers the Founder's 새 작업 부탁 flow",
+          "files": [
+            "package.json"
+          ],
+          "tests": [
+            "node test/plan-request.test.mjs && node test/plan-request-result.test.mjs && node test/plan-save-shape.test.mjs && node test/plan-confirm-reset.test.mjs && node test/launch-project-pick.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "package.json:23 test script omits these files; Founder direction 2026-09-25 09:09 ([새 작업 부탁] project + one sentence -> night plan request)"
+        },
+        {
+          "taskId": "AGENTRELAY-TEST-WIRE-NIGHT-REPORTS",
+          "scope": "Add npm script test:night-reports chaining controlRoom/tokens/envs-panel tests and include it in the test aggregate so unattended npm test covers the night-reports read-only list (item 6)",
+          "files": [
+            "package.json"
+          ],
+          "tests": [
+            "node test/controlRoom.test.mjs && node test/tokens.test.mjs && node test/envs-panel.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "package.json:23 test script omits these files; Founder direction 2026-09-26 item 6 (NIGHT_REPORT/LAST_NIGHT_RUN read-only list via controlRoom.ts ssh JSON path, tested with a fake command runner)"
+        },
+        {
+          "taskId": "AGENTRELAY-TEST-WIRE-CONTROLROOM-COPY",
+          "scope": "Add npm script test:controlroom-copy chaining controlroom-today/controlroom-no-raw-ids/controlroom-titles-today/today-done-honest/who-works-routing tests and include it in the test aggregate so unattended npm test covers the Control Room's Korean display of these same buttons' lanes",
+          "files": [
+            "package.json"
+          ],
+          "tests": [
+            "node test/controlroom-today.test.mjs && node test/controlroom-no-raw-ids.test.mjs && node test/controlroom-titles-today.test.mjs && node test/today-done-honest.test.mjs && node test/who-works-routing.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "package.json:23 test script omits these files; precedent AGENTRELAY-V1-COVER-CORE-TESTS (done) extended here from core-v1 to Control Room display tests"
         }
       ],
       "qaRuntime": [
