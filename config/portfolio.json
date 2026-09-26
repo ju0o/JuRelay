@@ -2572,6 +2572,19 @@
           ],
           "ssotEvidence": "package.json:27 test script omits these files; Founder direction 2026-09-27 (wire automationOn/automationOff/automationStatus into a control-room UI toggle) is already implemented at src/frontend/App.tsx ShellConnectionProvider/ConnectionBar (~lines 511-637, rendered ~1723) with tests test/connection-state.test.mjs and test/lovable-shell.test.mjs not yet in the aggregate",
           "title": "자동 실행 전환이 제대로 작동해요"
+        },
+        {
+          "taskId": "AGENTRELAY-CONTROLROOM-AUTOMATION-TOGGLE",
+          "scope": "Add an automation on/off toggle inside the Control Room screen (src/frontend/controlRoom.tsx) that reuses the existing automationEnabledFromStatus/automationToggleOp/automationToggleLabel/automationResultText helpers from src/shared/connectionState.ts and calls must({op:'controlRoom:automationStatus'|'controlRoom:automationOn'|'controlRoom:automationOff'}) following the same try/catch + local-state button pattern already used for pause/resume in that file (lines ~561, ~1118, ~1135, ~2013, ~2017), and add a source-regex test proving the toggle, its three op calls, and its status label are present.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "test/controlroom-automation-toggle.test.mjs"
+          ],
+          "tests": [
+            "node test/controlroom-automation-toggle.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder choice 2026-09-27: Wire the existing controlRoom:automationOn/automationOff/automationStatus backend ops into a control-room UI toggle showing current on/off state, since the backend calls exist but no frontend button invokes them yet."
         }
       ],
       "qaRuntime": [
