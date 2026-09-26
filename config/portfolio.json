@@ -6536,7 +6536,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화): founder-ux rule 2 '개발자 글자는 원문 보기 안' — packages/runtime/src/index.ts:1238-1239 at 151c134 shows '계획 그림 (SVG)' and '계획 한 장 요약 (HTML)' outside the fold"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화): founder-ux rule 2 '개발자 글자는 원문 보기 안' — packages/runtime/src/index.ts:1238-1239 at 151c134 shows '계획 그림 (SVG)' and '계획 한 장 요약 (HTML)' outside the fold",
+          "title": "계획 그림과 요약을 쉽게 보기"
         },
         {
           "taskId": "JUPLAN-STUDIO-MAP-INTRO-PLAIN",
@@ -6550,7 +6551,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화, target 계획 그림): founder-ux rule 1 '무엇을 위한 화면이고 지금 뭘 하면 되는지' — packages/runtime/src/index.ts:1833 at 151c134 reads '왼쪽에서 오른쪽으로 계획의 흐름을 보여줍니다.' with no next action, unlike the 해요체 diagram view intros at index.ts:600-603"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화, target 계획 그림): founder-ux rule 1 '무엇을 위한 화면이고 지금 뭘 하면 되는지' — packages/runtime/src/index.ts:1833 at 151c134 reads '왼쪽에서 오른쪽으로 계획의 흐름을 보여줍니다.' with no next action, unlike the 해요체 diagram view intros at index.ts:600-603",
+          "title": "화살표를 따라 계획을 읽게 안내"
         },
         {
           "taskId": "JUPLAN-PRD-HIDE-EMPTY-SUBSECTIONS",
@@ -6564,7 +6566,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화, target PRD 보기): founder-ux rule 5 '빈 화면은 이유와 다음 행동' — documents.ts groupedSection (line ~49) and goalPolarity (line ~78) at 151c134 print a bare EMPTY for each empty subsection, asserted by documents.test.ts:95-97 ('### could\\n\\n아직 없음')"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화, target PRD 보기): founder-ux rule 5 '빈 화면은 이유와 다음 행동' — documents.ts groupedSection (line ~49) and goalPolarity (line ~78) at 151c134 print a bare EMPTY for each empty subsection, asserted by documents.test.ts:95-97 ('### could\\n\\n아직 없음')",
+          "title": "내용 있는 장을 빈 줄 없이 보기"
         }
       ],
       "qaRuntime": [
@@ -8287,7 +8290,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux: developer text stays inside 원문 보기, and the top sentence says what to do now); src/render/index.ts:49,51 at a69cf5e still say '원문에서 확인하고' and '원문 근거를 확인하세요'"
+          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux: developer text stays inside 원문 보기, and the top sentence says what to do now); src/render/index.ts:49,51 at a69cf5e still say '원문에서 확인하고' and '원문 근거를 확인하세요'",
+          "title": "확인이 안 되면 할 일을 알려요"
         },
         {
           "taskId": "JUCEIPT-DAILY-READS-SCAN-FOLDER",
@@ -8302,7 +8306,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 (juceipt 명령 출력 scan·daily; founder-ux: finish the task without help, empty state gives the next step); src/cli/main.ts:226 defaults to 'receipts' and reads only top-level .json, while src/sources/scan.ts:184-190 writes <out>/<agent>/<session>/receipt.json and <out>/index.json"
+          "ssotEvidence": "Founder direction 2026-09-25 (juceipt 명령 출력 scan·daily; founder-ux: finish the task without help, empty state gives the next step); src/cli/main.ts:226 defaults to 'receipts' and reads only top-level .json, while src/sources/scan.ts:184-190 writes <out>/<agent>/<session>/receipt.json and <out>/index.json",
+          "title": "모은 기록을 하루 요약으로 봐요"
         },
         {
           "taskId": "JUCEIPT-SOURCES-TOP-SENTENCE-NEXT-SCAN",
@@ -8317,7 +8322,8 @@
             "npx vitest run tests/sources-cli.test.ts",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 'founder-ux Skill 규칙(맨 위 한 문장, … 빈 화면 이유+다음 행동 …)으로 아래 화면을 하나씩 점검 … 대상: juceipt 명령 출력'; base 762d88e src/cli/main.ts:272-277 prints only per-agent lines, bare '기록 없음', and '다음: juceipt sources --json'"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 'founder-ux Skill 규칙(맨 위 한 문장, … 빈 화면 이유+다음 행동 …)으로 아래 화면을 하나씩 점검 … 대상: juceipt 명령 출력'; base 762d88e src/cli/main.ts:272-277 prints only per-agent lines, bare '기록 없음', and '다음: juceipt sources --json'",
+          "title": "기록 위치와 없는 이유를 알려요"
         }
       ],
       "skills": {
@@ -10414,7 +10420,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; base 24f572c tests/status-board-cli.test.mjs:235 'names an Agent Relay board with a lane id agent-relay with the plain-Korean invalid reason' covers the CLI but scripts/e2e.sh has no step for it"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; base 24f572c tests/status-board-cli.test.mjs:235 'names an Agent Relay board with a lane id agent-relay with the plain-Korean invalid reason' covers the CLI but scripts/e2e.sh has no step for it",
+          "title": "예약된 이름은 상태를 몰라요"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-PROJECT-MISMATCH-LINE-TEST",
@@ -10427,7 +10434,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; base 24f572c scripts/e2e.sh run_project_mismatch (line ~193) checks this line in E2E and scripts/status-board.mjs:12 maps 'project-mismatch' to '파일 속 프로젝트 ID가 달라요', but tests/status-board-cli.test.mjs has no project-mismatch test"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; base 24f572c scripts/e2e.sh run_project_mismatch (line ~193) checks this line in E2E and scripts/status-board.mjs:12 maps 'project-mismatch' to '파일 속 프로젝트 ID가 달라요', but tests/status-board-cli.test.mjs has no project-mismatch test",
+          "title": "다른 프로젝트는 상태를 몰라요"
         }
       ],
       "qaRuntime": [
@@ -13417,7 +13425,8 @@
             "node --test test/relay-top-line.test.mjs test/v2-rail-rows.test.mjs test/v2-project-qa-skills.test.mjs test/ai-routing-view.test.mjs test/home-working-line.test.mjs test/live-status-projection.test.mjs test/live-status-card-html.test.mjs test/live-status-sentences.test.mjs test/live-status-colors.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' At base, relayView (app.js:2158,2166) calls relayTopLine(board) and relayLaneView(...) with no now, and otherView (app.js:1928) and updateHomeView (app.js:1672) call laneRails without now, so each part reads Date.now() on its own."
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' At base, relayView (app.js:2158,2166) calls relayTopLine(board) and relayLaneView(...) with no now, and otherView (app.js:1928) and updateHomeView (app.js:1672) call laneRails without now, so each part reads Date.now() on its own.",
+          "title": "진행 화면의 시간을 하나로 맞추기"
         },
         {
           "taskId": "JCAPP-RELAY-FLOW-WHO-MATCHES-CARD",
@@ -13432,7 +13441,8 @@
             "node --test test/live-status-projection.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence…'; operator/public/app.js@a1583d4:502 liveCardModel names only the worker at stage 2 and the qa at stage 3 ('Only the AI that does the step is named… a queued task names nobody'), while relayFlowRow:1972 uses 'stage === 3 ? current?.qa || current?.worker : current?.worker || current?.qa'"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence…'; operator/public/app.js@a1583d4:502 liveCardModel names only the worker at stage 2 and the qa at stage 3 ('Only the AI that does the step is named… a queued task names nobody'), while relayFlowRow:1972 uses 'stage === 3 ? current?.qa || current?.worker : current?.worker || current?.qa'",
+          "title": "카드 아래 담당을 카드와 같게 맞추기"
         },
         {
           "taskId": "JCAPP-TOP-LINES-PAUSED-NOT-CALM",
@@ -13449,7 +13459,8 @@
             "node --test test/live-status-projection.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: one shared live-status projection for Home and Progress including founder action; operator/public/app.js@a1583d4:529 liveCardModel todo 'paused ? { word: '설정 필요' … button: '다시 켜기' }' while home() calm (line ~838) and relayTopLine (line ~2155) fall through to HOME_CALM for paused lanes; founder-ux Skill: '대표님 할 일: exactly one of 없음 / 확인 필요 / 결정 필요 / 설정 필요'"
+          "ssotEvidence": "Founder direction 2026-09-26: one shared live-status projection for Home and Progress including founder action; operator/public/app.js@a1583d4:529 liveCardModel todo 'paused ? { word: '설정 필요' … button: '다시 켜기' }' while home() calm (line ~838) and relayTopLine (line ~2155) fall through to HOME_CALM for paused lanes; founder-ux Skill: '대표님 할 일: exactly one of 없음 / 확인 필요 / 결정 필요 / 설정 필요'",
+          "title": "쉬게 둔 프로젝트를 위에 알려 주기"
         }
       ],
       "skills": {
@@ -15524,7 +15535,8 @@
             "node --test tests/report-length-limits-parity.test.mjs tests/main-files-exclude-parity.test.mjs tests/main-files-tiebreak-parity.test.mjs tests/skill-report-contract.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:205 \"### 6.3 조건부 보고 항목 — 다음 항목은 작업이 복잡하거나 관련 정보가 있을 때만 추가한다.\" (at this base, report-format.md does not list these items anywhere)"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:205 \"### 6.3 조건부 보고 항목 — 다음 항목은 작업이 복잡하거나 관련 정보가 있을 때만 추가한다.\" (at this base, report-format.md does not list these items anywhere)",
+          "title": "필요할 때만 추가 안내가 나와요"
         },
         {
           "taskId": "JUTELL-REQUIRED-ITEMS-SCOPE-PARITY",
@@ -15536,7 +15548,8 @@
             "node --test tests/required-items-scope-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:180 \"모든 코드 변경 작업의 최종 보고에는 다음 6개 항목을 기본으로 포함한다.\"; .agents/skills/beginner-bridge/SKILL.md:47 \"다음 6개 기본 항목을 항상 제목으로 유지한다\""
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:180 \"모든 코드 변경 작업의 최종 보고에는 다음 6개 항목을 기본으로 포함한다.\"; .agents/skills/beginner-bridge/SKILL.md:47 \"다음 6개 기본 항목을 항상 제목으로 유지한다\"",
+          "title": "보고서마다 같은 여섯 칸이 보여요"
         },
         {
           "taskId": "JUTELL-REUSABILITY-RULES-SKILL-PARITY",
@@ -15548,7 +15561,8 @@
             "node --test tests/reusability-rules-skill-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:682 \"### 11.5 재사용성 — 동일한 Skill을 서로 다른 AI Agent 프로젝트에 적용해도 다음 규칙이 유지돼야 한다.\""
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:682 \"### 11.5 재사용성 — 동일한 Skill을 서로 다른 AI Agent 프로젝트에 적용해도 다음 규칙이 유지돼야 한다.\"",
+          "title": "한 장만 읽고 판단할 수 있어요"
         },
         {
           "taskId": "JUTELL-CONFIRMED-SCOPE-LIMIT-PARITY",
@@ -15560,7 +15574,8 @@
           "tests": [
             "node --test tests/confirmed-scope-limit-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:287 확인됨은 확인한 범위에만 적용한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:287 확인됨은 확인한 범위에만 적용한다.",
+          "title": "확인됨은 살펴본 범위만 뜻해요"
         },
         {
           "taskId": "JUTELL-UNKNOWN-TERM-FALLBACK-PARITY",
@@ -15572,7 +15587,8 @@
           "tests": [
             "node --test tests/unknown-term-fallback-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:122 현재 문맥에서 정확한 의미를 확인하지 못했습니다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:122 현재 문맥에서 정확한 의미를 확인하지 못했습니다.",
+          "title": "모르는 말은 모른다고 안내해요"
         },
         {
           "taskId": "JUTELL-CODE-BLOCK-FIELDS-PARITY",
@@ -15584,7 +15600,8 @@
           "tests": [
             "node --test tests/code-block-fields-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:138 모든 항목을 모든 블록에 강제로 적용하지 않는다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:138 모든 항목을 모든 블록에 강제로 적용하지 않는다.",
+          "title": "필요한 설명만 짧게 붙여요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
