@@ -10866,6 +10866,17 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'",
           "title": "핵심 문서 목록에 대조 결과 반영"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-GTM-B1-M3-JOIN-GAP-STATE-SYNC",
+          "scope": "In docs/business/GROWTH_MONETIZATION_GTM.md §8, change only the B1 Daily Value Surface row's State cell (line 339): replace 'BLOCKED' with 'BLOCKED — M2 GO (A-14) met; waiting on the M3 decision (0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED per ../validation/M3_DAILY_VALUE_VALIDATION.md §2.2/§7)'. Keep the gate name, the 'What must happen' cell, the B0/B2 rows and the unresolved B0 alias wording as they are, and do not record any M3 GO/DEFER/KILL.",
+          "files": [
+            "docs/business/GROWTH_MONETIZATION_GTM.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 '1. The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` per `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.2/§7; M3 decision is pending.'"
         }
       ]
     },
