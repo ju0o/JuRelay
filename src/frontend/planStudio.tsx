@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { must } from './bridge.js';
 import { PROJECT_LABELS, foldedManifestGoal, planLaneDisplayName, planVisibleGoal } from '../shared/projectLabels.js';
-import { founderTaskTitle, isPlanStudioTaskDone, isPlanStudioTaskHold, sortPlanStudioTasks } from '../shared/types.js';
+import { controlRoomTaskId, founderTaskTitle, isPlanStudioTaskDone, isPlanStudioTaskHold, sortPlanStudioTasks } from '../shared/types.js';
 import { InlineConfirm } from './components.js';
 
 const FLOW = ['계획', '확인', '작업', '검수', '시험', '사람 확인', '반영'] as const;
@@ -287,6 +287,71 @@ export function planSendButtonLabel(sent: boolean, busy = false): string {
   return sent ? '보냈어요 ✓' : '보내기';
 }
 
+export interface PlanRequestTask {
+  id: string;
+  title: string;
+}
+
+function requestTaskList(value: readonly unknown[] | null | undefined): readonly unknown[] {
+  return Array.isArray(value) ? value : [];
+}
+
+/**
+ * Tasks whose ids appear in `after` but not in `before`.
+ * 요청 전후에 같은 id가 있으면 새 작업이 아니다. 화면 제목은 한국어로 바꿔 둔다.
+ */
+export function newTasksAfterRequest(
+  before: readonly unknown[] | null | undefined,
+  after: readonly unknown[] | null | undefined,
+): PlanRequestTask[] {
+  const known = new Set<string>();
+  for (const task of requestTaskList(before)) {
+    const id = controlRoomTaskId(task);
+    if (id) known.add(id);
+  }
+  const created: PlanRequestTask[] = [];
+  const seen = new Set<string>();
+  for (const task of requestTaskList(after)) {
+    const id = controlRoomTaskId(task);
+    if (!id || known.has(id) || seen.has(id)) continue;
+    seen.add(id);
+    created.push({ id, title: founderTaskTitle(task) });
+  }
+  return created;
+}
+
+/**
+ * Result under the plan request box: Korean titles on the surface, ids folded.
+ * 새로 생긴 작업이 없으면 기다리는 이유를 한 줄로 보여 준다.
+ */
+export function PlanRequestResult({ tasks }: { tasks: readonly PlanRequestTask[] }): React.ReactElement {
+  if (tasks.length === 0) {
+    return (
+      <p className="muted plan-request-result" role="status">
+        새로 생긴 작업은 없어요 — PM 답을 기다리는 중이에요
+      </p>
+    );
+  }
+  return (
+    <div className="plan-request-result" role="status">
+      <p className="plan-inline-ok">
+        PM이 만든 작업 <strong style={{ fontSize: 28, lineHeight: 1.2 }}>{tasks.length}</strong>개
+      </p>
+      <ul style={{ margin: '8px 0 0', paddingLeft: 20 }}>
+        {tasks.map(task => (
+          <li key={task.id} className="plan-task-title">{task.title}</li>
+        ))}
+      </ul>
+      <details>
+        <summary style={{ display: 'flex', alignItems: 'center', minHeight: 44, fontSize: 16, cursor: 'pointer' }}>원문 보기</summary>
+        {tasks.map(task => (
+          <p key={task.id} className="muted mono">{task.id}</p>
+        ))}
+      </details>
+    </div>
+  );
+}
+
 /** 안 고르면 언제 추천대로 가는지. 시각이 없거나 이미 지났으면 빈 문자열. */
 export function planGateAutoLine(autoAt: string, now = Date.now()): string {
   if (!autoAt.trim()) return '';
@@ -329,6 +394,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
   const [chat, setChat] = useState('');
   const [requestText, setRequestText] = useState('');
   const [requestSent, setRequestSent] = useState(false);
+  const [requestResult, setRequestResult] = useState<PlanRequestTask[] | null>(null);
   const [gateSent, setGateSent] = useState('');
   const [gates, setGates] = useState<StudioGate[]>([]);
   const [gatePick, setGatePick] = useState<Record<string, number>>({});
@@ -352,6 +418,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
     setPendingDeleteId(reset.pendingDeleteId);
     setPendingPolicy(reset.pendingPolicy);
     setRequestSent(false);
+    setRequestResult(null);
     setGateSent('');
   }, [project]);
 
@@ -522,16 +589,20 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
 
   async function submitRequest(message: string): Promise<void> {
     if (!message || busy) return;
+    const before = tasks;
     setBusy('request');
     setRequestSent(false);
+    setRequestResult(null);
     try {
       await must({ op: 'planStudio:request', project, text: message });
       const fresh = await must<unknown>({ op: 'planStudio:get', project });
       const next = normalizeDraft(fresh);
+      const created = newTasksAfterRequest(before, next.tasks);
       setDraft(next);
       setSelectedId(prev => (prev && next.tasks.some(t => t.id === prev) ? prev : next.tasks[0]?.id ?? null));
       setRequestText('');
       setRequestSent(true);
+      setRequestResult(created);
       flashInfo('보냈어요 ✓');
     } catch (err) {
       flashError(err, 'PM에게 보낸 말이 반영되지 않았어요', () => void submitRequest(message));
@@ -742,7 +813,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
               <input
                 aria-label="PM에게 계획 수정 요청"
                 value={requestText}
-                onChange={e => { setRequestText(e.target.value); setRequestSent(false); }}
+                onChange={e => { setRequestText(e.target.value); setRequestSent(false); setRequestResult(null); }}
                 placeholder="예: 3번 작업을 먼저 검수해 줘"
               />
               <button className="btn primary plan-send" type="submit" disabled={!requestText.trim() || busy === 'request'}>
@@ -750,6 +821,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
               </button>
             </form>
             {requestSent && <p className="plan-inline-ok" role="status">보냈어요 ✓</p>}
+            {requestResult !== null && <PlanRequestResult tasks={requestResult} />}
             <p className="muted">PM이 답하면 작업 순서가 새로 그려져요.</p>
           </article>
 
