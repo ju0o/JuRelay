@@ -10481,6 +10481,30 @@
             "node --test test/lovable-live-cards.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-23: \"Live status card\"의 계획 → 만들기 → 검사 → 시험 → 반영 및 5분 자동 진행"
+        },
+        {
+          "taskId": "JCAPP-SKILL-NAMES-PLAIN",
+          "scope": "Skill 만들기 목록에서 원시 Skill 이름은 원문 보기 안에 두고, 화면에는 한국어 목적을 제목처럼 보여 검색·저장 흐름을 유지한다.",
+          "files": [
+            "operator/public/app.js",
+            "test/skill-categories.test.mjs"
+          ],
+          "tests": [
+            "node --test test/skill-categories.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 개발자 글자는 원문 보기 안"
+        },
+        {
+          "taskId": "JCAPP-ADVANCED-DIAGNOSTICS-PLAIN",
+          "scope": "더보기의 고급 작업·에이전트 화면에서 영어 헤더와 원시 상태를 쉬운 한국어로 바꾸고 pane·runtime·JSON은 원문 보기 안에 둔다.",
+          "files": [
+            "operator/public/app.js",
+            "test/more-advanced.test.mjs"
+          ],
+          "tests": [
+            "node --test test/more-advanced.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 더보기 안 화면도 비개발자 UX 규칙으로 점검"
         }
       ],
       "skills": {
