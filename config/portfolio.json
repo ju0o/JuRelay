@@ -15006,7 +15006,8 @@
           "tests": [
             "node --test test/idle-lane-meaning.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js comment above relayFlowRow: 'The flow row sits right under the live card, so its chips use the live card's words (not STAGE_KO).' vs liveCardModel's sentBack branch ('REQUEST_CHANGES: QA sent the work back...'); Founder direction 2026-09-26 (one shared live-status projection for Home and Progress)"
+          "ssotEvidence": "operator/public/app.js comment above relayFlowRow: 'The flow row sits right under the live card, so its chips use the live card's words (not STAGE_KO).' vs liveCardModel's sentBack branch ('REQUEST_CHANGES: QA sent the work back...'); Founder direction 2026-09-26 (one shared live-status projection for Home and Progress)",
+          "title": "진행 화면에 재작업 안내 표시"
         },
         {
           "taskId": "JCAPP-HOME-WORKING-SENT-BACK",
@@ -15018,7 +15019,8 @@
           "tests": [
             "node --test test/idle-lane-meaning.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js liveCardModel sentBack branch (JCAPP-LIVE-CARD-SENT-BACK-TRUE, already done) vs homeWorking which never reads current.state; Founder direction 2026-09-26 (one shared live-status projection for Home and Progress)"
+          "ssotEvidence": "operator/public/app.js liveCardModel sentBack branch (JCAPP-LIVE-CARD-SENT-BACK-TRUE, already done) vs homeWorking which never reads current.state; Founder direction 2026-09-26 (one shared live-status projection for Home and Progress)",
+          "title": "홈 작업 목록에 재작업 안내 표시"
         },
         {
           "taskId": "JCAPP-LIVE-STATUS-FIXTURE-GAPS-R2",
@@ -15034,7 +15036,8 @@
             "node --test test/live-status-colors.test.mjs",
             "node --test test/live-status-card-html.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress ... add focused fixture tests.'"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress ... add focused fixture tests.'",
+          "title": "다양한 작업 상태를 더 정확히 안내"
         }
       ],
       "skills": {
@@ -18165,7 +18168,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:133 validateAdminPlan: params[k] = typeof v === \"number\" ? v : str(v, 1800) — verified with node: {action:'answer',params:{text:true}} returns null, {action:'create_channel',params:{name:123}} keeps name as the number 123"
+          "ssotEvidence": "lib.mjs:133 validateAdminPlan: params[k] = typeof v === \"number\" ? v : str(v, 1800) — verified with node: {action:'answer',params:{text:true}} returns null, {action:'create_channel',params:{name:123}} keeps name as the number 123",
+          "title": "관리자 작업 계획을 올바르게 확인"
         },
         {
           "taskId": "JUAI-CHECK-SUBS-EMPTY-KEYWORD",
@@ -18176,7 +18180,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:162 matchSubs: hay.includes(keyword.toLowerCase().replace(...)) — verified 'hello world'.includes('') === true"
+          "ssotEvidence": "lib.mjs:162 matchSubs: hay.includes(keyword.toLowerCase().replace(...)) — verified 'hello world'.includes('') === true",
+          "title": "빈 검색어로 모든 내용을 찾기"
         },
         {
           "taskId": "JUAI-CHECK-BONUS-ZERO-MAX",
@@ -18187,7 +18192,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:40 grantBonus: if (...count... >= limits.bonusMax) return false — verified grantBonus(db,'u1',{limits:{...LIMITS,bonusMax:0}}) === false"
+          "ssotEvidence": "lib.mjs:40 grantBonus: if (...count... >= limits.bonusMax) return false — verified grantBonus(db,'u1',{limits:{...LIMITS,bonusMax:0}}) === false",
+          "title": "보너스 한도 없으면 지급하지 않기"
         },
         {
           "taskId": "JUAI-CHECK-KV-UNDEFINED",
@@ -18198,7 +18204,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "db.mjs:23 kvSet: .run(key, JSON.stringify(value)) — verified kvSet(db,'u',undefined) throws 'Provided value cannot be bound to SQLite parameter 2'"
+          "ssotEvidence": "db.mjs:23 kvSet: .run(key, JSON.stringify(value)) — verified kvSet(db,'u',undefined) throws 'Provided value cannot be bound to SQLite parameter 2'",
+          "title": "잘못된 저장값은 오류로 막기"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
