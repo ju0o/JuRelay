@@ -14000,6 +14000,39 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:434-435 \"* 요청하지 않은 리팩터링을 함께 진행하지 않음 / * 디자인 요청 때문에 데이터베이스나 API를 수정하지 않음\" (§7.5 최소 변경 원칙)",
           "title": "필요한 부분만 안전하게 변경"
+        },
+        {
+          "taskId": "JUTELL-REPORT-LENGTH-LIMITS-PARITY",
+          "scope": "Add a new test-only offline node:test, tests/report-length-limits-parity.test.mjs, that reads BEGINNER_REPORT_SPEC §5.1–5.2 and report-format.md §2–§3 as text and checks that the simple-work limits (항목당 최대 1~2문장, 주요 파일 최대 3개, 12문장, 약 25줄) appear in the SPEC §5.1 bullets and in the report-format.md §2 closing sentence, and that the SPEC §5.2 주요 파일은 최대 5개 limit matches the report-format.md §3 주요 파일은 최대 5개를 설명한다 bullet.",
+          "files": [
+            "tests/report-length-limits-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/report-length-limits-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:128 '* 주요 파일은 최대 3개' / :129 '* 전체 보고서는 기본적으로 12문장 이내' / :143 '* 주요 파일은 최대 5개'; report-format.md:65 '단순 작업은 기본 항목마다 1~2문장, 주요 파일 최대 3개, 전체 기본 12문장 또는 약 25줄을 우선한다.'"
+        },
+        {
+          "taskId": "JUTELL-REQUEST-TYPE-OUTPUT-PARITY",
+          "scope": "Add a new test-only offline node:test, tests/request-type-output-parity.test.mjs, that uses an explicit mapping from BEGINNER_REPORT_SPEC §2.1–2.4 to the four bullets under SKILL.md `## 작업 유형별 출력` and checks each pair: 2.1 → 코드 변경 완료 (기본 6개 항목); 2.2 코드를 수정하지 않는다 → 변경 내용 설명 bullet (코드를 수정하지 않고); 2.3 전체 작업 보고서를 생성하지 않고 → 특정 코드·파일 설명 bullet (전체 완료 보고서가 아니라); 2.4 완료한 것처럼 표현하지 않는다 → 계획 요청 bullet (완료된 것처럼 쓰지 않는다).",
+          "files": [
+            "tests/request-type-output-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/request-type-output-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:37 '이 경우 사용자가 별도로 요청하지 않았다면 코드를 수정하지 않는다.' / :41 '전체 작업 보고서를 생성하지 않고 요청받은 코드나 파일만 설명한다.' / :47 '실제로 변경하지 않은 내용을 완료한 것처럼 표현하지 않는다.'; SKILL.md:120-122"
+        },
+        {
+          "taskId": "JUTELL-EVAL-PRINCIPLES-SCENARIOS-PARITY",
+          "scope": "Add a new test-only offline node:test, tests/eval-principles-scenarios-parity.test.mjs, that reads BEGINNER_REPORT_SPEC `## 19. 비개발자 평가 원칙` and docs/TEST_SCENARIOS.md §4.5, §7.3 and §7.4 as text and checks that each §19 principle has a match: 평가자는 전체 코드를 보지 않음 → §4.5 withholds 전체 소스 코드; 보고서만 읽고 답변 → §4.6 사용자 요청문과 AI Agent 최종 보고서만 읽고; 실제 확인과 예상을 혼동하면 실패 → the §7.4 실제 확인과 코드 기반 예상을 반대로 표현함 bullet; 사용자 확인 항목을 찾지 못하면 실패 → the §7.4 핵심 사용자 행동이 필요한 작업인데 안내가 없음 bullet; 7개 질문 중 6개 이상 → §7.3 6~7점: 이해 가능.",
+          "files": [
+            "tests/eval-principles-scenarios-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/eval-principles-scenarios-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:808-814 '* 평가자는 전체 코드를 보지 않음 … * 실제 확인과 예상을 혼동하면 실패 * 사용자 확인 항목을 찾지 못하면 실패 * 7개 질문 중 6개 이상 통과해야 이해 가능'; docs/TEST_SCENARIOS.md:559 '* 6~7점: 이해 가능'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
