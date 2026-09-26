@@ -2367,6 +2367,40 @@
             "AGENTRELAY-POLISH-SEATS-MATCH"
           ],
           "title": "관제실을 간단하고 편하게 (한 화면에 꼭 필요한 것만)"
+        },
+        {
+          "taskId": "AGENTRELAY-HUB-PROMOTE-BUTTON",
+          "scope": "Add a '허브 새 버전 반영' card to the settings page in src/frontend/App.tsx, next to ProjectManager. It has one [반영하기] button that first asks inline with two buttons (safe [그만두기] first, then [이대로 반영]) and only after that calls the existing op controlRoom:promoteHub. The card shows '반영했어요 ✓', or a three-line Korean failure with [다시 시도] that tells 'ASUS가 꺼져 있음' apart from '켜져 있지만 실패'. Raw output goes under 원문 보기, amber not red, buttons at least 44px. Add test/hub-promote-button.test.mjs, which checks the source for the op, the inline confirm and the absence of window.confirm.",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "test/hub-promote-button.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node test/hub-promote-button.test.mjs",
+            "node test/hub-promote.test.mjs",
+            "npm run typecheck",
+            "npm run build:client"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 16:09 item 5: '허브 [반영하기] = 새 하위 명령 night promote hub(JuControler-Private ff-merge + promote-operator.sh, 누를 때만)'; the backend is already in 79151ab:src/backend/controlRoom.ts:536 runControlRoomPromoteHub, and no frontend calls it yet"
+        },
+        {
+          "taskId": "AGENTRELAY-PLAN-REQUEST-RESULT-LIST",
+          "scope": "In src/frontend/planStudio.tsx submitRequest, after planStudio:request and the planStudio:get refresh succeed, show under the request box 'PM이 만든 작업 N개' with their Korean titles. Work out which tasks are new with a pure exported helper newTasksAfterRequest(before, after) that compares task ids. If nothing is new, show '새로 생긴 작업은 없어요 — PM 답을 기다리는 중이에요'. Task ids go only under 원문 보기. Add test/plan-request-result.test.mjs covering the helper and the rendered wording.",
+          "files": [
+            "src/frontend/planStudio.tsx",
+            "test/plan-request-result.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node test/plan-request-result.test.mjs",
+            "node test/plan-request.test.mjs",
+            "node test/lovable-plan-rules-log.test.mjs",
+            "npm run typecheck",
+            "npm run build:client"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 16:09 item 2: '[새 작업 부탁] 프로젝트 선택+한 문장 → night plan request, 결과 작업 목록 표시'; at 79151ab:src/frontend/planStudio.tsx:523-538 submitRequest only shows '보냈어요 ✓' and never lists the tasks it produced"
         }
       ],
       "qaRuntime": [
