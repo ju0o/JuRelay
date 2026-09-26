@@ -10181,6 +10181,19 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; operator/public/app.js:1911 at f9121ad renders relay-now with STAGE_KO ('작업'/'검수') directly before liveProjectCard, which uses '만드는'/'검사하는'",
           "title": "진행 화면에 지금 하는 일 한 줄만 보이기"
+        },
+        {
+          "taskId": "JCAPP-CHANNEL-THREAD-PLAIN",
+          "scope": "channelThread in operator/public/app.js (진행 → 대화 기록, and the PM board thread) prints each AI message's raw text — long English RESULT/QA packets, file paths, 'REQUEST_CHANGES: …'. Show one plain Korean line per message instead, built by a new pure channelLine(m, title): role + friendly AI name (aiName) + what happened — Worker '<AI>가 만들었어요 · <task title>', QA ACCEPT '<AI>가 검사했어요 — 통과', QA REQUEST_CHANGES/HOLD '<AI>가 검사했어요 — 고칠 점 N개, 다시 만들어요' (N from the findings count or 1), PM '<AI>가 계획을 세웠어요', anything else '<AI>가 보낸 메시지'. Detect the verdict from markers already in the text (ACCEPT, REQUEST_CHANGES, HOLD_EXPLAIN, RESULT_PACKET/IMPLEMENTED). The full raw text moves under a folded 원문 보기 (existing details pattern), never on the surface. Founder messages stay as written. Tests: channelLine for each role/verdict and that raw English/paths are not in the visible line.",
+          "files": [
+            "operator/public/app.js",
+            "test/channel-thread-plain.test.mjs"
+          ],
+          "tests": [
+            "node --test test/"
+          ],
+          "ssotEvidence": "Supervisor review of Tester capture ~/jc-tester/run-20260926-1056/02-진행.png (2026-09-26): 대화 기록 shows long raw English packets; founder-ux Skill rule: no developer text on Founder surfaces, raw only under 원문 보기",
+          "title": "진행 화면 대화 기록을 쉬운 한 줄로"
         }
       ],
       "skills": {
