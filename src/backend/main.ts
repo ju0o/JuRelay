@@ -10,7 +10,7 @@ import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electro
 import * as fs from 'fs';
 import * as path from 'path';
 import * as relay from './fs.js';
-import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomEnvs, runControlRoomTokens, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneAdd, runControlRoomLaneSet, runControlRoomPause, runControlRoomPromoteHub, runControlRoomScheduleCancel, runControlRoomScheduleList, runControlRoomScheduleSet, runControlRoomResume, isValidProjectId, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
+import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomApprovalEdit, runControlRoomApprovalRemove, runControlRoomEnvs, runControlRoomTokens, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneAdd, runControlRoomLaneSet, runControlRoomPause, runControlRoomPromoteHub, runControlRoomScheduleCancel, runControlRoomScheduleList, runControlRoomScheduleSet, runControlRoomResume, isValidProjectId, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
 import { migrateSettings } from './migrate.js';
 import { CaptureReport, captureLoadingError, parseCapturePath } from '../shared/capture.js';
 import { projectWindowKey, projectWindowTitle } from '../shared/projectLabels.js';
@@ -407,6 +407,12 @@ async function handleRequest(req: RelayRequest): Promise<unknown> {
 
     case 'controlRoom:approvalAdd':
       return runControlRoomApprovalAdd(req.category, req.summary);
+
+    case 'controlRoom:approvalEdit':
+      return runControlRoomApprovalEdit(req.id, req.summary);
+
+    case 'controlRoom:approvalRemove':
+      return runControlRoomApprovalRemove(req.id);
 
     case 'controlRoom:automationStatus':
       return runControlRoomAutomationStatus();

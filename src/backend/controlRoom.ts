@@ -32,6 +32,8 @@ export type ControlRoomOperation =
   | 'controlRoom:scheduleCancel'
   | 'controlRoom:holdChoose'
   | 'controlRoom:approvalAdd'
+  | 'controlRoom:approvalEdit'
+  | 'controlRoom:approvalRemove'
   | 'controlRoom:automationStatus'
   | 'controlRoom:automationOn'
   | 'controlRoom:automationOff'
@@ -54,6 +56,7 @@ export type HoldOption = (typeof HOLD_OPTIONS)[number];
 export const GATE_ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
 export const APPROVAL_CATEGORY_PATTERN = /^[a-z-]{2,30}$/;
 export const MAX_APPROVAL_SUMMARY_LENGTH = 200;
+export const APPROVAL_RULE_ID_PATTERN = /^A-\d{2,4}$/;
 export const LANE_ROLES = ['worker', 'qa'] as const;
 export type LaneRole = (typeof LANE_ROLES)[number];
 export const NIGHT_RUNTIMES = [
@@ -485,9 +488,35 @@ export async function runControlRoomApprovalAdd(
   assertApprovalSummary(operation, summary);
   return runSshJson(
     operation,
-    [...SSH_BASE_ARGS, 'approvals', 'add', shQuote(category), shQuote(summary), '--source', 'app'],
+    [...SSH_BASE_ARGS, 'approvals', 'add', shQuote(category), shQuote(summary), '--source', 'app', '--json'],
     execFileImpl,
   );
+}
+
+function assertApprovalRuleId(operation: ControlRoomOperation, id: unknown): asserts id is string {
+  if (typeof id !== 'string' || !APPROVAL_RULE_ID_PATTERN.test(id)) {
+    throw invalidInput(operation, '규칙 번호가 올바르지 않습니다.');
+  }
+}
+
+export async function runControlRoomApprovalEdit(
+  id: string,
+  summary: string,
+  execFileImpl: ControlRoomExec = execFile,
+): Promise<unknown> {
+  const operation: ControlRoomOperation = 'controlRoom:approvalEdit';
+  assertApprovalRuleId(operation, id);
+  assertApprovalSummary(operation, summary);
+  return runSshJson(operation, [...SSH_BASE_ARGS, 'approvals', 'edit', id, shQuote(summary), '--json'], execFileImpl);
+}
+
+export async function runControlRoomApprovalRemove(
+  id: string,
+  execFileImpl: ControlRoomExec = execFile,
+): Promise<unknown> {
+  const operation: ControlRoomOperation = 'controlRoom:approvalRemove';
+  assertApprovalRuleId(operation, id);
+  return runSshJson(operation, [...SSH_BASE_ARGS, 'approvals', 'remove', id, '--json'], execFileImpl);
 }
 
 // 자동 진행 켜기/끄기/상태 — 고정 명령, 사용자 인자 없음.

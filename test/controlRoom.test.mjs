@@ -193,7 +193,7 @@ test("controlRoom:approvalAdd uses approvals add with quoted args", async () => 
 
   assert.deepEqual(value, { ok: true });
   assert.equal(call[0], "ssh");
-  assert.deepEqual(call[1], ["-o", "BatchMode=yes", "-o", "ConnectTimeout=5", "asus", "~/.agents/skills/auto-night-orchestrator/scripts/night", "approvals", "add", "'bug-fix'", "'fix login'", "--source", "app"]);
+  assert.deepEqual(call[1], ["-o", "BatchMode=yes", "-o", "ConnectTimeout=5", "asus", "~/.agents/skills/auto-night-orchestrator/scripts/night", "approvals", "add", "'bug-fix'", "'fix login'", "--source", "app", "--json"]);
   assert.equal(call[2].shell, false);
   assert.equal(call[2].timeout, 10_000);
 });

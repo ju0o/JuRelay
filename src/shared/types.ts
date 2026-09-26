@@ -155,6 +155,8 @@ export type RelayRequest =
   | { op: 'controlRoom:scheduleCancel' }
   | { op: 'controlRoom:holdChoose'; taskId: string; option: 'retry' | 'narrow' | 'skip' }
   | { op: 'controlRoom:approvalAdd'; category: string; summary: string }
+  | { op: 'controlRoom:approvalEdit'; id: string; summary: string }
+  | { op: 'controlRoom:approvalRemove'; id: string }
   | { op: 'controlRoom:automationStatus' }
   | { op: 'controlRoom:automationOn' }
   | { op: 'controlRoom:automationOff' }

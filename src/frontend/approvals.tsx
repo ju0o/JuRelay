@@ -137,19 +137,22 @@ export function ApprovalRuleCard({ rule, onSaved }: { rule: ApprovalRuleJson; on
   const [failure, setFailure] = useState<[string, string, string] | null>(null);
   const [raw, setRaw] = useState('');
   const [busy, setBusy] = useState(false);
+  const [retry, setRetry] = useState<'edit' | 'remove'>('edit');
   const category = typeof rule.category === 'string' ? rule.category : '';
+  const ruleId = typeof rule.id === 'string' && /^A-\d{2,4}$/.test(rule.id) ? rule.id : '';
 
   async function saveEdit(text = draft): Promise<void> {
+    setRetry('edit');
     const problem = approvalSentenceProblem(text);
-    if (problem || !approvalCategoryCanSave(category)) {
+    if (problem || !ruleId) {
       setFailure(problem
         ? ['이 규칙을 고치지 못했어요.', problem, '문장을 고친 뒤 다시 저장해 주세요.']
-        : ['이 규칙을 고치지 못했어요.', '이 규칙의 종류를 저장 형태로 옮길 수 없어요.', '아래 규칙 추가에서 새 문장으로 적어 주세요.']);
+        : ['이 규칙을 고치지 못했어요.', '이 규칙의 번호를 찾지 못했어요.', '아래 규칙 추가에서 새 문장으로 적어 주세요.']);
       return;
     }
     setBusy(true);
     try {
-      await must({ op: 'controlRoom:approvalAdd', category, summary: text.trim() });
+      await must({ op: 'controlRoom:approvalEdit', id: ruleId, summary: text.trim() });
       setNote('고쳤어요 ✓');
       setEditing(false);
       setFailure(null);
@@ -172,6 +175,28 @@ export function ApprovalRuleCard({ rule, onSaved }: { rule: ApprovalRuleJson; on
       return;
     }
     setConfirming(true);
+  }
+
+  async function remove(): Promise<void> {
+    setConfirming(false);
+    setRetry('remove');
+    if (!ruleId) {
+      setFailure(['이 규칙을 지우지 못했어요.', '이 규칙의 번호를 찾지 못했어요.', '잠시 후 다시 불러와 주세요.']);
+      return;
+    }
+    setBusy(true);
+    try {
+      await must({ op: 'controlRoom:approvalRemove', id: ruleId });
+      setGone(true);
+      onSaved?.();
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      setRaw(message);
+      setNote('');
+      setFailure(approvalFailureLines(message, '이 규칙을 지우지 못했어요.'));
+    } finally {
+      setBusy(false);
+    }
   }
 
   if (gone) return <p className="rule-result" role="status">지웠어요 ✓</p>;
@@ -198,10 +223,10 @@ export function ApprovalRuleCard({ rule, onSaved }: { rule: ApprovalRuleJson; on
       )}
       {confirming && (
         <div className="rule-confirm" role="group" aria-label="이 규칙을 지울까요?">
-          <p>이 규칙을 지울까요? 이 화면에서만 숨기고, 작업 PC의 원본은 다음 불러오기에 다시 보여요.</p>
+          <p>이 규칙을 지울까요? 작업 PC에서도 지워져요.</p>
           <div className="rule-confirm-actions">
             <button type="button" className="btn primary" onClick={() => setConfirming(false)}>남겨 두기</button>
-            <button type="button" className="btn" onClick={() => { setConfirming(false); setGone(true); }}>지우기</button>
+            <button type="button" className="btn" disabled={busy} onClick={() => void remove()}>지우기</button>
           </div>
         </div>
       )}
@@ -211,7 +236,7 @@ export function ApprovalRuleCard({ rule, onSaved }: { rule: ApprovalRuleJson; on
           <p>{failure[0]}</p>
           <p>{failure[1]}</p>
           <p>{failure[2]}</p>
-          <button type="button" className="btn" onClick={() => void saveEdit()}>다시 시도</button>
+          <button type="button" className="btn" disabled={busy} onClick={() => void (retry === 'remove' ? remove() : saveEdit())}>다시 시도</button>
           {raw && <details><summary>원문 보기</summary><p className="muted">{raw}</p></details>}
         </div>
       )}
