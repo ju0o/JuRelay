@@ -6661,6 +6661,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux '빈 화면 이유+다음 행동' for juceipt scan output; src/sources/summary.ts:81 at 132daeb still reads '- 우선 확인할 영수증이 없습니다.' with no reason and no next step",
           "title": "먼저 볼 영수증을 안내해요"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-DELIVERED-VALIDATION-PLAIN",
+          "scope": "In buildPresentation in src/receipt/index.ts, stop Level 1 '받은 결과' from showing raw command text such as '테스트 실행: npm test -- ...' or '빌드: tsc -p ...' for kind 'validation' outcomes. Add a deliveredItemText helper, written like the existing remainingItemText and impactItemText: it returns a plain Korean sentence for validation outcomes (for example '검사·시험을 실행했어요 — 자세한 명령은 원문 보기에 있어요') and keeps the current title for file-change outcomes, so the pipeline tests that expect 'README' still pass. The raw validation title must stay visible in the Level 2 '검증' list inside 원문 보기. Add tests/receipt-delivered-plain.test.ts, modeled on tests/receipt-impact-plain.test.ts, asserting that Level 1 HTML has no 'npm test' and that the raw title appears after '원문 보기'.",
+          "files": [
+            "src/receipt/index.ts",
+            "tests/receipt-delivered-plain.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09 request): founder-ux 규칙 '개발자 글자는 원문 보기 안' 으로 영수증 보기 화면 점검; src/reconciler/index.ts:183-188 at e6c8ba8 builds validation titles as '테스트 실행: '+command, which src/receipt/index.ts:69 copies verbatim into Level 1 delivered_items"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-NEXT-LINE-MATCHES-STATE",
+          "scope": "In scanCommand in src/cli/main.ts, the last line always says '다음: <out>/SUMMARY.md를 열어 검토하세요.', even when nothing was found or every receipt is 받아도 됨. Build it from the counts instead. With no sessions: '다음: juceipt scan --since 7d 로 기간을 늘려 다시 해 보세요'. When everything is ready: '다음: 지금 하실 일은 없어요 — 궁금하면 <SUMMARY.md>를 열어 보세요'. Otherwise: '다음: <SUMMARY.md>를 열어 우선 확인할 영수증부터 보세요.' Also rename the bare '출력: ' label to '영수증 폴더: '. Update the two existing expectations in tests/sources-scan-cli.test.ts and add a case where every receipt is ready.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09 request): founder-ux 규칙 '빈 화면 이유+다음 행동' 으로 juceipt scan 출력 점검; src/cli/main.ts scanCommand at e6c8ba8 prints '다음: '+SUMMARY.md+'를 열어 검토하세요.' in every case, including when there are 0 sessions"
         }
       ],
       "skills": {
