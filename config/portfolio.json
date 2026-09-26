@@ -12919,6 +12919,35 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:524-533 ### 8.4 계획만 요청한 경우 — 사용자가 구현 전에 계획을 요청하면 완료 보고서가 아니라 다음 내용을 제공한다.",
           "title": "계획 요청 항목이 문서마다 같은지 확인"
+        },
+        {
+          "taskId": "JUTELL-NO-TOOL-STATE-PARITY",
+          "scope": "Add the three BEGINNER_REPORT_SPEC §11.2 no-tool/no-permission mapping lines (보조 검증을 실행하지 못함 → 추가 확인 필요, 핵심 검증을 일부만 수행함 → 일부 확인, 핵심 기능을 전혀 검증할 수 없음 → 작업 보류) under the 보고서 상태 bullet in report-format.md §1, plus a new offline node:test that checks SPEC §11.2 still lists those three cases and report-format.md §1 pairs each case with the same state.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/no-tool-state-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/no-tool-state-parity.test.mjs",
+            "node --test tests/verify-state-mapping-parity.test.mjs",
+            "node --test tests/report-state-priority-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:441 ### 11.2 실행 권한 또는 도구가 없는 경우 — 보조 검증을 실행하지 못함: `추가 확인 필요` / 핵심 검증을 일부만 수행함: `일부 확인` / 핵심 기능을 전혀 검증할 수 없음: `작업 보류`"
+        },
+        {
+          "taskId": "JUTELL-FIXTURE-CONFIRM-STATE-LABELS",
+          "scope": "Add a new offline node:test that reads every tests/results/scenario-*/*.fixture.md file and checks that each `확인 상태:` value starts with one of the three SPEC §8 labels (확인됨, 일부 확인, 확인하지 못함), and fix line 14 of the scenario-l fixture, which currently has free text after `확인 상태:`, so it starts with `확인됨` and keeps its explanation after the label.",
+          "files": [
+            "tests/fixture-confirm-state-labels.test.mjs",
+            "tests/results/scenario-l/report-only.fixture.md"
+          ],
+          "tests": [
+            "node --test tests/fixture-confirm-state-labels.test.mjs",
+            "node --test tests/results/scenario-l/report-only.test.mjs",
+            "node --test tests/fixture-term-no-repeat.test.mjs",
+            "node --test tests/forbidden-phrases-fixture-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:275 확인 상태는 다음 세 가지로 단순화한다. (### 8.1 확인됨 / ### 8.2 일부 확인 / ### 8.3 확인하지 못함)"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
