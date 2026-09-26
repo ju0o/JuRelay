@@ -9220,6 +9220,28 @@
             "node -e \"const fs=require('fs');const fields=['receipt_vs_claude_final','false_factual_claim','missed_material_gap','level1_understandable_10s','human_next_action_useful','review_or_evidence_needed','acceptance_state_feels_correct'];for(const t of ['m2-007','m2-008','m2-009','m2-010','m2-011','m2-012']){const e=JSON.parse(fs.readFileSync('m2/tasks/'+t+'/evaluation.json','utf8'));for(const f of fields){if(e[f]===undefined||e[f]==='UNSCORED')throw new Error(t+' '+f+' still UNSCORED')}if(!e.pm_note||!e.pm_note.trim())throw new Error(t+' pm_note empty')}console.log('ok')\""
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:226 'Finish PR #4 14-task Receipt-vs-final scoring | M2 NOW'; m2/README.md:39-41 'evaluation.json is generated with every field set to UNSCORED... PM fills the scorecard'"
+        },
+        {
+          "taskId": "JUCEIPT-M2-SCORE-013",
+          "scope": "Fill the 7 UNSCORED judgment fields plus pm_note in m2/tasks/m2-013/evaluation.json by comparing claude-final.txt against receipt.json/receipt.html for the no-op investigation task, following the same scoring pattern already used in m2-001..m2-012 (yes/no and receipt_more_useful/claude_final_more_useful/equivalent enums, Korean pm_note)",
+          "files": [
+            "m2/tasks/m2-013/evaluation.json"
+          ],
+          "tests": [
+            "node -e \"const e=require('./m2/tasks/m2-013/evaluation.json');const bad=Object.entries(e).filter(([k,v])=>v==='UNSCORED');if(bad.length)throw new Error('still UNSCORED: '+bad.map(x=>x[0]));if(!e.pm_note)throw new Error('pm_note empty');console.log('ok')\""
+          ],
+          "ssotEvidence": "JuCeipt-Private/docs/operations/PM_STATUS_BOARD.md:156 'Is no-op investigation READY (m2-013) correct?' and :226 'Finish PR #4 14-task Receipt-vs-final scoring — M2 NOW'"
+        },
+        {
+          "taskId": "JUCEIPT-M2-SCORE-014",
+          "scope": "Fill the 7 UNSCORED judgment fields plus pm_note in m2/tasks/m2-014/evaluation.json by comparing claude-final.txt against receipt.json/receipt.html for the human-review-required draft task, following the same scoring pattern already used in m2-001..m2-012 (yes/no and receipt_more_useful/claude_final_more_useful/equivalent enums, Korean pm_note)",
+          "files": [
+            "m2/tasks/m2-014/evaluation.json"
+          ],
+          "tests": [
+            "node -e \"const e=require('./m2/tasks/m2-014/evaluation.json');const bad=Object.entries(e).filter(([k,v])=>v==='UNSCORED');if(bad.length)throw new Error('still UNSCORED: '+bad.map(x=>x[0]));if(!e.pm_note)throw new Error('pm_note empty');console.log('ok')\""
+          ],
+          "ssotEvidence": "JuCeipt-Private/docs/operations/PM_STATUS_BOARD.md:157 'Can human-review-required draft be READY (m2-014) correct?' and :226 'Finish PR #4 14-task Receipt-vs-final scoring — M2 NOW'"
         }
       ],
       "skills": {
