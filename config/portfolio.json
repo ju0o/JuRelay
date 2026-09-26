@@ -8653,6 +8653,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux rule 1 (맨 위 한 문장) applied to juceipt scan output; base 7af6453 src/sources/summary.ts:113-116 return [topSentence, \"# Juceipt 일일 스캔 요약\", \"\", \"작업 제목\", ...]",
           "title": "일일 스캔 요약을 보기 좋게 보여줘요"
+        },
+        {
+          "taskId": "JUCEIPT-SOURCES-SIZE-FOLDED",
+          "scope": "In sourcesCommand in src/cli/main.ts, drop the developer-style '· 크기 2.00 KB' part from each default (non --json) source line so it reads '<AI>: 기록 N개 · 마지막 활동 3분 전', and show the size only when --show-raw or --show-paths is given, in one folded '원문 보기 (개발용):' block after the lines, as run/receipt/daily/scan already do; add '[--show-raw]' to the sources help line; update tests/sources-cli.test.ts so the default output does not contain '크기' and the --show-raw output still shows '2.00 KB' and '2.00 MB'.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-cli.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux 규칙 '개발자 글자는 원문 보기 안' — targets juceipt 명령 출력; src/cli/main.ts:306 at 56caecd still prints '크기 ${formatSourceSize(source.totalSize)}' in the default output"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SUMMARY-TITLE-PLAIN",
+          "scope": "In buildScanSummary in src/sources/summary.ts, replace the title '# Juceipt 일일 스캔 요약' with '# JuCeipt 작업 영수증 요약'. The current title misspells the product name, uses the developer word '스캔', and says '일일' even for --since 7d. Keep everything else the same, and update the title in tests/scan-summary.test.ts (lines ~20, ~85, ~243) and tests/sources-scan-cli.test.ts (line ~39).",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): '진짜 비개발자도 보면 이해가 되게' — founder-ux 규칙 3 (product names kept as-is: JuCeipt) and 맨 위 한 문장; src/sources/summary.ts:113 at 56caecd prints '# Juceipt 일일 스캔 요약' regardless of --since"
         }
       ],
       "skills": {
