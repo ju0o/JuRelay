@@ -6228,7 +6228,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: founder-ux 규칙 — 막힘은 노랑, 빨강은 실제 위험이나 데이터 손실에만 사용"
+          "ssotEvidence": "Founder direction 2026-09-23: founder-ux 규칙 — 막힘은 노랑, 빨강은 실제 위험이나 데이터 손실에만 사용",
+          "title": "확인 전 영수증을 노랑으로 안내"
         }
       ],
       "skills": {
@@ -7513,7 +7514,8 @@
           "tests": [
             "node --test tests/quickstart-next-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: \"Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior.\""
+          "ssotEvidence": "Founder direction 2026-09-23: \"Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior.\"",
+          "title": "처음 쓰는 사람도 바로 시작"
         },
         {
           "taskId": "JUCONTROLER-GETTING-STARTED-FIRST-RUN",
@@ -7525,7 +7527,8 @@
           "tests": [
             "node --test tests/getting-started-lines-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: \"Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior.\""
+          "ssotEvidence": "Founder direction 2026-09-23: \"Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior.\"",
+          "title": "첫 실행 전에 준비할 것 안내"
         }
       ],
       "qaRuntime": [
@@ -9767,7 +9770,8 @@
           "tests": [
             "node --test test/actl-panes-plain.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48: '(2) actl AI 창 카드 … 그 전엔 기존 /api/panes'; founder-ux actl AI window card: 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; base f9121adb9fff9846c7eb26f5ebfb9fae86d3661a operator/public/app.js:1942 falls back to '조용해요' and test/actl-panes-plain.test.mjs:38-39 pins 'Claude Team · Team 폴더 | 조용해요'"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '(2) actl AI 창 카드 … 그 전엔 기존 /api/panes'; founder-ux actl AI window card: 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; base f9121adb9fff9846c7eb26f5ebfb9fae86d3661a operator/public/app.js:1942 falls back to '조용해요' and test/actl-panes-plain.test.mjs:38-39 pins 'Claude Team · Team 폴더 | 조용해요'",
+          "title": "작업 상태를 쉽게 보여줘요"
         }
       ],
       "skills": {
@@ -11375,7 +11379,8 @@
           "tests": [
             "node --test tests/forbidden-phrases-skill-parity.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: SPEC §20 forbidden-phrase list appears unchanged in beginner-bridge SKILL.md/reference and existing scenario fixtures contain none"
+          "ssotEvidence": "Founder direction 2026-09-23: SPEC §20 forbidden-phrase list appears unchanged in beginner-bridge SKILL.md/reference and existing scenario fixtures contain none",
+          "title": "금지 표현이 빠짐없이 지켜지는지 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
