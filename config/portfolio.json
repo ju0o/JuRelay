@@ -10665,6 +10665,32 @@
             "node --test tests/*.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target, with no new product behavior; scripts/e2e.sh:291-309 (run_missing_runner, run_missing_runner_mode) pin these lines, but tests/status-board-cli.test.mjs has no CLI regression test for missing-runner or missing-runner-mode"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-RELAY-LANE-FIELDS-LINES-TEST",
+          "scope": "Add two offline tests to tests/status-board-cli.test.mjs, modelled on 'names an Agent Relay board with no runner night with the plain-Korean missing-runner-mode reason'. Each one writes a fresh Agent Relay board (kind BOARD, current observedAt, runner {day:'IDLE',night:'RUNNING'}) with a single lane 'lane'. In the first test the lane is {id:'lane'} with no state, and the test asserts the row ['lane','UNKNOWN',false,'missing-state'] and the exact stderr line naming lane(missing-state: 레인 state가 비어 있어요). In the second test the lane is {id:'lane',state:'RUNNING',holds:'x'}, and the test asserts ['lane','UNKNOWN',false,'invalid-holds'] and the exact stderr line naming lane(invalid-holds: 레인 holds가 목록이 아니에요). Both tests expect exit 0, and neither changes any source code.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; the e2e steps run_missing_state/run_invalid_holds exist at base but tests/status-board-cli.test.mjs has no missing-state or invalid-holds test"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-RELAY-FUTURE-OBSERVED-STEP",
+          "scope": "Add step run_relay_future_observed to scripts/e2e.sh right after run_relay_missing_observed_at, with label '보드 미래 시각 안내' and next command board, modelled on run_relay_missing_observed_at. The step writes an Agent Relay board whose observedAt is one hour in the future, runner {day:'IDLE',night:'RUNNING'} and one lane {id:'lane',state:'RUNNING'}. It passes only when the lane row is RUNNING, stale=true, reason future-observedAt, and stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: lane(future-observedAt: 관찰 시각이 미래예요) — README 처음 쓰는 법의 reason 표를 보세요'. Add the step to the step loop, the labels map and the commands map, and sync the ordered step list in tests/e2e-script.test.mjs and the E2E step description in docs/getting-started.md the same way commit d7aacff did.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs sets staleReason 'future-observedAt' when age < 0, but scripts/e2e.sh at base has no Agent Relay future-observedAt step"
         }
       ],
       "qaRuntime": [
