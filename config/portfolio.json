@@ -2584,7 +2584,8 @@
             "node test/controlroom-automation-toggle.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder choice 2026-09-27: Wire the existing controlRoom:automationOn/automationOff/automationStatus backend ops into a control-room UI toggle showing current on/off state, since the backend calls exist but no frontend button invokes them yet."
+          "ssotEvidence": "Founder choice 2026-09-27: Wire the existing controlRoom:automationOn/automationOff/automationStatus backend ops into a control-room UI toggle showing current on/off state, since the backend calls exist but no frontend button invokes them yet.",
+          "title": "자동 실행을 켜고 끄기"
         }
       ],
       "qaRuntime": [
@@ -7274,7 +7275,8 @@
             "pnpm --filter @juplan/runtime test:run test/api-doc-method-korean.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "packages/runtime/src/documents.ts renderApiMarkdown (~line 491-502) writes the raw ApiEndpoint method enum with no Korean label, unlike WBS_LEVEL_LABELS/QA_KIND_LABELS/EVENT_DIRECTION_LABELS/CONSTRAINT_KIND_LABELS/FEATURE_SCOPE_LABELS in the same file; Founder request 2026-09-25 13:08 (founder-ux audit of JuPlan Studio PRD/WBS screens)"
+          "ssotEvidence": "packages/runtime/src/documents.ts renderApiMarkdown (~line 491-502) writes the raw ApiEndpoint method enum with no Korean label, unlike WBS_LEVEL_LABELS/QA_KIND_LABELS/EVENT_DIRECTION_LABELS/CONSTRAINT_KIND_LABELS/FEATURE_SCOPE_LABELS in the same file; Founder request 2026-09-25 13:08 (founder-ux audit of JuPlan Studio PRD/WBS screens)",
+          "title": "요청 종류를 쉽게 확인하기"
         }
       ],
       "qaRuntime": [
@@ -15200,7 +15202,8 @@
             "node --test test/relay-flow-row-gate.test.mjs",
             "node --test test/live-status-sentences.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js:2071 `relayFlowRow(lane.current, idle)` vs. app.js:504/570 `const c = lane.state === 'RUNNING' && lane.current || null;` and test/live-status-sentences.test.mjs 'HUMAN_GATE ignores lane.current entirely ... a populated current here must read exactly like plain human-gate'"
+          "ssotEvidence": "operator/public/app.js:2071 `relayFlowRow(lane.current, idle)` vs. app.js:504/570 `const c = lane.state === 'RUNNING' && lane.current || null;` and test/live-status-sentences.test.mjs 'HUMAN_GATE ignores lane.current entirely ... a populated current here must read exactly like plain human-gate'",
+          "title": "결정 대기 중 잘못된 진행 안내 숨기기"
         },
         {
           "taskId": "JCAPP-PROJECT-CARD-VERSION-GOAL-PLAIN",
@@ -15212,7 +15215,8 @@
           "tests": [
             "node --test test/project-summary-version-goal.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js:110-119 founderVersion/founderGoal `if (!raw || raw === 'UNKNOWN') return raw || 'UNKNOWN';` rendered via projectSummary (app.js:420) esc(founderVersion(version))/esc(founderGoal(goal)) into the visible <span>/<dd>, not the details fold; founder-ux SKILL.md rule 2: 'No developer text on the surface ... enum words such as HOLD, QUEUED, VERIFIED_DONE, UNMAPPED, unknown'"
+          "ssotEvidence": "operator/public/app.js:110-119 founderVersion/founderGoal `if (!raw || raw === 'UNKNOWN') return raw || 'UNKNOWN';` rendered via projectSummary (app.js:420) esc(founderVersion(version))/esc(founderGoal(goal)) into the visible <span>/<dd>, not the details fold; founder-ux SKILL.md rule 2: 'No developer text on the surface ... enum words such as HOLD, QUEUED, VERIFIED_DONE, UNMAPPED, unknown'",
+          "title": "없는 버전과 목표를 쉽게 안내하기"
         }
       ],
       "skills": {
@@ -18451,7 +18455,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "bot.mjs:123 `isStaff(m.member) ? \"운영진은 AI 질문 횟수 제한이 없어요.\" : ...` — README's quota bullet currently reads as a blanket rule with no staff exemption noted"
+          "ssotEvidence": "bot.mjs:123 `isStaff(m.member) ? \"운영진은 AI 질문 횟수 제한이 없어요.\" : ...` — README's quota bullet currently reads as a blanket rule with no staff exemption noted",
+          "title": "창업자와 직원의 대화 제한 없음"
         },
         {
           "taskId": "JUAI-CHECK-QUOTE-DEFAULT-MAX",
@@ -18462,7 +18467,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "check.mjs:205-207 existing quote() assertions all pass an explicit max or a short string; lib.mjs quote()'s default max=300 parameter path has no assertion"
+          "ssotEvidence": "check.mjs:205-207 existing quote() assertions all pass an explicit max or a short string; lib.mjs quote()'s default max=300 parameter path has no assertion",
+          "title": "긴 답변을 안전하게 줄여 확인"
         },
         {
           "taskId": "JUAI-CHECK-ROLES-NAME-UNIQUE",
@@ -18473,7 +18479,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "check.mjs:11 checks ROLES key uniqueness and check.mjs:14-15 checks CHANNELS name uniqueness, but no assertion checks ROLES name uniqueness"
+          "ssotEvidence": "check.mjs:11 checks ROLES key uniqueness and check.mjs:14-15 checks CHANNELS name uniqueness, but no assertion checks ROLES name uniqueness",
+          "title": "역할 이름이 겹치지 않게 관리"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
