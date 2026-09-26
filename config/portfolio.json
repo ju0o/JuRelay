@@ -17170,6 +17170,17 @@
             "node --test tests/fixture-glossary-necessity-parity.test.mjs"
           ],
           "ssotEvidence": "Founder choice 2026-09-27: Add one offline test for §6.6 that keeps explanations limited to terms necessary for understanding the result, risk, or verification; docs/PRODUCT_SCOPE.md:288-294 §6.6 개발 용어 설명: 다음 조건에 해당하는 용어만 쉬운 설명을 제공한다"
+        },
+        {
+          "taskId": "JUTELL-SCOPE-6-6-NECESSITY-PARITY",
+          "scope": "Add an offline node:test verifying PRODUCT_SCOPE §6.6's result/risk/verification term-necessity conditions stay textually aligned with GLOSSARY_POLICY §2.3, so explanations stay limited to terms needed for understanding the result, risk, or verification.",
+          "files": [
+            "tests/scope-6-6-glossary-necessity-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/scope-6-6-glossary-necessity-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:292,294 (§6.6: 사용자가 작업 결과를 이해하는 데 필요한 용어 / 위험이나 검증 결과를 판단하는 데 필요한 용어) + Founder choice 2026-09-27"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
