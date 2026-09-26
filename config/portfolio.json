@@ -9475,6 +9475,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; README.md:104 '| `missing-lane` | 보드 스냅샷에 그 id의 레인이 없어요. |' and scripts/status-board.mjs reasonWords 'missing-lane': '그 레인이 보드에 없어요', but the Korean CLI line for this reason has no test",
           "title": "Agent Relay 작업줄 없을 때 현황 안내 점검"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-MISSING-LANE-STEP",
+          "scope": "Add step run_missing_lane to scripts/e2e.sh right after run_invalid_holds, labelled '레인 없음 안내' with next command board, and model it on run_invalid_holds: it writes a fresh Agent Relay board with runner {day:IDLE,night:RUNNING} and one lane 'lane' (state RUNNING), plus a registry whose only agent-relay-board entry has projectId 'absent'; the step then requires exit 0, one row absent/UNKNOWN/stale true/reason missing-lane, and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: absent(missing-lane: 그 레인이 보드에 없어요) — README 처음 쓰는 법의 reason 표를 보세요'; add the step to the step loop, labels and commands, and sync docs/getting-started.md (the backticked step list, one new bullet after run-invalid-holds, and the ```json example line) so the existing sync tests pass.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-docs-sync.test.mjs tests/e2e-script.test.mjs tests/e2e-cleanup.test.mjs tests/e2e-failure-output.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, no runtime integration or new product behavior; src/project-status.mjs (352c569) loadAgentRelayBoard returns unknownEntry('missing-lane'), which is covered by the CLI test at tests/status-board-cli.test.mjs:171 but has no E2E step"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-INVALID-BOARD-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names an Agent Relay lane missing from the board with the plain-Korean missing-lane reason': it writes an agent-relay-board current.json whose kind is 'NOT_BOARD' (otherwise valid runner and lanes) for registry projectId 'broken', runs scripts/status-board.mjs, and asserts exit 0, one row ['broken','UNKNOWN',true,'invalid','agent-relay/lanes/broken'], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: broken(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요\\n'; no source changes.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; src/project-status.mjs (352c569) loadAgentRelayBoard returns unknownEntry('invalid') when projectAgentRelayBoard throws, and scripts/status-board.mjs:11 maps invalid to '상태 파일 모양이 깨졌어요', but no CLI test or E2E step checks that line yet"
         }
       ],
       "qaRuntime": [
