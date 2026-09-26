@@ -10611,6 +10611,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs sets staleReason 'missing-observedAt' when the board has no timestamp, and the CLI tests cover this reason only for a JuPlan source",
           "title": "확인 시각 없는 Agent Relay 상태 점검"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-RELAY-MISSING-OBSERVED-STEP",
+          "scope": "Add step run_relay_missing_observed_at to scripts/e2e.sh right after run_reserved_lane_id, with label '보드 관찰 시각 없음 안내' and next command board. Add it to the step loop, the labels map and the commands map. Model it on run_reserved_lane_id: it writes a temp Agent Relay board with no observedAt, runner {day:'IDLE',night:'RUNNING'} and one lane {id:'lane',state:'RUNNING'}, plus a registry entry 'lane' with sourceKind agent-relay-board. It passes only if the board row is RUNNING, stale true, reason missing-observedAt, and stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: lane(missing-observedAt: 관찰 시각이 없거나 틀렸어요) — README 처음 쓰는 법의 reason 표를 보세요'. In docs/getting-started.md section '`bash scripts/e2e.sh` 결과 읽는 법', sync the ```json example steps, the step-name list in the next bullet, and add one step bullet in run order.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; tests/status-board-cli.test.mjs:217 already pins this Agent Relay missing-observedAt line, but scripts/e2e.sh:436 has no matching step"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-RELAY-RUNNER-LINES-TEST",
+          "scope": "Add two offline tests to tests/status-board-cli.test.mjs, modelled on 'names an Agent Relay board with no observedAt with the plain-Korean missing-observedAt reason'. The first uses a board with a fresh observedAt, no runner, lanes [], and registry entry 'agent-relay' (sourceKind agent-relay-board). It asserts exit 0, a row [agent-relay, UNKNOWN, false, missing-runner], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: agent-relay(missing-runner: 러너 정보가 없어요) — README 처음 쓰는 법의 reason 표를 보세요\\n'. The second uses runner {day:'IDLE'} and asserts reason missing-runner-mode with '러너 day/night 값이 없어요'. Test code only, no product change.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target, with no new product behavior; scripts/e2e.sh:291-309 (run_missing_runner, run_missing_runner_mode) pin these lines, but tests/status-board-cli.test.mjs has no CLI regression test for missing-runner or missing-runner-mode"
         }
       ],
       "qaRuntime": [
