@@ -8,6 +8,7 @@ import { must, hasBridge, dragLocalFile, onUpdateStatus } from './bridge.js';
 import { DogfoodPanel } from './dogfooding.js';
 import { QuickDogfood } from './quickdf.js';
 import { ControlRoom } from './controlRoom.js';
+import { AutoWorklog } from './worklog.js';
 import { barPercent, envReasonText, normalizeEnvs, projectFromSearch, type EnvRow } from '../shared/projectLabels.js';
 import { sharedSeatsView } from '../shared/projectScope.js';
 import {
@@ -1841,6 +1842,9 @@ function AppInner(): React.ReactElement {
           <div className="record-head">
             <h2>작업 기록 — AI에게 준 지시와 받은 결과를 날짜별로 모아 둬요</h2>
           </div>
+          <AutoWorklog />
+          <details className="record-manual">
+            <summary>직접 적는 기록 (예전 방식)</summary>
           <RecordLog
             groups={recordGroups}
             copiedKey={recordCopied}
@@ -2307,6 +2311,7 @@ function AppInner(): React.ReactElement {
               )}
             </div>
           </main>
+          </details>
           </details>
             </>
           )}
