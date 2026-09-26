@@ -503,3 +503,17 @@ test("base broken: the parked lane queues its -BASEFIX before the task that is p
   const state = { baseBroken: { p: { base: "x" } }, tasks: [] };
   runner.queueNext(state); assert.deepEqual(state.tasks.map((t) => t.taskId), ["A-BASEFIX"]);
 });
+
+test("allLanes: every lane builds at the same time even with maxBuilders 1", async () => {
+  const root = await mkdtemp(join(process.env.TMPDIR || "/tmp", "ar-all-")); let release; const gate = new Promise((r) => { release = r; }); const building = new Set();
+  const packet = (id, kind) => kind === "workspace-write" ? `RESULT_PACKET: {"schema":"agent-relay.result.v1","taskId":"${id}","status":"IMPLEMENTED","changedFiles":[],"tests":[],"commitSha":"abc","summary":"s"}` : `QA_PACKET: {"schema":"agent-relay.qa.v1","taskId":"${id}","verdict":"ACCEPT","tests":[],"findings":[],"summary":"ok"}`;
+  const adapter = { async availability() { return { ok: true }; }, async run({ sandbox, prompt }) { const id = /A-1/.test(prompt) ? "A-1" : /B-1/.test(prompt) ? "B-1" : "C-1"; if (sandbox === "workspace-write") { building.add(id); await gate; } return { pid: 1, code: 0, startedAt: "t", text: packet(id, sandbox) }; } };
+  const lane = (id) => ({ id: id.toLowerCase(), runtime: ["codex"], tasks: [{ taskId: `${id}-1`, scope: "x", files: [], tests: [] }] });
+  const runner = new PortfolioRunner({ testGate: passGate, runtimeAdapters: { codex: adapter },
+    manifest: { maxBuilders: 1, allLanes: true, minFreeMemoryMb: 0, builderHeadroomMb: 1, projects: [lane("A"), lane("B"), lane("C")] },
+    statePath: join(root, "state.json"), worktreeRoot: join(root, "w"), worktrees: { async create() { return { path: root, base: "abc", async cleanup() {} }; }, async promote(_p, id) { return `refs/agent-relay/promotions/${id}`; } } });
+  const controller = new AbortController(); const loop = runner.runLoop({ intervalMs: 10, signal: controller.signal });
+  for (let i = 0; i < 300 && building.size < 3; i++) await new Promise((r) => setTimeout(r, 10));
+  assert.equal(building.size, 3, `only ${[...building]} were building at once`);
+  release(); controller.abort(); await loop;
+});

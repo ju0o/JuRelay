@@ -602,7 +602,12 @@ export class PortfolioRunner {
       if (!signal?.aborted && Date.now() < Number(dispatchUntil) && !this.draining()) {
         // RAM guard (2026-09-25 15:53: swap full → OOM killer → ASUS went down): start nothing new while MemAvailable is low
         const lowMemory = memAvailableMb() < (Number(this.manifest.minFreeMemoryMb) || 2500);
-        const slots = lowMemory ? 0 : Math.max(1, Number(this.manifest.maxBuilders) || 2) - inflight.size;
+        // allLanes (Founder 2026-09-26 "모든 레일이 동시에"): every lane with work runs at once; lanes start one per tick and only
+        // while RAM keeps builderHeadroomMb above the guard, so a busy machine runs fewer rails instead of going down.
+        // ponytail: no preemption — under pressure rails shrink as tasks finish; add abort-newest if OOM ever recurs.
+        const slots = lowMemory ? 0 : this.manifest.allLanes
+          ? (memAvailableMb() >= (Number(this.manifest.minFreeMemoryMb) || 2500) + (Number(this.manifest.builderHeadroomMb) || 1500) ? 1 : 0)
+          : Math.max(1, Number(this.manifest.maxBuilders) || 2) - inflight.size;
         // One task per lane at a time: tasks of one project edit the same files, so parallel ones conflict at integration.
         const busyLanes = new Set(state.tasks.filter((item) => inflight.has(item.taskId)).map((item) => item.projectId));
         const paused = (id) => existsSync(join(resolve(this.statePath, ".."), "lane-pause", id));  // R-09: pause also holds tasks already QUEUED
