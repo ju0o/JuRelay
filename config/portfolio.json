@@ -2297,6 +2297,22 @@
           ],
           "ssotEvidence": "Supervisor review of the Linux Tester captures ~/jc-tester/agent-relay-vfinal0926 (2026-09-26 18:25, all 6 Lovable steps merged): founder-ux — no English/raw ids on Founder surfaces, numbers on one screen must agree.",
           "title": "관제실: 'AI 자리' 숫자와 '지금 일하는 AI' 숫자 맞추기"
+        },
+        {
+          "taskId": "AGENTRELAY-CAPTURE-PAINTED-FRAME",
+          "scope": "In `--capture=<png>` mode (src/backend/main.ts finishCapture) the hidden window never repaints, so capturePage() returned the first '설정을 불러오는 중…' frame while document.body.innerText already had the full 관제실 (MainPC Tester 2026-09-26 18:28). Create the capture BrowserWindow with webPreferences.backgroundThrottling=false and paintWhenInitiallyHidden=true, call webContents.invalidate() and wait for the next 'paint'/two animation frames before capturePage(), and fail the capture (report.error) when the PNG still shows the loading text (compare innerText after capture contains '불러오는 중' only). Test the pure decision helper in src/shared/capture.ts (loading text → not ok).",
+          "files": [
+            "src/backend/main.ts",
+            "src/shared/capture.ts",
+            "test/capture-painted.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "MainPC Tester vfinal0926 (F:\\MainPC_Archive\\AI_Reports\\Apps\\AgentRelay-0.3.102\\tester-vfinal0926): PNG shows loading screen, .json text shows the loaded screen; Founder memory: captures must be eyeballed",
+          "title": "자동 시험 캡처가 실제 화면을 찍도록"
         }
       ],
       "qaRuntime": [
