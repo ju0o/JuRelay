@@ -12605,6 +12605,20 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25/26: actl AI 창 카드 ... '같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만)' and 2026-09-26 'color rules; add focused fixture tests'; founder-ux Skill Live status card: actl window card says 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨",
           "title": "actl 카드 상태별 색깔 점검하기"
+        },
+        {
+          "taskId": "JCAPP-HOME-STAT-WORKING-FROM-RAIL",
+          "scope": "In operator/public/app.js homeStats, count '지금 일하는 AI' as the lanes whose railRowModel(lane, now).state starts with '일하는 중' instead of its own RUNNING/QA/REQUEST_CHANGES list, so a running lane waiting on a gate or at stage 5 (결정 기다림) is no longer counted and a stage-4 TEST task is; add hubGateCount and railRowModel to test/lovable-home-top.test.mjs's extraction list (its pin stays working: 3), and in test/live-status-projection.test.mjs extract homeStats/homeDoneItems and assert homeStats(BOARD, NOW).working equals the number of fixture rails reading '일하는 중…' (7).",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-home-top.test.mjs",
+            "test/live-status-projection.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-home-top.test.mjs test/live-status-projection.test.mjs test/lovable-home-order.test.mjs test/live-status-sentences.test.mjs test/live-status-colors.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
         }
       ],
       "skills": {
