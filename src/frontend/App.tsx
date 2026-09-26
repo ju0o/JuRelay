@@ -23,7 +23,7 @@ import {
 } from '../shared/connectionState.js';
 import { shellEnvLine, shellFailureLine, shellPageCopy, shellToggleLabel, type ShellNavId } from './components.js';
 import {
-  decodeLaneNames, encodeLaneNames, isLaneOn, laneErrorKind, laneErrorLines, laneErrorRaw, laneResultRaw, laneRowLabel, laneRowName, newLaneIdFor, newLaneProblem,
+  decodeLaneNames, encodeLaneNames, isLaneOn, LANE_NAMES_STORAGE_KEY, laneErrorKind, laneErrorLines, laneErrorRaw, laneResultRaw, laneRowLabel, laneRowName, launchPickSkipClear, launchPickSkipRead, newLaneIdFor, newLaneProblem,
 } from '../shared/projectManager.js';
 import { approvalFailureLines, approvalGroupHeading, approvalUsedCount, dedupeApprovalRules, groupRulesByCategory, partitionSupersededApprovalRules, ApprovalAddForm, ApprovalRuleCard, SupersededApprovals, UnusedApprovalRules } from './approvals.js';
 import type { ApprovalRuleJson } from '../shared/types.js';
@@ -2629,7 +2629,45 @@ function pmLanes(board: unknown): PmLane[] {
   return out;
 }
 
-const PM_NAMES_KEY = 'relay.projectNames';
+const PM_NAMES_KEY = LANE_NAMES_STORAGE_KEY;
+
+/** 설정 → 프로젝트 관리: 앱을 열 때 다시 물을지. 지금은 묻지 않을 때만 [다시 묻기]가 나온다. */
+function LaunchPickAskAgain(): React.ReactElement {
+  const [skipped, setSkipped] = useState(() => {
+    try { return launchPickSkipRead((key) => localStorage.getItem(key)); } catch { return false; }
+  });
+  const [note, setNote] = useState('');
+  const [fail, setFail] = useState<string[] | null>(null);
+
+  function askAgain(): void {
+    let cleared = false;
+    try { cleared = launchPickSkipClear((key) => localStorage.removeItem(key)); } catch { cleared = false; }
+    let still = true;
+    try { still = launchPickSkipRead((key) => localStorage.getItem(key)); } catch { still = true; }
+    if (!cleared || still) {
+      setNote('');
+      setFail(['다시 묻기로 바꾸지 못했어요.', '이 기기가 그 선택을 지우지 못하는 것 같아요.', '잠시 뒤 다시 시도해 주세요.']);
+      return;
+    }
+    setFail(null);
+    setSkipped(false);
+    setNote('다음 실행부터 다시 물어요 ✓');
+  }
+
+  return (
+    <div className="pm-ask">
+      <p>{skipped ? '지금은 앱을 열 때 이번에 돌릴 프로젝트를 묻지 않아요.' : '앱을 열 때 이번에 돌릴 프로젝트를 물어요.'}</p>
+      {skipped && <button className="btn" type="button" onClick={askAgain}>다시 묻기</button>}
+      {note && <p className="pm-note ok" role="status">{note}</p>}
+      {fail && (
+        <div className="pm-note err" role="status">
+          {fail.map((line, index) => <p key={index}>{line}</p>)}
+          <button className="btn" type="button" onClick={askAgain}>다시 시도</button>
+        </div>
+      )}
+    </div>
+  );
+}
 function pmSavedNames(): Record<string, string> {
   try { return decodeLaneNames(localStorage.getItem(PM_NAMES_KEY)); } catch { return {}; }
 }
@@ -2719,6 +2757,7 @@ function ProjectManager(): React.ReactElement {
     <div className="settings-section project-manager">
       <span className="flabel">프로젝트 관리</span>
       <p className="pm-lead">프로젝트마다 자동 진행을 켜고 쉬게 할 수 있어요. 새 프로젝트도 여기서 추가해요.</p>
+      <LaunchPickAskAgain />
       {loadError && (
         <div className="pm-note err" role="status">
           {laneErrorLines('프로젝트 목록을 불러오지', loadError.message).map((line, i) => <p key={i}>{line}</p>)}

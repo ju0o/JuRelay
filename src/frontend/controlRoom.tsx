@@ -6,7 +6,19 @@ import type { ControlRoomModelUsage } from '../shared/types.js';
 import { controlRoomTaskId, controlRoomTaskTitle, founderTaskTitle, controlRoomHasDoneData, controlRoomTodayCount, controlRoomTodayDone, controlRoomVerifiedDoneTotal, controlRoomWorkingItems, controlRoomRoutingLine, laneAttention } from '../shared/types.js';
 import { PROJECT_LABELS, aiDisplayName, projectFromSearch, projectWindowKey, barPercent, envReasonText, envTone, normalizeEnvs, ramText, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
 import type { EnvRow, EnvTone, NormalizedHold } from '../shared/projectLabels.js';
-import { laneErrorKind, laneErrorRaw } from '../shared/projectManager.js';
+import {
+  decodeLaneNames,
+  LANE_NAMES_STORAGE_KEY,
+  laneErrorKind,
+  laneErrorLines,
+  laneErrorRaw,
+  launchPickChanges,
+  launchPickResultLine,
+  launchPickRows,
+  launchPickSkipRead,
+  launchPickSkipWrite,
+  launchPickVisible,
+} from '../shared/projectManager.js';
 import { countWorkingTasks, scopeBoard, sharedSeatsView } from '../shared/projectScope.js';
 import type { SharedSeatsView } from '../shared/projectScope.js';
 import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from '../shared/tokens.js';
@@ -1903,6 +1915,111 @@ function FounderHoldSection({ lanes, onRefresh }: {
   );
 }
 
+/** 이번 앱 실행에서 고르기 카드를 이미 닫았으면 true. 관제실을 나갔다 들어와도 유지되고, 앱을 다시 열면 초기화된다. */
+let launchPickClosedThisLaunch = false;
+
+interface LaunchPickError {
+  lines: [string, string, string];
+  raw?: string;
+}
+
+/**
+ * 앱을 연 뒤 관제실에 한 번 나오는 카드.
+ * 체크는 지금 켜진 프로젝트이고, 이대로 시작은 바뀐 줄만 켜거나 쉬게 한다.
+ */
+function LaunchProjectPick({ lanes, onLater, onStarted }: {
+  lanes: readonly unknown[];
+  onLater: (skipNext: boolean) => void;
+  onStarted: (line: string, skipNext: boolean) => void;
+}): React.ReactElement {
+  const [rows] = useState(() => {
+    let saved: Record<string, string> = {};
+    try {
+      saved = decodeLaneNames(localStorage.getItem(LANE_NAMES_STORAGE_KEY));
+    } catch {
+      saved = {};
+    }
+    return launchPickRows(lanes, saved);
+  });
+  const beforeRef = useRef(rows.map((row) => ({ id: row.id, on: row.on })));
+  const [checked, setChecked] = useState<Record<string, boolean>>(() => Object.fromEntries(rows.map((row) => [row.id, row.on])));
+  const [skipNext, setSkipNext] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<LaunchPickError | null>(null);
+
+  async function start(): Promise<void> {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    const after = beforeRef.current.map((row) => ({ id: row.id, on: checked[row.id] === true }));
+    const change = launchPickChanges(beforeRef.current, after);
+    try {
+      for (const id of change.resume) {
+        await must({ op: 'controlRoom:resume', project: id });
+        beforeRef.current = beforeRef.current.map((row) => (row.id === id ? { ...row, on: true } : row));
+      }
+      for (const id of change.pause) {
+        await must({ op: 'controlRoom:pause', project: id });
+        beforeRef.current = beforeRef.current.map((row) => (row.id === id ? { ...row, on: false } : row));
+      }
+      onStarted(launchPickResultLine(change), skipNext);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setError({
+        lines: laneErrorLines('시작하지', message),
+        raw: laneErrorRaw(message, (err as { detail?: string }).detail),
+      });
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="launch-pick" aria-label="이번에 돌릴 프로젝트">
+      <h2>이번에 돌릴 프로젝트</h2>
+      <p className="launch-pick-lead">체크한 프로젝트만 바로 시작하고, 뺀 프로젝트는 이번엔 쉬어요.</p>
+      <p className="launch-pick-wait">안 골라도 지금 켜 둔 대로 계속 돌아요.</p>
+      {rows.map((row) => (
+        <label key={row.id} className="launch-pick-row">
+          <input
+            type="checkbox"
+            checked={checked[row.id] === true}
+            disabled={busy}
+            onChange={(event) => setChecked((prev) => ({ ...prev, [row.id]: event.target.checked }))}
+          />
+          <span>{row.name}</span>
+        </label>
+      ))}
+      <div className="launch-pick-actions">
+        <button className="btn primary" type="button" disabled={busy} onClick={() => void start()}>
+          {busy ? '시작하는 중…' : '이대로 시작'}
+        </button>
+        <button className="btn" type="button" disabled={busy} onClick={() => onLater(skipNext)}>나중에</button>
+      </div>
+      <label className="launch-pick-skip">
+        <input
+          type="checkbox"
+          checked={skipNext}
+          disabled={busy}
+          onChange={(event) => setSkipNext(event.target.checked)}
+        />
+        <span>다음부터 묻지 않기</span>
+      </label>
+      {error && (
+        <div className="launch-pick-err" role="status">
+          {error.lines.map((line, index) => <p key={index}>{line}</p>)}
+          {error.raw && (
+            <details className="launch-pick-raw">
+              <summary>원문 보기</summary>
+              <pre className="mono">{error.raw}</pre>
+            </details>
+          )}
+          <button className="btn" type="button" onClick={() => void start()}>다시 시도</button>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactElement {
   const [board, setBoard] = useState<ControlRoomBoard | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -1917,6 +2034,15 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
   });
   const [jumpNote, setJumpNote] = useState('');
   const [jumpTick, setJumpTick] = useState(0);
+  const [pickClosed, setPickClosed] = useState(() => launchPickClosedThisLaunch);
+  const [pickSkipped, setPickSkipped] = useState(() => {
+    try {
+      return launchPickSkipRead((key) => localStorage.getItem(key));
+    } catch {
+      return false;
+    }
+  });
+  const [pickNote, setPickNote] = useState('');
   const pendingJump = useRef(false);
 
   const load = useCallback(async (): Promise<void> => {
@@ -1961,6 +2087,25 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
   const activeKey = activeLane ? laneSelectKey(activeLane, sortedLanes.indexOf(activeLane)) : null;
   const seats = sharedSeatsView(board, only);
 
+  const showPick = launchPickVisible({
+    skipped: pickSkipped,
+    closedThisLaunch: pickClosed,
+    laneCount: launchPickRows(sortedLanes).length,
+  });
+
+  const finishPick = (skipNext: boolean): void => {
+    if (skipNext) {
+      try {
+        launchPickSkipWrite((key, value) => localStorage.setItem(key, value));
+      } catch {
+        /* 기억하지 못해도 이번 실행에서는 닫는다. */
+      }
+      setPickSkipped(true);
+    }
+    launchPickClosedThisLaunch = true;
+    setPickClosed(true);
+  };
+
   const dismissGuide = (): void => {
     try {
       crTopRememberGuide((key, value) => localStorage.setItem(key, value));
@@ -1998,6 +2143,18 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
   return (
     <main className="control-room">
       <div className="control-room-head"><div>{only ? <h1>{projectDisplayName(only)}</h1> : <h1>관제실</h1>}{decisionCount > 0 && <p className="control-decision-count">결정 대기 {decisionCount}건</p>}<p className="muted">5초마다 자동으로 새로 고쳐요.</p></div><button className="btn" onClick={only ? () => window.close() : onClose}>닫기</button></div>
+      {showPick && (
+        <LaunchProjectPick
+          lanes={sortedLanes}
+          onLater={finishPick}
+          onStarted={(line, skipNext) => {
+            setPickNote(line);
+            finishPick(skipNext);
+            void load();
+          }}
+        />
+      )}
+      {pickNote && <p className="launch-pick-done" role="status">{pickNote}</p>}
       {guideOpen && (
         <div className="cr-top">
           <CrTopGuide onDismiss={dismissGuide} />

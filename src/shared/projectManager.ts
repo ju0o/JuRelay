@@ -133,3 +133,130 @@ export function laneErrorRaw(message?: string, detail?: string): string | undefi
   const raw = [message?.trim(), detail?.trim()].filter((part): part is string => Boolean(part)).join('\n');
   return raw || undefined;
 }
+
+/** 설정에서 기억한 한국어 이름. 화면은 이 키만 쓴다. */
+export const LANE_NAMES_STORAGE_KEY = 'relay.projectNames';
+
+/** '다음부터 묻지 않기'가 이 기기에 저장되는 키. '1'이면 다음 실행부터 카드를 숨긴다. */
+export const LAUNCH_PICK_SKIP_KEY = 'agent-relay.launch-pick.skip';
+
+export interface LaunchPickRow {
+  id: string;
+  name: string;
+  /** 체크됨 = 지금 켜져 있음(쉬는 중이 아님). */
+  on: boolean;
+}
+
+export interface LaunchPickChange {
+  /** 꺼져 있다가 체크된 프로젝트. 이 순서대로 켠다. */
+  resume: string[];
+  /** 켜져 있다가 체크가 빠진 프로젝트. 이 순서대로 쉬게 한다. */
+  pause: string[];
+}
+
+/**
+ * 보드에 있는 프로젝트를 카드 한 줄로. 이름은 한국어만 쓰고, 체크는 쉬는 중이 아니면 켠다.
+ * 같은 id가 두 번 오면 첫 줄만 남긴다.
+ */
+export function launchPickRows(
+  lanes: readonly unknown[],
+  savedNames: Record<string, string> = {},
+): LaunchPickRow[] {
+  const out: LaunchPickRow[] = [];
+  const seen = new Set<string>();
+  for (const lane of lanes) {
+    if (!lane || typeof lane !== 'object') continue;
+    const record = lane as Record<string, unknown>;
+    const raw = record.project ?? record.id ?? record.lane;
+    const id = typeof raw === 'string' ? raw.trim() : '';
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    const given = [record.name, record.displayName, record.label, savedNames[id]]
+      .find((value) => typeof value === 'string' && value.trim());
+    out.push({ id, name: laneRowName(id, given), on: isLaneOn(lane) });
+  }
+  return out;
+}
+
+function pickOn(row: { id?: unknown; on?: unknown } | null | undefined): { id: string; on: boolean } | null {
+  if (!row || typeof row.id !== 'string') return null;
+  const id = row.id.trim();
+  if (!id || typeof row.on !== 'boolean') return null;
+  return { id, on: row.on };
+}
+
+/**
+ * 이대로 시작이 실제로 켤 id와 쉬게 할 id.
+ * before는 카드를 열었을 때의 상태, after는 대표님이 남긴 체크.
+ * 그대로인 줄은 빼서, 바뀐 줄만 설정 → 프로젝트 관리와 같은 켜기/쉬기 호출을 타게 한다.
+ * 순서는 before를 따른다. after에만 있는 id는 무시한다.
+ */
+export function launchPickChanges(
+  before: readonly { id: string; on: boolean }[],
+  after: readonly { id: string; on: boolean }[],
+): LaunchPickChange {
+  const want = new Map<string, boolean>();
+  for (const row of after) {
+    const picked = pickOn(row);
+    if (!picked || want.has(picked.id)) continue;
+    want.set(picked.id, picked.on);
+  }
+  const resume: string[] = [];
+  const pause: string[] = [];
+  const seen = new Set<string>();
+  for (const row of before) {
+    const picked = pickOn(row);
+    if (!picked || seen.has(picked.id)) continue;
+    seen.add(picked.id);
+    const next = want.get(picked.id);
+    if (next === undefined || next === picked.on) continue;
+    if (next) resume.push(picked.id);
+    else pause.push(picked.id);
+  }
+  return { resume, pause };
+}
+
+/** 이대로 시작이 끝난 뒤, 누른 자리에 보여줄 한 줄. 켠 수 · 쉬게 한 수. */
+export function launchPickResultLine(change: LaunchPickChange): string {
+  return `${change.resume.length}개 켜고 ${change.pause.length}개 쉬게 했어요 ✓`;
+}
+
+/**
+ * 이번 실행에 카드를 보여줄지.
+ * 다음부터 묻지 않기를 기억했거나, 이번 실행에서 이미 닫았거나, 고를 프로젝트가 없으면 숨긴다.
+ */
+export function launchPickVisible(input: {
+  skipped: boolean;
+  closedThisLaunch: boolean;
+  laneCount: number;
+}): boolean {
+  return !input.skipped && !input.closedThisLaunch && input.laneCount > 0;
+}
+
+/** 다음부터 묻지 않기가 저장돼 있으면 true. 저장소를 못 읽으면 카드를 그대로 보여 준다. */
+export function launchPickSkipRead(read: ((key: string) => string | null) | null | undefined): boolean {
+  try {
+    return read?.(LAUNCH_PICK_SKIP_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+/** 다음부터 묻지 않기. 저장이 거절되면 이번 실행만 닫힌다. */
+export function launchPickSkipWrite(write: ((key: string, value: string) => void) | null | undefined): void {
+  try {
+    write?.(LAUNCH_PICK_SKIP_KEY, '1');
+  } catch {
+    /* 기억하지 못해도 이번 실행에서는 닫는다. */
+  }
+}
+
+/** 설정에서 다시 묻기. 저장소를 지우지 못하면 false. */
+export function launchPickSkipClear(remove: ((key: string) => void) | null | undefined): boolean {
+  try {
+    remove?.(LAUNCH_PICK_SKIP_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}

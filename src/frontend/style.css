@@ -1877,6 +1877,49 @@ h1 { font-size: 22px; }
 .pm-add input { min-height: 44px; font-size: 16px; }
 .pm-add .btn { min-height: 44px; font-size: 16px; align-self: flex-start; }
 @media (max-width: 520px) { .pm-row-main { flex-wrap: wrap; } }
+.pm-ask { margin: 0 0 12px; }
+.pm-ask .btn { margin-top: 8px; }
+
+/* ── 관제실: 이번에 돌릴 프로젝트 (앱을 열 때 한 번) ── */
+.launch-pick {
+  --launch-ok: #7dd3c0;
+  --launch-warn: #e8c170;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 0 16px;
+  padding: 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+.app[data-theme="light"] .launch-pick { --launch-ok: #0d6b5c; --launch-warn: #8a4b00; }
+.launch-pick h2 { margin: 0 0 4px; font-size: 18px; font-weight: 700; }
+.launch-pick-lead { margin: 0 0 4px; font-size: 16px; color: var(--fg); }
+.launch-pick-wait { margin: 0 0 8px; font-size: 16px; color: var(--muted); }
+.launch-pick-row,
+.launch-pick-skip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.launch-pick-row input,
+.launch-pick-skip input { width: 22px; height: 22px; flex: 0 0 auto; accent-color: var(--launch-ok); }
+.launch-pick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.launch-pick .btn { min-height: 44px; min-width: 44px; padding: 0 16px; font-size: 16px; }
+.launch-pick-done { margin: 0 0 16px; font-size: 16px; font-weight: 700; color: var(--launch-ok, #7dd3c0); }
+.app[data-theme="light"] .launch-pick-done { color: #0d6b5c; }
+.launch-pick-err { margin-top: 8px; color: var(--launch-warn); font-size: 16px; }
+.launch-pick-err p { margin: 2px 0; font-size: 16px; color: inherit; }
+.launch-pick-raw summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: 16px; color: var(--fg); }
+.launch-pick-raw pre { white-space: pre-wrap; word-break: break-all; max-width: 100%; font-size: 12px; }
+@media (max-width: 520px) {
+  .launch-pick-actions .btn { flex: 1 1 140px; }
+}
 
 /* ── 설정 → 허브 새 버전 반영. 실패는 amber(살펴볼 일). 위험·데이터 손실만 red. ── */
 .hub-promote {
