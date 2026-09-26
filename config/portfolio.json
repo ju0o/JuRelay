@@ -15549,6 +15549,42 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:682 \"### 11.5 재사용성 — 동일한 Skill을 서로 다른 AI Agent 프로젝트에 적용해도 다음 규칙이 유지돼야 한다.\""
+        },
+        {
+          "taskId": "JUTELL-CONFIRMED-SCOPE-LIMIT-PARITY",
+          "scope": "Add one sub-bullet directly under the 확인 상태 item in SKILL.md 실행 절차 (the step that lists 근거 출처, 확인 상태, 사용자 행동, and 보고서 상태) with the two BEGINNER_REPORT_SPEC §8.1 sentences, without changing the existing 확인됨, 일부 확인, 확인하지 못함 label list. Add an offline node:test that reads those two sentences from ### 8.1 and asserts both appear in SKILL.md.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/confirmed-scope-limit-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/confirmed-scope-limit-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:287 확인됨은 확인한 범위에만 적용한다."
+        },
+        {
+          "taskId": "JUTELL-UNKNOWN-TERM-FALLBACK-PARITY",
+          "scope": "Add the GLOSSARY_POLICY §6 fallback sentence 현재 문맥에서 정확한 의미를 확인하지 못했습니다 to the opening paragraph of glossary-ko.md, without adding a new ### heading or renaming terms. Add an offline node:test that reads that sentence from ## 6. 기본 사전에 없는 용어 and asserts glossary-ko.md contains it.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/unknown-term-fallback-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/unknown-term-fallback-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:122 현재 문맥에서 정확한 의미를 확인하지 못했습니다."
+        },
+        {
+          "taskId": "JUTELL-CODE-BLOCK-FIELDS-PARITY",
+          "scope": "Add one bullet under explained-diff-format.md ## 6 naming the five GLOSSARY_POLICY §7 code-block items (역할, 실행 시점, 입력값, 처리 결과, 영향 범위) and the rule that a requested code explanation uses only the 1 to 3 items the reader needs and does not force every item onto every block. Add an offline node:test that reads those five bullets and the sentence 모든 항목을 모든 블록에 강제로 적용하지 않는다 from ## 7 and asserts they appear in explained-diff-format.md.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/explained-diff-format.md",
+            "tests/code-block-fields-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/code-block-fields-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:138 모든 항목을 모든 블록에 강제로 적용하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
