@@ -14396,6 +14396,38 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-26): one shared live-status projection for Home and Progress including the Korean status sentence and next step; founder-ux rule 9 'When nobody answers, say what happens and when'",
           "title": "결정 마감까지 남은 시간 정확히 보여주기"
+        },
+        {
+          "taskId": "JCAPP-TESTER-RUN-BUTTON",
+          "scope": "In the per-project 점검 panel (V2 PROJECT-QA-SKILLS view in operator/public/app.js) add [다시 시험]: POST /api/tester/run {project} (id validated ^[a-z][a-z0-9-]{1,40}$) makes operator/server.mjs spawn `night test <id>` detached (execFile argv, no shell, one run per project at a time → 409 '이미 시험 중이에요'); the panel shows '시험 중이에요 · 몇 분 걸려요' and then the newest result from tester/last-<project>.json: 통과 ✓ (teal) or 확인 필요 (amber) with the report's one-line summary, raw md under 원문 보기. lib/testerRuns.mjs reads last-<project>.json. Tests: route validation, one-at-a-time guard (fake spawn), panel states.",
+          "files": [
+            "operator/server.mjs",
+            "operator/public/app.js",
+            "lib/testerRuns.mjs",
+            "test/tester-run-button.test.mjs"
+          ],
+          "tests": [
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'Tester 그리고 QA 등은 하네스 모두 작성 됨? 그 하네스 가지고 → JuControler 에 진행되어야 하고' + '완성해서 진짜 내가 오케이 승인 하면 그 때부터 프로젝트 정리'. Backend ready: `night test <project> [--mainpc]` writes TESTER_<project>_check_<time>.md (+ tester/last-<project>.json {result PASS|CHECK, md, at}) into the tester dir lib/testerRuns.mjs already reads; `night approve <project> [source]` writes portfolio-execution/founder-approved/<project>.json and pauses the lane.",
+          "title": "프로젝트 점검에서 [다시 시험] 누르기"
+        },
+        {
+          "taskId": "JCAPP-FOUNDER-APPROVE-BUTTON",
+          "scope": "In the same 점검 panel show [오케이 승인] only when the newest Tester result for that project is 통과: tapping it shows an inline two-button confirm ('이 프로젝트를 완성으로 승인할까요? 승인하면 자동 작업을 멈추고 정리를 시작해요' — [승인하기] first, [취소]); POST /api/approve {project, confirm:'승인'} runs `night approve <id> JuControler` (execFile, id validated) and shows '승인했어요 ✓ · 정리를 시작해요'. GET /api/approved lists portfolio-execution/founder-approved/*.json; approved projects show a '승인됨 · 날짜' badge on 홈 rows and 진행 rail rows. Tests: button hidden unless 통과, confirm required, badge from a fixture dir.",
+          "files": [
+            "operator/server.mjs",
+            "operator/public/app.js",
+            "test/founder-approve-button.test.mjs"
+          ],
+          "tests": [
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'Tester 그리고 QA 등은 하네스 모두 작성 됨? 그 하네스 가지고 → JuControler 에 진행되어야 하고' + '완성해서 진짜 내가 오케이 승인 하면 그 때부터 프로젝트 정리'. Backend ready: `night test <project> [--mainpc]` writes TESTER_<project>_check_<time>.md (+ tester/last-<project>.json {result PASS|CHECK, md, at}) into the tester dir lib/testerRuns.mjs already reads; `night approve <project> [source]` writes portfolio-execution/founder-approved/<project>.json and pauses the lane.",
+          "dependsOn": [
+            "JCAPP-TESTER-RUN-BUTTON"
+          ],
+          "title": "프로젝트 점검에서 [오케이 승인] 누르기"
         }
       ],
       "skills": {
