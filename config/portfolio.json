@@ -8350,7 +8350,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 빈 화면 이유+다음 행동 — 대상 juceipt 명령 출력(scan, daily, receipt); main.ts dailyCommand defaults receiptsDir to .juceipt/scans, and today a first run before scan prints '할 일: 영수증 폴더 경로를 확인한 뒤 다시 실행하세요' with no pointer to juceipt scan"
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 빈 화면 이유+다음 행동 — 대상 juceipt 명령 출력(scan, daily, receipt); main.ts dailyCommand defaults receiptsDir to .juceipt/scans, and today a first run before scan prints '할 일: 영수증 폴더 경로를 확인한 뒤 다시 실행하세요' with no pointer to juceipt scan",
+          "title": "영수증이 없을 때 쉬운 안내 보여주기"
         },
         {
           "taskId": "JUCEIPT-TASK-TITLE-UPDATE-REMOVE-GROUPS",
@@ -8363,7 +8364,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: '영어 작업 제목을 쉬운 한국어 요약으로' — base taskTitle (src/daily/index.ts:20-31) has no group for update/change/rename/remove/delete, so requests like 'Update the changelog' or 'Remove unused files' show only '작업 내용 확인' in scan SUMMARY.md, daily, and the receipt view title"
+          "ssotEvidence": "Founder direction 2026-09-25: '영어 작업 제목을 쉬운 한국어 요약으로' — base taskTitle (src/daily/index.ts:20-31) has no group for update/change/rename/remove/delete, so requests like 'Update the changelog' or 'Remove unused files' show only '작업 내용 확인' in scan SUMMARY.md, daily, and the receipt view title",
+          "title": "삭제·변경 작업에 맞는 제목 붙이기"
         }
       ],
       "skills": {
@@ -10488,7 +10490,8 @@
             "node --test tests/*.test.mjs",
             "bash scripts/e2e.sh"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/juceipt.mjs receiptReason returns 'malformed' for a non-object receipt, and no CLI test covers the JuCeipt case"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/juceipt.mjs receiptReason returns 'malformed' for a non-object receipt, and no CLI test covers the JuCeipt case",
+          "title": "망가진 영수증도 알려주는지 확인"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-RELAY-MISSING-OBSERVED-LINE-TEST",
@@ -10501,7 +10504,8 @@
             "node --test tests/*.test.mjs",
             "bash scripts/e2e.sh"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs sets staleReason 'missing-observedAt' when the board has no timestamp, and the CLI tests cover this reason only for a JuPlan source"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs sets staleReason 'missing-observedAt' when the board has no timestamp, and the CLI tests cover this reason only for a JuPlan source",
+          "title": "확인 시각 없는 Agent Relay 상태 점검"
         }
       ],
       "qaRuntime": [
@@ -13538,7 +13542,8 @@
           "tests": [
             "node --test test/home-cards-same-now.test.mjs test/home-all-ok.test.mjs test/lovable-home-order.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
+          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.",
+          "title": "홈 화면 숫자와 카드 시간 맞추기"
         },
         {
           "taskId": "JCAPP-QUEUED-NEXT-TRUE",
@@ -13552,7 +13557,8 @@
           "tests": [
             "node --test test/lovable-live-cards.test.mjs test/live-status-sentences.test.mjs test/live-status-card-html.test.mjs test/live-status-projection.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
+          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.",
+          "title": "차례 기다리는 일의 다음 안내 바로잡기"
         }
       ],
       "skills": {
@@ -15705,7 +15711,8 @@
             "node --test tests/evidence-source-labels-spec-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:195 '근거 출처는 다음 중 하나 이상을 사용한다.' followed by ### 7.1 파일 … ### 7.6 사용자 제공 정보"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:195 '근거 출처는 다음 중 하나 이상을 사용한다.' followed by ### 7.1 파일 … ### 7.6 사용자 제공 정보",
+          "title": "근거 출처 이름이 문서마다 같은지 확인"
         },
         {
           "taskId": "JUTELL-CONFIRM-STATE-LABELS-SPEC-PARITY",
@@ -15717,7 +15724,8 @@
             "node --test tests/confirm-state-labels-spec-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:275 '확인 상태는 다음 세 가지로 단순화한다.' followed by ### 8.1 확인됨, ### 8.2 일부 확인, ### 8.3 확인하지 못함"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:275 '확인 상태는 다음 세 가지로 단순화한다.' followed by ### 8.1 확인됨, ### 8.2 일부 확인, ### 8.3 확인하지 못함",
+          "title": "확인 상태 이름이 문서마다 같은지 확인"
         },
         {
           "taskId": "JUTELL-INFO-SYSTEM-SPEC-HEADINGS-PARITY",
@@ -15729,7 +15737,8 @@
             "node --test tests/info-system-spec-headings-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:171 '보고서에서는 다음 네 가지를 서로 다른 정보로 취급한다.' followed by ### 6.1 근거 출처 … ### 6.4 보고서 상태 and '이 네 가지를 같은 표현으로 섞지 않는다.'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:171 '보고서에서는 다음 네 가지를 서로 다른 정보로 취급한다.' followed by ### 6.1 근거 출처 … ### 6.4 보고서 상태 and '이 네 가지를 같은 표현으로 섞지 않는다.'",
+          "title": "보고서 네 가지 분류가 문서마다 같은지 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
