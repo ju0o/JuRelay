@@ -2401,6 +2401,22 @@
             "npm run build:client"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 16:09 item 2: '[새 작업 부탁] 프로젝트 선택+한 문장 → night plan request, 결과 작업 목록 표시'; at 79151ab:src/frontend/planStudio.tsx:523-538 submitRequest only shows '보냈어요 ✓' and never lists the tasks it produced"
+        },
+        {
+          "taskId": "AGENTRELAY-CONTROL-ROOM-SIMPLE-FIX",
+          "scope": "After AGENTRELAY-CONTROL-ROOM-SIMPLE the MainPC capture shows a large empty block where the one-line status card should be, and '대표님이 고를 것 3개' counts holds that auto-proceed in 5 minutes. Render the status sentence card always (while loading: '상태를 확인하고 있어요'), never an empty block; count as '대표님이 고를 것' only holds with no auto-proceed (founder gates / human gates / holds whose waitMin is null); auto-proceeding holds show as a muted line '자동으로 다시 하는 중 N개 · 원하면 골라 주세요'. Tests with a board fixture (gates vs auto holds, loading).",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/shared/controlRoomSimple.ts",
+            "test/control-room-simple-fix.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "MainPC Tester vfix0926 control-room.png (painted frame, 2026-09-26 20:18); Founder: '지금 막힌 건 없어요' must match the app",
+          "title": "관제실: 맨 위 한 줄 요약이 비어 보이는 문제와 '고를 것' 숫자"
         }
       ],
       "qaRuntime": [
