@@ -6204,7 +6204,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙(누르면 1초 안에 결과 문장) 대상: 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기; refreshDoneLine at 0d1a8e2 returns \"\" when added and removed are both 0, so the done line stays hidden after a rename or a connection-only change"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙(누르면 1초 안에 결과 문장) 대상: 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기; refreshDoneLine at 0d1a8e2 returns \"\" when added and removed are both 0, so the done line stays hidden after a rename or a connection-only change",
+          "title": "이름이나 연결만 바꿔도 완료 알림 보여주기"
         },
         {
           "taskId": "JUPLAN-STUDIO-NODE-COUNT-PLAIN",
@@ -6219,7 +6220,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: '진짜 비개발자도 보면 이해가 되게' founder-ux 규칙으로 JuPlan Studio 화면 점검; packages/runtime/src/index.ts:1036 at 0d1a8e2 returns `${shown} / ${total}개 항목`"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: '진짜 비개발자도 보면 이해가 되게' founder-ux 규칙으로 JuPlan Studio 화면 점검; packages/runtime/src/index.ts:1036 at 0d1a8e2 returns `${shown} / ${total}개 항목`",
+          "title": "항목 개수와 검색 안내를 쉬운 말로 바꾸기"
         }
       ],
       "qaRuntime": [
@@ -7747,7 +7749,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rule 2 (file paths go behind 원문 보기) for juceipt scan/daily/receipt output; JUCEIPT-CLI-RAW-PATHS-FOLDED-R2 folded paths only for run/receipt/daily, so scan still prints '영수증 폴더: ' + outDir (main.ts scanCommand)"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rule 2 (file paths go behind 원문 보기) for juceipt scan/daily/receipt output; JUCEIPT-CLI-RAW-PATHS-FOLDED-R2 folded paths only for run/receipt/daily, so scan still prints '영수증 폴더: ' + outDir (main.ts scanCommand)",
+          "title": "검사 결과에서 복잡한 경로 숨기기"
         },
         {
           "taskId": "JUCEIPT-CLI-ERROR-RAW-LINE-FOLDED",
@@ -7762,7 +7765,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rules 2 and 10 (English error text and paths behind 원문 보기; errors in three short lines) for juceipt scan/daily/receipt output; main.ts catch block ends every error with '원문: ' + rawMessage"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rules 2 and 10 (English error text and paths behind 원문 보기; errors in three short lines) for juceipt scan/daily/receipt output; main.ts catch block ends every error with '원문: ' + rawMessage",
+          "title": "오류 안내에서 영어 원문 숨기기"
         },
         {
           "taskId": "JUCEIPT-DAILY-EMPTY-LINES-REASON",
@@ -7775,7 +7779,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux 규칙 '빈 화면 이유+다음 행동' 으로 juceipt daily 출력 점검"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux 규칙 '빈 화면 이유+다음 행동' 으로 juceipt daily 출력 점검",
+          "title": "빈 항목에 이유와 할 일 알려주기"
         },
         {
           "taskId": "JUCEIPT-SCAN-SUMMARY-REVIEW-ALWAYS-LISTED",
@@ -7788,7 +7793,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux 규칙 '맨 위 한 문장 … 지금 할 일' 로 juceipt scan 출력 점검, '확인 후 받기' 같은 판정의 뜻을 알 수 있게"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux 규칙 '맨 위 한 문장 … 지금 할 일' 로 juceipt scan 출력 점검, '확인 후 받기' 같은 판정의 뜻을 알 수 있게",
+          "title": "확인할 작업이 요약에 꼭 보이게"
         }
       ],
       "skills": {
@@ -9697,7 +9703,8 @@
             "node --test tests/e2e-docs-sync.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; README.md §3 reason table at 172d7b0: '`unavailable` | `current.json`이 없거나 JSON으로 읽을 수 없어요.' (src/project-status.mjs:80-82 maps a JSON.parse failure to unavailable, but E2E only checks a missing file)"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; README.md §3 reason table at 172d7b0: '`unavailable` | `current.json`이 없거나 JSON으로 읽을 수 없어요.' (src/project-status.mjs:80-82 maps a JSON.parse failure to unavailable, but E2E only checks a missing file)",
+          "title": "깨진 상태 파일 안내 점검 추가"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-FIELD-TYPO-SOURCE-LINE-TEST",
@@ -9709,7 +9716,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26 (offline E2E and Korean Quickstart as acceptance target); README.md §3 reason table at 172d7b0: '`invalid` | `current.json`이 `project-status.v1` 모양이 아니거나 … | 빠진 칸, 틀린 `projectId` … 확인하고 원본에서 다시 저장하세요.' (src/project-status.mjs strict `fields` check; today the only CLI invalid test uses an Agent Relay board)"
+          "ssotEvidence": "Founder direction 2026-09-26 (offline E2E and Korean Quickstart as acceptance target); README.md §3 reason table at 172d7b0: '`invalid` | `current.json`이 `project-status.v1` 모양이 아니거나 … | 빠진 칸, 틀린 `projectId` … 확인하고 원본에서 다시 저장하세요.' (src/project-status.mjs strict `fields` check; today the only CLI invalid test uses an Agent Relay board)",
+          "title": "잘못 적힌 항목 안내 확인"
         }
       ],
       "qaRuntime": [
@@ -12498,7 +12506,8 @@
             "node --test test/live-status-projection.test.mjs test/relay-top-line.test.mjs test/home-all-ok.test.mjs test/lovable-home-order.test.mjs test/board-down-plain.test.mjs test/agent-relay-module.test.mjs test/v2-rail-rows.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests' — base 6057ff5 operator/public/app.js:835 and :2144 still duplicate railRowModel's gated rule from :568"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests' — base 6057ff5 operator/public/app.js:835 and :2144 still duplicate railRowModel's gated rule from :568",
+          "title": "결정 기다리는 프로젝트 수를 어디서나 같게"
         },
         {
           "taskId": "JCAPP-LIVE-STATUS-COLOR-RULES-TEST",
@@ -12510,7 +12519,8 @@
             "node --test test/live-status-colors.test.mjs test/live-status-projection.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: shared live-status projection '… and color rules; add focused fixture tests'; founder-ux Skill rule 11 'green (teal) = done / OK, amber = needs a look, red = only real danger … Being stuck is amber, not red'"
+          "ssotEvidence": "Founder direction 2026-09-26: shared live-status projection '… and color rules; add focused fixture tests'; founder-ux Skill rule 11 'green (teal) = done / OK, amber = needs a look, red = only real danger … Being stuck is amber, not red'",
+          "title": "진행 상태 색깔이 제대로 나오는지 점검"
         },
         {
           "taskId": "JCAPP-LIVE-STATUS-SENTENCES-TEST",
@@ -12522,7 +12532,8 @@
             "node --test test/live-status-sentences.test.mjs",
             "node --test test/live-status-projection.test.mjs test/live-status-colors.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' (at base the existing fixture tests check tones and word sets, but no test pins the status sentence or next step)"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' (at base the existing fixture tests check tones and word sets, but no test pins the status sentence or next step)",
+          "title": "진행 상태 안내 문장이 안 바뀌게 점검"
         },
         {
           "taskId": "JCAPP-ACTL-CARD-FIXTURE-COLORS-TEST",
@@ -12535,7 +12546,8 @@
             "node --test test/actl-card-status.test.mjs",
             "node --test test/actl-panes-plain.test.mjs test/live-status-colors.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25/26: actl AI 창 카드 ... '같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만)' and 2026-09-26 'color rules; add focused fixture tests'; founder-ux Skill Live status card: actl window card says 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨"
+          "ssotEvidence": "Founder direction 2026-09-25/26: actl AI 창 카드 ... '같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만)' and 2026-09-26 'color rules; add focused fixture tests'; founder-ux Skill Live status card: actl window card says 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨",
+          "title": "actl 카드 상태별 색깔 점검하기"
         }
       ],
       "skills": {
