@@ -6568,6 +6568,20 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화, target PRD 보기): founder-ux rule 5 '빈 화면은 이유와 다음 행동' — documents.ts groupedSection (line ~49) and goalPolarity (line ~78) at 151c134 print a bare EMPTY for each empty subsection, asserted by documents.test.ts:95-97 ('### could\\n\\n아직 없음')",
           "title": "내용 있는 장을 빈 줄 없이 보기"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-MOBILE-WALKTHROUGH",
+          "scope": "Add one test-only regression file that serves an offline-planned project (and an empty-plan project) with the existing serve()/createNewProject/runPlanningPasses/generateProjections helpers, fetches the Studio home, /view/docs/prd, /view/docs/wbs and /view/diagrams/erd, and asserts on each page: the viewport meta and lang ko; the plan map SVG with Korean column labels; Korean page titles and a top sentence; the empty state's reason plus next action; STUDIO_STYLE rules for 16px body/map/table text and 44px targets on the controls, links and summaries; and that no raw enum words, ids, hashes or ISO timestamps appear outside closed '원문 보기' details. No change to any file under packages/runtime/src.",
+          "files": [
+            "packages/runtime/test/studio-mobile-walkthrough.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime exec vitest run test/studio-mobile-walkthrough.test.ts",
+            "pnpm --filter @juplan/runtime test",
+            "git diff --check",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (Founder choice 2026-09-26): 'Keep already-passing read-only screens unchanged; add one mobile walkthrough regression covering the plan map, PRD/WBS/ERD views, Korean labels, empty-state next action, 16px text, 44px targets, and hidden raw text.'"
         }
       ],
       "qaRuntime": [
