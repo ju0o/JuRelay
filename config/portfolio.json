@@ -6192,6 +6192,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 및 글자 16px·휴대폰 폭 대응",
           "title": "넓은 표를 옆으로 밀어 쉽게 보기"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-CHANGE-DONE-RENAME",
+          "scope": "In STUDIO_LIVE_SECTIONS_SCRIPT in packages/runtime/src/index.ts, when a live refresh swaps sections after a real /events 'plan' change but no plan-map node was added or removed (a renamed item from juplan edit, or a proposal that only adds or removes connections), show the teal done line '계획이 바뀌었어요 ✓ 이름이나 연결이 바뀌었어요' with the existing undo next-step line instead of hiding it, so that kind of change still gets a visible result; keep the current '새 항목 N개 · 빠진 항목 N개' wording when nodes did change, keep it hidden when the refresh fails, and extend studio-change-done-line.test.ts to cover the rename or edge-only case.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-change-done-line.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙(누르면 1초 안에 결과 문장) 대상: 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기; refreshDoneLine at 0d1a8e2 returns \"\" when added and removed are both 0, so the done line stays hidden after a rename or a connection-only change"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-NODE-COUNT-PLAIN",
+          "scope": "Make the Studio 계획 항목 count read as plain Korean instead of the ratio '3 / 33개 항목': change it to '33개 중 3개 보여요' (and '0개 중 0개 보여요' for an empty plan) in both nodeCountText and the matching count.textContent line in STUDIO_FILTER_SCRIPT, and change the search placeholder '이름이나 유형으로 검색' to '이름이나 종류로 찾기' so it matches the ' · 종류' row wording; update the tests that assert the old strings.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/studio-live-sections.test.ts",
+            "packages/runtime/test/studio-nodes-empty-state.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: '진짜 비개발자도 보면 이해가 되게' founder-ux 규칙으로 JuPlan Studio 화면 점검; packages/runtime/src/index.ts:1036 at 0d1a8e2 returns `${shown} / ${total}개 항목`"
         }
       ],
       "qaRuntime": [
