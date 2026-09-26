@@ -10015,6 +10015,21 @@
             "JCAPP-V2-RAIL-ROWS"
           ],
           "title": "허브: 프로젝트마다 시험·Skill 한눈에"
+        },
+        {
+          "taskId": "JCAPP-PROJECT-MANAGER",
+          "scope": "In the hub 더보기 → '프로젝트 관리': the same list as the Agent Relay app (lanes from /api/relay/board with name and paused), a toggle per lane that POSTs to a new server route running `night roadmap pause|resume <id>` (execFile, fixed argv, id validated ^[a-z][a-z0-9-]{1,40}$), and a '프로젝트 추가' form calling `night lane add <id> <path> <name>` with the same validation; plain Korean results inline, raw output under 원문 보기, never red. Tests for the route argument validation and the view helpers.",
+          "files": [
+            "operator/server.mjs",
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/project-manager.test.mjs"
+          ],
+          "tests": [
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'Agent-Relay안에서 내가 켰을 때 프로젝트 선택도 있음, 또는 뺄 프로젝트 및 다른 추가할 프로젝트 이런 기능들' + 'ASUS 켜면 항상 프로젝트 설정'. Backend already exists: `night board --json` lanes[] carry id, name, paused; `night roadmap pause <id>` / `night roadmap resume <id>` (persists across reboot, the runner skips paused lanes); `night lane add <id> <git repo path> [name]` lays a new rail (the PM plans its first tasks on the next idle re-plan).",
+          "title": "허브: 돌릴 프로젝트 고르기·추가하기"
         }
       ],
       "skills": {
