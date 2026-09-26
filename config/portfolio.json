@@ -2559,6 +2559,18 @@
           ],
           "ssotEvidence": "package.json:23 test script omits these files; precedent AGENTRELAY-V1-COVER-CORE-TESTS (done) extended here from core-v1 to Control Room display tests",
           "title": "오늘 작업 흐름을 쉽게 봐요"
+        },
+        {
+          "taskId": "AGENTRELAY-TEST-WIRE-AUTOMATION-UI",
+          "scope": "Add npm script test:automation-ui chaining connection-state/lovable-shell tests and include it in the test aggregate so unattended npm test covers the shell's automation on/off toggle (controlRoom:automationStatus/On/Off wiring)",
+          "files": [
+            "package.json"
+          ],
+          "tests": [
+            "node test/connection-state.test.mjs && node test/lovable-shell.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "package.json:27 test script omits these files; Founder direction 2026-09-27 (wire automationOn/automationOff/automationStatus into a control-room UI toggle) is already implemented at src/frontend/App.tsx ShellConnectionProvider/ConnectionBar (~lines 511-637, rendered ~1723) with tests test/connection-state.test.mjs and test/lovable-shell.test.mjs not yet in the aggregate"
         }
       ],
       "qaRuntime": [
