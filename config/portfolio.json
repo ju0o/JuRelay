@@ -4085,6 +4085,17 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "ACTL-WEB-BOARD-OP-BUDGET-BASEFIX-R2",
+          "scope": "Narrowly fix only the six failing tests in tests/test_serve_op_budget.py, including web_pane_title_uses_korean_live_suffix and ped_cline_and_commandcode_are_valid; each must fail on base 76de498 and pass after the fix without weakening assertions.",
+          "files": [
+            "tests/test_serve_op_budget.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild)."
         }
       ],
       "qaRuntime": [
