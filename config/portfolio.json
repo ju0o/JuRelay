@@ -3924,6 +3924,50 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 15:46: 'Live status card … the same everywhere: Agent Relay app, actl Board, JuControler hub' with the four statuses 일하는 중/쉬는 중/답 기다림/연결 안 됨; at c879a9c, gui.py:72-88 _card_header uses its own RUNTIME_STATE_LABELS logic with a '확인 중' fallback that live_card.py never returns",
           "title": "앱 카드와 웹 카드 상태 똑같이 맞추기"
+        },
+        {
+          "taskId": "ACTL-WEB-BOARD-OP-BUDGET",
+          "scope": "Stop serve._board_data from doing a second full remote pass: today it calls tui._rows(config) and then tui._pane_board(config), which runs list_panes again plus observe_activity and extract_last_response for every pane. Make it reuse the list_panes result and the rows' activity/result for panes that are already detected, and add tests/test_serve_op_budget.py. Modelled on test_rows_remote_op_budget, that test sets tmux.REMOTE_SSH_TARGET to a fake host, warms up once, then counts subprocess and tmux._run calls for one steady-state _board_data() over 4 detected panes and asserts: no display-message, at most one list-panes, and a total no higher than the tui._rows budget plus 1.",
+          "files": [
+            "src/actl/serve.py",
+            "src/actl/tui.py",
+            "tests/test_serve_op_budget.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder choice 2026-09-26: 'Cut the 19 remote ops per board refresh … add a test that counts wrapper calls per _rows() so the lower number can't creep back up'; BACKLOG.md 원격 polling fan-out: '측정된 refresh 1회당 원격 작업 19개'"
+        },
+        {
+          "taskId": "ACTL-TK-CARD-LINE-LIVE-WORDS",
+          "scope": "In src/actl/gui.py, make _card_line(row) take its phase word from actl.live_card.live_card(row)['status'] (일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨), so the card body and the header use the same words. Replace the separate words '작업 중', '대기', '승인 기다림', '확인 중' and '연결 끊김', but keep '답이 왔어요 · 결과 복사' and the send-in-flight → '일하는 중' override. Update the existing card tests that expect the old words, and add a test proving _card_line and _card_header agree for the WORKING, IDLE, WAITING_INPUT and DOWN rows.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_plain_cards.py",
+            "tests/test_gui_card_plain_header.py",
+            "tests/test_gui_card_line_live_words.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder request 2026-09-25 15:46: Live Pane 쉬운 상태 카드 — AI 창 카드마다 '일하는 중/쉬는 중/답 기다림/연결 안 됨' (founder-ux Live status card, same everywhere)"
+        },
+        {
+          "taskId": "ACTL-TUI-LIVE-CARD-STATUS",
+          "scope": "In src/actl/tui.py _render, show one state column from actl.live_card.live_card(row)['status'] (일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨) instead of STATE_KO.get(row['state']), and show '답이 왔어요' in the result column when live_card(row)['answer_ready'] is true. Pane ids stay out of the new wording. Update tests/test_tui_one_state.py and tests/test_tui_state_column.py wherever they expect the old words, and add a test covering WORKING, WAITING_INPUT, DOWN and READY rows.",
+          "files": [
+            "src/actl/tui.py",
+            "tests/test_tui_one_state.py",
+            "tests/test_tui_state_column.py",
+            "tests/test_tui_live_card_status.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder request 2026-09-25 15:46: 'Live Pane 쉬운 상태 카드' — founder-ux Live status card rule 'the same everywhere' with 일하는 중/쉬는 중/답 기다림/연결 안 됨 and 복사할 답 준비 여부"
         }
       ],
       "qaRuntime": [
