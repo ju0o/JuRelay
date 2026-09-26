@@ -12790,6 +12790,38 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.'",
           "title": "결정과 멈춤 상태를 함께 알려줘"
+        },
+        {
+          "taskId": "JCAPP-HOME-ONE-CLOCK",
+          "scope": "In operator/public/app.js, give home() an optional 7th argument now (default Date.now(), read once). home() passes that same now to homeHoldCount, homeHoldWaitMin, homeHoldButton, railRowModel (replacing its inline Date.now()), homeStatStrip, homeHub and homeHolds. homeHolds(board, now) passes now to both of its holdResolved calls (the sort and the open count), so the 홈 banner '멈춘 작업 N건', the 4-stat strip, the 지금 상황 cards and the 멈춘 작업 list count the same open holds. holdCard is not changed. test/lovable-home-order.test.mjs gets an extra test: a hold whose heldSeen+waitMin deadline is between two fixed clocks reads '멈춘 작업 1건' in the banner at the earlier now and no '멈춘 작업 N건' at the later now.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-home-order.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-home-order.test.mjs",
+            "node --test test/live-status-projection.test.mjs",
+            "node --test test/home-hold-jump.test.mjs",
+            "node --test test/home-all-ok.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
+        },
+        {
+          "taskId": "JCAPP-RELAY-LANE-ONE-CLOCK",
+          "scope": "In operator/public/app.js, give holdCard(hold, lane, now) and relayLaneView(lane, names, done, skills, cooling, now) an optional now (default Date.now(), read once). relayLaneView passes that now to its open-count holdResolved call, liveCardModel, railRowModel (the pill), liveProjectCard (instead of undefined) and holdCard. holdCard passes now to holdResolved. This way the 진행 lane pill, the live card's 멈춤 N, the '대표님 선택 N건' pill and each hold card's '추천대로 다시 하는 중' state all use the same clock. Nothing else changes. test/hold-card.test.mjs gets an extra test: with a hold whose deadline is between two fixed clocks, relayLaneView at the earlier now shows '대표님 선택 1건' and the pill '멈춤 1건', and at the later now shows neither and the hold card reads '추천대로 다시 하는 중이에요'.",
+          "files": [
+            "operator/public/app.js",
+            "test/hold-card.test.mjs"
+          ],
+          "tests": [
+            "node --test test/hold-card.test.mjs",
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/lovable-hold-cards.test.mjs",
+            "node --test test/v2-rail-rows.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
         }
       ],
       "skills": {
