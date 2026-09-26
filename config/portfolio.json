@@ -18126,6 +18126,50 @@
           ],
           "ssotEvidence": "README.md:8 lists only !도움말·!남은횟수·!구독 family; layout.mjs:162-176 HELP_TEXT documents !익명 (bot.mjs:221-243), 리뷰해줘 (bot.mjs), !봇수다 (bot.mjs:356-360), and @멘션 answers as real member commands absent from README's overview line",
           "title": "사용 가능한 대화 명령을 안내"
+        },
+        {
+          "taskId": "JUAI-CHECK-ADMIN-PLAN-NONSTRING",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) that validateAdminPlan treats a boolean param value as missing for a required field (returns null) while a numeric value for a string-typed field like create_channel's name passes through unchanged.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:133 validateAdminPlan: params[k] = typeof v === \"number\" ? v : str(v, 1800) — verified with node: {action:'answer',params:{text:true}} returns null, {action:'create_channel',params:{name:123}} keeps name as the number 123"
+        },
+        {
+          "taskId": "JUAI-CHECK-SUBS-EMPTY-KEYWORD",
+          "scope": "Add a check.mjs assertion only (no lib.mjs change) documenting that matchSubs with an empty-string keyword matches every text, since String.includes('') is always true.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:162 matchSubs: hay.includes(keyword.toLowerCase().replace(...)) — verified 'hello world'.includes('') === true"
+        },
+        {
+          "taskId": "JUAI-CHECK-BONUS-ZERO-MAX",
+          "scope": "Add a check.mjs assertion only (no lib.mjs change) that grantBonus always returns false when limits.bonusMax is 0.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:40 grantBonus: if (...count... >= limits.bonusMax) return false — verified grantBonus(db,'u1',{limits:{...LIMITS,bonusMax:0}}) === false"
+        },
+        {
+          "taskId": "JUAI-CHECK-KV-UNDEFINED",
+          "scope": "Add a check.mjs assertion only (no db.mjs change) that kvSet(db, key, undefined) throws, since JSON.stringify(undefined) yields undefined which node:sqlite cannot bind as a parameter.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "db.mjs:23 kvSet: .run(key, JSON.stringify(value)) — verified kvSet(db,'u',undefined) throws 'Provided value cannot be bound to SQLite parameter 2'"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
