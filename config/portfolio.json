@@ -17261,6 +17261,18 @@
             "node --test tests/results/scenario-p/glossary-necessity.test.mjs"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:292-294 (결과/위험/검증 필요 조건, 반복 설명 금지), docs/GLOSSARY_POLICY.md:27-33 §2.3; Founder choice 2026-09-27"
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-EXTRA-EXPLANATION-PARITY",
+          "scope": "Add GLOSSARY_POLICY §3.2's three extra-explanation trigger conditions as one sentence to glossary-ko.md's opening paragraph, plus an offline test verifying parity",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-extra-explanation-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-extra-explanation-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:50-58 §3.2 '다음 경우에만 현재 작업에서의 역할을 한 문장 더 설명한다' (핵심 용어/사용자 승인 필요/일반 정의로 이해 어려움) — absent from glossary-ko.md and SKILL.md"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
