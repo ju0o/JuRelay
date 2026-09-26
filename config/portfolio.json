@@ -5769,7 +5769,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: 비개발자 UX 고도화 — PRD/WBS/ERD/SSOT 보기 점검, founder-ux 규칙 2 (enum words behind 원문 보기) and 3 (Korean labels); f237485:packages/plan-core/src/nodeTypes.ts:41 Feature scope z.enum([\"mvp\",\"v1\",\"later\"]) reaches documents.ts withDetail(item.label, item.payload.scope)"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: 비개발자 UX 고도화 — PRD/WBS/ERD/SSOT 보기 점검, founder-ux 규칙 2 (enum words behind 원문 보기) and 3 (Korean labels); f237485:packages/plan-core/src/nodeTypes.ts:41 Feature scope z.enum([\"mvp\",\"v1\",\"later\"]) reaches documents.ts withDetail(item.label, item.payload.scope)",
+          "title": "기획서 기능 출시 시기를 한국어로 표시"
         },
         {
           "taskId": "JUPLAN-STUDIO-FROZEN-BANNER-NEXT",
@@ -5782,7 +5783,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '맨 위 한 문장' (what this screen is for and what to do now, e.g. '지금 하실 일은 없어요'); f237485:packages/runtime/src/index.ts:1370 FROZEN banner is only '확정된 계획이에요.'"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '맨 위 한 문장' (what this screen is for and what to do now, e.g. '지금 하실 일은 없어요'); f237485:packages/runtime/src/index.ts:1370 FROZEN banner is only '확정된 계획이에요.'",
+          "title": "확정된 계획에 지금 할 일 안내 추가"
         },
         {
           "taskId": "JUPLAN-FREEZE-LIFECYCLE-KOREAN",
@@ -5795,7 +5797,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '개발자 글자는 원문 보기 안' and '오류 3줄' (what happened, why, what to do); f237485:packages/runtime/src/index.ts:379 '지금 상태는 ${plan.meta.lifecycle}입니다. 먼저 plan을 실행하세요'"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '개발자 글자는 원문 보기 안' and '오류 3줄' (what happened, why, what to do); f237485:packages/runtime/src/index.ts:379 '지금 상태는 ${plan.meta.lifecycle}입니다. 먼저 plan을 실행하세요'",
+          "title": "계획 확정 실패 안내를 쉬운 말로"
         },
         {
           "taskId": "JUPLAN-OFFLINE-SEED-KOREAN",
@@ -5811,7 +5814,8 @@
             "pnpm --filter @juplan/runtime typecheck",
             "pnpm --filter @juplan/runtime test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08 (비개발자 UX 고도화: '진짜 비개발자도 보면 이해가 되게'; founder-ux rule 3 Korean labels) and 2026-09-24 launch bar 'plain Korean, no raw codes' — seeded English labels reach the Studio 계획 그림 and PRD/WBS/SSOT views"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08 (비개발자 UX 고도화: '진짜 비개발자도 보면 이해가 되게'; founder-ux rule 3 Korean labels) and 2026-09-24 launch bar 'plain Korean, no raw codes' — seeded English labels reach the Studio 계획 그림 and PRD/WBS/SSOT views",
+          "title": "처음 만든 계획 항목을 한국어로 표시"
         },
         {
           "taskId": "JUPLAN-EXISTING-BRIEF-KOREAN",
@@ -5824,7 +5828,8 @@
             "pnpm --filter @juplan/runtime typecheck",
             "pnpm --filter @juplan/runtime test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08 (대상: JuPlan Studio PRD/WBS/ERD/SSOT 보기; founder-ux rule 2 no developer/English text on the surface) — packages/runtime/src/index.ts:213 summary: `Existing project scan: ${name}`"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08 (대상: JuPlan Studio PRD/WBS/ERD/SSOT 보기; founder-ux rule 2 no developer/English text on the surface) — packages/runtime/src/index.ts:213 summary: `Existing project scan: ${name}`",
+          "title": "기존 프로젝트 계획 요약을 한국어로"
         },
         {
           "taskId": "JUPLAN-EDIT-KOREAN-SUMMARY",
@@ -5837,7 +5842,8 @@
             "pnpm --filter @juplan/runtime typecheck",
             "pnpm --filter @juplan/runtime test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08 (대화로 바꾸기 → 미리보기 → 적용 → 되돌리기; founder-ux rule 7 result sentence within a second) — index.ts:2101 editSuccessResult returns only {ok, edited}, unlike undoSuccessResult:2123 which has stage/nextAction/summary"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08 (대화로 바꾸기 → 미리보기 → 적용 → 되돌리기; founder-ux rule 7 result sentence within a second) — index.ts:2101 editSuccessResult returns only {ok, edited}, unlike undoSuccessResult:2123 which has stage/nextAction/summary",
+          "title": "이름 바꾼 결과를 한국어 한 줄로 안내"
         }
       ],
       "qaRuntime": [
@@ -7201,7 +7207,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): '진짜 비개발자도 보면 이해가 되게' — juceipt 명령 출력(scan) 점검, 빠진 확인 항목의 쉬운 설명; src/sources/summary.ts:87 at 86dbfde still prints '${reason}이므로 ${ACCEPTANCE_LABEL[...]} 상태를 확인하세요.' with reasons like '빠진 확인이 있음'"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): '진짜 비개발자도 보면 이해가 되게' — juceipt 명령 출력(scan) 점검, 빠진 확인 항목의 쉬운 설명; src/sources/summary.ts:87 at 86dbfde still prints '${reason}이므로 ${ACCEPTANCE_LABEL[...]} 상태를 확인하세요.' with reasons like '빠진 확인이 있음'",
+          "title": "먼저 볼 영수증 이유를 쉬운 말로"
         },
         {
           "taskId": "JUCEIPT-SCAN-SKIP-NOTICE-PLAIN",
@@ -7216,7 +7223,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙 '개발자 글자는 원문 보기 안', '오류 3줄' for juceipt scan output; src/sources/scan.ts:134 at 86dbfde prints '건너뜀: ${agent} 세션을 읽지 못했습니다 (${error.message})' with the raw English error on the surface"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙 '개발자 글자는 원문 보기 안', '오류 3줄' for juceipt scan output; src/sources/scan.ts:134 at 86dbfde prints '건너뜀: ${agent} 세션을 읽지 못했습니다 (${error.message})' with the raw English error on the surface",
+          "title": "건너뛴 기록 안내를 쉬운 말로"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-META-PLAIN",
@@ -7229,7 +7237,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 영수증 보기 화면을 founder-ux 규칙(쉬운 한국어, 빈/모름 상태는 이유+다음 행동)으로 점검; src/render/index.ts:28-32 at 4e8161c still shows '일부 복원 가능' / '되돌리기 정보 없음' / '되돌리기 불가' / '추정치' / '확인할 수 없음'"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 영수증 보기 화면을 founder-ux 규칙(쉬운 한국어, 빈/모름 상태는 이유+다음 행동)으로 점검; src/render/index.ts:28-32 at 4e8161c still shows '일부 복원 가능' / '되돌리기 정보 없음' / '되돌리기 불가' / '추정치' / '확인할 수 없음'",
+          "title": "영수증의 되돌리기·비용 설명 쉽게"
         },
         {
           "taskId": "JUCEIPT-DAILY-COST-LINE-PLAIN",
@@ -7244,7 +7253,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — juceipt daily 출력을 founder-ux 규칙으로 점검; src/daily/index.ts:161 at 4e8161c still prints '비용: 확인 ${known}건, 추정 ${estimated}건, 확인할 수 없음 ${unknown}건'"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — juceipt daily 출력을 founder-ux 규칙으로 점검; src/daily/index.ts:161 at 4e8161c still prints '비용: 확인 ${known}건, 추정 ${estimated}건, 확인할 수 없음 ${unknown}건'",
+          "title": "하루 요약의 비용 안내를 쉬운 말로"
         }
       ],
       "skills": {
@@ -8921,7 +8931,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; tests/status-board-cli.test.mjs:196 'names a receipt without acceptance with the plain-Korean missing-acceptance reason' is already covered at the CLI level, but scripts/e2e.sh has no step for it"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; tests/status-board-cli.test.mjs:196 'names a receipt without acceptance with the plain-Korean missing-acceptance reason' is already covered at the CLI level, but scripts/e2e.sh has no step for it",
+          "title": "영수증 판정 빠짐 안내 전체 점검"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-MISSING-RECEIPT-ID-LINE-TEST",
@@ -8934,7 +8945,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; README.md:115 documents '| `missing-receipt-id` | JuCeipt 영수증에 `receipt_id`가 없어요. |' and scripts/status-board.mjs reasonWords has 'missing-receipt-id', but no CLI test checks that Korean line"
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; README.md:115 documents '| `missing-receipt-id` | JuCeipt 영수증에 `receipt_id`가 없어요. |' and scripts/status-board.mjs reasonWords has 'missing-receipt-id', but no CLI test checks that Korean line",
+          "title": "영수증 번호 빠짐 안내 문구 확인"
         },
         {
           "taskId": "JUCONTROLER-E2E-MISSING-RECEIPT-ID-STEP",
@@ -8948,7 +8960,8 @@
             "node --test tests/e2e-docs-sync.test.mjs tests/e2e-script.test.mjs tests/e2e-failure-output.test.mjs tests/e2e-cleanup.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; missing-receipt-id reason (src/adapters/juceipt.mjs:25, scripts/status-board.mjs reasonWords) has a CLI test (tests/status-board-cli.test.mjs:210) but no E2E step"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; missing-receipt-id reason (src/adapters/juceipt.mjs:25, scripts/status-board.mjs reasonWords) has a CLI test (tests/status-board-cli.test.mjs:210) but no E2E step",
+          "title": "영수증 번호 빠짐 안내 전체 점검"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-MISSING-STATUS-LINE-TEST",
@@ -8960,7 +8973,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no new product behavior; missing-status (src/adapters/juplan.mjs:26, scripts/status-board.mjs reasonWords 'status가 비어 있어요') is covered only by tests/juplan-adapter.test.mjs and has no CLI Korean-line test"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no new product behavior; missing-status (src/adapters/juplan.mjs:26, scripts/status-board.mjs reasonWords 'status가 비어 있어요') is covered only by tests/juplan-adapter.test.mjs and has no CLI Korean-line test",
+          "title": "진행 상태 빠짐 안내 문구 확인"
         }
       ],
       "qaRuntime": [
@@ -11598,7 +11612,8 @@
             "node --test test/binding-honest.test.mjs test/memory-proposals-plain.test.mjs test/more-advanced.test.mjs test/juplan-module.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: founder-ux 규칙 '개발자 글자는 원문 보기 안'); founder-ux Skill rule 2 'Keep all of these behind one folded \"원문 보기\"'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: founder-ux 규칙 '개발자 글자는 원문 보기 안'); founder-ux Skill rule 2 'Keep all of these behind one folded \"원문 보기\"'",
+          "title": "숨긴 기록 버튼 이름을 '원문 보기'로 통일"
         },
         {
           "taskId": "JCAPP-GATE-RESUME-WORDS-PLAIN",
@@ -11614,7 +11629,8 @@
             "node --test test/control-tower.test.mjs test/readable-text.test.mjs test/inline-actions.test.mjs test/home-hub.test.mjs test/lane-skills-api.test.mjs",
             "node scripts/test-all.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: 승인 탭 … 사람 확인 카드의 코드명); founder-ux rule 2 'No developer text on the surface' and the Buttons rule 7 result line"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: 승인 탭 … 사람 확인 카드의 코드명); founder-ux rule 2 'No developer text on the surface' and the Buttons rule 7 result line",
+          "title": "승인 문구에 한글 프로젝트 이름 보이기"
         },
         {
           "taskId": "JCAPP-ERRORS-PLAIN-GATE-RESUME",
@@ -11627,7 +11643,8 @@
             "node --test test/errors-plain.test.mjs test/inline-actions.test.mjs",
             "node scripts/test-all.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: 오류 3줄, 누르면 1초 안에 결과 문장); founder-ux rule 10 'Explain every error in three short lines: what happened, why …, and what to do'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: 오류 3줄, 누르면 1초 안에 결과 문장); founder-ux rule 10 'Explain every error in three short lines: what happened, why …, and what to do'",
+          "title": "승인·재시작 실패 안내를 쉬운 말로"
         }
       ],
       "skills": {
@@ -13445,7 +13462,8 @@
             "node --test tests/fixture-report-state-labels.test.mjs",
             "node --test tests/fixture-confirm-state-labels.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:185-191 '### 6.4 보고서 상태 … 현재 작업 전체의 최종 상태를 나타낸다. 이 네 가지를 같은 표현으로 섞지 않는다.'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:185-191 '### 6.4 보고서 상태 … 현재 작업 전체의 최종 상태를 나타낸다. 이 네 가지를 같은 표현으로 섞지 않는다.'",
+          "title": "보고서 상태 표기가 맞는지 점검"
         },
         {
           "taskId": "JUTELL-FIXTURE-RISK-LEVEL-LABELS",
@@ -13457,7 +13475,8 @@
             "node --test tests/fixture-risk-level-labels.test.mjs",
             "node --test tests/fixture-risk-reason.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:497-541 '### 12.1 낮음 … ### 12.2 중간 … ### 12.3 높음 … ### 12.4 판정 불가'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:497-541 '### 12.1 낮음 … ### 12.2 중간 … ### 12.3 높음 … ### 12.4 판정 불가'",
+          "title": "위험도 표기가 맞는지 점검"
         },
         {
           "taskId": "JUTELL-USER-ACTION-LABELS-SPEC-PARITY",
@@ -13469,7 +13488,8 @@
             "node --test tests/user-action-labels-spec-parity.test.mjs",
             "node --test tests/info-system-scope-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:323-357 '## 9. 사용자 행동 … > 사용자 확인 필요: … > 추가 테스트 권장: … > 설정 필요: … > 사용자 결정 필요:'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:323-357 '## 9. 사용자 행동 … > 사용자 확인 필요: … > 추가 테스트 권장: … > 설정 필요: … > 사용자 결정 필요:'",
+          "title": "사용자 할 일 안내 문구 통일 확인"
         },
         {
           "taskId": "JUTELL-SPEC-EXAMPLE-STRUCTURE-PARITY",
@@ -13481,7 +13501,8 @@
             "node --test tests/spec-example-structure-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:91 \"코드 변경 작업의 기본 보고서는 다음 6개 항목을 사용한다.\"; :762 \"## 18. 최종 보고 예시 구조\""
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:91 \"코드 변경 작업의 기본 보고서는 다음 6개 항목을 사용한다.\"; :762 \"## 18. 최종 보고 예시 구조\"",
+          "title": "최종 보고 예시 틀이 규칙과 맞는지 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -13868,7 +13889,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs PII = [/[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}/gi, /(?<!\\d)010(?:-\\d{4}-\\d{4}|\\d{8})(?!\\d)/g]"
+          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs PII = [/[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}/gi, /(?<!\\d)010(?:-\\d{4}-\\d{4}|\\d{8})(?!\\d)/g]",
+          "title": "개인정보 가림 예외 상황 확인"
         },
         {
           "taskId": "JUAI-CHECK-EXTRACT-JSON-ESCAPE",
@@ -13880,7 +13902,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs: /** First JSON object in model output (models like to wrap it in prose or fences). */ export function extractJson(text)"
+          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs: /** First JSON object in model output (models like to wrap it in prose or fences). */ export function extractJson(text)",
+          "title": "답변 속 데이터 읽기 예외 확인"
         },
         {
           "taskId": "JUAI-CHECK-STRIPANSI-MULTI",
@@ -13892,7 +13915,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs: export const stripAnsi = (s) => s.replace(/\\x1b\\[[0-9;]*[A-Za-z]/g, \"\")"
+          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs: export const stripAnsi = (s) => s.replace(/\\x1b\\[[0-9;]*[A-Za-z]/g, \"\")",
+          "title": "화면 색깔 기호 지우기 확인"
         },
         {
           "taskId": "JUAI-CHECK-CHUNK-EXACT-MAX",
@@ -13904,7 +13928,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs: /** Split for Discord's 2000-char limit, preferring line breaks, never breaking a ``` block open. */ export function chunk(text, max = 1900)"
+          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs: /** Split for Discord's 2000-char limit, preferring line breaks, never breaking a ``` block open. */ export function chunk(text, max = 1900)",
+          "title": "긴 메시지 나누기 경계 확인"
         },
         {
           "taskId": "JUAI-CHECK-PRUNE-BAD-DATE",
@@ -13916,7 +13941,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs olderThan: 'const at = Date.parse(`${date}T00:00:00Z`); return Number.isFinite(at) && at < now - days * DAY_MS;'"
+          "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs olderThan: 'const at = Date.parse(`${date}T00:00:00Z`); return Number.isFinite(at) && at < now - days * DAY_MS;'",
+          "title": "잘못된 날짜 기록 정리 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
