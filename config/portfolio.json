@@ -3968,6 +3968,90 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder request 2026-09-25 15:46: 'Live Pane 쉬운 상태 카드' — founder-ux Live status card rule 'the same everywhere' with 일하는 중/쉬는 중/답 기다림/연결 안 됨 and 복사할 답 준비 여부"
+        },
+        {
+          "taskId": "ACTL-ENV-SOURCES-MODEL",
+          "scope": "Keep `--ssh T` working exactly as today (it becomes a one-environment setup). Plain Korean on every Founder surface; raw errors only under 원문 보기; never red for a down environment (amber). Offline tests with fake runners only — never touch a real tmux/ssh/wsl in tests. Add src/actl/core/sources.py: an environment = {id, kind: local|ssh|wsl, target (ssh alias or WSL distro), label, enabled}, stored under 'environments' in the existing config (config.py load/save). A pure tmux_argv(env, args) builds the command: local → ['tmux', …], ssh → the existing ssh transport for that target, wsl → ['wsl', '-d', distro, '--', 'tmux', …]. Add a context manager using_environment(env) in tmux.py that routes tmux calls through that environment for the current thread (replacing reads of the global REMOTE_SSH_TARGET inside tmux.py with the active environment; set_remote_ssh keeps setting a default ssh environment). list_panes results carry env id; a pane key becomes '<env>:%N' wherever panes are keyed across environments (single-environment output unchanged). Tests: tmux_argv per kind, using_environment isolation across two threads, --ssh back-compat.",
+          "files": [
+            "src/actl/core/sources.py",
+            "src/actl/core/tmux.py",
+            "src/actl/core/config.py",
+            "tests/test_env_sources_model.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T).",
+          "title": "여러 환경(이 컴퓨터·SSH·WSL) 연결 뼈대"
+        },
+        {
+          "taskId": "ACTL-ENV-SCAN",
+          "scope": "Keep `--ssh T` working exactly as today (it becomes a one-environment setup). Plain Korean on every Founder surface; raw errors only under 원문 보기; never red for a down environment (amber). Offline tests with fake runners only — never touch a real tmux/ssh/wsl in tests. Add `actl envs scan [--json]` and `actl envs list|on|off <id>`: scan finds candidates without enabling anything — local tmux (tmux on PATH and a server answers), WSL distros on Windows (`wsl -l -q`, UTF-16 output decoded, then `wsl -d X -- tmux ls` with a 5s timeout), SSH hosts from ~/.ssh/config Host entries without wildcards (BatchMode=yes, ConnectTimeout=3, `tmux ls`). Each candidate: id, kind, label ('이 컴퓨터', 'ASUS (SSH)', 'WSL Ubuntu'), reachable, tmux sessions count, already enabled. Tests with fake runners for each kind and for unreachable/no-tmux cases.",
+          "files": [
+            "src/actl/core/sources.py",
+            "src/actl/cli.py",
+            "tests/test_env_scan.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T).",
+          "dependsOn": [
+            "ACTL-ENV-SOURCES-MODEL"
+          ],
+          "title": "쓸 수 있는 환경 찾기 (actl envs scan)"
+        },
+        {
+          "taskId": "ACTL-ENV-FIRST-RUN-ASK",
+          "scope": "Keep `--ssh T` working exactly as today (it becomes a one-environment setup). Plain Korean on every Founder surface; raw errors only under 원문 보기; never red for a down environment (amber). Offline tests with fake runners only — never touch a real tmux/ssh/wsl in tests. On first start of the board (gui.py) and TUI, and from a '새 환경 찾기' button: run the scan; the local environment is enabled automatically when it has tmux; every other found environment gets one plain question card — 'SSH 환경(ASUS)도 찾았어요. 연결할까요?' / 'WSL(Ubuntu)도 찾았어요. 연결할까요?' with [연결하기] first and [나중에]; answers are saved (envs on/off) and never asked again unless the user presses 새 환경 찾기. When nothing but the local computer is found, no question at all. Tests for the question list builder (which envs get asked, order local→ssh→wsl, already-answered skipped).",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/tui.py",
+            "src/actl/core/sources.py",
+            "tests/test_env_first_run_ask.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T).",
+          "dependsOn": [
+            "ACTL-ENV-SCAN"
+          ],
+          "title": "처음 켤 때 '이 환경도 연결할까요?' 묻기"
+        },
+        {
+          "taskId": "ACTL-BOARD-ALL-ENVS",
+          "scope": "Keep `--ssh T` working exactly as today (it becomes a one-environment setup). Plain Korean on every Founder surface; raw errors only under 원문 보기; never red for a down environment (amber). Offline tests with fake runners only — never touch a real tmux/ssh/wsl in tests. The board (gui.py cards, serve.py web board, tui.py) lists panes from every enabled environment at once, grouped under a header per environment ('이 컴퓨터 · 창 N개', 'ASUS (SSH) · 창 N개', 'WSL Ubuntu · 창 N개'); send, copy and the live card route to the pane's own environment via using_environment; one environment being down shows its header amber '연결할 수 없어요 — 켜져 있는지 확인해 주세요' with [다시 연결] while the others keep working; the header line of the whole board says '연결된 환경 3곳 · 창 12개'. Polling per environment runs independently so a slow SSH never freezes local panes. Tests: grouping/order, per-env down state, send routed to the right environment (fake runner records argv).",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/serve.py",
+            "src/actl/tui.py",
+            "src/actl/live_card.py",
+            "tests/test_board_all_envs.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T).",
+          "dependsOn": [
+            "ACTL-ENV-FIRST-RUN-ASK"
+          ],
+          "title": "연결한 모든 환경의 창을 보드에 전부"
+        },
+        {
+          "taskId": "ACTL-ENV-README",
+          "scope": "README.md (and README Korean section if present): a short 'Environments' section for open-source users — works with only local terminals out of the box; `actl envs scan` finds SSH hosts and WSL distros and the board asks before connecting each; `actl envs on|off <id>`; --ssh T still works. Include a Windows → WSL example (codex/claude/opencode inside WSL tmux). No screenshots required.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T).",
+          "dependsOn": [
+            "ACTL-BOARD-ALL-ENVS"
+          ],
+          "title": "README: 이 컴퓨터만 / SSH / WSL 쓰는 법"
         }
       ],
       "qaRuntime": [
