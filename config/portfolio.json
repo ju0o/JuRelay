@@ -6523,6 +6523,48 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "검사 문제를 세 줄로 쉽게 알려줘요"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-PLAN-LINK-NO-FORMAT",
+          "scope": "In PLAN_EXPORT_FILES in packages/runtime/src/index.ts, drop the developer file-format words from the two plan-file links that stay visible on the Studio home ('계획 그림 (SVG)' becomes '계획 그림' and '계획 한 장 요약 (HTML)' becomes '계획 한 장 요약'), keep the (JSON)/(DBML) labels inside the folded 원문 보기 unchanged, and update the expected visible labels in the existing plan-file-labels test.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-plan-file-labels.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime exec vitest run test/studio-plan-file-labels.test.ts",
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화): founder-ux rule 2 '개발자 글자는 원문 보기 안' — packages/runtime/src/index.ts:1238-1239 at 151c134 shows '계획 그림 (SVG)' and '계획 한 장 요약 (HTML)' outside the fold"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-MAP-INTRO-PLAIN",
+          "scope": "In renderPlanMapSection in packages/runtime/src/index.ts, replace the formal 합니다체 intro '왼쪽에서 오른쪽으로 계획의 흐름을 보여줍니다.' with a 해요체 sentence that also says what to do now ('왼쪽에서 오른쪽으로 계획이 어떻게 이어지는지 보여 줘요. 화살표를 따라가며 읽어 보세요.'), and leave the empty-map guide, scroll hint and SVG unchanged, with a new offline regression test.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-map-intro.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime exec vitest run test/studio-map-intro.test.ts",
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화, target 계획 그림): founder-ux rule 1 '무엇을 위한 화면이고 지금 뭘 하면 되는지' — packages/runtime/src/index.ts:1833 at 151c134 reads '왼쪽에서 오른쪽으로 계획의 흐름을 보여줍니다.' with no next action, unlike the 해요체 diagram view intros at index.ts:600-603"
+        },
+        {
+          "taskId": "JUPLAN-PRD-HIDE-EMPTY-SUBSECTIONS",
+          "scope": "In packages/runtime/src/documents.ts, stop the PRD from printing a bare '아직 없음' under each empty 요구사항 priority (must/should/could/wont), 로드맵 horizon (now/next/later) or 목표/비목표 subsection when the same section already has items (omit the empty subsection instead), keep the explained empty-section guide when a whole section is empty, and update the existing documents test.",
+          "files": [
+            "packages/runtime/src/documents.ts",
+            "packages/runtime/test/documents.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime exec vitest run test/documents.test.ts",
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화, target PRD 보기): founder-ux rule 5 '빈 화면은 이유와 다음 행동' — documents.ts groupedSection (line ~49) and goalPolarity (line ~78) at 151c134 print a bare EMPTY for each empty subsection, asserted by documents.test.ts:95-97 ('### could\\n\\n아직 없음')"
         }
       ],
       "qaRuntime": [
