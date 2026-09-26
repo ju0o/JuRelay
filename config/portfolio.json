@@ -12551,6 +12551,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검) … 작은 변경만'; lib.mjs:162 'Returns Map keyword -> [user ids]' (check.mjs only asserts the keys), lib.mjs:57 'reject:*' insert and lib.mjs:65 'left: staff ? Infinity' are not asserted",
           "title": "키워드 알림·사용 한도 검사 보강"
+        },
+        {
+          "taskId": "JUAI-CHECK-DIRECT-ACTIONS",
+          "scope": "Import ADMIN_ACTIONS and DIRECT_ACTIONS into check.mjs and add assertions only (no lib.mjs change): DIRECT_ACTIONS is exactly {answer, set_topic}, every entry in DIRECT_ACTIONS is also in ADMIN_ACTIONS, and none of delete_messages, timeout, create_channel, delete_channel or implement_feature is in DIRECT_ACTIONS, so those always go through a card.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs",
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:47 '- 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다.'"
+        },
+        {
+          "taskId": "JUAI-CHECK-PARSE-EDGES",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) for branches no test covers yet: extractJson returns null for an unbalanced object ('{\"a\":1') and for an invalid balanced one ('{a:1}'); validateAdminPlan returns null for set_topic when topic is missing or blank, cuts string params to 1800 characters and summary to 300, and uses action as the summary when summary is blank; bestFaq returns score >= 0.3 and returns null when min is set above the best match.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs",
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:40 '- `lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)'"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
