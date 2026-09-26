@@ -4344,6 +4344,24 @@
           "title": "보드: 같은 창 여러 번·이미 쓰는 ASUS 다시 묻기·docker 목록 고치기"
         },
         {
+          "taskId": "ACTL-ENV-SSH-WSL",
+          "scope": "Founder 2026-09-26 on ASUS: 'Asus에서 actl 켜면 ssh 환경에 MainPC도 연동 됨?'. From ASUS, `ssh main` reaches Windows MainPC where `tmux ls` fails (no Windows tmux) so envs scan marks it unreachable, yet `ssh main 'wsl -l -q'` (UTF-16) lists Ubuntu and `ssh main 'wsl -d Ubuntu -- tmux ls'` shows live sessions (main: 6 windows). Add environment kind ssh-wsl {target, distro}: scan tries `tmux ls` and, when that fails on a Windows host, lists WSL distros over ssh (skip docker-desktop*) and checks `wsl -d <distro> -- tmux ls`; label 'MainPC 안의 리눅스(Ubuntu)'; tmux_argv(ssh-wsl) = ssh <target> \"wsl -d <distro> -- tmux …\" (one quoted remote arg, as tmux.py does for Windows). Also skip an ssh alias that resolves to this same machine (compare remote `hostname` with local) so ASUS never offers 'ASUS (SSH)' to itself. A down MainPC shows its group amber '꺼져 있거나 연결할 수 없어요' while local panes keep working. Tests with fake runners: Windows host → ssh-wsl candidate; self alias skipped; argv quoting.",
+          "files": [
+            "src/actl/core/sources.py",
+            "src/actl/core/tmux.py",
+            "src/actl/cli.py",
+            "tests/test_env_ssh_wsl.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Supervisor probe from ASUS 2026-09-26 23:0x: ssh main ok; wsl -l → Ubuntu, docker-desktop; wsl -d Ubuntu -- tmux ls → 2 sessions",
+          "dependsOn": [
+            "ACTL-ENV-BOARD-DEDUPE-FIXES"
+          ],
+          "title": "다른 윈도우 PC 안의 리눅스(WSL) 창도 연결 (ASUS → MainPC)"
+        },
+        {
           "taskId": "ACTL-ENV-README",
           "scope": "README.md (and README Korean section if present): a short 'Environments' section for open-source users — works with only local terminals out of the box; `actl envs scan` finds SSH hosts and WSL distros and the board asks before connecting each; `actl envs on|off <id>`; --ssh T still works. Include a Windows → WSL example (codex/claude/opencode inside WSL tmux). No screenshots required.",
           "files": [
