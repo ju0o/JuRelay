@@ -3854,6 +3854,43 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 15:46: 'AI 창 카드마다: 어떤 AI·어느 폴더, 일하는 중/쉬는 중/답 기다림/연결 안 됨, 마지막에 시킨 일 한 줄, 복사할 답 준비 여부'; src/actl/live_card.py:47 reads row.get('last_asked'), but nothing in src/ sets it",
           "title": "마지막에 시킨 일 카드에 보여주기"
+        },
+        {
+          "taskId": "ACTL-TK-CARD-LAST-ASKED",
+          "scope": "In src/actl/gui.py add a pure helper _card_asked_line(row) that returns '마지막에 시킨 일: <first line of row[\"last_asked\"], whitespace collapsed, cut to 40 chars with …>', or '아직 시킨 일 없음' when last_asked is empty or missing, with no pane ids, task ids or English; show it as one extra line under _card_line on each Tk AI window card; add tests/test_gui_card_last_asked.py covering a multi-line prompt, a long prompt, and None.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_card_last_asked.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 Live Pane card: 'AI 창 카드마다 … 마지막에 시킨 일 한 줄'); src/actl/tui.py:255 already sets row['last_asked'], but no gui.py card reads it (git grep last_asked finds only tui.py, state.py, live_card.py)"
+        },
+        {
+          "taskId": "ACTL-WEB-CARD-LAST-ASKED",
+          "scope": "In src/actl/serve.py add 'last_asked' (the row's value, or '' when missing) to each agent in _board_data, and in BOARD_HTML render it in the card's sub line as '마지막에 시킨 일: <first line, cut to 40 chars>' through esc(), or '아직 시킨 일 없음' when empty; add tests/test_serve_card_last_asked.py that checks the _board_data field for a row with and without last_asked and that BOARD_HTML contains both Korean strings.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_card_last_asked.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 Live Pane card: '마지막에 시킨 일 한 줄'); src/actl/serve.py:424-429 _board_data builds agent dicts without last_asked, although tui._rows sets it (src/actl/tui.py:255)"
+        },
+        {
+          "taskId": "ACTL-ROWS-REMOTE-OP-BUDGET",
+          "scope": "Add a test to tests/test_rows_op_budget.py that sets tmux.REMOTE_SSH_TARGET to a fake host, runs tui._rows over 4 detections with the real activity.observe_activity (only subprocess.run and tmux._run faked, so every remote call is counted) and a stubbed extractor, and asserts zero display-message calls, at most 1 git rev-parse call, at most 2 ps calls, and a total of at most 4 + 3 remote calls; if the assertion fails at base, fix the extra calls in src/actl/core/activity.py or src/actl/core/tmux.py without changing the rows they return.",
+          "files": [
+            "tests/test_rows_op_budget.py",
+            "src/actl/core/activity.py",
+            "src/actl/core/tmux.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (Founder choice 2026-09-26: 'add a test that counts wrapper calls per _rows() so the lower number can't creep back up'); BACKLOG.md: '원격 polling fan-out | 증폭 요인 확인 — 측정된 refresh 1회당 원격 작업 19개'. The existing test_rows_uses_pane_snapshot_for_hydration stubs out observe_activity and extract, so it never counts capture-pane, ps or git calls"
         }
       ],
       "qaRuntime": [
