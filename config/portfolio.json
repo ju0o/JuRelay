@@ -7706,6 +7706,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면 — 빠진 확인 항목의 쉬운 설명, founder-ux 규칙 '글자 16px·핵심 숫자는 크게'; base src/render/index.ts:81 renders `p.acceptance_label + \" · \" + p.review_count + \"건\"` and :170 styles h2.request at font-size:16px color:#64748b",
           "title": "빠진 확인 수를 크게 보여줘"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-CLI-RAW-PATHS-FOLDED",
+          "scope": "In scanCommand in src/cli/main.ts, accept the --show-raw/--show-paths switches the same way run/receipt/daily already do. By default, stop printing the '영수증 폴더: <outDir>' line and the raw '<outDir>/SUMMARY.md' path in the '다음:' line. The next line should say instead, in plain Korean, to open 요약 파일(SUMMARY.md), and that its location shows up when the command is run again with --show-raw. Print the folder and SUMMARY.md paths only under '원문 보기 (개발용):' when the switch is given. Keep the count sentence, the 판정 뜻 line and the empty-period wording unchanged. Add [--show-raw] to the scan help line. Update tests/sources-scan-cli.test.ts (lines ~27-28, ~54, ~89) to assert that no path appears by default and that the paths appear with --show-raw, and update the help assertion in tests/daily-cli.test.ts if needed.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-scan-cli.test.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rule 2 (file paths go behind 원문 보기) for juceipt scan/daily/receipt output; JUCEIPT-CLI-RAW-PATHS-FOLDED-R2 folded paths only for run/receipt/daily, so scan still prints '영수증 폴더: ' + outDir (main.ts scanCommand)"
+        },
+        {
+          "taskId": "JUCEIPT-CLI-ERROR-RAW-LINE-FOLDED",
+          "scope": "In the main() catch block and the unknown-command branch of src/cli/main.ts, keep the three plain Korean lines (무슨 일 / 왜 / 할 일). Stop always printing the '원문: <raw message>' line, which shows English text and file paths such as 'Unable to read hooks.ndjson at …', '--since must be a duration such as 24h' or ENOENT paths. Print it only as '원문 보기 (개발용): <raw message>' when argv includes --show-raw or --show-paths. Keep the exit codes as they are (1 for errors, 2 for an unknown command). Update the assertions that expect '원문: ' in tests/daily-cli.test.ts, tests/receipt-cli.test.ts and tests/sources-scan-cli.test.ts so they check the default output has no raw line, and add one case per file showing the raw line with --show-raw. Do not touch the scan skip notice in src/sources.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts",
+            "tests/receipt-cli.test.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rules 2 and 10 (English error text and paths behind 원문 보기; errors in three short lines) for juceipt scan/daily/receipt output; main.ts catch block ends every error with '원문: ' + rawMessage"
         }
       ],
       "skills": {
