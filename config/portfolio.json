@@ -7512,6 +7512,19 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙 '막힘은 노랑' 영수증 보기 화면 점검; src/render/index.ts:14-17 STATE_COLOR cancelled/unknown '#6b7280' (grey) and dark CSS '.state-pill.state-cancelled,.state-pill.state-unknown{color:#cbd5e1…}'",
           "title": "중단·판단 불가 영수증을 주황색으로 표시"
+        },
+        {
+          "taskId": "JUCEIPT-CLI-RAW-PATHS-FOLDED",
+          "scope": "scan·daily·receipt 명령의 기본 출력에서 파일 경로를 숨기고 원문 보기(--show-raw)에서만 보여 주며 평문 한국어 다음 행동은 유지한다.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts",
+            "tests/receipt-cli.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 원문·개발자 정보는 원문 보기로 숨긴다"
         }
       ],
       "skills": {
