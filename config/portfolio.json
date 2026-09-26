@@ -7918,6 +7918,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: '진짜 비개발자도 보면 이해가 되게' — 대상 juceipt 명령 출력(scan, daily)… 영어 작업 제목을 쉬운 한국어 요약으로; founder-ux rule 4 (times relative or local); tests/daily-corpus.test.ts:38 shows repeated '기능 만들기 — 확인 후 받기'",
           "title": "작업 목록을 쉽게 구분해요"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SKIP-RAW-LINE-FOLDED",
+          "scope": "During juceipt scan, keep the plain Korean skip warning but show the '원문: <file path> (English error)' line only when --show-raw/--show-paths is given. Do this by adding an optional showRaw flag to scanSessions in src/sources/scan.ts (the warnings at ~L134 and ~L143), passing it to the unsupported-format warning in src/sources/others.ts (~L105), and setting it from scanCommand in src/cli/main.ts. Update the existing skip-notice test to cover both the default case (no 원문 line) and the show-raw case (원문 line present).",
+          "files": [
+            "src/sources/scan.ts",
+            "src/sources/others.ts",
+            "src/cli/main.ts",
+            "tests/sources-scan.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 비개발자 UX 고도화): founder-ux 규칙 '개발자 글자는 원문 보기 안' — target juceipt scan 명령 출력; base 86f1bb5 src/sources/scan.ts:134 always prints `원문: ${file} (${error.message})` to stderr"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-NEXT-ACTION-NO-RAW-REQUEST",
+          "scope": "In buildPresentation in src/receipt/index.ts, build each human_next_actions text with a new humanActionText(gap) helper keyed on gap.kind, written like the existing remainingItemText (for example requested_not_evidenced → '요청한 결과가 맞는지 직접 열어 보고 확인하세요'). It must not paste the raw English request text that gap.human_action carries in 「…」. Keep gap.human_action unchanged in the reconciler and in 원문 보기, then add a test showing that an English request item no longer shows up in the receipt view's '받기 전 내가 할 일' or in the daily review list.",
+          "files": [
+            "src/receipt/index.ts",
+            "tests/receipt-missing-check-plain.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25): 영수증 보기 화면 — '영어 작업 제목을 쉬운 한국어 요약으로'; base 86f1bb5 src/receipt/index.ts:73-75 copies g.human_action verbatim, and src/reconciler/index.ts:374/383/393/481 embed raw request text '「\" + it.text + \"」', which shows in src/render/index.ts:25 and src/daily/index.ts:130"
         }
       ],
       "skills": {
