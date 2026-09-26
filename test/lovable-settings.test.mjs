@@ -107,6 +107,16 @@ test('storage and settings-file paths sit only under 원문 보기', () => {
   assert.ok(splash.indexOf('{settings.dataRoot}') > splash.indexOf('원문 보기'));
 });
 
+test('update failures keep the raw error out of the toast and under 원문 보기', () => {
+  const sec = appSrc.slice(appSrc.indexOf('function UpdateSection'), appSrc.indexOf('<div className="update-row">'));
+  assert.doesNotMatch(sec, /notify\('err', e instanceof Error/);
+  const row = appSrc.slice(appSrc.indexOf('<div className="update-row">'));
+  const fold = row.indexOf('<summary>원문 보기</summary>');
+  assert.ok(fold > 0 && row.indexOf('{failure}') > fold, 'raw error only inside 원문 보기');
+  assert.ok(row.indexOf('업데이트를 하지 못했어요.') < fold);
+  assert.doesNotMatch(css, /\.update-err\s*\{[^}]*--danger/, 'update failure is amber, not red');
+});
+
 test('settings styles use the Lovable tokens and honour reduced motion', () => {
   const block = css.slice(css.indexOf('/* ── 설정: 실행 환경'));
   for (const s of ['#12151a', '#232830', '#7dd3c0', '#e8c170', '#8b93a1', 'border-radius: 14px', 'fade-slide-in 0.38s', 'JetBrains Mono', 'min-height: 44px', 'prefers-reduced-motion']) {

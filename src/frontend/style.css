@@ -1219,7 +1219,8 @@ h1 { font-size: 22px; }
 .update-avail  { color: var(--accent); font-weight: 700; }
 .update-dl     { color: var(--accent); font-variant-numeric: tabular-nums; }
 .update-ready  { color: var(--accent2, #6cc26c); font-weight: 700; }
-.update-err    { color: var(--danger); }
+.update-err    { color: #e8c170; }
+.update-err p  { margin: 4px 0 0; }
 
 /* ── Control Room ─────────────────────────────────────────── */
 .control-room { flex: 1; min-height: 0; overflow: auto; padding: 24px; }

@@ -2876,12 +2876,16 @@ function SettingsEnvSection({ rows, phase }: { rows: EnvRow[]; phase: Connection
 }
 
 function UpdateSection({ status, notify }: { status: UpdateStatus; notify: (kind: 'ok' | 'err' | 'info', text: string) => void; onOpen?: () => void }): React.ReactElement {
+  // 실패 원문은 알림에 싣지 않고, 이 줄 아래 원문 보기에만 둔다.
+  const [failure, setFailure] = useState<string | null>(null);
   async function run(op: 'update:check' | 'update:download' | 'update:install', okMsg?: string): Promise<void> {
+    setFailure(null);
     try {
       await must({ op });
       if (okMsg) notify('info', okMsg);
     } catch (e) {
-      notify('err', e instanceof Error ? e.message : String(e));
+      setFailure(e instanceof Error ? e.message : String(e));
+      notify('err', '업데이트를 하지 못했어요. 설정 → 업데이트에서 이유를 볼 수 있어요.');
     }
   }
 
@@ -2925,6 +2929,17 @@ function UpdateSection({ status, notify }: { status: UpdateStatus; notify: (kind
   return (
     <div className="update-row">
       {line}
+      {failure !== null && (
+        <div className="update-err" role="alert">
+          <p>업데이트를 하지 못했어요.</p>
+          <p className="muted">인터넷이 끊겼거나 업데이트 서버가 잠시 답하지 않는 것 같아요.</p>
+          <p className="muted">잠시 뒤 아래 버튼을 다시 눌러 주세요.</p>
+          <details>
+            <summary>원문 보기</summary>
+            <pre className="mono" style={{ whiteSpace: 'pre-wrap' }}>{failure}</pre>
+          </details>
+        </div>
+      )}
       <div className="modalbtns" style={{ justifyContent: 'flex-start', marginTop: 8 }}>
         {(status.phase === 'idle' || status.phase === 'none' || status.phase === 'error') && (
           <button className="btn" onClick={() => void run('update:check')}>
