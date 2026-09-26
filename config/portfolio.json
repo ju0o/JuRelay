@@ -8430,6 +8430,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: '영어 작업 제목을 쉬운 한국어 요약으로' — base taskTitle (src/daily/index.ts:20-31) has no group for update/change/rename/remove/delete, so requests like 'Update the changelog' or 'Remove unused files' show only '작업 내용 확인' in scan SUMMARY.md, daily, and the receipt view title",
           "title": "삭제·변경 작업에 맞는 제목 붙이기"
+        },
+        {
+          "taskId": "JUCEIPT-MISSING-CHECK-ENGLISH-SUBJECT",
+          "scope": "In remainingItemText in src/receipt/index.ts, keep the plain Korean lead-in for every gap kind, but when the subject (the request text copied from gap.title) has no Hangul, replace it with the existing taskTitle(subject) from src/daily/index.ts, e.g. 「기능 만들기」. Then the receipt view's 아직 확인되지 않음 list and scan SUMMARY.md's 빠진 확인 line stop showing raw English request text or commands such as 'Add tests and run npm test'. Leave Korean subjects unchanged and keep receipt.acceptance_gaps (shown under 원문 보기) unchanged; add a test with an English gap title that checks the Korean summary is used and the English text is absent from remaining_items.",
+          "files": [
+            "src/receipt/index.ts",
+            "tests/receipt-missing-check-plain.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-missing-check-plain.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 영수증 보기 화면 — '빠진 확인 항목의 쉬운 설명, 영어 작업 제목을 쉬운 한국어 요약으로'; src/receipt/index.ts:126 subject = gap.title.replace(/^[^:]+:\\s*/, '') copies the raw request item text (src/reconciler/index.ts:370/379/389/398/478 build titles with '+ it.text')"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-COST-KNOWN-PLAIN",
+          "scope": "In renderLevel1 of src/render/index.ts, change the known-cost value in the 비용 box from a raw amount plus English currency code (e.g. '0.42 USD') to one plain 해요체 sentence with a Korean currency word (USD→달러, KRW→원, any other code kept as is), e.g. '기록된 비용은 0.42달러예요'. Leave the estimated and unknown texts and Level 2 unchanged, and add a render test that checks the known-cost wording and that 'USD' is gone from the Level 1 markup.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09 (founder-ux: 개발자 글자는 원문 보기 안, 한국어 라벨); src/render/index.ts renderLevel1 costText for status 'known' = (p.cost_summary.amount + ' ' + (p.cost_summary.currency ?? '')).trim()"
         }
       ],
       "skills": {
