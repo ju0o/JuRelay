@@ -329,8 +329,10 @@ function connectionErrorDetail(e: unknown): string | undefined {
 }
 
 /**
- * 상단의 작업 PC 연결 한 줄과 자동 실행 토글.
- * 상태 JSON에 always.mode가 없으면 꺼짐으로 보고, 버튼을 누르면 automationOn을 부른다.
+ * 상단의 작업 PC 연결 한 줄과 자동 실행 버튼.
+ * 버튼 글자는 지금 상태가 아니라 누르면 일어나는 일이다.
+ * always.mode가 없거나 꺼져 있으면 '자동 실행 켜기'이고 automationOn을 부른다.
+ * 이미 켜져 있으면 '자동 실행 끄기'이고 automationOff를 부른다.
  */
 function ConnectionBar(): React.ReactElement {
   const [phase, setPhase] = useState<ConnectionPhase>('checking');
@@ -370,7 +372,7 @@ function ConnectionBar(): React.ReactElement {
 
   async function onToggle(): Promise<void> {
     if (busy) return;
-    // always.mode가 없으면 enabled가 null이다. 꺼짐으로 보고 automationOn을 부른다.
+    // 글자와 같은 동작만 부른다. null·꺼짐 → automationOn, 켜짐 → automationOff.
     const op = automationToggleOp(enabled);
     const turningOn = op === 'controlRoom:automationOn';
     setBusy(true);

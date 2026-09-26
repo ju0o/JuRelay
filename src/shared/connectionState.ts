@@ -95,20 +95,22 @@ export function connectionViewFromLoadError(message: string, previousEnabled: bo
 }
 
 /**
- * Toggle button label.
+ * Toggle button label: the Korean verb for what the click will do.
  * '자동 실행 확인 중' only before the first answer.
- * A missing mode (null) after an answer is off, so the button reads '자동 실행 켜기'.
+ * Unknown (null) and off both read '자동 실행 켜기'.
+ * Already on reads '자동 실행 끄기' — the same choice as automationToggleOp.
  */
 export function automationToggleLabel(enabled: boolean | null, phase: ConnectionPhase): string {
   if (phase === 'checking') return '자동 실행 확인 중';
-  if (enabled === true) return '자동 실행 켜짐';
-  if (enabled === false) return '자동 실행 꺼짐';
+  if (enabled === true) return '자동 실행 끄기';
   return '자동 실행 켜기';
 }
 
 /**
+ * The click does what the button says.
  * Unknown (null) is off, so the click turns automation on.
  * 상태가 비어 있어도 여기서 멈추지 않고 automationOn을 부른다.
+ * 이미 켜져 있으면 버튼 글자 '자동 실행 끄기'와 같이 automationOff를 부른다.
  */
 export function automationToggleOp(enabled: boolean | null): AutomationOp {
   return enabled === true ? 'controlRoom:automationOff' : 'controlRoom:automationOn';

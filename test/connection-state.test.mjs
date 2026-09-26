@@ -63,15 +63,20 @@ test("a failed screen-data load becomes the switch sentence", () => {
 test("automationToggleLabel(null, 'ok') offers to turn automation on", () => {
   assert.equal(automationToggleLabel(null, "ok"), "자동 실행 켜기");
   assert.equal(automationToggleLabel(null, "checking"), "자동 실행 확인 중");
-  assert.equal(automationToggleLabel(true, "ok"), "자동 실행 켜짐");
-  assert.equal(automationToggleLabel(false, "ok"), "자동 실행 꺼짐");
+  assert.equal(automationToggleLabel(true, "ok"), "자동 실행 끄기");
+  assert.equal(automationToggleLabel(false, "ok"), "자동 실행 켜기");
   assert.equal(automationToggleLabel(null, "offline"), "자동 실행 켜기");
   assert.equal(automationToggleLabel(null, "error"), "자동 실행 켜기");
+  assert.equal(automationToggleLabel(true, "ok").includes("켜짐"), false);
+  assert.equal(automationToggleLabel(false, "ok").includes("꺼짐"), false);
 });
 
-test("null mode calls automationOn, a known on state calls automationOff", () => {
+test("the click matches the action label, and null calls automationOn", () => {
+  assert.equal(automationToggleLabel(null, "ok"), "자동 실행 켜기");
   assert.equal(automationToggleOp(null), "controlRoom:automationOn");
+  assert.equal(automationToggleLabel(false, "ok"), "자동 실행 켜기");
   assert.equal(automationToggleOp(false), "controlRoom:automationOn");
+  assert.equal(automationToggleLabel(true, "ok"), "자동 실행 끄기");
   assert.equal(automationToggleOp(true), "controlRoom:automationOff");
   assert.equal(automationResultText("controlRoom:automationOn"), "켰어요 ✓");
   assert.equal(automationResultText("controlRoom:automationOff"), "껐어요 ✓");
