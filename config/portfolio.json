@@ -10030,6 +10030,22 @@
           ],
           "ssotEvidence": "Founder 2026-09-26: 'Agent-Relay안에서 내가 켰을 때 프로젝트 선택도 있음, 또는 뺄 프로젝트 및 다른 추가할 프로젝트 이런 기능들' + 'ASUS 켜면 항상 프로젝트 설정'. Backend already exists: `night board --json` lanes[] carry id, name, paused; `night roadmap pause <id>` / `night roadmap resume <id>` (persists across reboot, the runner skips paused lanes); `night lane add <id> <git repo path> [name]` lays a new rail (the PM plans its first tasks on the next idle re-plan).",
           "title": "허브: 돌릴 프로젝트 고르기·추가하기"
+        },
+        {
+          "taskId": "JCAPP-RELAY-LANE-ONE-NOW-LINE-R2",
+          "scope": "From base f89279c, in operator/public/app.js relayLaneView (진行 lane, ~line 1903) delete the `now` relay-now `<p>` (built at ~1913 from STAGE_KO + who) and its use in the return string, along with the who-line locals only it used (title/guess/guessed/who, if nothing else reads them), so the live card is the only line saying what the lane is doing; also fix the stale comments above homeWorking that say 진행/relayLaneView repeats the line: line 616 ('kept as the tested reference line that 진행 repeats') and line 623 ('relayLaneView says the same line (duplicated there…)') should say homeWorking is the only place that line is built; leave homeWorking, STAGE_KO and aiName unchanged; in test/home-working-line.test.mjs (lines 49-50, 71, 94) and test/agent-relay-module.test.mjs (line 169), replace each relay-now includes-pin with `!html.includes('relay-now')` plus asserts that the same html contains the lane's title (e.g. '대화 빈 화면 한 줄로', '영수증 화면 쉽게') and the AI name the live card shows, so these tests fail on the old code (relay-now present) and pass on the new; keep line 51's IDLE assert.",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs",
+            "test/home-working-line.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/home-working-line.test.mjs",
+            "node --test test/lovable-live-cards.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; operator/public/app.js:1911 at f9121ad renders relay-now with STAGE_KO ('작업'/'검수') directly before liveProjectCard, which uses '만드는'/'검사하는'"
         }
       ],
       "skills": {
