@@ -10870,6 +10870,34 @@
             "node --test tests/*.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior. At 2e38efa, scripts/e2e.sh checks a stale repository-status-file (run_stale) and a stale agent-relay-board (run_relay_stale), but has no step for a stale JuCeipt receipt, which src/adapters/juceipt.mjs marks with reason 'stale'."
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-PLAN-STALE-STEP",
+          "scope": "Add step run_plan_stale to scripts/e2e.sh right after run_receipt_stale, with label '계획 상태 오래됨 안내' and next command board, modelled on run_receipt_stale. It writes a JuPlan status {projectId:'old', status:'READY', observedAt one hour ago} with a single juplan-status entry (freshnessMs 1). It passes only when exit is 0, the one row is old/READY/stale true/reason stale, and stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: old(stale: 관찰한 지 너무 오래됐어요) — README 처음 쓰는 법의 reason 표를 보세요'. Add it to the step loop, labels and commands, and sync docs/getting-started.md (the example JSON line, the step list on line 30, and a new bullet after run-receipt-stale).",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; tests/status-board-cli.test.mjs at 8b38105 'names a JuPlan status observed too long ago with the plain-Korean stale reason' has no matching E2E step (only run_relay_stale/run_receipt_stale exist)"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-MALFORMED-PLAN-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names a receipt that is a JSON array with the plain-Korean malformed reason'. It writes [] as current.json for a juplan-status entry 'arr', then asserts exit 0, rows [['arr','UNKNOWN',true,'malformed','juplan/arr']], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: arr(malformed: 저장된 값이 JSON 객체가 아니에요) — README 처음 쓰는 법의 reason 표를 보세요\\n'. Test only, no source changes.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target, no new product behavior; src/adapters/juplan.mjs:23 at 8b38105 `if (!object(saved)) return { reason: 'malformed' };` has no CLI line test (only JuCeipt and repository-status-file malformed are covered)"
         }
       ],
       "qaRuntime": [
