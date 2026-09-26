@@ -8046,6 +8046,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target, with no runtime integration; README.md §3 sends readers to docs/getting-started.md for '`sourceKind` 네 종류', and src/project-registry.mjs:6 `const sourceKinds = new Set(['repository-status-file', 'juplan-status', 'juceipt-receipt', 'agent-relay-board'])` has no test tying it to that table",
           "title": "프로젝트 종류 안내가 최신 상태인지 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-PROJECT-ID-USAGE",
+          "scope": "오프라인 E2E에 --project-id 값 누락 오류를 추가하고 한국어 시작 문서의 단계·안내를 동기화한다.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-docs-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-TEMP-CLEANUP-CHECK",
+          "scope": "오프라인 E2E가 성공과 실패 뒤 임시 폴더를 남기지 않는지 독립 테스트로 확인한다.",
+          "files": [
+            "tests/e2e-cleanup.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-cleanup.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "qaRuntime": [
