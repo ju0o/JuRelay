@@ -15278,6 +15278,19 @@
           ],
           "ssotEvidence": "docs/decisions/UNPLANNED_WORK_01_DECISION.md:86 '3. Finish M2 PR #4 value review.' vs docs/operations/PM_STATUS_BOARD.md:155 'M2 is closed by the A-14 GO decision.' and docs/validation/M3_DAILY_VALUE_VALIDATION.md §7 'The evidence-bounded result is `UNDECIDED` (`0 joined rows`); the PM records the M3 decision separately.'",
           "title": "현재 진행 상태를 한눈에 안내"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-DEFER-ON-JOIN-EVIDENCE",
+          "scope": "Record the M3 decision as DEFER using only the evidence of which rows have both a Claude final and a Receipt: 0 of the Founder's seven register rows have both, so the GO bar ('clear actionable value') is not shown and no duplication evidence exists to support KILL. Add D-023 to docs/decisions/DECISION_LOG.md in the same format as D-022 (Date 2026-09-26, Status ACCEPTED, pointing to docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.2/§7). Update only the §7 'M3 milestone decision' and 'Next authorized step' rows of the validation doc to point to D-023, and leave the §7 'Proposed mapping' UNDECIDED row as it is. In docs/operations/PM_STATUS_BOARD.md, change only the M3 milestone-table state cell (line 58) and next-move items 1–2 (lines 173–174) and 1/4 (lines 264/267) to 'M3 DEFER (D-023): revisit when a committed corpus joins Claude finals and Receipts'. Do not change B1/B2/M4 gates or any other file.",
+          "files": [
+            "docs/decisions/DECISION_LOG.md",
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md",
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Reconcile which captured tasks actually have both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL on only that evidence'; docs/validation/M3_DAILY_VALUE_VALIDATION.md §7 'Next authorized step': 'The evidence-bounded result is `UNDECIDED` (`0 joined rows`); the PM records the M3 decision separately.'; PM_STATUS_BOARD.md:174 '2. Record the M3 GO / DEFER / KILL decision.'"
         }
       ]
     },
