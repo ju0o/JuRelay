@@ -9555,6 +9555,32 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; src/project-status.mjs (352c569) loadAgentRelayBoard returns unknownEntry('invalid') when projectAgentRelayBoard throws, and scripts/status-board.mjs:11 maps invalid to '상태 파일 모양이 깨졌어요', but no CLI test or E2E step checks that line yet"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-BOARD-KIND",
+          "scope": "오프라인 E2E에 Agent Relay 보드 kind 오류 시 UNKNOWN·한국어 안내 검사를 추가하고 상세 시작 문서와 단계 동기화를 맞춘다.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md",
+            "tests/e2e-docs-sync.test.mjs"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-docs-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target; no runtime integration or new product behavior"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-FAILURE-HINT",
+          "scope": "README 한국어 빠른 시작에 E2E 실패 시 message를 읽고 next 명령을 실행하는 한 줄 안내를 추가하고 기존 동기 검사로 문구를 고정한다.",
+          "files": [
+            "README.md",
+            "tests/quickstart-next-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/quickstart-next-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target; no runtime integration or new product behavior"
         }
       ],
       "qaRuntime": [
