@@ -11529,6 +11529,35 @@
             "node --test test/"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: founder-ux 규칙 '개발자 글자는 원문 보기 안'); founder-ux Skill rule 2 'Keep all of these behind one folded \"원문 보기\"'"
+        },
+        {
+          "taskId": "JCAPP-GATE-RESUME-WORDS-PLAIN",
+          "scope": "The 승인 tab's Human Gate answer and 다음 작업 시작 flows should stop showing raw lane ids. Today the confirm sentence reads 'jucontroler-app 프로젝트의 사람 확인에 …' or '… 다음 작업을 시작할게요.' and the success line reads '다음 작업을 시작했어요: jucontroler-app'. Build both sentences from the Korean project name with `PROJECT_NAMES[project] || project`, the same way laneChainSentence and laneSkillsSentence already do: export gateAnswerSentence and laneResumeSentence from lib/relayBoard.mjs, which reads PROJECT_NAMES from app.js. Have operator/server.mjs import them instead of its own copies, so the word-for-word server check still matches. Make app.js build the same words, and make the resume success line '다음 작업을 시작했어요 ✓ · <Korean name>'. Update the control-tower pins so the UI and server sentences still agree, and add one assert that no raw id appears for a mapped lane.",
+          "files": [
+            "lib/relayBoard.mjs",
+            "operator/server.mjs",
+            "operator/public/app.js",
+            "test/control-tower.test.mjs",
+            "test/readable-text.test.mjs"
+          ],
+          "tests": [
+            "node --test test/control-tower.test.mjs test/readable-text.test.mjs test/inline-actions.test.mjs test/home-hub.test.mjs test/lane-skills-api.test.mjs",
+            "node scripts/test-all.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: 승인 탭 … 사람 확인 카드의 코드명); founder-ux rule 2 'No developer text on the surface' and the Buttons rule 7 result line"
+        },
+        {
+          "taskId": "JCAPP-ERRORS-PLAIN-GATE-RESUME",
+          "scope": "In operator/public/app.js plainError, add plain-Korean messages for the gate, resume and hold refusals the server already sends. Today they all fall through to the generic '처리하지 못했어요'. The messages: 'gate is not open' → '이미 답한 확인이에요. 새로 고치면 목록에서 사라져요.'; 'lane is not paused' → '이미 다시 시작된 프로젝트예요. 새로 고치면 바뀐 상태가 보여요.'; 'optionIndex must be a listed option' → '고를 수 없는 답이에요. 새로 고친 뒤 다시 골라 주세요.'; 'roadmap resume refused' or '(gate list|gate answer|roadmap resume) failed' → '작업 관리 도구가 응답하지 않았어요. 잠시 후 다시 해 주세요.'. Put the new entries before the generic fallback, and keep Korean pass-through and the existing entries unchanged. Add asserts for each new mapping, plus one assert that no English text reaches the failure line.",
+          "files": [
+            "operator/public/app.js",
+            "test/errors-plain.test.mjs"
+          ],
+          "tests": [
+            "node --test test/errors-plain.test.mjs test/inline-actions.test.mjs",
+            "node scripts/test-all.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: 오류 3줄, 누르면 1초 안에 결과 문장); founder-ux rule 10 'Explain every error in three short lines: what happened, why …, and what to do'"
         }
       ],
       "skills": {
