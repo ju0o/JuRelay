@@ -18532,6 +18532,28 @@
           ],
           "ssotEvidence": "check.mjs:11 checks ROLES key uniqueness and check.mjs:14-15 checks CHANNELS name uniqueness, but no assertion checks ROLES name uniqueness",
           "title": "역할 이름이 겹치지 않게 관리"
+        },
+        {
+          "taskId": "JUAI-CHECK-CATEGORY-INTEGRITY",
+          "scope": "Add check.mjs assertions that category names are non-empty and unique, every category has channels, and every declared category channel key maps to exactly one CHANNELS entry.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:34-40 \"layout.mjs 서버 구조(역할·채널·포럼 태그·입장 질문·안내문)를 데이터로\""
+        },
+        {
+          "taskId": "JUAI-CHECK-ONBOARDING-OPTIONS",
+          "scope": "Add check.mjs assertions that each onboarding question has unique non-empty option titles and each option has a valid roles array before setup sends it to Discord.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:34-40 \"setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
