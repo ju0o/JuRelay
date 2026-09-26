@@ -2313,6 +2313,60 @@
           ],
           "ssotEvidence": "MainPC Tester vfinal0926 (F:\\MainPC_Archive\\AI_Reports\\Apps\\AgentRelay-0.3.102\\tester-vfinal0926): PNG shows loading screen, .json text shows the loaded screen; Founder memory: captures must be eyeballed",
           "title": "자동 시험 캡처가 실제 화면을 찍도록"
+        },
+        {
+          "taskId": "AGENTRELAY-RULE-EDIT-REAL",
+          "scope": "ApprovalRuleCard.saveEdit (src/frontend/approvals.tsx) calls controlRoom:approvalAdd, so 고치기 added a duplicate rule (A-30) and then showed '이 규칙을 고치지 못했어요' because `approvals add` printed plain text to runSshJson. Add controlRoom:approvalEdit (id validated ^A-\\d{2,4}$, summary via the existing assertApprovalSummary) running `night approvals edit <id> <summary> --json`, and controlRoom:approvalRemove running `approvals remove <id> --json`; pass `--json` to the existing approvalAdd too (the CLI now answers {kind, ok, rule} JSON for add/edit/remove with --json). 고치기 uses approvalEdit with the rule id and shows '고쳤어요 ✓'; 지우기 uses approvalRemove. Tests: argv built for edit/remove/add (fake exec), and that saveEdit never calls approvalAdd.",
+          "files": [
+            "src/backend/controlRoom.ts",
+            "src/backend/main.ts",
+            "src/frontend/approvals.tsx",
+            "test/rule-edit-real.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 using the new Agent Relay app on MainPC: '규칙 수정하면 이 규칙을 고치지 못했어요 … 이렇게 뜸' (the edit had silently created duplicate A-30; supervisor removed it and applied the edit to A-09).",
+          "title": "승인 규칙 고치기가 진짜 고치기로"
+        },
+        {
+          "taskId": "AGENTRELAY-WORKLOG-AUTO",
+          "scope": "작업 기록 is still the old manual notebook (paste prompt / paste result), so nothing appears while the lanes work. Add at the top of 작업 기록 an automatic list for the chosen date built from the existing board call (done[] = lane, taskId, Korean title, at) plus each lane's channel messages: one row per finished task '프로젝트 · 제목 · 시각', expanding to '지시 → 결과' (scope sentence → result summary / QA verdict line in plain Korean, raw under 원문 보기) with [복사]→'복사했어요 ✓'. The old manual notebook moves under a folded '직접 적는 기록 (예전 방식)'. Refresh every 30s. Pure helpers + test with a board fixture (rows per date, newest first, no raw ids on the surface).",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/frontend/worklog.tsx",
+            "src/shared/worklog.ts",
+            "test/worklog-auto.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 using the new Agent Relay app on MainPC: '작업기록도 지금 작업중인데 왜 안 남음?'",
+          "title": "작업 기록에 자동 작업이 저절로 남게"
+        },
+        {
+          "taskId": "AGENTRELAY-CONTROL-ROOM-SIMPLE",
+          "scope": "관제실 is too long. New order, nothing else on the first screen: (1) one plain status sentence card — '지금 N개 프로젝트가 일하는 중 · 대표님이 하실 일 없어요' or amber '대표님이 고를 것 N개' with [고르기]; (2) one compact row per project (name · 지금 하는 일 one line · state chip 일하는 중/쉬는 중/확인 필요), tap to expand the existing full card; (3) only the holds that need the Founder (not auto-proceeding ones), max 3 with '더 보기'. Move 오늘 끝난 일 / AI 배정 / 토큰 감지 / 실행 환경 / AI 자리 / 4 stat tiles into one folded '자세히 보기' section below (keep every feature reachable). The first-run 3-step guide shows only until dismissed. Keep IPC calls unchanged. Pure view-model helper (status sentence, row list, founder-needed holds) + test with a board fixture.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/style.css",
+            "src/shared/controlRoomSimple.ts",
+            "test/control-room-simple.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 using the new Agent Relay app on MainPC: '대시보드 관제실을 조금 더 간략하게 줄일 필요' + '지금은 Agent-Relay가 더 간략하고 편안한 구조가 아님' (founder-ux: KakaoTalk/Toss-level ease).",
+          "dependsOn": [
+            "AGENTRELAY-POLISH-SEATS-MATCH"
+          ],
+          "title": "관제실을 간단하고 편하게 (한 화면에 꼭 필요한 것만)"
         }
       ],
       "qaRuntime": [
