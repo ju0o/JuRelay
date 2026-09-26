@@ -13905,6 +13905,18 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs: /** Split for Discord's 2000-char limit, preferring line breaks, never breaking a ``` block open. */ export function chunk(text, max = 1900)"
+        },
+        {
+          "taskId": "JUAI-CHECK-PRUNE-BAD-DATE",
+          "scope": "Add check.mjs assertions only (lib.mjs stays as is), on a fresh in-memory DB built from SCHEMA and placed after the existing pruneState blocks: a prefixed kv key with an impossible date ('done:2026-13-45') and a usage row with day '2026-02-30' are handled without throwing, and the kv key is kept because Date.parse gives NaN, while a valid old 'done:2026-01-01' key in the same DB is still deleted.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs olderThan: 'const at = Date.parse(`${date}T00:00:00Z`); return Number.isFinite(at) && at < now - days * DAY_MS;'"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
