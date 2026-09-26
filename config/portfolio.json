@@ -11281,6 +11281,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): the hub home carries the Live status card with 대표님 할 일 (없음/확인 필요/결정 필요/설정 필요); JCAPP-HOME-CALM-TRUTH: '홈 top line never says 지금 하실 일이 없어요 while a hold … or open gate exists'. liveCardModel at 67b4933 marks stage 5 / HUMAN_GATE lanes 결정 필요, but home() calm checks only holds and /api gates.",
           "title": "결정할 일이 있으면 홈에서도 알려주기"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-NOTHING-TO-CHECK-CALM",
+          "scope": "In operator/public/app.js liveCardModel (~line 532), when a lane has no running task and nothing finished yet (확인하지 못함 · '확인할 작업이 없어요'), give the 확인 상태 chip tone 'muted' instead of 'warn', so amber stays reserved for things that need a look; the running-before-검사 case ('아직 검사 전'), 일부 확인 and 확인됨 stay unchanged, and the lovable-live-cards assert at line 102 plus a new html assert for live-chip--muted are updated to match.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-live-cards.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-live-cards.test.mjs",
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만)'; founder-ux rule 11 'amber = needs a look'"
+        },
+        {
+          "taskId": "JCAPP-HOME-AI-WINDOWS-BUSY-FIRST",
+          "scope": "In operator/public/app.js relayPanesPanel, on the 홈 branch only (limit set), order the agent cards before slice(0, limit) with a stable sort: 복사할 답 있음 (ready) first, then 일하는 중 (working), then 답 기다림, then the rest, so the three 홈 cards show the windows the Founder cares about; the 진행 full panel order, '일하는 창 N개', '모두 보기 (N개)' and card markup stay unchanged, with a new test in lovable-home-order.test.mjs showing a ready pane and a working pane listed 4th and 5th now appear among the three 홈 cards.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-home-order.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-home-order.test.mjs",
+            "node --test test/lovable-ai-windows.test.mjs",
+            "node --test test/actl-panes-plain.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '허브 홈과 진행 탭에 ... (2) actl AI 창 카드 — ... 기존 /api/panes'; founder-ux Live status card: actl card shows '일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨' and 'whether an answer is ready to copy'"
         }
       ],
       "skills": {
