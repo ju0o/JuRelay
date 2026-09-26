@@ -14777,6 +14777,30 @@
             "JCAPP-TESTER-RUN-BUTTON"
           ],
           "title": "프로젝트 점검에서 [오케이 승인] 누르기"
+        },
+        {
+          "taskId": "JCAPP-README-VIDEO-MEDIA",
+          "scope": "Copy the approved 30s promo video and its thumbnail into docs/media/ so the README link (already wired) resolves",
+          "files": [
+            "docs/media/jucontroler-30s.mp4",
+            "docs/media/jucontroler-30s.jpg"
+          ],
+          "tests": [
+            "node -e \"const fs=require('fs');['docs/media/jucontroler-30s.mp4','docs/media/jucontroler-30s.jpg'].forEach(p=>{if(!fs.existsSync(p)||fs.statSync(p).size===0)throw new Error(p)})\""
+          ],
+          "ssotEvidence": "README.md:7 links docs/media/jucontroler-30s.mp4 and .jpg, absent from the repo at 5d72cd0fc7a6aa7eb77180e8e37f4875170d111a; backlog JCAPP-README-VIDEO (planned)"
+        },
+        {
+          "taskId": "JCAPP-TOPLINE-GATE-PRIORITY",
+          "scope": "Make relayTopLine's board-level 대표님 할 일 priority order match liveCardModel's per-lane order (gated > open hold > paused) so the Progress top banner never names a different urgent reason than a lane's own live card",
+          "files": [
+            "operator/public/app.js",
+            "test/relay-top-line.test.mjs"
+          ],
+          "tests": [
+            "node --test test/relay-top-line.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: one shared live-status projection for Home and Progress incl. founder action; operator/public/app.js:526-529 (liveCardModel: gated > open hold > paused) vs app.js:2165-2173 (relayTopLine: open hold > gated > paused)"
         }
       ],
       "skills": {
