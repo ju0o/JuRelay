@@ -11373,6 +11373,28 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target",
           "title": "오프라인 사용 준비 한눈에 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-DOCS-LINKS-OFFLINE-ACCEPTANCE",
+          "scope": "Add docs/offline-acceptance.md to the DOCS array in tests/docs-links.test.mjs so its relative links and anchors are checked the same way README.md and docs/getting-started.md already are.",
+          "files": [
+            "tests/docs-links.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/docs-links.test.mjs"
+          ],
+          "ssotEvidence": "tests/docs-links.test.mjs:5 const DOCS = ['README.md', 'docs/getting-started.md'] omits docs/offline-acceptance.md, which has 4 relative/anchor links not checked by any test; Founder direction 2026-09-26 (offline E2E + Korean Quickstart bounded acceptance target)"
+        },
+        {
+          "taskId": "JUCONTROLER-OFFLINE-ACCEPTANCE-COMMANDS-SYNC",
+          "scope": "Add one offline test, tests/offline-acceptance-sync.test.mjs, that checks each command quoted in docs/offline-acceptance.md's checklist against the real commands/usage strings defined in scripts/e2e.sh and scripts/status-board.mjs, modelled on the existing regex-extraction pattern in tests/quickstart-next-sync.test.mjs.",
+          "files": [
+            "tests/offline-acceptance-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/offline-acceptance-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/offline-acceptance.md quotes bash scripts/e2e.sh, node --test tests/*.test.mjs, node scripts/status-board.mjs registry.json [--project-id my-project], --help/-h with no test verifying them against scripts/e2e.sh's const tests/const board or status-board.mjs:33 usage string; Founder direction 2026-09-26 (offline E2E + Korean Quickstart bounded acceptance target)"
         }
       ],
       "qaRuntime": [
