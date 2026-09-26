@@ -18206,6 +18206,28 @@
           ],
           "ssotEvidence": "db.mjs:23 kvSet: .run(key, JSON.stringify(value)) — verified kvSet(db,'u',undefined) throws 'Provided value cannot be bound to SQLite parameter 2'",
           "title": "잘못된 저장값은 오류로 막기"
+        },
+        {
+          "taskId": "JUAI-CHECK-BESTFAQ-TIE",
+          "scope": "Add a check.mjs assertion only (no lib.mjs change) documenting that bestFaq resolves an exact score tie between two rows by keeping the later row, since its loop condition is `s >= score` not `s > score`.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:156-158 `let best = null, score = min; for (const r of rows) { const s = similarity(...); if (s >= score) { best = r; score = s; } }` — no existing check.mjs case has two rows with an identical score"
+        },
+        {
+          "taskId": "JUAI-CHECK-QUOTA-MSG-BONUS-CONST",
+          "scope": "Add a check.mjs assertion only (no lib.mjs change) that quotaMessage's 'daily' text always cites the module-level LIMITS.bonusMax regardless of the (possibly customLimits) bonusMax used to produce the quota result passed in.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:77 `daily: ... 하루 최대 ${LIMITS.bonusMax}회 ...` reads the outer LIMITS constant, not a limits value carried on q — untested with a customLimits-produced daily result"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
