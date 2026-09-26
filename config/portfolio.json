@@ -5365,6 +5365,50 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 (founder-ux rule 12: 글자 16px 이상); index.ts:929 STUDIO_STYLE still has h3{font-size:.95rem;...}",
           "title": "작은 제목 글씨 더 크게 키우기"
+        },
+        {
+          "taskId": "JUPLAN-PRD-DOC-KOREAN-WORDS",
+          "scope": "Remove the English enum words still visible in Founder documents: show the PRD 로드맵 subheadings now/next/later as 지금/다음/나중 (in renderDocViewPage, next to the existing must/should/could/wont heading mapping); show the PRD 제약 detail Constraint.payload.kind technical/business/legal/resource as 기술/사업/법률/자원 in documents.ts; drop '(emits/consumes)' and '(kind)' from the api and qa-plan table headers so they read 방향 and 종류. Update the documents.test.ts assertions that pin the old header strings, and add a test that the /view/docs/prd page and the api and qa-plan markdown contain none of these English words.",
+          "files": [
+            "packages/runtime/src/documents.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/documents.test.ts",
+            "packages/runtime/test/prd-doc-korean-words.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: 비개발자 UX 고도화 — founder-ux rule 2/3 (enum words and English labels never on the surface), target PRD/WBS/ERD/SSOT 보기"
+        },
+        {
+          "taskId": "JUPLAN-PLAN-MAP-TEXT-16PX",
+          "scope": "Raise the plan map SVG text from 10–11px to 16px: in STUDIO_STYLE set .plan-map .map-label, .map-type and .map-column to 16px; in renderPlanMapSvg call planMapTextFit(short, 16); grow PLAN_MAP_NODE_WIDTH (for example 240), PLAN_MAP_NODE_HEIGHT (at least 64) and PLAN_MAP_HEADER_HEIGHT, and move the label, type and column-title y offsets so both lines sit inside the box without overlapping. PLAN_MAP_METRICS must still reflect the constants. Add a regression test that every map text class is at least 16px and that both text baselines fall inside the box height.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-plan-map-text-size.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '글자 16px·버튼 44px', target 'JuPlan Studio 화면(계획 그림 …)'; today STUDIO_STYLE has .map-label 11px, .map-type 10px, .map-column 11px"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-CHANGE-DONE-LINE",
+          "scope": "After a chat change is applied or undone, the Studio live refresh currently tells only screen readers (sr-only #map-live), and removed items leave no sign at all. Add a hidden visible teal notice outside the data-live sections (for example <p id=\"refresh-done\" role=\"status\" hidden>). In STUDIO_LIVE_SECTIONS_SCRIPT, compare the map node ids before and after each successful swap and unhide one plain line such as '계획이 바뀌었어요 ✓ 새 항목 2개 · 빠진 항목 1개', leaving out a zero side. Keep it hidden when nothing changed, and hide it whenever the refresh-fail notice shows. Add string-based and served-page regression tests in the style of studio-live-sections.test.ts.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-change-done-line.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: target '대화로 바꾸기 → 미리보기 → 적용 → 되돌리기', founder-ux rule '누르면 1초 안에 결과 문장'; Founder 2026-09-24 A-24 'live refresh with gentle motion'"
         }
       ],
       "qaRuntime": [
