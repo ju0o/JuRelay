@@ -385,7 +385,7 @@ function planFailure(what: string, e: unknown, retry: () => void): PlanFailure {
   };
 }
 
-export function PlanStudio({ onClose, initialProject }: { onClose: () => void; initialProject?: string }): React.ReactElement {
+export function PlanStudio({ initialProject }: { initialProject?: string }): React.ReactElement {
   const [lanes, setLanes] = useState<BoardLane[]>([]);
   const [projects, setProjects] = useState<string[]>([]);
   const [project, setProject] = useState(initialProject ?? 'agent-relay');
@@ -658,13 +658,6 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
 
   return (
     <main className="control-room plan-studio">
-      <div className="control-room-head">
-        <div>
-          <h1>계획</h1>
-          <p className="muted">목표와 작업 순서를 보고, PM에게 바꿔 달라고 말할 수 있어요.</p>
-        </div>
-        <button className="btn" onClick={onClose}>닫기</button>
-      </div>
       {shownFailure && <div className="flash warn" role="alert" style={{ flexDirection: 'column', alignItems: 'flex-start', background: 'color-mix(in srgb, var(--warn) 12%, transparent)', borderColor: 'var(--warn)' }}>
         <p><strong>{shownFailure.what}</strong></p>
         <p>{shownFailure.why}</p>

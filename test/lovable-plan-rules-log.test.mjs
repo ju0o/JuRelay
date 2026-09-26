@@ -172,7 +172,8 @@ test('work log groups real runs by local date and copies the line', async () => 
   assert.doesNotMatch(text, /2026-09-26|HOLD|folder/);
   assert.match(appSrc, /recordLogGroups/);
   assert.match(appSrc, /op: 'run:read'/);
-  assert.match(appSrc, /작업 기록 — AI에게 준 지시와 받은 결과를 날짜별로 모아 둬요/);
+  assert.match(appSrc, /<p className="shell-lead">\{pageCopy\.lead\}<\/p>/);
+  assert.doesNotMatch(appSrc, /<h2>작업 기록/);
 });
 
 test('the three screens use the dark reference look and stay on a phone', () => {

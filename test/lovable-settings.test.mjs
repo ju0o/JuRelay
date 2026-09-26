@@ -87,7 +87,7 @@ test('동시에 일하는 AI 수 comes from board.capacity, never guessed', () =
 });
 
 test('settings page keeps update, 저장 폴더, 프로젝트 관리 and 고급 (개발용) reachable', () => {
-  const page = appSrc.slice(appSrc.indexOf('<div className="settings-page">'), appSrc.indexOf('작업 기록 — AI에게'));
+  const page = appSrc.slice(appSrc.indexOf('<div className="settings-page">'), appSrc.indexOf('<AutoWorklog />'));
   for (const s of ['<SettingsEnvSection', '동시에 일하는 AI 수', '<UpdateSection', '저장 폴더', '<ProjectManager />', '고급 (개발용)', '개발 도구']) {
     assert.ok(page.includes(s), `missing ${s}`);
   }
@@ -96,7 +96,7 @@ test('settings page keeps update, 저장 폴더, 프로젝트 관리 and 고급 
 });
 
 test('storage and settings-file paths sit only under 원문 보기', () => {
-  const page = appSrc.slice(appSrc.indexOf('<div className="settings-page">'), appSrc.indexOf('작업 기록 — AI에게'));
+  const page = appSrc.slice(appSrc.indexOf('<div className="settings-page">'), appSrc.indexOf('<AutoWorklog />'));
   const raw = page.indexOf('<summary>원문 보기</summary>');
   assert.ok(raw > 0, 'raw fold exists');
   for (const s of ['{settings.dataRoot ||', '{settings.settingsFile}']) {

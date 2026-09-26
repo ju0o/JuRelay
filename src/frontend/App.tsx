@@ -338,7 +338,7 @@ class ErrorBoundary extends Component<{ children: React.ReactNode }, { err: stri
 
 // ── 시작 화면 패널 (Automated Tester `--view=` 지원용, App.tsx 내장) ──────────
 // 승인 규칙: 기존 controlRoom:approvals 읽기 전용 조회 결과를 그대로 보여준다.
-function ApprovalsPanel({ onClose }: { onClose: () => void }): React.ReactElement {
+function ApprovalsPanel(): React.ReactElement {
   const [items, setItems] = useState<unknown>(null);
   const [failure, setFailure] = useState<{ lines: [string, string, string]; raw: string } | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -400,7 +400,6 @@ function ApprovalsPanel({ onClose }: { onClose: () => void }): React.ReactElemen
   const groups = groupRulesByCategory(usedRules);
   return (
     <main className="control-room lovable-page">
-      <div className="control-room-head"><div><h1>승인 규칙</h1><p className="muted">알아서 진행해도 되는 규칙이에요. 고치거나, 아래에 새 규칙을 추가해 주세요.</p></div><button className="btn" onClick={onClose}>닫기</button></div>
       {failure && (
         <div className="lovable-error" role="alert">
           <p>{failure.lines[0]}</p>
@@ -1733,9 +1732,9 @@ function AppInner(): React.ReactElement {
           {controlRoomMode ? (
             <ControlRoom />
           ) : approvalsMode ? (
-            <ApprovalsPanel onClose={() => setApprovalsMode(false)} />
+            <ApprovalsPanel />
           ) : planStudioMode ? (
-            <PlanStudio onClose={() => setPlanStudioMode(false)} />
+            <PlanStudio />
           ) : dfMode ? (
             /* ── App Dogfooding 패널 — Agent Relay 앱 자체 개선 기록 ── */
             <DogfoodPanel
@@ -1847,10 +1846,6 @@ function AppInner(): React.ReactElement {
             </div>
           ) : (
             <>
-          {/* ── 기록 화면 쉬운 우리말 안내 ── */}
-          <div className="record-head">
-            <h2>작업 기록 — AI에게 준 지시와 받은 결과를 날짜별로 모아 둬요</h2>
-          </div>
           <AutoWorklog />
           <details className="record-manual">
             <summary>직접 적는 기록 (예전 방식)</summary>

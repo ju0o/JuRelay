@@ -33,10 +33,10 @@ const visibleRecordAgents = loadVisibleRecordAgents();
 
 describe('record screen plain Korean', () => {
   it('shows plain-Korean header on 기록', () => {
-    assert.ok(
-      src.includes('작업 기록 — AI에게 준 지시와 받은 결과를 날짜별로 모아 둬요'),
-      'missing plain-Korean record header',
-    );
+    assert.match(src, /<h1>\{pageCopy\.title\}<\/h1>/);
+    assert.match(src, /<p className="shell-lead">\{pageCopy\.lead\}<\/p>/);
+    assert.equal(src.includes('<h2>작업 기록'), false);
+    assert.equal(src.includes('className="record-head"'), false);
   });
 
   it("renames PROJECTS to 프로젝트", () => {
