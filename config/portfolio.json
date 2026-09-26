@@ -15988,6 +15988,54 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/GLOSSARY_POLICY.md:148-155 \"## 8. 파일 역할 설명 — 주요 파일은 경로만 나열하지 않고 역할을 한 문장으로 설명한다. 파일 내용이나 연결 관계를 확인한 경우 확정 표현을 사용함 / 파일명만 보고 판단한 경우 예상 표현을 사용함 …\""
+        },
+        {
+          "taskId": "JUTELL-FACT-EXPECTATION-SCOPE-PARITY",
+          "scope": "Add a new test-only offline node:test, tests/fact-expectation-scope-parity.test.mjs, that reads the four bullets under PRODUCT_SCOPE `### 7.2 사실과 예상 분리 원칙` and checks that they still pair each case with its label: 실행한 결과 → `확인됨` or `실행 결과로 확인됨`, 코드만 보고 판단한 결과 → `예상됨`, 실행할 수 없는 결과 → `확인하지 못함`, 사용자가 직접 볼 내용 → `사용자 확인 필요`. It then uses an explicit mapping to check that `확인됨`, `예상됨`, `확인하지 못함` and `사용자 확인 필요` each still appear in .agents/skills/beginner-bridge/references/report-format.md or SKILL.md, and that §7.2 still says 확인하지 않은 결과를 정상 작동한다고 표현하지 않는다.",
+          "files": [
+            "tests/fact-expectation-scope-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/fact-expectation-scope-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:386 ### 7.2 사실과 예상 분리 원칙 — 실행한 결과는 `확인됨` 또는 `실행 결과로 확인됨` / 코드만 보고 판단한 결과는 `예상됨` / 실행할 수 없는 결과는 `확인하지 못함` / 사용자가 직접 볼 내용은 `사용자 확인 필요`"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-A-FAILURE-EXAMPLES-CHECK",
+          "scope": "Add a new test-only offline node:test, tests/results/scenario-a/failure-examples.test.mjs, that reads the existing scenario-a concise-report.fixture.md and checks it avoids the report-wording items in TEST_SCENARIOS §5.7: it does not contain 정상적으로 표시됩니다 or 모든 테스트 통과; it lists at most 3 main files; the 위험도 line carries a reason; it has a user-check line (확인해주세요); and no sentence appears in more than one of the six sections.",
+          "files": [
+            "tests/results/scenario-a/failure-examples.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-a/failure-examples.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:275 ## 5.7 실패 예시 — 실제 화면을 보지 않고 “정상적으로 표시됩니다”라고 작성 / 모든 파일을 길게 나열 / 같은 내용을 여러 항목에서 반복 / 테스트하지 않았는데 “모든 테스트 통과”라고 작성 / 사용자 확인 항목이 없음"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-B-FAILURE-EXAMPLES-CHECK",
+          "scope": "Add a new test-only offline node:test, tests/results/scenario-b/failure-examples.test.mjs, that reads the existing scenario-b general-report.fixture.md and checks it avoids the TEST_SCENARIOS §6.7 failure items: it mentions the normal search flow (정상 검색어), not just the empty one; it does not contain 검색 기능 전체가 정상; 입력 검증 is explained in parentheses only on its first use; 보고서 상태 is not 확인 완료 while 확인하지 못함 items remain; the 사용자 확인 필요 line covers more than the empty search; and 사용자에게 달라지는 점 uses 예상 wording rather than a definite 표시됩니다.",
+          "files": [
+            "tests/results/scenario-b/failure-examples.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-b/failure-examples.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:468 ## 6.7 실패 예시 — 빈 검색어만 설명하고 정상 검색 흐름을 언급하지 않음 / 테스트하지 않고 “검색 기능 전체가 정상”이라고 작성 / 사용자 확인 항목이 빈 검색어만 포함 / 실제 화면 미확인 상태에서 확정 표현 사용"
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-IDE-RULE-PARITY",
+          "scope": "Add a new test-only offline node:test, tests/glossary-ide-rule-parity.test.mjs, that reads GLOSSARY_POLICY `### 4.3 IDE와 AI Agent 실행 환경` and the `### IDE` block in .agents/skills/beginner-bridge/references/glossary-ko.md. It checks that both still give the definition 코드를 작성하고 실행하는 개발 도구, that both still carry the rule that the agent's file-editing environment is not automatically called IDE (자동으로 IDE라고 부르지 않는다), and that §4.3 still says IDE is used only when the environment was confirmed to be a real IDE.",
+          "files": [
+            "tests/glossary-ide-rule-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-ide-rule-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:95 ### 4.3 IDE와 AI Agent 실행 환경 — IDE는 코드를 작성하고 실행하는 개발 도구라는 일반 정의로 설명한다. AI Agent가 파일을 읽고 수정하는 실행 환경을 자동으로 IDE라고 부르지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
