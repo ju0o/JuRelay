@@ -6692,6 +6692,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09 request): founder-ux 규칙 '빈 화면 이유+다음 행동' 으로 juceipt scan 출력 점검; src/cli/main.ts scanCommand at e6c8ba8 prints '다음: '+SUMMARY.md+'를 열어 검토하세요.' in every case, including when there are 0 sessions",
           "title": "상황에 맞는 다음 할 일 안내하기"
+        },
+        {
+          "taskId": "JUCEIPT-RUN-OUTPUT-OPEN-PATH",
+          "scope": "In runCommand in src/cli/main.ts, remove the formal '완료: 영수증을 생성했습니다.' line and replace the path-less '다음: HTML 파일을 열어 결과를 확인하세요.' with one line that always shows where the receipt screen is ('영수증 화면: <receipt.html path>') and a plain Korean next step ('다음: 이 파일을 브라우저로 열어 결과를 확인하세요.'), keeping the first verdict line and the --show-paths raw details as they are, and update the run-output expectations in tests/daily-cli.test.ts.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): juceipt 명령 출력(scan, daily, receipt) 점검 — 누르면 결과 문장, 한 가지 분명한 다음 행동; src/cli/main.ts runCommand at de10a73 prints '완료: 영수증을 생성했습니다.' and '다음: HTML 파일을 열어 결과를 확인하세요.' without any path unless --show-paths"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-CMD-NO-HTML-JARGON",
+          "scope": "In receiptCommand in src/cli/main.ts, replace the developer word 'HTML' in the success and failure output with plain Korean ('HTML 경로:' → '영수증 화면 파일:', '다음: HTML 파일을 열어 결과를 확인하세요.' → '다음: 영수증 화면 파일을 브라우저로 열어 결과를 확인하세요.', '영수증 원본 파일이 없어서 HTML을 만들 수 없어요.' → '영수증 원본 파일이 없어서 화면을 만들 수 없어요.'), keeping the copyable path, the verdict and 판정 뜻 lines and exit code 1, and update tests/receipt-cli.test.ts.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): 개발자 글자는 원문 보기 안, juceipt receipt 출력 점검; src/cli/main.ts receiptCommand at de10a73 prints 'HTML 경로:' / '다음: HTML 파일을 열어 결과를 확인하세요.' / '...HTML을 만들 수 없어요.'"
         }
       ],
       "skills": {
