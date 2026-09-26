@@ -6347,6 +6347,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: founder-ux 규칙 — 막힘은 노랑, 빨강은 실제 위험이나 데이터 손실에만 사용",
           "title": "확인 전 영수증을 노랑으로 안내"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-IMPACT-PLAIN-WORDS",
+          "scope": "In buildPresentation in src/receipt/index.ts, build impact_items text from impact.kind using a new impactItemText helper, written the same way as the existing remainingItemText. Each kind gets a plain Korean sentence with no raw command, file name or English on the receipt view's '중요한 영향' card, for example dependency_change → '프로그램에 필요한 부품(패키지)이 바뀌었어요 — 잘 돌아가는지 한 번 확인해 주세요', config_requirement → '설정 파일이 바뀌었어요', schema_change → '데이터 저장 구조가 바뀌었어요', external_transfer → '컴퓨터 밖으로 무언가를 보냈을 수 있어요', rollback_risk → '되돌리기 어려운 작업이 있었어요', plus a safe fallback. Leave the raw material_impacts titles unchanged in the Level 3 원문 보기 table. Add tests/receipt-impact-plain.test.ts, modeled on tests/receipt-missing-check-plain.test.ts, to check that the Level 1 HTML has the plain sentence and no raw command such as 'npm install', and that the raw title still appears inside 원문 보기.",
+          "files": [
+            "src/receipt/index.ts",
+            "tests/receipt-impact-plain.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 비개발자 UX 고도화 — 영수증 보기 화면, 개발자 글자는 원문 보기 안; src/reconciler/index.ts:540 title '패키지 설치 명령 관찰: ' + raw command reaches Level 1 via src/receipt/index.ts:71 impact_items text = i.title"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-IMPACT-PLAIN-WORDS",
+          "scope": "In koreanSummary in src/daily/index.ts, change the '중요 영향:' line so it no longer shows raw impact titles (commands, file names) after the severity label. Instead, group report.material_impacts by kind and show plain Korean phrases with counts, for example '프로그램 부품(패키지) 변경 1건; 설정 파일 변경 1건', or '중요 영향 없음' when the list is empty. Put the raw titles in the existing <details> 원문 보기 block. Update the expected line in tests/daily.test.ts and add a case proving that no raw command text reaches the summary surface.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): juceipt 명령 출력(daily) 비개발자 UX — 개발자 글자는 원문 보기 안; src/daily/index.ts:105 `${IMPACT_SEVERITY_LABEL[impact.severity]} — ${impact.title}` prints raw titles like '패키지 설치 명령 관찰: npm install …'"
         }
       ],
       "skills": {
