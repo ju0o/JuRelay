@@ -7283,6 +7283,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — juceipt daily 출력을 founder-ux 규칙으로 점검; src/daily/index.ts:161 at 4e8161c still prints '비용: 확인 ${known}건, 추정 ${estimated}건, 확인할 수 없음 ${unknown}건'",
           "title": "하루 요약의 비용 안내를 쉬운 말로"
+        },
+        {
+          "taskId": "JUCEIPT-RUN-HOOKS-ERROR-THREE-LINES",
+          "scope": "In the main() catch block of src/cli/main.ts, when cmd is 'run' and the error comes from readHookLog ('Unable to read hooks.ndjson at …'), replace the generic '무슨 일: 명령을 실행하지 못했어요 / 왜: 실행 중 문제가 생겼어요 / 할 일: 입력과 옵션을 확인한 뒤 다시 실행하세요' with three specific plain Korean lines: 무슨 일: AI 작업 기록 파일을 읽지 못했어요. Then one 왜 line chosen by cause: the file is missing (ENOENT or 'no such file') → 기록 파일이 그 폴더에 없어요; 'file is empty' or 'no events found' → 기록 파일이 비어 있어요; 'malformed JSON' → 기록 파일 내용이 깨졌어요. Then 할 일: --fixture 폴더에 hooks.ndjson이 있는지 확인한 뒤 다시 실행하세요. Keep the '원문: <raw message>' line and exit code 1, and leave the daily, scan and unknown-command branches unchanged. Add a vitest case to tests/receipt-cli.test.ts that calls main with run --fixture pointing at a temp folder with no hooks file, then at an empty hooks.ndjson, then at a malformed one, and asserts the exact three lines, the 원문 line and exit(1).",
+          "files": [
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(오류 3줄) — 대상: juceipt 명령 출력(scan, daily, receipt); src/capture/index.ts:95-118 throws English 'Unable to read hooks.ndjson …' that main.ts catch shows under generic '실행 중 문제가 생겼어요'"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-STUCK-PILL-AMBER",
+          "scope": "In src/render/index.ts, change the Level 1 verdict pill for cancelled (중단됨) and unknown (판단할 수 없음) from grey to amber, because these receipts need a look and are not done. Set STATE_COLOR cancelled/unknown to #d97706, the same as review_required/partial. In the dark-mode CSS, move .state-pill.state-cancelled,.state-pill.state-unknown into the #fbbf24 amber rule. Leave ready green, failed red and the Level 2/3 .st-* colours inside 원문 보기 as they are. Update the dark-colour assertion at tests/receipt-render-founder.test.ts:159, and add a case that renders cancelled and unknown receipts and asserts the amber pill colour in both the light and dark styles.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙 '막힘은 노랑' 영수증 보기 화면 점검; src/render/index.ts:14-17 STATE_COLOR cancelled/unknown '#6b7280' (grey) and dark CSS '.state-pill.state-cancelled,.state-pill.state-unknown{color:#cbd5e1…}'"
         }
       ],
       "skills": {
