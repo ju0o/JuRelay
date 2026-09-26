@@ -17619,6 +17619,30 @@
           ],
           "ssotEvidence": "db.mjs:22 \"export const kvGet = (db, key) => { const v = ...get(key)?.value; return v === undefined ? undefined : JSON.parse(v); };\"",
           "title": "빈 값도 저장한 그대로 돌아오는지 점검"
+        },
+        {
+          "taskId": "JUAI-CHECK-KST-DEFAULT-NOW",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) that calling kstDate(), kstHour(), kstDay() and quotaDay() with no argument (default now=Date.now()) return values consistent with calling the same functions with an explicit Date.now() taken immediately before/after (date matches, hour in 0..23, day in 0..6).",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:7-9,13 kstDate/kstHour/kstDay/quotaDay all default now to Date.now(), but every existing check.mjs assertion passes an explicit now, leaving the default branch bot.mjs relies on in normal operation untested"
+        },
+        {
+          "taskId": "JUAI-CHECK-PRUNE-BONUS-ROWS",
+          "scope": "Add check.mjs assertions only (no lib.mjs change), on a fresh in-memory DB built from SCHEMA: a usage row written by grantBonus (user_id 'bonus:<id>') older than 60 days is deleted by pruneState, and one within the 60-day window is kept, alongside a plain member usage row for contrast.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:40-43 grantBonus stores usage rows under user_id 'bonus:<id>'; lib.mjs:29-32 pruneState's usage-table prune is a generic day>60 rule with no user_id filter, but no check.mjs assertion proves bonus rows are actually caught by it"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
