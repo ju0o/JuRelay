@@ -1228,6 +1228,136 @@ h1 { font-size: 22px; }
 .control-room-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
 .control-room h1 { margin: 0 0 4px; font-size: 22px; }
 .control-room-head p { margin: 0; }
+/* ── 관제실 상단: 첫 안내 · 배너 · 숫자 타일 (다크 고정) ── */
+@keyframes fade-slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.cr-top {
+  --cr-bg: #0b0d10;
+  --cr-card: #12151a;
+  --cr-line: #232830;
+  --cr-teal: #7dd3c0;
+  --cr-amber: #e8c170;
+  --cr-muted: #8b93a1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 0 16px;
+  font-family: 'Noto Sans KR', 'IBM Plex Sans KR', 'Malgun Gothic', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #E6E8EC;
+  animation: fade-slide-in 0.38s ease;
+}
+.cr-top-guide,
+.cr-top-banner,
+.cr-top-stat {
+  background: #12151a;
+  border: 1px solid #232830;
+  border-radius: 14px;
+}
+.cr-top-guide { padding: 16px; }
+.cr-top-guide-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cr-top-guide-steps li {
+  min-width: 0;
+  padding: 14px;
+  background: #0b0d10;
+  border: 1px solid #232830;
+  border-radius: 14px;
+}
+.cr-top-guide-title { margin: 0; font-size: 16px; font-weight: 700; }
+.cr-top-step {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: #7dd3c0;
+  color: #0b0d10;
+  font-family: 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
+  font-size: 16px;
+  font-weight: 700;
+}
+.cr-top-guide-text { margin: 8px 0 0; color: #8b93a1; font-size: 16px; }
+.cr-top-guide-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+.cr-top-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+}
+.cr-top-banner-copy { min-width: 0; flex: 1 1 220px; }
+.cr-top-banner-title,
+.cr-top-banner-detail,
+.cr-top-jump { margin: 0; font-size: 16px; font-weight: 700; }
+.cr-top-banner-detail { margin-top: 4px; font-weight: 500; }
+.cr-top-jump { margin-top: 8px; font-weight: 700; }
+.cr-top-banner.amber { border-color: #e8c170; color: #e8c170; }
+.cr-top-banner.teal { border-color: #7dd3c0; color: #7dd3c0; }
+.cr-top-banner.amber .cr-top-jump,
+.cr-top-banner.teal .cr-top-jump { color: #7dd3c0; }
+.cr-top .btn,
+.cr-top-btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 16px;
+  border-radius: 14px;
+  font-family: 'Noto Sans KR', 'IBM Plex Sans KR', 'Malgun Gothic', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cr-top-btn-teal {
+  background: #7dd3c0;
+  border-color: #7dd3c0;
+  color: #0b0d10;
+}
+.cr-top-btn-amber {
+  background: #e8c170;
+  border-color: #e8c170;
+  color: #0b0d10;
+}
+.cr-top-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.cr-top-stat { min-width: 0; padding: 16px; }
+.cr-top-stat-label { margin: 0; color: #8b93a1; font-size: 16px; }
+.cr-top-num {
+  margin: 8px 0 0;
+  font-family: 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.cr-top-stat.teal .cr-top-num { color: #7dd3c0; }
+.cr-top-stat.amber .cr-top-num { color: #e8c170; }
+.cr-top-stat.muted .cr-top-num { color: #E6E8EC; }
+@media (max-width: 720px) {
+  .cr-top-guide-steps { grid-template-columns: 1fr; }
+  .cr-top-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cr-top-guide-actions { justify-content: stretch; }
+  .cr-top-guide-actions .cr-top-btn,
+  .cr-top-banner .cr-top-btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cr-top { animation: none; }
+}
 /* 공유 AI 자리 — 본문 16px, 숫자는 더 크게. 부족/대기는 호박색(빨강 아님). */
 .shared-seats {
   width: 100%;

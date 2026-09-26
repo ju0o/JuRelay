@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { must } from './bridge.js';
 import { ModelUsagePanel } from './approvals.js';
 import { InlineConfirm } from './components.js';
@@ -1023,11 +1023,216 @@ function sortLanesByAttention(lanes: ControlRoomLane[]): ControlRoomLane[] {
     .map(entry => entry.lane);
 }
 
+/** localStorage key. '1' means the Founder already tapped 알겠어요. */
+export const CR_TOP_GUIDE_KEY = 'agent-relay.cr-top.guide';
+
+export interface CrTopGuideStep {
+  title: string;
+  text: string;
+}
+
+export interface CrTopStat {
+  label: '오늘 끝난 작업' | '지금 일하는 AI' | '멈춘 작업' | '대기';
+  value: number;
+  tone: 'teal' | 'amber' | 'muted';
+}
+
+export interface CrTopBanner {
+  tone: 'amber' | 'teal';
+  title: string;
+  /** Second line. Empty when there is nothing to choose, or no waitMin on the holds. */
+  detail: string;
+  /** Empty when the banner has no button. */
+  actionLabel: string;
+}
+
+/**
+ * First-run three steps: what this screen is, the one setting, what happens next.
+ * Copy is fixed; the numbers on the screen are not.
+ */
+export function crTopGuideSteps(): CrTopGuideStep[] {
+  return [
+    { title: '이건 무엇인가요', text: 'AI들이 계획부터 반영까지 대신 굴러가요.' },
+    { title: '필요한 설정 한 가지: 작업 PC 연결', text: '켜져 있는 컴퓨터 하나만 고르면 돼요.' },
+    { title: '다음에 일어나는 일', text: '멈추면 추천 선택지를 먼저 보여드려요.' },
+  ];
+}
+
+/**
+ * True after 알겠어요 was remembered. A missing or broken store means the guide still shows.
+ */
+export function crTopGuideDismissed(read: ((key: string) => string | null) | null | undefined): boolean {
+  try {
+    return read?.(CR_TOP_GUIDE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+/** Remember 알겠어요 on this computer. A store that refuses the write is ignored. */
+export function crTopRememberGuide(write: ((key: string, value: string) => void) | null | undefined): void {
+  try {
+    write?.(CR_TOP_GUIDE_KEY, '1');
+  } catch {
+    /* 이번 화면에서는 닫기만 한다. */
+  }
+}
+
+function crTopLanes(board: unknown): Record<string, unknown>[] {
+  if (!board || typeof board !== 'object' || Array.isArray(board)) return [];
+  const lanes = (board as { lanes?: unknown }).lanes;
+  if (!Array.isArray(lanes)) return [];
+  return lanes.filter((lane): lane is Record<string, unknown> => Boolean(lane) && typeof lane === 'object' && !Array.isArray(lane));
+}
+
+/** Visible holds, plus a blocker-only lane as one stuck item. Skip-choice holds stay hidden. */
+function crTopStuck(board: unknown): { count: number; waitMin: number | null } {
+  let count = 0;
+  let waitMin: number | null = null;
+  for (const lane of crTopLanes(board)) {
+    const holds = visibleHoldEntries(lane.holds);
+    if (holds.length > 0) {
+      count += holds.length;
+      for (const hold of holds) {
+        if (hold.waitMin !== null && (waitMin === null || hold.waitMin < waitMin)) waitMin = hold.waitMin;
+      }
+      continue;
+    }
+    if (typeof lane.blocker === 'string' && lane.blocker.trim()) count += 1;
+  }
+  return { count, waitMin };
+}
+
+/** Queued work already on the lane. counts.QUEUED wins; otherwise queued tasks; otherwise the lane itself. */
+function crTopQueued(lane: Record<string, unknown>): number {
+  const counts = lane.counts;
+  if (counts && typeof counts === 'object' && !Array.isArray(counts)) {
+    const queued = (counts as Record<string, unknown>).QUEUED;
+    if (typeof queued === 'number' && Number.isFinite(queued) && queued > 0) return Math.floor(queued);
+  }
+  if (Array.isArray(lane.tasks)) {
+    const queuedTasks = lane.tasks.filter((task) => {
+      if (task === 'QUEUED') return true;
+      if (!task || typeof task !== 'object' || Array.isArray(task)) return false;
+      const record = task as Record<string, unknown>;
+      return record.state === 'QUEUED' || record.status === 'QUEUED';
+    }).length;
+    if (queuedTasks > 0) return queuedTasks;
+  }
+  const current = lane.current && typeof lane.current === 'object' && !Array.isArray(lane.current)
+    ? lane.current as Record<string, unknown>
+    : null;
+  if (lane.state === 'QUEUED' || lane.status === 'QUEUED') return 1;
+  if (current && (current.state === 'QUEUED' || current.status === 'QUEUED' || current.stage === 'QUEUED')) return 1;
+  return 0;
+}
+
+function crTopWaitLine(waitMin: number | null): string {
+  if (waitMin === null || !Number.isFinite(waitMin) || waitMin <= 0) return '';
+  const minutes = Math.max(1, Math.round(waitMin));
+  return `${minutes}분 안에 고르지 않으면 추천대로 진행해요`;
+}
+
+/**
+ * One banner from the board. Holds use the soonest waitMin.
+ * No holds means the teal "nothing to do" line, with no invented minutes.
+ */
+export function crTopBanner(board: unknown): CrTopBanner {
+  const stuck = crTopStuck(board);
+  if (stuck.count > 0) {
+    return {
+      tone: 'amber',
+      title: `멈춘 작업 ${stuck.count}건`,
+      detail: crTopWaitLine(stuck.waitMin),
+      actionLabel: '멈춘 작업 보기',
+    };
+  }
+  return {
+    tone: 'teal',
+    title: '지금 하실 일은 없어요. 알아서 진행 중이에요.',
+    detail: '',
+    actionLabel: '',
+  };
+}
+
+/**
+ * Four tiles. Today and working AI reuse the board helpers.
+ * Stuck is amber. Waiting is queued work only — never a sample number.
+ */
+export function crTopStats(board: unknown): CrTopStat[] {
+  const waiting = crTopLanes(board).reduce((sum, lane) => sum + crTopQueued(lane), 0);
+  return [
+    { label: '오늘 끝난 작업', value: controlRoomTodayCount(board), tone: 'teal' },
+    { label: '지금 일하는 AI', value: controlRoomWorkingItems(board).length, tone: 'muted' },
+    { label: '멈춘 작업', value: crTopStuck(board).count, tone: 'amber' },
+    { label: '대기', value: waiting, tone: 'muted' },
+  ];
+}
+
+function CrTopGuide({ onDismiss }: { onDismiss: () => void }): React.ReactElement {
+  return (
+    <section className="cr-top-guide" aria-label="처음 안내">
+      <ol className="cr-top-guide-steps">
+        {crTopGuideSteps().map((step, index) => (
+          <li key={step.title}>
+            <p className="cr-top-guide-title"><span className="cr-top-step">{index + 1}</span>{step.title}</p>
+            <p className="cr-top-guide-text">{step.text}</p>
+          </li>
+        ))}
+      </ol>
+      <div className="cr-top-guide-actions">
+        <button type="button" className="btn cr-top-btn cr-top-btn-teal" onClick={onDismiss}>알겠어요</button>
+      </div>
+    </section>
+  );
+}
+
+function CrTopBody({ board, note, onShowHolds }: {
+  board: ControlRoomBoard;
+  note: string;
+  onShowHolds: () => void;
+}): React.ReactElement {
+  const banner = crTopBanner(board);
+  const stats = crTopStats(board);
+  return (
+    <>
+      <section className={`cr-top-banner ${banner.tone}`} aria-label={banner.title}>
+        <div className="cr-top-banner-copy">
+          <p className="cr-top-banner-title">{banner.title}</p>
+          {banner.detail ? <p className="cr-top-banner-detail">{banner.detail}</p> : null}
+          {note ? <p className="cr-top-jump" role="status">{note}</p> : null}
+        </div>
+        {banner.actionLabel ? (
+          <button type="button" className="btn cr-top-btn cr-top-btn-amber" onClick={onShowHolds}>{banner.actionLabel}</button>
+        ) : null}
+      </section>
+      <section className="cr-top-stats" aria-label="오늘 현황">
+        {stats.map((stat) => (
+          <article key={stat.label} className={`cr-top-stat ${stat.tone}`}>
+            <p className="cr-top-stat-label">{stat.label}</p>
+            <p className="cr-top-num">{stat.value}</p>
+          </article>
+        ))}
+      </section>
+    </>
+  );
+}
+
 export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactElement {
   const [board, setBoard] = useState<ControlRoomBoard | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [errorDetail, setErrorDetail] = useState('');
+  const [guideOpen, setGuideOpen] = useState(() => {
+    try {
+      return !crTopGuideDismissed((key) => localStorage.getItem(key));
+    } catch {
+      return true;
+    }
+  });
+  const [jumpNote, setJumpNote] = useState('');
+  const [jumpTick, setJumpTick] = useState(0);
+  const pendingJump = useRef(false);
 
   const load = useCallback(async (): Promise<void> => {
     try {
@@ -1070,9 +1275,46 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
   const activeLane = sortedLanes.find((lane, index) => laneSelectKey(lane, index) === selectedId) ?? sortedLanes[0];
   const activeKey = activeLane ? laneSelectKey(activeLane, sortedLanes.indexOf(activeLane)) : null;
   const seats = sharedSeatsView(board, only);
+
+  const dismissGuide = (): void => {
+    try {
+      crTopRememberGuide((key, value) => localStorage.setItem(key, value));
+    } catch {
+      /* 기억하지 못해도 이번 화면에서는 닫는다. */
+    }
+    setGuideOpen(false);
+  };
+
+  const showHolds = (): void => {
+    const target = sortedLanes.find((lane) => visibleHoldEntries(lane.holds).length > 0 || (typeof lane.blocker === 'string' && lane.blocker.trim().length > 0));
+    if (target) setSelectedId(laneSelectKey(target, sortedLanes.indexOf(target)));
+    pendingJump.current = true;
+    setJumpTick((tick) => tick + 1);
+  };
+
+  useEffect(() => {
+    if (!pendingJump.current) return;
+    const node = document.getElementById('lane-hold');
+    if (!node) {
+      setJumpNote('멈춘 작업을 화면에서 찾지 못했어요 · 다시 시도');
+      pendingJump.current = false;
+      return;
+    }
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    node.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    setJumpNote('멈춘 작업으로 이동했어요 ✓');
+    pendingJump.current = false;
+  }, [jumpTick, activeKey]);
+
   return (
     <main className="control-room">
       <div className="control-room-head"><div>{only ? <h1>{projectDisplayName(only)}</h1> : <h1>관제실</h1>}{decisionCount > 0 && <p className="control-decision-count">결정 대기 {decisionCount}건</p>}<p className="muted">5초마다 자동으로 새로 고쳐요.</p></div><button className="btn" onClick={only ? () => window.close() : onClose}>닫기</button></div>
+      {(guideOpen || board) && (
+        <div className="cr-top">
+          {guideOpen && <CrTopGuide onDismiss={dismissGuide} />}
+          {board && <CrTopBody board={board} note={jumpNote} onShowHolds={showHolds} />}
+        </div>
+      )}
       {seats && <SharedSeatsCard view={seats} />}
       {!only && <><EnvsCard /><TokensCard /><TodayCard board={board} /><WhoLine board={board} /><ModelUsagePanel models={board?.models} /></>}
       {board === null && !error ? <div className="control-empty">작업 PC에서 불러오는 중…</div>
