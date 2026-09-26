@@ -15051,6 +15051,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress ... add focused fixture tests.'",
           "title": "다양한 작업 상태를 더 정확히 안내"
+        },
+        {
+          "taskId": "JCAPP-FLOW-ROW-QUEUED-MATCH",
+          "scope": "Make relayFlowRow's stage sentence say '차례를 기다리는 중이에요.' for a QUEUED current task instead of the contradictory '지금 만들기 단계예요. 아직 시작 전이에요.', matching liveCardModel/railRowModel's QUEUED wording; pin it with a fixture test",
+          "files": [
+            "operator/public/app.js",
+            "test/idle-lane-meaning.test.mjs"
+          ],
+          "tests": [
+            "node --test test/idle-lane-meaning.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js:1993-1994 relayFlowRow's stageSentence ignores current.state === 'QUEUED' (only `who` at line 1989 is special-cased), so a queued task shows '지금 만들기 단계예요.' plus '아직 시작 전이에요.' in the same sentence, contradicting sibling railRowModel:579 ('차례 기다림') and liveCardModel:515 ('차례를 기다리는 중') for the identical case; Founder direction 2026-09-26 'one shared live-status projection for Home and Progress ... add focused fixture tests'"
+        },
+        {
+          "taskId": "JCAPP-CHAT-BUBBLE-NO-UNKNOWN",
+          "scope": "Replace the raw 'UNKNOWN' fallback shown in the Founder's own chat bubble text (대화 tab) with a Korean fallback when a directive record has no ownerText, in both the initial render and the live-patch path",
+          "files": [
+            "operator/public/app.js",
+            "test/conversation-detail-fields.test.mjs"
+          ],
+          "tests": [
+            "node --test test/conversation-detail-fields.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js:1513 conversationTurn renders esc(item.ownerText || 'UNKNOWN') and app.js:1536 patchConversationTurn sets founderText.textContent = item.ownerText || 'UNKNOWN', printing the literal English enum word as if it were the Founder's own quoted message; founder-ux SKILL rule 2 'No developer text on the surface ... enum words such as HOLD, QUEUED, VERIFIED_DONE, UNMAPPED, unknown' must stay behind 원문 보기, never on the primary bubble"
         }
       ],
       "skills": {
