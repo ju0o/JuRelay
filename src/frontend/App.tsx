@@ -8,7 +8,8 @@ import { must, hasBridge, dragLocalFile, onUpdateStatus } from './bridge.js';
 import { DogfoodPanel } from './dogfooding.js';
 import { QuickDogfood } from './quickdf.js';
 import { ControlRoom } from './controlRoom.js';
-import { normalizeEnvs, projectFromSearch } from '../shared/projectLabels.js';
+import { barPercent, envReasonText, normalizeEnvs, projectFromSearch, type EnvRow } from '../shared/projectLabels.js';
+import { sharedSeatsView } from '../shared/projectScope.js';
 import {
   automationResultText,
   automationToggleOp,
@@ -674,7 +675,9 @@ function AppInner(): React.ReactElement {
   const [showQuickDf, setShowQuickDf]   = useState(false);
   // 개발 도구 메뉴 (닫힘 기본 — Founder 항목 우선). 설정 → 고급 (개발용) 안에만 둔다.
   const [showDevTools, setShowDevTools] = useState(false);
-  const [envLabels, setEnvLabels] = useState<string[]>([]);
+  const [envRows, setEnvRows] = useState<EnvRow[]>([]);
+  const envLabels = envRows.map((row) => row.label);
+  const [parallelLine, setParallelLine] = useState(settingsParallelLine(null));
   const [envPhase, setEnvPhase] = useState<ConnectionPhase>('checking');
   // 저장 후 열려있는 Project Dogfooding 목록을 즉시 새로고침하기 위한 신호
   const [pdRefreshSignal, setPdRefreshSignal] = useState(0);
@@ -806,11 +809,11 @@ function AppInner(): React.ReactElement {
     const loadEnvs = (): void => {
       void must<unknown>({ op: 'controlRoom:envs' }).then((payload) => {
         if (!alive) return;
-        setEnvLabels(normalizeEnvs(payload).map((row) => row.label));
+        setEnvRows(normalizeEnvs(payload));
         setEnvPhase('ok');
       }).catch((e: unknown) => {
         if (!alive) return;
-        setEnvLabels([]);
+        setEnvRows([]);
         const message = e instanceof Error ? e.message : String(e);
         setEnvPhase(classifyConnectionFailure(message));
       });
@@ -824,7 +827,9 @@ function AppInner(): React.ReactElement {
   useEffect(() => {
     let alive = true;
     void must<{ models?: unknown }>({ op: 'controlRoom:board' }).then(next => {
-      if (alive) setBoardModels(next?.models ?? null);
+      if (!alive) return;
+      setBoardModels(next?.models ?? null);
+      setParallelLine(settingsParallelLine(next));
     }).catch(() => undefined);
     return () => { alive = false; };
   }, []);
@@ -1751,6 +1756,20 @@ function AppInner(): React.ReactElement {
             />
           ) : showSettings && settings ? (
             <div className="settings-page">
+              <SettingsEnvSection rows={envRows} phase={envPhase} />
+              <section className="settings-section settings-card-lv" aria-label="동시에 일하는 AI 수">
+                <h3>동시에 일하는 AI 수</h3>
+                <p className="settings-parallel">{parallelLine}</p>
+              </section>
+              <div className="settings-section settings-card-lv settings-update">
+                <h3>업데이트</h3>
+                <span className="flabel">앱 정보 — Agent Relay <span className="lv-num">v{updateStatus?.version ?? settings.appVersion}</span></span>
+                <UpdateSection
+                  status={updateStatus ?? { phase: 'idle', version: settings.appVersion }}
+                  notify={notify}
+                  onOpen={() => undefined}
+                />
+              </div>
               <div className="settings-section">
                 <span className="flabel">저장 폴더</span>
                 <div className="field" style={{ marginTop: 4 }}>
@@ -1770,14 +1789,6 @@ function AppInner(): React.ReactElement {
                 <p className="muted" style={{ fontSize: 11, margin: '4px 0 0' }}>
                   설정 파일: {settings.settingsFile}
                 </p>
-              </div>
-              <div className="settings-section">
-                <span className="flabel">앱 정보 — Agent Relay v{updateStatus?.version ?? settings.appVersion}</span>
-                <UpdateSection
-                  status={updateStatus ?? { phase: 'idle', version: settings.appVersion }}
-                  notify={notify}
-                  onOpen={() => undefined}
-                />
               </div>
               <ProjectManager />
               <div className="settings-section shell-advanced">
@@ -2751,6 +2762,109 @@ function ProjectManager(): React.ReactElement {
         {noteView(addNote ?? undefined)}
       </form>
     </div>
+  );
+}
+
+// ── 설정 → 실행 환경 · 동시에 일하는 AI 수 ────────────────────────────────────
+export const SETTINGS_CPU_WARN_PCT = 85;
+export const SETTINGS_RAM_WARN_GB = 3.5;
+
+export interface SettingsEnvCard {
+  id: string;
+  label: string;
+  selectable: boolean;
+  /** 고를 수 없는 카드의 버튼 문구. 고를 수 있으면 빈 문자열. */
+  holdLabel: string;
+  tone: 'teal' | 'amber';
+  cpuPct: number | null;
+  cpuBar: number;
+  ramLine: string;
+  ais: string[];
+  reason: string;
+  rawReason: string;
+}
+
+const gbText = (n: number): string => String(Math.round(n * 10) / 10);
+
+/** '6.2/16 GB 남음'. 값이 없으면 '메모리 확인 중'. Pure. */
+export function settingsRamLine(free: number | null, total: number | null): string {
+  if (free === null) return '메모리 확인 중';
+  return total !== null ? `${gbText(free)}/${gbText(total)} GB 남음` : `${gbText(free)} GB 남음`;
+}
+
+/** 환경 행 → 설정 카드. ASUS만 고를 수 있고, MainPC는 원격 실행 보류, 클라우드는 곧 지원. Pure. */
+export function settingsEnvCards(rows: readonly EnvRow[]): SettingsEnvCard[] {
+  const key = (id: string): string => id.trim().toLowerCase().replace(/[-_\s]/g, '');
+  const cards = rows.map((row): SettingsEnvCard => {
+    const k = key(row.id);
+    const busy = (row.cpuPct !== null && row.cpuPct >= SETTINGS_CPU_WARN_PCT)
+      || (row.ramFreeGb !== null && row.ramFreeGb < SETTINGS_RAM_WARN_GB);
+    return {
+      id: row.id,
+      label: row.label,
+      selectable: k === 'asus',
+      holdLabel: k === 'asus' ? '' : k === 'cloud' ? '곧 지원' : '준비 중 — 원격 실행은 보류 중이에요',
+      tone: !row.ok || busy ? 'amber' : 'teal',
+      cpuPct: row.cpuPct,
+      cpuBar: barPercent(row.cpuPct),
+      ramLine: settingsRamLine(row.ramFreeGb, row.ramTotalGb),
+      ais: row.ais,
+      reason: envReasonText(row),
+      rawReason: row.rawReason,
+    };
+  });
+  if (!cards.some(card => key(card.id) === 'cloud')) {
+    cards.push({
+      id: 'cloud', label: '클라우드', selectable: false, holdLabel: '곧 지원', tone: 'teal',
+      cpuPct: null, cpuBar: 0, ramLine: '', ais: [], reason: '', rawReason: '',
+    });
+  }
+  return cards;
+}
+
+/** board.capacity.maxBuilders → '지금 3명 · RAM이 부족하면 자동으로 줄여요'. 모르면 추측하지 않는다. Pure. */
+export function settingsParallelLine(board: unknown): string {
+  const seats = sharedSeatsView(board);
+  return seats
+    ? `지금 ${seats.max}명 · RAM이 부족하면 자동으로 줄여요`
+    : '아직 알 수 없어요 — 관제실이 연결되면 보여요';
+}
+
+function SettingsEnvSection({ rows, phase }: { rows: EnvRow[]; phase: ConnectionPhase }): React.ReactElement {
+  const cards = settingsEnvCards(rows);
+  return (
+    <section className="settings-section settings-card-lv" aria-label="실행 환경">
+      <h3>실행 환경</h3>
+      <p className="muted">AI가 일할 컴퓨터예요. 지금은 이 컴퓨터(ASUS)에서만 일해요.</p>
+      {rows.length === 0 && (
+        <p className="settings-env-note">{shellEnvLine([], phase).replace(/^실행 환경: /, '')}</p>
+      )}
+      <div className="settings-env-grid" role="radiogroup" aria-label="실행 환경 고르기">
+        {cards.map(card => (
+          <label key={card.id} className={`settings-env${card.selectable ? ' on' : ' off'} tone-${card.tone}`}>
+            <span className="settings-env-head">
+              <input type="radio" name="settings-env" checked={card.selectable} disabled={!card.selectable} readOnly />
+              <strong>{card.label}</strong>
+            </span>
+            {card.cpuPct !== null && (
+              <>
+                <span className="settings-env-cpu">CPU <span className="lv-num">{Math.round(card.cpuPct)}%</span></span>
+                <span className="settings-env-bar" role="img" aria-label={`CPU ${card.cpuBar}%`}>
+                  <span style={{ width: `${card.cpuBar}%` }} />
+                </span>
+              </>
+            )}
+            {card.ramLine && <span className="settings-env-ram lv-num">{card.ramLine}</span>}
+            {card.ais.length > 0 && <span className="settings-env-ais">설치된 AI: {card.ais.join(', ')}</span>}
+            {card.reason && <span className="settings-env-note">{card.reason}</span>}
+            {card.rawReason && <details><summary>원문 보기</summary><pre className="mono">{card.rawReason}</pre></details>}
+            {card.selectable
+              ? <span className="settings-env-state">지금 여기서 일해요 ✓</span>
+              : <button type="button" className="btn settings-env-hold" disabled>{card.holdLabel}</button>}
+          </label>
+        ))}
+      </div>
+    </section>
   );
 }
 
