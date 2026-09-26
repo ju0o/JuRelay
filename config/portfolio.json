@@ -10584,6 +10584,28 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:264 '1 | The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` ... M3 decision is pending.' and :268 'M4 installation/usability Handoff depends on M2 GO and remains locked until the M4 gate opens'; the stale text is at docs/product/MASTER_ROADMAP.md:561 '4. Validate the integrated 10-task Daily Report summary and record M3 GO/DEFER/KILL.' and :562 '5. Only after M3 validation should Worker receive the installation/usability implementation handoff.'",
           "title": "로드맵에 영수증 검증 결과 반영하기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-REGISTER-LINE-JOIN-GAP-SYNC",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md §4.3, change only the evidence-register line 142 ('integrated 10-task Daily Value summary; 10/10 receipts at 402d3ee') to add the already-recorded join result: 0 of the Founder's seven register rows join both a committed Claude final and a Receipt, and the mapping is UNDECIDED per M3_DAILY_VALUE_VALIDATION.md §2.2/§7. Do not record an M3 decision and do not tick any checkbox.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:58 '10-receipt register and final-versus-Receipt reconciliation complete; 0 Founder seven-task rows join both artifacts; mapping `UNDECIDED` per docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.2/§7; M3 decision pending'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-INDEX-M3-ARTIFACT-JOIN-GAP-SYNC",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_INDEX.md, change only canonical-artifact item 9 (line 18) so it also says the artifact records the final-versus-Receipt reconciliation (0 of the Founder's seven register rows join both a committed Claude final and a Receipt; mapping UNDECIDED per §2.2/§7). Keep 'records no milestone decision'.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_INDEX.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'"
         }
       ]
     },
