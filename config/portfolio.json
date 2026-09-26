@@ -12743,6 +12743,24 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' At base, railRowModel (app.js:565) filters holds with holdResolved(hold, lane, now), but homeHoldCount/homeHoldWaitMin (app.js:784-786) and homeHoldButton (app.js:794) call holdResolved(hold, lane) with Date.now(). So homeStats.holds and relayTopLine can disagree with the card's '멈춤 N' for the same board."
+        },
+        {
+          "taskId": "JCAPP-RAIL-GATE-WITH-HOLD",
+          "scope": "In operator/public/app.js railRowModel (~line 570), a lane with no running task that waits on a decision (lane.state 'HUMAN_GATE' or an open humanGate) and also has an open hold now reads '결정 기다림 · 멈춤 N건' instead of only '멈춤 N건', so the rail matches the card's 결정 필요 and '대표님 결정을 기다리는 중' (the non-running base checks gated before holds). Add lane 'gate-and-open-hold' to test/fixtures/live-status/board.json, copied from the existing 'human-gate' lane plus the 'idle-open-hold' hold. Pin its sentences in live-status-sentences WANT, and in live-status-projection assert its rail state is '결정 기다림 · 멈춤 1건' with tone warn.",
+          "files": [
+            "operator/public/app.js",
+            "test/fixtures/live-status/board.json",
+            "test/live-status-sentences.test.mjs",
+            "test/live-status-projection.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-projection.test.mjs",
+            "node --test test/live-status-sentences.test.mjs",
+            "node --test test/live-status-colors.test.mjs",
+            "node --test test/v2-rail-rows.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.'"
         }
       ],
       "skills": {
