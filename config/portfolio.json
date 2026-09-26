@@ -2419,6 +2419,22 @@
           ],
           "ssotEvidence": "MainPC Tester vfix0926 control-room.png (painted frame, 2026-09-26 20:18); Founder: '지금 막힌 건 없어요' must match the app",
           "title": "관제실: 맨 위 한 줄 요약이 비어 보이는 문제와 '고를 것' 숫자"
+        },
+        {
+          "taskId": "AGENTRELAY-NIGHT-SCHEDULE-CARD",
+          "scope": "Add a '밤 작업 예약' card in 설정 right after <HubPromoteCard /> in src/frontend/App.tsx, styled like the hub card: an <input type=\"time\"> for the end time, checked in the app with the same HH:MM rule as SCHEDULE_TIME_PATTERN, and a [예약하기] button that calls controlRoom:scheduleSet; the card loads the current bookings with controlRoom:scheduleList and lists them as 'HH:MM에 끝나도록 예약됨', or says '예약된 밤 작업이 없어요 — 끝나는 시각을 골라 예약하세요' when there are none; [예약 취소] asks inline first, with the safe [그만두기] shown before [이대로 취소], and only then calls controlRoom:scheduleCancel; each result shows next to its button as '예약했어요 ✓' or '취소했어요 ✓', or as the 3-line laneErrorLines message with [다시 시도], and the raw JSON sits under 원문 보기; no window.alert, window.confirm or window.prompt, click targets at least 44px, amber (never red) for errors; add test/night-schedule-card.test.mjs modelled on test/hub-promote-button.test.mjs, with the card placement, op names, button order and CSS checks.",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "test/night-schedule-card.test.mjs"
+          ],
+          "tests": [
+            "node --test test/night-schedule-card.test.mjs",
+            "node --test test/hub-promote-button.test.mjs",
+            "npm run typecheck",
+            "npm run build:client"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 16:09: '4) 밤 작업 예약: 끝나는 시각 → 새 하위 명령 night schedule HH:MM|list|cancel'; backend already at db8881e src/backend/controlRoom.ts:454-469 (runControlRoomScheduleSet/List/Cancel) and src/shared/types.ts:153-155, with no frontend caller"
         }
       ],
       "qaRuntime": [
