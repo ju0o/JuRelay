@@ -488,6 +488,9 @@ test("base broken: a gate command that already fails on the base parks the lane 
   assert.equal(git("rev-parse", "HEAD"), head);                                      // HEAD restored
   assert.equal(await runner.baseFails(repo, base, head, "test -f ok"), false);
   assert.equal(await runner.baseFails(repo, base, head, "echo 'This is not the tsc command you are looking for'; exit 1"), false);  // missing tool ≠ broken base
+  writeFileSync(join(repo, "leftover"), "x"); writeFileSync(join(repo, "ok"), "dirty");                                    // worker leftovers
+  assert.equal(await runner.baseFails(repo, base, head, "test ! -e leftover && grep -q 0 ok"), false);  // leftovers do not leak into the base run
+  assert.equal(git("rev-parse", "HEAD"), head);
   git("update-ref", "refs/heads/agent-relay/integration", base);
   const state = { baseBroken: { p: { base } }, tasks: [{ taskId: "T", projectId: "p", state: "HOLD", error: "BASE_BROKEN: x", attempts: 3 }, { taskId: "U", projectId: "p", state: "HOLD", error: "other" }] };
   await runner.clearBaseBroken(state); assert.ok(state.baseBroken.p);                // tip unchanged → still parked

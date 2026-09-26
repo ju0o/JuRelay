@@ -551,10 +551,12 @@ export class PortfolioRunner {
 
   // Run one failing gate command on the task's base commit inside the same worktree (keeps installed deps), then restore HEAD.
   async baseFails(path, base, head, cmd, signal) {
-    try { await exec("git", ["-C", path, "checkout", "-q", "--detach", base]); } catch { return false; }
+    // -f + clean: the worker's uncommitted edits and untracked files must not leak into the base run
+    // (2026-09-26 juactl: leftovers made a healthy base fail 6 tests → false BASE_BROKEN parked the lane). Ignored files (deps) stay.
+    try { await exec("git", ["-C", path, "checkout", "-q", "-f", "--detach", base]); await exec("git", ["-C", path, "clean", "-fdq"]); } catch { return false; }
     // a missing tool/dependency is the worktree's environment, not a broken base (jutell 2026-09-26: npx tsc without typescript)
     try { const r = await this.testGate(path, [cmd], { signal }); return !r.ok && !ENV_MISSING.test(String(r.results?.at(-1)?.tail || "")); }
-    finally { await exec("git", ["-C", path, "checkout", "-q", "--detach", head]).catch(() => {}); }
+    finally { await exec("git", ["-C", path, "checkout", "-q", "-f", "--detach", head]).catch(() => {}); }
   }
 
   // A parked lane resumes once its integration tip moves; tasks held only because the base was broken go back to the queue.
