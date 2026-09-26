@@ -8471,6 +8471,34 @@
             "npx tsc -p tsconfig.json --noEmit"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09 (founder-ux: 개발자 글자는 원문 보기 안, 한국어 라벨); src/render/index.ts renderLevel1 costText for status 'known' = (p.cost_summary.amount + ' ' + (p.cost_summary.currency ?? '')).trim()"
+        },
+        {
+          "taskId": "JUCEIPT-TASK-TITLE-KOREAN-SNIPPET-FALLBACK",
+          "scope": "In taskTitle in src/daily/index.ts, before returning the generic fallback '작업 내용 확인', return the request's own first line trimmed to at most 24 characters (add '…' when cut) if that line has Hangul and no ASCII letters, digits, slashes, backticks, dots or dashes. Plain Korean requests that match no keyword group, such as '로그인 버튼 색 바꿔줘', then keep a title the Founder can tell apart instead of all reading '작업 내용 확인'. English or path-bearing requests still get the existing Korean labels. Add vitest cases for a clean Korean request, a long one that gets cut, a Korean request mixed with a file path that still falls back, and an English one, and update any existing expectation that changes.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/scan-summary.test.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '진짜 비개발자도 보면 이해가 되게' … 대상: juceipt 명령 출력(scan, daily, receipt)과 영수증 보기 화면 — 영어 작업 제목을 쉬운 한국어 요약으로"
+        },
+        {
+          "taskId": "JUCEIPT-MISSING-CHECK-NO-PATH-IN-KOREAN-SUBJECT",
+          "scope": "In remainingItemText in src/receipt/index.ts, the subject copied from gap.title is shown raw whenever it contains any Hangul, so mixed text such as 'README.md에 설치 방법 추가' or 'npm test 통과 확인' puts file names and commands on the Level 1 '아직 확인되지 않음' list. Keep the raw subject only when it has Hangul and no path, file-extension, backtick or command-like token (for example '/', '\\', '.md', '.ts', '--', 'npm ', 'git '); otherwise use taskTitle(rawSubject), the same way English subjects already do. The raw text stays under 원문 보기 through Level 2 request items. Add vitest cases to tests/receipt-missing-check-plain.test.ts for mixed Korean+path, mixed Korean+command and a clean Korean subject.",
+          "files": [
+            "src/receipt/index.ts",
+            "tests/receipt-missing-check-plain.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(개발자 글자는 원문 보기 안) … 대상: 영수증 보기 화면 — 빠진 확인 항목의 쉬운 설명"
         }
       ],
       "skills": {
