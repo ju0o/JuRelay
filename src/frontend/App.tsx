@@ -10,6 +10,17 @@ import { QuickDogfood } from './quickdf.js';
 import { ControlRoom } from './controlRoom.js';
 import { projectFromSearch } from '../shared/projectLabels.js';
 import {
+  automationFailureLine,
+  automationResultText,
+  automationToggleLabel,
+  automationToggleOp,
+  connectionStatusText,
+  connectionSwitchSentence,
+  connectionViewFromLoadError,
+  connectionViewFromStatus,
+  type ConnectionPhase,
+} from '../shared/connectionState.js';
+import {
   decodeLaneNames, encodeLaneNames, isLaneOn, laneErrorLines, laneErrorRaw, laneResultRaw, laneRowLabel, laneRowName, newLaneIdFor, newLaneProblem,
 } from '../shared/projectManager.js';
 import { approvalCategoryLabel, approvalUsedCount, dedupeApprovalRules, groupRulesByCategory, partitionSupersededApprovalRules, ApprovalRuleCard, SupersededApprovals, UnusedApprovalRules } from './approvals.js';
@@ -303,6 +314,120 @@ export function pointerOverIndexFromPoint(
     if (!Number.isInteger(idx) || idx < 0 || idx >= len) return null;
     return idx;
   } catch { return null; }
+}
+
+const CONNECTION_POLL_MS = 30_000;
+
+function connectionErrorMessage(e: unknown): string {
+  return e instanceof Error ? e.message : String(e);
+}
+
+function connectionErrorDetail(e: unknown): string | undefined {
+  if (!e || typeof e !== 'object' || !('detail' in e)) return undefined;
+  const detail = (e as { detail?: unknown }).detail;
+  return typeof detail === 'string' ? detail : undefined;
+}
+
+/**
+ * 상단의 작업 PC 연결 한 줄과 자동 실행 토글.
+ * 상태 JSON에 always.mode가 없으면 꺼짐으로 보고, 버튼을 누르면 automationOn을 부른다.
+ */
+function ConnectionBar(): React.ReactElement {
+  const [phase, setPhase] = useState<ConnectionPhase>('checking');
+  const [enabled, setEnabled] = useState<boolean | null>(null);
+  const [statusText, setStatusText] = useState(connectionStatusText('checking'));
+  const [pollRaw, setPollRaw] = useState<string | undefined>(undefined);
+  const [result, setResult] = useState<{ ok: boolean; text: string; raw?: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const enabledRef = useRef<boolean | null>(null);
+  enabledRef.current = enabled;
+
+  function showView(view: { phase: ConnectionPhase; enabled: boolean | null; statusText: string }): void {
+    setPhase(view.phase);
+    setEnabled(view.enabled);
+    setStatusText(view.statusText);
+  }
+
+  const pollRef = useRef<() => Promise<void>>(async () => undefined);
+  pollRef.current = async () => {
+    try {
+      const view = connectionViewFromStatus(await must({ op: 'controlRoom:automationStatus' }));
+      showView(view);
+      setPollRaw(undefined);
+    } catch (e) {
+      const message = connectionErrorMessage(e);
+      showView(connectionViewFromLoadError(message, enabledRef.current));
+      setStatusText(connectionSwitchSentence(message));
+      setPollRaw(automationFailureLine(message, connectionErrorDetail(e)).raw);
+    }
+  };
+
+  useEffect(() => {
+    void pollRef.current();
+    const id = window.setInterval(() => { void pollRef.current(); }, CONNECTION_POLL_MS);
+    return () => window.clearInterval(id);
+  }, []);
+
+  async function onToggle(): Promise<void> {
+    if (busy) return;
+    // always.mode가 없으면 enabled가 null이다. 꺼짐으로 보고 automationOn을 부른다.
+    const op = automationToggleOp(enabled);
+    const turningOn = op === 'controlRoom:automationOn';
+    setBusy(true);
+    setResult({ ok: true, text: turningOn ? '켜는 중…' : '끄는 중…' });
+    try {
+      if (turningOn) await must({ op: 'controlRoom:automationOn' });
+      else await must({ op: 'controlRoom:automationOff' });
+      setResult({ ok: true, text: automationResultText(op) });
+      await pollRef.current();
+    } catch (e) {
+      const message = connectionErrorMessage(e);
+      showView(connectionViewFromLoadError(message, enabledRef.current));
+      setStatusText(connectionSwitchSentence(message));
+      setPollRaw(undefined);
+      setResult({ ok: false, ...automationFailureLine(message, connectionErrorDetail(e)) });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const attention = phase === 'offline' || phase === 'error';
+  const label = automationToggleLabel(enabled, phase);
+
+  return (
+    <div className="conn-cluster">
+      <p className={`conn-status${phase === 'ok' ? ' ok' : attention ? ' attention' : ' checking'}`} role="status">
+        {statusText}
+        {pollRaw && (
+          <details className="conn-raw">
+            <summary>원문 보기</summary>
+            <pre className="mono">{pollRaw}</pre>
+          </details>
+        )}
+      </p>
+      <button
+        type="button"
+        className={`conn-toggle${enabled === true && !attention ? ' on' : ''}${attention ? ' attention' : ''}`}
+        disabled={busy || phase === 'checking'}
+        aria-pressed={enabled === true}
+        onClick={() => { void onToggle(); }}
+      >
+        <span className="conn-icon" aria-hidden="true">{enabled === true ? '⏻' : '○'}</span>
+        {label}
+      </button>
+      {result && (
+        <p className={`conn-result${result.ok ? ' ok' : ' attention'}`} role="status">
+          {result.text}
+          {result.raw && (
+            <details className="conn-raw">
+              <summary>원문 보기</summary>
+              <pre className="mono">{result.raw}</pre>
+            </details>
+          )}
+        </p>
+      )}
+    </div>
+  );
 }
 
 // ── 최상위 App ────────────────────────────────────────────────────────────────
@@ -1309,6 +1434,7 @@ function AppInner(): React.ReactElement {
               aria-label={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
               onClick={toggleTheme}
             >{theme === 'dark' ? '☀️' : '🌙'}</button>
+            <ConnectionBar />
           </header>
 
           {msg && (

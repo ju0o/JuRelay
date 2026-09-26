@@ -216,7 +216,8 @@ h1 { font-size: 22px; }
 /* ── 상단바 ────────────────────────────────────────────────── */
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  row-gap: 8px;
   padding: 8px 14px;
   background: var(--bg2); border-bottom: 1px solid var(--border);
   flex-shrink: 0;
@@ -1272,3 +1273,68 @@ h1 { font-size: 22px; }
 .pm-add input { min-height: 44px; font-size: 16px; }
 .pm-add .btn { min-height: 44px; font-size: 16px; align-self: flex-start; }
 @media (max-width: 520px) { .pm-row-main { flex-wrap: wrap; } }
+
+/* ── 상단바: 작업 PC 연결 · 자동 실행 (amber = 살펴볼 일, red 아님) ── */
+.conn-cluster {
+  --conn-attention: var(--warn);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+.app[data-theme="light"] .conn-cluster { --conn-attention: #8a4b00; }
+.conn-status,
+.conn-result {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  white-space: normal;
+  word-break: keep-all;
+}
+.conn-status.ok,
+.conn-result.ok { color: var(--accent); }
+.conn-status.attention,
+.conn-result.attention { color: var(--conn-attention); }
+.conn-status.checking { color: var(--muted); }
+.conn-result { flex-basis: 100%; }
+.conn-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 22px;
+  border: 2px solid var(--border);
+  background: var(--bg3);
+  color: var(--fg);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.conn-toggle .conn-icon { font-size: 18px; line-height: 1; }
+.conn-toggle.on { border-color: var(--accent); color: var(--accent); }
+.conn-toggle.attention { border-color: var(--conn-attention); color: var(--conn-attention); }
+.conn-toggle:disabled { opacity: 0.7; cursor: default; }
+.conn-raw summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--fg);
+}
+.conn-raw pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+@media (max-width: 720px) {
+  .conn-cluster { margin-left: 0; flex-basis: 100%; }
+}
