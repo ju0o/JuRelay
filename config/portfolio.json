@@ -7262,6 +7262,19 @@
           ],
           "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 'Founder Gate packet mapping' deliverable; docs/agent-relay/AR-JUPLAN-001.md:118,130,147,161 mentions FOUNDER_GATE only in prose, no manifest exists; CONTROL_TOWER.md:29 keeps DEC-G012/b80e0aa separately Founder-gated",
           "title": "검토가 필요한 순간을 정확히 알림"
+        },
+        {
+          "taskId": "JUPLAN-API-METHOD-KOREAN",
+          "scope": "Translate the ApiEndpoint method enum (GET/POST/PUT/PATCH/DELETE/EVENT) shown in docs/api.md's endpoint table into Korean labels, consistent with every other enum column in documents.ts, with offline regression coverage.",
+          "files": [
+            "packages/runtime/src/documents.ts",
+            "packages/runtime/test/api-doc-method-korean.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/api-doc-method-korean.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "packages/runtime/src/documents.ts renderApiMarkdown (~line 491-502) writes the raw ApiEndpoint method enum with no Korean label, unlike WBS_LEVEL_LABELS/QA_KIND_LABELS/EVENT_DIRECTION_LABELS/CONSTRAINT_KIND_LABELS/FEATURE_SCOPE_LABELS in the same file; Founder request 2026-09-25 13:08 (founder-ux audit of JuPlan Studio PRD/WBS screens)"
         }
       ],
       "qaRuntime": [
