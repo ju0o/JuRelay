@@ -3,23 +3,23 @@
  *
  * 프로젝트 세션 탭 + 에디터 탭 기반 병렬 편집 + 파일 트리 + 한국어 UI
  */
-import React, { Component, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Component, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { must, hasBridge, dragLocalFile, onUpdateStatus } from './bridge.js';
 import { DogfoodPanel } from './dogfooding.js';
 import { QuickDogfood } from './quickdf.js';
 import { ControlRoom } from './controlRoom.js';
-import { projectFromSearch } from '../shared/projectLabels.js';
+import { normalizeEnvs, projectFromSearch } from '../shared/projectLabels.js';
 import {
-  automationFailureLine,
   automationResultText,
-  automationToggleLabel,
   automationToggleOp,
+  classifyConnectionFailure,
   connectionStatusText,
   connectionSwitchSentence,
   connectionViewFromLoadError,
   connectionViewFromStatus,
   type ConnectionPhase,
 } from '../shared/connectionState.js';
+import { shellEnvLine, shellFailureLine, shellPageCopy, shellToggleLabel, type ShellNavId } from './components.js';
 import {
   decodeLaneNames, encodeLaneNames, isLaneOn, laneErrorLines, laneErrorRaw, laneResultRaw, laneRowLabel, laneRowName, newLaneIdFor, newLaneProblem,
 } from '../shared/projectManager.js';
@@ -328,13 +328,32 @@ function connectionErrorDetail(e: unknown): string | undefined {
   return typeof detail === 'string' ? detail : undefined;
 }
 
+interface ShellConnectionValue {
+  phase: ConnectionPhase;
+  enabled: boolean | null;
+  statusText: string;
+  pollRaw?: string;
+  result: { ok: boolean; text: string; raw?: string } | null;
+  busy: boolean;
+  label: string;
+  onToggle: () => void;
+}
+
+const ShellConnectionContext = React.createContext<ShellConnectionValue | null>(null);
+
+function useShellConnection(): ShellConnectionValue {
+  const value = useContext(ShellConnectionContext);
+  if (!value) throw new Error('Shell connection is only available inside the shell.');
+  return value;
+}
+
 /**
- * 상단의 작업 PC 연결 한 줄과 자동 실행 버튼.
- * 버튼 글자는 지금 상태가 아니라 누르면 일어나는 일이다.
- * always.mode가 없거나 꺼져 있으면 '자동 실행 켜기'이고 automationOn을 부른다.
- * 이미 켜져 있으면 '자동 실행 끄기'이고 automationOff를 부른다.
+ * 작업 PC 연결 상태와 자동 실행 토글.
+ * 레일 하단은 연결/꺼짐/켜져 있는데 실패를 각자 다른 문장으로 보여 주고,
+ * 위쪽 토글은 켜짐/꺼짐과 결과만 보여 준다.
+ * null·꺼짐은 automationOn, 이미 켜짐은 automationOff.
  */
-function ConnectionBar(): React.ReactElement {
+function ShellConnectionProvider({ children }: { children: React.ReactNode }): React.ReactElement {
   const [phase, setPhase] = useState<ConnectionPhase>('checking');
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [statusText, setStatusText] = useState(connectionStatusText('checking'));
@@ -358,9 +377,11 @@ function ConnectionBar(): React.ReactElement {
       setPollRaw(undefined);
     } catch (e) {
       const message = connectionErrorMessage(e);
-      showView(connectionViewFromLoadError(message, enabledRef.current));
+      const view = connectionViewFromLoadError(message, enabledRef.current);
+      showView(view);
       setStatusText(connectionSwitchSentence(message));
-      setPollRaw(automationFailureLine(message, connectionErrorDetail(e)).raw);
+      const detail = connectionErrorDetail(e);
+      setPollRaw(detail?.trim() || message.trim() || undefined);
     }
   };
 
@@ -372,7 +393,7 @@ function ConnectionBar(): React.ReactElement {
 
   async function onToggle(): Promise<void> {
     if (busy) return;
-    // 글자와 같은 동작만 부른다. null·꺼짐 → automationOn, 켜짐 → automationOff.
+    // 지금 상태와 같은 동작만 부른다. null·꺼짐 → automationOn, 켜짐 → automationOff.
     const op = automationToggleOp(enabled);
     const turningOn = op === 'controlRoom:automationOn';
     setBusy(true);
@@ -384,46 +405,68 @@ function ConnectionBar(): React.ReactElement {
       await pollRef.current();
     } catch (e) {
       const message = connectionErrorMessage(e);
-      showView(connectionViewFromLoadError(message, enabledRef.current));
+      const view = connectionViewFromLoadError(message, enabledRef.current);
+      showView(view);
       setStatusText(connectionSwitchSentence(message));
+      const detail = connectionErrorDetail(e);
+      const raw = [message, detail].map((part) => part?.trim()).filter(Boolean).join('\n');
       setPollRaw(undefined);
-      setResult({ ok: false, ...automationFailureLine(message, connectionErrorDetail(e)) });
+      setResult({ ok: false, text: shellFailureLine(view.phase), raw: raw || undefined });
     } finally {
       setBusy(false);
     }
   }
 
-  const attention = phase === 'offline' || phase === 'error';
-  const label = automationToggleLabel(enabled, phase);
+  const label = shellToggleLabel(enabled, phase);
+  const value: ShellConnectionValue = {
+    phase, enabled, statusText, pollRaw, result, busy, label, onToggle: () => { void onToggle(); },
+  };
+  return <ShellConnectionContext.Provider value={value}>{children}</ShellConnectionContext.Provider>;
+}
 
+/** 레일 맨 아래. 연결됨 / PC 꺼짐 / 켜져 있는데 실패 — 문장을 하나로 뭉치지 않는다. */
+function RailConnection(): React.ReactElement {
+  const conn = useShellConnection();
+  const attention = conn.phase === 'offline' || conn.phase === 'error';
+  return (
+    <div className={`rail-conn${conn.phase === 'ok' ? ' ok' : attention ? ' attention' : ' checking'}`}>
+      <p role="status">{conn.statusText}</p>
+      {conn.pollRaw && (
+        <details className="conn-raw">
+          <summary>{'원문 보기'}</summary>
+          <pre className="mono">{conn.pollRaw}</pre>
+        </details>
+      )}
+    </div>
+  );
+}
+
+/** 위쪽 막대의 자동 실행 켜짐/꺼짐. 실패하면 분류된 한 줄과 다시 시도. */
+function ConnectionBar(): React.ReactElement {
+  const conn = useShellConnection();
+  const attention = conn.phase === 'offline' || conn.phase === 'error';
   return (
     <div className="conn-cluster">
-      <p className={`conn-status${phase === 'ok' ? ' ok' : attention ? ' attention' : ' checking'}`} role="status">
-        {statusText}
-        {pollRaw && (
-          <details className="conn-raw">
-            <summary>원문 보기</summary>
-            <pre className="mono">{pollRaw}</pre>
-          </details>
-        )}
-      </p>
       <button
         type="button"
-        className={`conn-toggle${enabled === true && !attention ? ' on' : ''}${attention ? ' attention' : ''}`}
-        disabled={busy || phase === 'checking'}
-        aria-pressed={enabled === true}
-        onClick={() => { void onToggle(); }}
+        className={`conn-toggle${conn.enabled === true && !attention ? ' on' : ''}${attention ? ' attention' : ''}`}
+        disabled={conn.busy || conn.phase === 'checking'}
+        aria-pressed={conn.enabled === true}
+        onClick={conn.onToggle}
       >
-        <span className="conn-icon" aria-hidden="true">{enabled === true ? '⏻' : '○'}</span>
-        {label}
+        <span className="conn-icon" aria-hidden="true">{conn.enabled === true ? '⏻' : '○'}</span>
+        {conn.label}
       </button>
-      {result && (
-        <p className={`conn-result${result.ok ? ' ok' : ' attention'}`} role="status">
-          {result.text}
-          {result.raw && (
+      {conn.result && (
+        <p className={`conn-result${conn.result.ok ? ' ok' : ' attention'}`} role="status">
+          {conn.result.text}
+          {!conn.result.ok && (
+            <button type="button" className="btn conn-retry" disabled={conn.busy} onClick={conn.onToggle}>다시 시도</button>
+          )}
+          {conn.result.raw && (
             <details className="conn-raw">
-              <summary>원문 보기</summary>
-              <pre className="mono">{result.raw}</pre>
+              <summary>{'원문 보기'}</summary>
+              <pre className="mono">{conn.result.raw}</pre>
             </details>
           )}
         </p>
@@ -475,8 +518,10 @@ function AppInner(): React.ReactElement {
   const [missingRoot, setMissingRoot]   = useState(false);
   // Quick Dogfooding Capture (작은 Popover)
   const [showQuickDf, setShowQuickDf]   = useState(false);
-  // 개발 도구 메뉴 (닫힘 기본 — Founder 항목 우선)
+  // 개발 도구 메뉴 (닫힘 기본 — Founder 항목 우선). 설정 → 고급 (개발용) 안에만 둔다.
   const [showDevTools, setShowDevTools] = useState(false);
+  const [envLabels, setEnvLabels] = useState<string[]>([]);
+  const [envPhase, setEnvPhase] = useState<ConnectionPhase>('checking');
   // 저장 후 열려있는 Project Dogfooding 목록을 즉시 새로고침하기 위한 신호
   const [pdRefreshSignal, setPdRefreshSignal] = useState(0);
 
@@ -530,6 +575,26 @@ function AppInner(): React.ReactElement {
     () => applyOrderByKeys(projects, p => p.name, settings?.projectOrder ?? []),
     [projects, settings?.projectOrder],
   );
+
+  // 실행 환경 이름만 위쪽 막대에 보여 준다. 샘플 이름은 넣지 않는다.
+  useEffect(() => {
+    let alive = true;
+    const loadEnvs = (): void => {
+      void must<unknown>({ op: 'controlRoom:envs' }).then((payload) => {
+        if (!alive) return;
+        setEnvLabels(normalizeEnvs(payload).map((row) => row.label));
+        setEnvPhase('ok');
+      }).catch((e: unknown) => {
+        if (!alive) return;
+        setEnvLabels([]);
+        const message = e instanceof Error ? e.message : String(e);
+        setEnvPhase(classifyConnectionFailure(message));
+      });
+    };
+    loadEnvs();
+    const id = window.setInterval(loadEnvs, CONNECTION_POLL_MS);
+    return () => { alive = false; window.clearInterval(id); };
+  }, []);
 
   // board/model usage 조회 — 에이전트 칩에 설정된 런타임만 보여주기 위한 원본
   useEffect(() => {
@@ -1344,6 +1409,26 @@ function AppInner(): React.ReactElement {
     };
   }
 
+  function selectShellPage(id: ShellNavId): void {
+    setDfMode(false);
+    setPdMode(false);
+    setControlRoomMode(id === 'control-room');
+    setApprovalsMode(id === 'approvals');
+    setPlanStudioMode(id === 'plan');
+    setShowSettings(id === 'settings');
+  }
+
+  const shellPage: ShellNavId = controlRoomMode
+    ? 'control-room'
+    : planStudioMode
+      ? 'plan'
+      : approvalsMode
+        ? 'approvals'
+        : (showSettings || dfMode || pdMode)
+          ? 'settings'
+          : 'records';
+  const pageCopy = shellPageCopy(shellPage);
+
   // ── 렌더 ──────────────────────────────────────────────────────────────────────
   return (
     <div className="app" data-theme={theme}>
@@ -1371,81 +1456,47 @@ function AppInner(): React.ReactElement {
       )}
 
       {dataRoot && (
-        <>
-          {/* 상단바 — Founder 우선: 관제실 · 승인 규칙 · 계획 → 설정 → 개발 도구 */}
+        <ShellConnectionProvider>
+          {/* 셸: 왼쪽 레일은 고정되고, 오른쪽 본문만 스크롤된다. */}
           <header className="topbar">
-            <div className="brand">Agent Relay</div>
-            <button
-              className={`mini df-toggle${controlRoomMode ? ' on' : ''}`}
-              title="관제실 — 프로젝트별 진행 상황 보기"
-              onClick={() => { setControlRoomMode(m => !m); setDfMode(false); setPdMode(false); setApprovalsMode(false); setPlanStudioMode(false); }}
-            >관제실</button>
-            <button
-              className={`mini df-toggle${approvalsMode ? ' on' : ''}`}
-              title="승인 규칙 — Agent Relay가 알아서 처리하도록 허락한 규칙"
-              onClick={() => { setApprovalsMode(m => !m); setDfMode(false); setPdMode(false); setControlRoomMode(false); setPlanStudioMode(false); }}
-            >승인 규칙</button>
-            <button
-              className={`mini df-toggle${planStudioMode ? ' on' : ''}`}
-              title="계획 — 목표와 작업 순서 보고 PM에게 요청"
-              onClick={() => { setPlanStudioMode(m => !m); setDfMode(false); setPdMode(false); setApprovalsMode(false); setControlRoomMode(false); }}
-            >계획</button>
-            <button
-              className="mini"
-              title="설정 — 저장 폴더"
-              onClick={() => setShowSettings(true)}
-            >설정</button>
-            <div className="devtools-wrap">
-              <button
-                className="mini devtools-toggle"
-                title="개발자용 도구 모음"
-                aria-expanded={showDevTools}
-                onClick={() => setShowDevTools(v => !v)}
-              >개발 도구 ▾</button>
-              {showDevTools && (
-                <div className="devtools-menu">
-                  <p className="muted">앱과 프로젝트를 써 보며 불편했던 점을 남기는 곳이에요. 평소엔 열 필요 없어요.</p>
-                  <div className="topbar-shortcuts">
-                    <span title="모두 저장"><kbd>Ctrl+S</kbd> 저장</span>
-                    <span title="현재 탭 새 런"><kbd>Ctrl+N</kbd> 새 런</span>
-                    <span title="병렬 탭 추가"><kbd>Ctrl+T</kbd> 새 탭</span>
-                  </div>
-                  <button
-                    className={`mini df-toggle${dfMode ? ' on' : ''}`}
-                    title="Agent Relay 앱 자체 개선 기록"
-                    onClick={() => { setDfMode(m => !m); setPdMode(false); setControlRoomMode(false); setApprovalsMode(false); setPlanStudioMode(false); }}
-                  >앱 사용 기록</button>
-                  <button
-                    className={`mini df-toggle${pdMode ? ' on' : ''}`}
-                    disabled={!project}
-                    title={project ? `"${projectLabel(project)}" 프로젝트 사용성 기록` : '프로젝트를 먼저 선택하세요'}
-                    onClick={() => { setPdMode(m => !m); setDfMode(false); setControlRoomMode(false); setApprovalsMode(false); setPlanStudioMode(false); }}
-                  >프로젝트 사용 기록</button>
-                  <button
-                    className="mini qdf-toggle"
-                    disabled={!project}
-                    title={project ? '불편한 순간 한 줄 기록 — 현재 프로젝트에 즉시 저장' : '프로젝트를 먼저 선택하세요'}
-                    onClick={() => setShowQuickDf(true)}
-                  >＋ 피드백</button>
+            <div className="shell">
+              <aside className="rail">
+                <div className="rail-brand">
+                  <span className="rail-brand-name">Agent Relay</span>
+                  <span className="rail-brand-sub">AI 팀 자동 실행</span>
                 </div>
-              )}
-            </div>
-            <button
-              className="mini theme-toggle"
-              title={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
-              aria-label={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
-              onClick={toggleTheme}
-            >{theme === 'dark' ? '☀️' : '🌙'}</button>
-            <ConnectionBar />
-          </header>
-
-          {msg && (
-            <div className={`flash ${msg.kind}`}>
-              <span>{msg.text}</span>
-              <button className="flash-close" onClick={dismissMsg} title="닫기">✕</button>
-            </div>
-          )}
-
+                <nav className="rail-nav" aria-label="화면 이동">
+                  <button type="button" className={`rail-link${shellPage === 'control-room' ? ' on' : ''}`} title="관제실 — 프로젝트별 진행 상황 보기" aria-current={shellPage === 'control-room' ? 'page' : undefined} onClick={() => selectShellPage('control-room')}>관제실</button>
+                  <button type="button" className={`rail-link${shellPage === 'plan' ? ' on' : ''}`} title="계획 — 목표와 작업 순서 보고 PM에게 요청" aria-current={shellPage === 'plan' ? 'page' : undefined} onClick={() => selectShellPage('plan')}>계획</button>
+                  <button type="button" className={`rail-link${shellPage === 'approvals' ? ' on' : ''}`} title="승인 규칙 — Agent Relay가 알아서 처리하도록 허락한 규칙" aria-current={shellPage === 'approvals' ? 'page' : undefined} onClick={() => selectShellPage('approvals')}>승인 규칙</button>
+                  <button type="button" className={`rail-link${shellPage === 'records' ? ' on' : ''}`} aria-current={shellPage === 'records' ? 'page' : undefined} onClick={() => selectShellPage('records')}>작업 기록</button>
+                  <button type="button" className={`rail-link${shellPage === 'settings' ? ' on' : ''}`} title="설정 — 저장 폴더" aria-current={shellPage === 'settings' ? 'page' : undefined} onClick={() => selectShellPage('settings')}>설정</button>
+                </nav>
+                <RailConnection />
+              </aside>
+              <div className="shell-col">
+                <div className="topbar-row">
+                  <div className="topbar-copy">
+                    <h1>{pageCopy.title}</h1>
+                    <p className="shell-lead">{pageCopy.lead}</p>
+                  </div>
+                  <p className="shell-env">{shellEnvLine(envLabels, envPhase)}</p>
+                  <button
+                    type="button"
+                    className="mini theme-toggle"
+                    title={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
+                    aria-label={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
+                    onClick={toggleTheme}
+                  >{theme === 'dark' ? '☀️' : '🌙'}</button>
+                  <ConnectionBar />
+                </div>
+                {msg && (
+                  <div className={`flash ${msg.kind}`}>
+                    <span>{msg.text}</span>
+                    <button className="flash-close" onClick={dismissMsg} title="닫기">✕</button>
+                  </div>
+                )}
+                <div className="shell-main">
           {controlRoomMode ? (
             <ControlRoom onClose={() => setControlRoomMode(false)} />
           ) : approvalsMode ? (
@@ -1474,6 +1525,74 @@ function AppInner(): React.ReactElement {
               refreshSignal={pdRefreshSignal}
               onClose={() => setPdMode(false)}
             />
+          ) : showSettings && settings ? (
+            <div className="settings-page">
+              <div className="settings-section">
+                <span className="flabel">저장 폴더</span>
+                <div className="field" style={{ marginTop: 4 }}>
+                  <span className={`fvalue mono${settings.dataRoot ? '' : ' muted'}`} title={settings.dataRoot}>
+                    {settings.dataRoot || '(저장공간이 선택되지 않았습니다)'}
+                  </span>
+                </div>
+                <div className="modalbtns" style={{ justifyContent: 'flex-start' }}>
+                  <button className="btn primary" onClick={() => void changeDataRoot()}>변경</button>
+                  <button
+                    className="btn"
+                    disabled={!settings.dataRoot}
+                    title="저장공간 폴더를 탐색기로 열기"
+                    onClick={() => { void must({ op: 'folder:open', folder: settings.dataRoot }); }}
+                  >폴더 열기</button>
+                </div>
+                <p className="muted" style={{ fontSize: 11, margin: '4px 0 0' }}>
+                  설정 파일: {settings.settingsFile}
+                </p>
+              </div>
+              <div className="settings-section">
+                <span className="flabel">앱 정보 — Agent Relay v{updateStatus?.version ?? settings.appVersion}</span>
+                <UpdateSection
+                  status={updateStatus ?? { phase: 'idle', version: settings.appVersion }}
+                  notify={notify}
+                  onOpen={() => undefined}
+                />
+              </div>
+              <ProjectManager />
+              <div className="settings-section shell-advanced">
+                <button
+                  type="button"
+                  className="shell-advanced-toggle"
+                  aria-expanded={showDevTools}
+                  onClick={() => setShowDevTools(v => !v)}
+                >고급 (개발용)</button>
+                {showDevTools && (
+                  <div className="devtools-menu">
+                    <p className="muted">앱과 프로젝트를 써 보며 불편했던 점을 남기는 곳이에요. 평소엔 열 필요 없어요.</p>
+                    <h4>개발 도구</h4>
+                    <div className="topbar-shortcuts">
+                      <span title="모두 저장"><kbd>Ctrl+S</kbd> 저장</span>
+                      <span title="현재 탭 새 런"><kbd>Ctrl+N</kbd> 새 런</span>
+                      <span title="병렬 탭 추가"><kbd>Ctrl+T</kbd> 새 탭</span>
+                    </div>
+                    <button
+                      className={`mini df-toggle${dfMode ? ' on' : ''}`}
+                      title="Agent Relay 앱 자체 개선 기록"
+                      onClick={() => { setDfMode(m => !m); setPdMode(false); setControlRoomMode(false); setApprovalsMode(false); setPlanStudioMode(false); setShowSettings(false); }}
+                    >앱 사용 기록</button>
+                    <button
+                      className={`mini df-toggle${pdMode ? ' on' : ''}`}
+                      disabled={!project}
+                      title={project ? `"${projectLabel(project)}" 프로젝트 사용성 기록` : '프로젝트를 먼저 선택하세요'}
+                      onClick={() => { setPdMode(m => !m); setDfMode(false); setControlRoomMode(false); setApprovalsMode(false); setPlanStudioMode(false); setShowSettings(false); }}
+                    >프로젝트 사용 기록</button>
+                    <button
+                      className="mini qdf-toggle"
+                      disabled={!project}
+                      title={project ? '불편한 순간 한 줄 기록 — 현재 프로젝트에 즉시 저장' : '프로젝트를 먼저 선택하세요'}
+                      onClick={() => setShowQuickDf(true)}
+                    >＋ 피드백</button>
+                  </div>
+                )}
+              </div>
+            </div>
           ) : (
             <>
           {/* ── 기록 화면 쉬운 우리말 안내 ── */}
@@ -1935,7 +2054,11 @@ function AppInner(): React.ReactElement {
           </main>
             </>
           )}
-        </>
+                </div>
+              </div>
+            </div>
+          </header>
+        </ShellConnectionProvider>
       )}
 
       {showQuickDf && project && settings && (
@@ -1951,51 +2074,6 @@ function AppInner(): React.ReactElement {
             setPdRefreshSignal(n => n + 1);
           }}
         />
-      )}
-
-      {/* 설정 모달 — 저장 폴더 / 앱 정보(업데이트) */}
-      {showSettings && settings && (
-        <div className="modal" onClick={() => setShowSettings(false)}>
-          <div className="modcard settings-card" onClick={e => e.stopPropagation()}>
-            <h3>설정</h3>
-
-            <div className="settings-section">
-              <span className="flabel">저장 폴더</span>
-              <div className="field" style={{ marginTop: 4 }}>
-                <span className={`fvalue mono${settings.dataRoot ? '' : ' muted'}`} title={settings.dataRoot}>
-                  {settings.dataRoot || '(저장공간이 선택되지 않았습니다)'}
-                </span>
-              </div>
-              <div className="modalbtns" style={{ justifyContent: 'flex-start' }}>
-                <button className="btn primary" onClick={() => void changeDataRoot()}>변경</button>
-                <button
-                  className="btn"
-                  disabled={!settings.dataRoot}
-                  title="저장공간 폴더를 탐색기로 열기"
-                  onClick={() => { void must({ op: 'folder:open', folder: settings.dataRoot }); }}
-                >폴더 열기</button>
-              </div>
-              <p className="muted" style={{ fontSize: 11, margin: '4px 0 0' }}>
-                설정 파일: {settings.settingsFile}
-              </p>
-            </div>
-
-            <div className="settings-section">
-              <span className="flabel">앱 정보 — Agent Relay v{updateStatus?.version ?? settings.appVersion}</span>
-              <UpdateSection
-                status={updateStatus ?? { phase: 'idle', version: settings.appVersion }}
-                notify={notify}
-                onOpen={() => undefined}
-              />
-            </div>
-
-            <ProjectManager />
-
-            <div className="modalbtns">
-              <button className="btn subtle" onClick={() => setShowSettings(false)}>닫기</button>
-            </div>
-          </div>
-        </div>
       )}
 
       {/* 모달 */}

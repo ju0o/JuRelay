@@ -9,22 +9,28 @@ const src = fs.readFileSync(path.join(here, '..', 'src', 'frontend', 'App.tsx'),
 const controlRoomSrc = fs.readFileSync(path.join(here, '..', 'src', 'frontend', 'controlRoom.tsx'), 'utf8');
 
 describe('topbar founder-first', () => {
-  it("order 관제실 → 승인 규칙 → 계획 appears before '개발 도구'", () => {
+  it("rail order 관제실 → 계획 → 승인 규칙 appears before '개발 도구'", () => {
     const headerStart = src.indexOf('<header className="topbar">');
     assert.ok(headerStart !== -1, 'missing topbar header');
     const headerEnd = src.indexOf('</header>', headerStart);
     const header = src.slice(headerStart, headerEnd !== -1 ? headerEnd : undefined);
     const iControl = header.indexOf('관제실');
-    const iApproval = header.indexOf('승인 규칙');
     const iPlan = header.indexOf('>계획<');
+    const iApproval = header.indexOf('승인 규칙');
+    const iRecords = header.indexOf('작업 기록');
+    const iSettings = header.indexOf('>설정<');
     const iDev = header.indexOf('개발 도구');
     assert.ok(iControl !== -1, 'missing 관제실');
-    assert.ok(iApproval !== -1, 'missing 승인 규칙');
     assert.ok(iPlan !== -1, 'missing 계획 button label');
+    assert.ok(iApproval !== -1, 'missing 승인 규칙');
+    assert.ok(iRecords !== -1, 'missing 작업 기록');
+    assert.ok(iSettings !== -1, 'missing 설정');
     assert.ok(iDev !== -1, "missing 개발 도구");
-    assert.ok(iControl < iApproval, '관제실 should come before 승인 규칙');
-    assert.ok(iApproval < iPlan, '승인 규칙 should come before 계획');
-    assert.ok(iPlan < iDev, '계획 should come before 개발 도구');
+    assert.ok(iControl < iPlan, '관제실 should come before 계획');
+    assert.ok(iPlan < iApproval, '계획 should come before 승인 규칙');
+    assert.ok(iApproval < iRecords, '승인 규칙 should come before 작업 기록');
+    assert.ok(iRecords < iSettings, '작업 기록 should come before 설정');
+    assert.ok(iSettings < iDev, '설정 should come before 개발 도구');
   });
 
   it("'Founder 승인 내역' no longer appears", () => {
