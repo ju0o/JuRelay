@@ -8324,6 +8324,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: 'founder-ux Skill 규칙(맨 위 한 문장, … 빈 화면 이유+다음 행동 …)으로 아래 화면을 하나씩 점검 … 대상: juceipt 명령 출력'; base 762d88e src/cli/main.ts:272-277 prints only per-agent lines, bare '기록 없음', and '다음: juceipt sources --json'",
           "title": "기록 위치와 없는 이유를 알려요"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-FIRST-RUN-EMPTY-STATE",
+          "scope": "In src/cli/main.ts, when `juceipt daily` runs without --receipts/--receipts-dir and the default .juceipt/scans folder is missing (ENOENT) or has no receipt JSON, stop saying '영수증 폴더를 찾을 수 없어요 / 폴더나 파일이 없어요 / 영수증 폴더 경로를 확인한 뒤 다시 실행하세요' and instead print three plain 해요체 lines: '무슨 일: 아직 영수증이 없어요.' / '왜: juceipt scan 으로 영수증을 만든 적이 없어요.' / '할 일: juceipt scan 을 먼저 실행한 뒤 juceipt daily 를 다시 실행하세요.' (exit code stays 1, raw text only with --show-raw); leave the existing explicit --receipts messages and their tests unchanged, and add tests in tests/daily-cli.test.ts that chdir into an empty temp dir (restore cwd in finally) for both the missing-folder case and the empty-folder case.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 빈 화면 이유+다음 행동 — 대상 juceipt 명령 출력(scan, daily, receipt); main.ts dailyCommand defaults receiptsDir to .juceipt/scans, and today a first run before scan prints '할 일: 영수증 폴더 경로를 확인한 뒤 다시 실행하세요' with no pointer to juceipt scan"
+        },
+        {
+          "taskId": "JUCEIPT-TASK-TITLE-UPDATE-REMOVE-GROUPS",
+          "scope": "In taskTitle in src/daily/index.ts, add two keyword groups right before the final '작업 내용 확인' fallback so common English and Korean requests stop landing on the generic fallback title: Korean 삭제|지우|제거 plus whole-word English remove|delete|clean up|cleanup map to '필요 없는 것 지우기', and Korean 바꾸|변경|업데이트|이름 plus whole-word English update|change|rename|replace|upgrade map to '내용 바꾸기'; keep every existing group and its order, and extend the table-driven cases in tests/daily.test.ts (near line 177) with English and Korean examples for both new groups, plus one case proving an existing group still wins (e.g. 'fix and update the bug' stays '문제 수정').",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: '영어 작업 제목을 쉬운 한국어 요약으로' — base taskTitle (src/daily/index.ts:20-31) has no group for update/change/rename/remove/delete, so requests like 'Update the changelog' or 'Remove unused files' show only '작업 내용 확인' in scan SUMMARY.md, daily, and the receipt view title"
         }
       ],
       "skills": {
