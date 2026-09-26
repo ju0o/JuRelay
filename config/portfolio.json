@@ -12485,6 +12485,31 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: shared live-status projection '… and color rules; add focused fixture tests'; founder-ux Skill rule 11 'green (teal) = done / OK, amber = needs a look, red = only real danger … Being stuck is amber, not red'"
+        },
+        {
+          "taskId": "JCAPP-LIVE-STATUS-SENTENCES-TEST",
+          "scope": "Add test/live-status-sentences.test.mjs that sets process.env.TZ='Asia/Seoul' before any Date use, pulls the real railRowModel/liveCardModel out of operator/public/app.js the same way test/live-status-projection.test.mjs does (same const/function lists plus aiGa and aiName if liveCardModel needs them), runs them on test/fixtures/live-status/board.json at NOW=fetchedAt, and pins the exact Korean 지금 하는 일 (doing), 확인 상태 word+evidence, 대표님 할 일 word+button and 다음 단계 (next) for every fixture lane, including idle-open-hold reading '안 고르면 16:03에 추천대로 진행해요', human-gate/run-stage-5 reading '결정해 주시면 이어서 진행해요', run-paused '지금 작업이 끝나면 쉬어요 · 다시 켜면 이어서 해요', idle-paused '다시 켜기 전엔 새 작업을 시작하지 않아요' and idle-empty '새 계획이 들어오면 자동으로 시작해요'; test only, no app.js or fixture change",
+          "files": [
+            "test/live-status-sentences.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-sentences.test.mjs",
+            "node --test test/live-status-projection.test.mjs test/live-status-colors.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' (at base the existing fixture tests check tones and word sets, but no test pins the status sentence or next step)"
+        },
+        {
+          "taskId": "JCAPP-ACTL-CARD-FIXTURE-COLORS-TEST",
+          "scope": "Add test/fixtures/live-status/panes.json in the real /api/panes shape used by test/actl-panes-plain.test.mjs (paneId, command, cwd, pid, runtime, observedState, confidence, plus lastRequest/answerReady/answer from lib/paneActivity.mjs lastTurn), with one agent pane per observedState (RUNNING, BUSY, REVIEWING, IDLE, NO_APPROVED_WORK, WAITING, WAITING_OWNER, BLOCKED, QUEUED, OFFLINE, STALE) and three UNKNOWN panes (answerReady true / lastRequest only / nothing), and add test/actl-card-status.test.mjs that runs the real relayPanesPanel (extracted like actl-panes-plain) on it and checks: every card's state word is one of 일하는 중/쉬는 중/답 기다림/연결 안 됨; tone good goes with 일하는 중, warn with 답 기다림, muted with the other two; '일하는 창 N개' equals the number of cards that say 일하는 중; no paneId outside 원문 보기; the app.css rules .ai-card-state--good/--warn and .ai-card-note--ready use --tx-good/--tx-warn and no .ai-card* rule uses a --*-bad token; test and fixture only",
+          "files": [
+            "test/fixtures/live-status/panes.json",
+            "test/actl-card-status.test.mjs"
+          ],
+          "tests": [
+            "node --test test/actl-card-status.test.mjs",
+            "node --test test/actl-panes-plain.test.mjs test/live-status-colors.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25/26: actl AI 창 카드 ... '같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만)' and 2026-09-26 'color rules; add focused fixture tests'; founder-ux Skill Live status card: actl window card says 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨"
         }
       ],
       "skills": {
