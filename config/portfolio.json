@@ -15019,6 +15019,22 @@
             "node --test test/idle-lane-meaning.test.mjs"
           ],
           "ssotEvidence": "operator/public/app.js liveCardModel sentBack branch (JCAPP-LIVE-CARD-SENT-BACK-TRUE, already done) vs homeWorking which never reads current.state; Founder direction 2026-09-26 (one shared live-status projection for Home and Progress)"
+        },
+        {
+          "taskId": "JCAPP-LIVE-STATUS-FIXTURE-GAPS-R2",
+          "scope": "Add 3 untested lane-state combos (RUNNING+REQUEST_CHANGES with an open hold, RUNNING+QUEUED+paused, HUMAN_GATE+paused) to the shared live-status board fixture and pin their expected sentences so the existing fixture-driven suites exercise them",
+          "files": [
+            "test/fixtures/live-status/board.json",
+            "test/live-status-sentences.test.mjs",
+            "test/live-status-projection.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-projection.test.mjs",
+            "node --test test/live-status-sentences.test.mjs",
+            "node --test test/live-status-colors.test.mjs",
+            "node --test test/live-status-card-html.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress ... add focused fixture tests.'"
         }
       ],
       "skills": {
