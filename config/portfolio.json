@@ -2036,7 +2036,7 @@
           ],
           "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'.",
           "dependsOn": [
-            "AGENTRELAY-LOVABLE-SHELL"
+            "AGENTRELAY-LOVABLE-SHELL-R3"
           ],
           "title": "새 디자인: 관제실 맨 위 안내·숫자 4개"
         },
@@ -2135,6 +2135,26 @@
           ],
           "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'. Founder rewrite choice 2026-09-26: 범위 줄이기 — 연결 상태 표시만 먼저 — 화면 디자인은 뒤로 미루고 상태 표시부터 바로잡아요. Required test test/connection-state.test.mjs (imports dist/server/shared/connectionState.js) must fail on the last attempt's behaviour and pass on the new code: a REMOTE_FAILED message ('작업 PC는 켜져 있는데…') and an INVALID_JSON message ('…응답을 읽지 못했습니다') must NOT give '작업 PC에 연결할 수 없어요' or '확인 중', only an EXEC_FAILED message ('…연결할 수 없습니다') gives it; a toggle failure must return the Korean e.message as the visible text, not the fixed '실패했어요 — 작업 PC가 응답하지 않았을 수 있어요'.",
           "title": "작업 PC 연결 상태 알려주기"
+        },
+        {
+          "taskId": "AGENTRELAY-LOVABLE-SHELL-R3",
+          "scope": "Step 1 of the approved Lovable port, on top of SHELL-R2's connection-state helpers (src/shared/connectionState.ts): dark tokens from the reference styles.css (bg #0b0d10, cards #12151a, border #232830, radius 14px, teal #7dd3c0, amber #e8c170, never red for stuck, body 16px, buttons ≥44px, Noto Sans KR); fixed 220px left rail (brand 'Agent Relay / AI 팀 자동 실행'; 관제실 · 계획 · 승인 규칙 · 작업 기록 · 설정; bottom box showing the SHELL-R2 classified connection state — connected / PC off / on-but-failing with its own Korean sentence, never one catch-all) that stays put while only the main area scrolls and wraps on phone width; top bar with page title, '실행 환경: <env>' and the 자동 실행 켜짐/꺼짐 toggle wired to the existing automation backend with inline '켰어요 ✓'/'껐어요 ✓' and, on failure, the SHELL-R2 classified Korean reason + [다시 시도] (raw text only under 원문 보기). Old top nav maps to the rail; 개발 도구 goes under 설정 → '고급 (개발용)'. Keep every feature, IPC contract and test; no new npm dependencies; never hard-code sample data. Pure helpers + test/lovable-shell.test.mjs for nav items, toggle label and the failure line per connection state.",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "src/frontend/components.tsx",
+            "test/lovable-shell.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 approved the Lovable design ('ㅇㅋ 이렇게 진행 좋네'). AGENTRELAY-LOVABLE-SHELL held after 3 QA rounds (commit 06b8eae has the shell); the unattended redesign narrowed it to AGENTRELAY-LOVABLE-SHELL-R2 (connection/automation state only) and deferred the restyle — this task restores it. Reference /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable",
+          "dependsOn": [
+            "AGENTRELAY-LOVABLE-SHELL-R2"
+          ],
+          "title": "새 디자인: 색·글꼴·왼쪽 메뉴·맨 위 줄 (다시)"
         }
       ],
       "qaRuntime": [
