@@ -12,7 +12,7 @@ import * as path from 'path';
 import * as relay from './fs.js';
 import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomEnvs, runControlRoomTokens, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneAdd, runControlRoomLaneSet, runControlRoomPause, runControlRoomPromoteHub, runControlRoomScheduleCancel, runControlRoomScheduleList, runControlRoomScheduleSet, runControlRoomResume, isValidProjectId, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
 import { migrateSettings } from './migrate.js';
-import { CaptureReport, parseCapturePath } from '../shared/capture.js';
+import { CaptureReport, captureLoadingError, parseCapturePath } from '../shared/capture.js';
 import { projectWindowKey, projectWindowTitle } from '../shared/projectLabels.js';
 import { checkForUpdates, downloadUpdate, initUpdater, installUpdate, updaterSupported } from './updater.js';
 import {
@@ -578,7 +578,8 @@ function createWindow(): void {
     title: 'Agent Relay',
     backgroundColor: '#17181c',
     autoHideMenuBar: true,
-    webPreferences: WEB_PREFERENCES(),
+    // Hidden capture window must keep rendering, or capturePage() returns the first frame.
+    webPreferences: { ...WEB_PREFERENCES(), ...(capturePath ? { backgroundThrottling: false } : {}) },
   });
 
   // Per-build version suffix so installers can be told apart ('Agent Relay 0.3.N').
@@ -658,6 +659,8 @@ function createWindow(): void {
 /** How long the UI may keep loading data after it mounted before we take the picture. */
 const CAPTURE_SETTLE_MS = 1500;
 const CAPTURE_MAX_MS = 15000;
+/** Max wait for the repaint (two animation frames) before capturePage(). */
+const CAPTURE_PAINT_MS = 1000;
 let captureDone = false;
 
 /** Capture (error='') or record the failure, write PNG + <png>.json, then quit 0/1. Runs once. */
@@ -671,10 +674,17 @@ async function finishCapture(error: string): Promise<void> {
     if (!error) {
       report.title = wc.getTitle();
       report.text = String(await wc.executeJavaScript('document.body.innerText')).slice(0, 2000);
+      // Force a fresh frame of the current DOM before taking the picture.
+      wc.invalidate();
+      await Promise.race([
+        wc.executeJavaScript('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => r(0))))'),
+        new Promise(r => setTimeout(r, CAPTURE_PAINT_MS)),
+      ]);
       const img = await wc.capturePage();
       fs.mkdirSync(path.dirname(capturePath), { recursive: true });
       fs.writeFileSync(capturePath, img.toPNG());
-      report.ok = true;
+      report.error = captureLoadingError(String(await wc.executeJavaScript('document.body.innerText')));
+      report.ok = !report.error;
     }
   } catch (e) {
     report.error = report.error || (e instanceof Error ? e.message : String(e));

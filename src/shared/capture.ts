@@ -25,3 +25,17 @@ export function parseCapturePath(argv: readonly string[]): string {
   for (const a of argv) if (a.startsWith(CAPTURE_PREFIX)) raw = a.slice(CAPTURE_PREFIX.length);
   return !raw.includes('\0') && path.isAbsolute(raw) && /\.png$/i.test(raw) ? raw : '';
 }
+
+/** Text the UI shows while it still loads ('설정을 불러오는 중…' etc.). */
+const LOADING_TEXT = '불러오는 중';
+
+/**
+ * Decides whether a finished capture is usable from the page text read right
+ * after capturePage(). Still-loading text → error message (capture not ok);
+ * otherwise ''.
+ */
+export function captureLoadingError(textAfterCapture: string): string {
+  return textAfterCapture.includes(LOADING_TEXT)
+    ? '화면이 아직 불러오는 중이라 캡처에 로딩 화면만 찍혔습니다.'
+    : '';
+}
