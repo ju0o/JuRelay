@@ -2434,7 +2434,8 @@
             "npm run typecheck",
             "npm run build:client"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 16:09: '4) 밤 작업 예약: 끝나는 시각 → 새 하위 명령 night schedule HH:MM|list|cancel'; backend already at db8881e src/backend/controlRoom.ts:454-469 (runControlRoomScheduleSet/List/Cancel) and src/shared/types.ts:153-155, with no frontend caller"
+          "ssotEvidence": "Founder direction 2026-09-25 16:09: '4) 밤 작업 예약: 끝나는 시각 → 새 하위 명령 night schedule HH:MM|list|cancel'; backend already at db8881e src/backend/controlRoom.ts:454-469 (runControlRoomScheduleSet/List/Cancel) and src/shared/types.ts:153-155, with no frontend caller",
+          "title": "설정에서 밤 작업 끝낼 시간 예약"
         }
       ],
       "qaRuntime": [
@@ -8536,7 +8537,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상 juceipt daily 출력, 빠진 확인 항목의 쉬운 설명; founder-ux rule 1/13 (한 눈에, 카드당 한 가지 행동)"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상 juceipt daily 출력, 빠진 확인 항목의 쉬운 설명; founder-ux rule 1/13 (한 눈에, 카드당 한 가지 행동)",
+          "title": "검토할 작업마다 할 일 한 줄로 보기"
         },
         {
           "taskId": "JUCEIPT-DAILY-NEXT-LINE-NAMES-TASK",
@@ -8549,7 +8551,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상 juceipt daily 출력, 영어 작업 제목을 쉬운 한국어 요약으로; founder-ux rule 1 (맨 위/끝 한 문장: 지금 할 일)"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상 juceipt daily 출력, 영어 작업 제목을 쉬운 한국어 요약으로; founder-ux rule 1 (맨 위/끝 한 문장: 지금 할 일)",
+          "title": "다음에 먼저 열 영수증 이름 알려주기"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-MISSING-CHECK-ONE-WORD",
@@ -8562,7 +8565,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 영수증 보기 화면 — 판정 '확인 후 받기' 같은 말의 뜻, 빠진 확인 항목의 쉬운 설명"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 영수증 보기 화면 — 판정 '확인 후 받기' 같은 말의 뜻, 빠진 확인 항목의 쉬운 설명",
+          "title": "영수증 화면에서 빠진 확인 말 통일"
         },
         {
           "taskId": "JUCEIPT-CLI-ERROR-FS-CAUSE-LINES",
@@ -8576,7 +8580,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux Skill 규칙(… 오류 3줄 …)으로 juceipt 명령 출력(scan, daily, receipt) 점검"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux Skill 규칙(… 오류 3줄 …)으로 juceipt 명령 출력(scan, daily, receipt) 점검",
+          "title": "실행 실패 때 진짜 이유와 할 일 안내"
         }
       ],
       "skills": {
@@ -10784,7 +10789,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs:68-69 staleReason future-observedAt/stale has no CLI test at b1198ed"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs:68-69 staleReason future-observedAt/stale has no CLI test at b1198ed",
+          "title": "Agent Relay 보드 미래 시각 안내 확인"
         },
         {
           "taskId": "JUCONTROLER-E2E-RELAY-STALE-STEP",
@@ -10798,7 +10804,8 @@
             "node --test tests/e2e-docs-sync.test.mjs tests/e2e-script.test.mjs tests/e2e-failure-output.test.mjs tests/e2e-cleanup.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; scripts/e2e.sh:456 step loop at b1198ed covers the relay missing and future observedAt cases but not a relay board that has gone stale by freshnessMs"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; scripts/e2e.sh:456 step loop at b1198ed covers the relay missing and future observedAt cases but not a relay board that has gone stale by freshnessMs",
+          "title": "Agent Relay 보드 오래됨 안내 점검"
         }
       ],
       "qaRuntime": [
@@ -13916,7 +13923,8 @@
             "node --test test/live-status-sentences.test.mjs",
             "node --test test/live-status-projection.test.mjs test/live-status-colors.test.mjs test/live-status-card-html.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence ... add focused fixture tests'; ~/.agents/skills/auto-night-orchestrator/scripts/night-board.py:108 builds lane.current as {taskId,title,state,stage,attempts,worker,qa} with no startedAt, while test/fixtures/live-status/board.json adds startedAt to 10 of its 11 running lanes"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence ... add focused fixture tests'; ~/.agents/skills/auto-night-orchestrator/scripts/night-board.py:108 builds lane.current as {taskId,title,state,stage,attempts,worker,qa} with no startedAt, while test/fixtures/live-status/board.json adds startedAt to 10 of its 11 running lanes",
+          "title": "시작 시각 없어도 진행 문구 깔끔하게"
         },
         {
           "taskId": "JCAPP-HOLD-WAIT-COUNTS-DOWN",
@@ -13933,7 +13941,8 @@
             "node --test test/hold-wait-from-board.test.mjs test/home-all-ok.test.mjs test/lovable-home-top.test.mjs test/lovable-home-order.test.mjs test/relay-top-line.test.mjs test/live-status-projection.test.mjs test/live-status-sentences.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-26): one shared live-status projection for Home and Progress including the Korean status sentence and next step; founder-ux rule 9 'When nobody answers, say what happens and when'"
+          "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-26): one shared live-status projection for Home and Progress including the Korean status sentence and next step; founder-ux rule 9 'When nobody answers, say what happens and when'",
+          "title": "결정 마감까지 남은 시간 정확히 보여주기"
         }
       ],
       "skills": {
@@ -16194,7 +16203,8 @@
             "node --test tests/forbidden-phrases-skill-parity.test.mjs tests/baseline-state-skill-parity.test.mjs tests/final-checklist-spec-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:721-745 '### 16.3 최종 보고 전 … `[REDACTED]` … `****` … 변수 이름만 표시' and '### 16.4 이미 출력된 경우 … 완전히 되돌릴 수 있다고 표현하지 않는다 … 해당 키 또는 토큰 폐기 … 새 값 발급 … 실제 비밀 값은 다시 반복 출력하지 않는다'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:721-745 '### 16.3 최종 보고 전 … `[REDACTED]` … `****` … 변수 이름만 표시' and '### 16.4 이미 출력된 경우 … 완전히 되돌릴 수 있다고 표현하지 않는다 … 해당 키 또는 토큰 폐기 … 새 값 발급 … 실제 비밀 값은 다시 반복 출력하지 않는다'",
+          "title": "비밀번호 노출 시 안전하게 가리고 안내하기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
