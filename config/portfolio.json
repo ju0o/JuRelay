@@ -15320,6 +15320,44 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:638 비개발자 평가 자는 보고서를 읽고 다음 7개 질문에 답한다. / docs/PRODUCT_SCOPE.md:648 7개 중 6개 이상에 추가 질문 없이 답할 수 있어야 한다.",
           "title": "이해도 평가 질문이 서로 맞는지 점검"
+        },
+        {
+          "taskId": "JUTELL-CONDITIONAL-ITEMS-SCOPE-PARITY",
+          "scope": "Add one bullet under report-format.md `## 3. 일반 작업 보고` that lists the 9 PRODUCT_SCOPE §6.3 conditional report items (새로 생성된 파일, 삭제된 파일, 데이터 저장 방식 변경, 설정 또는 환경변수 변경, 외부 서비스 변경, 보안 관련 변경, 배포 관련 주의사항, 기존 변경과 이번 작업의 구분, 주요 파일 이외의 전체 변경 파일 목록) and says they are added only when relevant, plus a new offline node:test tests/conditional-items-scope-parity.test.mjs that reads the bullets between `### 6.3 조건부 보고 항목` and `### 6.4` in PRODUCT_SCOPE and checks every one appears in the same order in report-format.md §3 (the text between `## 3. 일반 작업 보고` and `## 4. 최소 보고`), without breaking the existing §3 assertions in report-length-limits-parity, main-files-exclude-parity or main-files-tiebreak-parity.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/conditional-items-scope-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/conditional-items-scope-parity.test.mjs",
+            "node --test tests/report-length-limits-parity.test.mjs tests/main-files-exclude-parity.test.mjs tests/main-files-tiebreak-parity.test.mjs tests/skill-report-contract.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:205 \"### 6.3 조건부 보고 항목 — 다음 항목은 작업이 복잡하거나 관련 정보가 있을 때만 추가한다.\" (at this base, report-format.md does not list these items anywhere)"
+        },
+        {
+          "taskId": "JUTELL-REQUIRED-ITEMS-SCOPE-PARITY",
+          "scope": "Add a new test-only offline node:test tests/required-items-scope-parity.test.mjs. It reads the 6 numbered items in PRODUCT_SCOPE `### 6.2 필수 보고 항목` and uses an explicit mapping to tie them, in order, to the six `## ` headings in the report-format.md §2 fenced template (변경 요약 … 위험과 사용자 확인) and to the six headings listed in SKILL.md 실행 절차 step 8. It also checks that §6.2's rule for a missing item (한 문장으로 짧게 표시) still matches SKILL.md step 8's rule (항목을 삭제하지 말고 `없음` … 짧게 표시).",
+          "files": [
+            "tests/required-items-scope-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/required-items-scope-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:180 \"모든 코드 변경 작업의 최종 보고에는 다음 6개 항목을 기본으로 포함한다.\"; .agents/skills/beginner-bridge/SKILL.md:47 \"다음 6개 기본 항목을 항상 제목으로 유지한다\""
+        },
+        {
+          "taskId": "JUTELL-REUSABILITY-RULES-SKILL-PARITY",
+          "scope": "Add a new test-only offline node:test tests/reusability-rules-skill-parity.test.mjs. It reads the 5 bullets in PRODUCT_SCOPE `### 11.5 재사용성` and uses an explicit mapping to the existing SKILL.md phrases that carry each one: 하나의 최종 보고 → step 13 `하나의 비개발자용 최종 보고`, 사실과 예상의 구분 → step 16 `예상과 실제 확인을 구분했는가`, 주요 파일 중심 설명 → step 6 `주요 파일을 작업 규모에 맞게 선택한다`, 실행 및 미실행 검증 구분 → step 9 `실행하지 못한 검증을 통과했다고 쓰지 않는다`, 사용자 확인 항목 제공 → step 8 `위험과 사용자 확인`. The test fails if §11.5 gains, loses or reorders a bullet, or if any mapped phrase is missing from SKILL.md.",
+          "files": [
+            "tests/reusability-rules-skill-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/reusability-rules-skill-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:682 \"### 11.5 재사용성 — 동일한 Skill을 서로 다른 AI Agent 프로젝트에 적용해도 다음 규칙이 유지돼야 한다.\""
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
