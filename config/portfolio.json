@@ -2488,7 +2488,8 @@
             "node test/controlRoom.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: item 6 — add a read-only list of received night reports (NIGHT_REPORT / LAST_NIGHT_RUN) to the control room, fetched through the existing controlRoom.ts ssh JSON path and tested with a fake command runner"
+          "ssotEvidence": "Founder direction 2026-09-23: item 6 — add a read-only list of received night reports (NIGHT_REPORT / LAST_NIGHT_RUN) to the control room, fetched through the existing controlRoom.ts ssh JSON path and tested with a fake command runner",
+          "title": "밤새 작업 결과 확인하기"
         }
       ],
       "qaRuntime": [
@@ -11247,7 +11248,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; scripts/e2e.sh:67,125,133,141,149 at b97d6f9 send status-board stdout to /dev/null, so these steps check only the Korean stderr line and never the projection"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; scripts/e2e.sh:67,125,133,141,149 at b97d6f9 send status-board stdout to /dev/null, so these steps check only the Korean stderr line and never the projection",
+          "title": "오프라인 상태를 정확히 안내"
         },
         {
           "taskId": "JUCONTROLER-E2E-LATE-FAILURE-OUTPUT",
@@ -11258,7 +11260,8 @@
           "tests": [
             "node --test tests/e2e-failure-output.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "실패 원인과 다음 할 일 안내"
         },
         {
           "taskId": "JUCONTROLER-OFFLINE-ACCEPTANCE-CHECKLIST",
@@ -11270,7 +11273,8 @@
           "tests": [
             "node --test tests/docs-links.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target"
+          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target",
+          "title": "오프라인 사용 준비 한눈에 확인"
         }
       ],
       "qaRuntime": [
@@ -15361,7 +15365,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Reconcile which captured tasks actually have both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL on only that evidence'; docs/validation/M3_DAILY_VALUE_VALIDATION.md §7 'Next authorized step': 'The evidence-bounded result is `UNDECIDED` (`0 joined rows`); the PM records the M3 decision separately.'; PM_STATUS_BOARD.md:174 '2. Record the M3 GO / DEFER / KILL decision.'"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Reconcile which captured tasks actually have both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL on only that evidence'; docs/validation/M3_DAILY_VALUE_VALIDATION.md §7 'Next authorized step': 'The evidence-bounded result is `UNDECIDED` (`0 joined rows`); the PM records the M3 decision separately.'; PM_STATUS_BOARD.md:174 '2. Record the M3 GO / DEFER / KILL decision.'",
+          "title": "충분한 근거가 모일 때까지 보류"
         }
       ]
     },
