@@ -12160,6 +12160,20 @@
             "node --test test/"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.'"
+        },
+        {
+          "taskId": "JCAPP-HOME-STAT-WORKING-MATCHES-CARDS",
+          "scope": "In operator/public/app.js, make homeStats count '지금 일하는 AI' with the same rule the live card and rail row use for '일하는 중': count lanes where lane.state is 'RUNNING' and lane.current.state is RUNNING, QA or REQUEST_CHANGES, and never QUEUED. Today it checks only current.state in ['RUNNING','QA'], so a lane whose worker is redoing the task after REQUEST_CHANGES (night-board.py stage 2) shows as '만드는 중' on its card but is missing from the stat. Add a REQUEST_CHANGES lane and a QUEUED lane to the homeStats fixture in test/lovable-home-top.test.mjs, keep the existing assert, and leave homeStatStrip labels, liveCardModel and railRowModel unchanged.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-home-top.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-home-top.test.mjs",
+            "node --test test/home-all-ok.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress … add focused fixture tests'; ~/.agents/skills/auto-night-orchestrator/scripts/night-board.py:15 ACTIVE = (\"QUEUED\", \"RUNNING\", \"QA\", \"REQUEST_CHANGES\") and :77 'if s in (\"RUNNING\", \"REQUEST_CHANGES\"): return 2'"
         }
       ],
       "skills": {
