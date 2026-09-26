@@ -8663,6 +8663,33 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the offline E2E and Korean Quickstart the acceptance target, with no new product behavior. scripts/status-board.mjs:28 has \"'missing-acceptance-state': '영수증 acceptance.state가 비어 있어요'\" and README.md:117 lists `missing-acceptance-state`, but no CLI test checks this Korean line."
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-MISSING-ACCEPTANCE-STATE-STEP",
+          "scope": "Add step 27, run_missing_acceptance_state, to scripts/e2e.sh right after run_missing_generated. Give it the label '영수증 판정 없음 안내' and the next command board. It follows run_missing_generated: it writes a temp juceipt-receipt current.json {receipt_id:'rcpt-empty',acceptance:{},generated_at:<now UTC>} for project 'empty', then checks for exit 0, status UNKNOWN, stale true and reason missing-acceptance-state, and uses cmp to check that stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: empty(missing-acceptance-state: 영수증 acceptance.state가 비어 있어요) — README 처음 쓰는 법의 reason 표를 보세요'. It also adds the step to the for-loop, labels and commands, adds the ['run-missing-acceptance-state','영수증 판정 없음 안내'] row to tests/e2e-script.test.mjs, and syncs docs/getting-started.md (the example JSON line, the step list and one step bullet), as commit 8d50060 did for run-missing-generated.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/quickstart-next-sync.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; scripts/status-board.mjs:28 \"'missing-acceptance-state': '영수증 acceptance.state가 비어 있어요'\" (the CLI line has been tested since 7635859, but the E2E does not cover it yet)"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-MISSING-ACCEPTANCE-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names a receipt with an empty acceptance with the plain-Korean missing-acceptance-state reason'. It writes a juceipt-receipt current.json {receipt_id:'rcpt-noacc',generated_at:<now>} with no acceptance field for project 'noacc', then asserts exit 0, the row ['noacc','UNKNOWN',true,'missing-acceptance'], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: noacc(missing-acceptance: 영수증에 acceptance가 없어요) — README 처음 쓰는 법의 reason 표를 보세요\\n'.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: the offline E2E/Korean Quickstart is the bounded acceptance target; scripts/status-board.mjs:27 \"'missing-acceptance': '영수증에 acceptance가 없어요'\" and README.md:116 reason table row, but no CLI test checks this plain-Korean line yet (only tests/juceipt-adapter.test.mjs:32 and tests/project-registry.test.mjs:310 cover the reason code)"
         }
       ],
       "qaRuntime": [
