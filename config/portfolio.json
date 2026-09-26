@@ -13078,6 +13078,39 @@
             "node --test tests/forbidden-phrases-fixture-parity.test.mjs"
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:275 확인 상태는 다음 세 가지로 단순화한다. (### 8.1 확인됨 / ### 8.2 일부 확인 / ### 8.3 확인하지 못함)"
+        },
+        {
+          "taskId": "JUTELL-RISK-LEVEL-GUIDE-SPEC-PARITY",
+          "scope": "Add a new offline node:test, tests/risk-level-guide-spec-parity.test.mjs, that reads BEGINNER_REPORT_SPEC §12.1–12.4 and .agents/skills/beginner-bridge/references/risk-level-guide.md, then checks four things: each SPEC §12.1/12.2/12.3 example bullet appears in the matching guide section (## 1. 낮음 / ## 2. 중간 / ## 3. 높음); the check allows for merged wording through an explicit mapping (for example 특정 페이지 데이터 표시 → 특정 페이지의 데이터 표시, and 로그인 or 인증 → 로그인과 인증); the guide's ## 4. 판정 불가 section still says 실행 환경이 없다는 이유만으로 판정 불가로 만들지 않는다; and it still separates risk from checkability (## 6. 검증 가능성과 분리). Test only, no doc edits.",
+          "files": [
+            "tests/risk-level-guide-spec-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/risk-level-guide-spec-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:495 '실행 환경이 없다는 이유만으로 위험도를 `판정 불가`로 만들지 않는다.'; :520 '* 특정 페이지 데이터 표시'"
+        },
+        {
+          "taskId": "JUTELL-DECISION-STATE-SKILL-PARITY",
+          "scope": "Add a new offline node:test, tests/decision-state-skill-parity.test.mjs, that reads the `## 23. 현재 결정 상태` lists in BEGINNER_REPORT_SPEC and checks them against the beginner-bridge files. Checks: the 근거 출처, 확인 상태, 사용자 행동 and 보고서 상태 lists equal the inline lines in report-format.md §1. The 검증 결과 list equals the report-format §1 bullet list. The 위험도 list equals the four risk-level-guide.md section headings. The main-file caps (단순 최대 3개, 일반 최대 5개) match SKILL.md step 6. The three 비밀정보 확인 시점 appear in the SKILL.md final-check line (명령 전, 출력 처리 중, 보고 전). Test only.",
+          "files": [
+            "tests/decision-state-skill-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/decision-state-skill-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:899-901 '## 23. 현재 결정 상태 … * 기본 보고 항목: 6개'"
+        },
+        {
+          "taskId": "JUTELL-DOC-RELATIONS-PATHS-EXIST",
+          "scope": "Add a new offline node:test, tests/doc-relations-paths-exist.test.mjs, that pulls every backticked repo path out of BEGINNER_REPORT_SPEC `## 22. 문서 관계` (docs/PRODUCT_SCOPE.md, docs/BEGINNER_REPORT_SPEC.md, docs/GLOSSARY_POLICY.md, docs/TEST_SCENARIOS.md, .agents/skills/beginner-bridge/SKILL.md, .agents/skills/beginner-bridge/references/). It asserts there are exactly those 6 paths and that each one exists in the repo. Test only.",
+          "files": [
+            "tests/doc-relations-paths-exist.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/doc-relations-paths-exist.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:875 '## 22. 문서 관계' (lists the six document paths at lines 877-893)"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
