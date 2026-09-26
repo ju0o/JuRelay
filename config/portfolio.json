@@ -12058,6 +12058,21 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11): '대상: 허브 5개 탭(홈·진행·계획·승인·더보기) … 특히 승인 탭의 규칙 추가 폼 … 사람 확인 카드의 코드명'; founder-ux rule 2 'No developer text on the surface … task IDs … behind 원문 보기'",
           "title": "승인 규칙 알림에 규칙 내용으로 표시"
+        },
+        {
+          "taskId": "JCAPP-LIVE-STATUS-ONE-PROJECTION",
+          "scope": "Make the 진행/홈 rail row (railRowModel in operator/public/app.js) and the live card (liveCardModel) show the same status for every lane. Two cases disagree today. (1) A RUNNING lane with an open human gate (hubGateCount>0): the card says 결정 필요 in amber, but the rail says '일하는 중' in teal. The rail should read '결정 기다림' with tone warn. (2) A RUNNING lane with paused true, no gate and no open hold: the card says 설정 필요 in amber, but the rail says '일하는 중' in teal. The rail should read '일하는 중 · 쉬게 해 둠' with tone warn. Add no new top-level function, so the existing test harnesses that extract functions by name keep working. Add test/fixtures/live-status/board.json, a real night-board-shaped board with one lane per state: running at each stage 0-6, QUEUED, stage 5, running+gate, running+paused, idle+open hold, idle+skipped/expired hold, HUMAN_GATE, idle paused, idle after done, idle empty. Add test/live-status-projection.test.mjs, which extracts the real functions and checks each fixture lane: the card's ● step index equals the rail step; the rail tone is warn exactly when the card's 대표님 할 일 is not 없음; check.word is one of 확인됨/일부 확인/확인하지 못함; todo.word is one of 없음/확인 필요/결정 필요/설정 필요; no tone is ever bad/red, and stuck means warn; the Korean text contains no task ids or English enum words. Update the v2-rail-rows pins for the two changed cases.",
+          "files": [
+            "operator/public/app.js",
+            "test/live-status-projection.test.mjs",
+            "test/fixtures/live-status/board.json",
+            "test/v2-rail-rows.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-projection.test.mjs test/v2-rail-rows.test.mjs test/lovable-live-cards.test.mjs test/v2-project-supervisor.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.'"
         }
       ],
       "skills": {
