@@ -8303,6 +8303,21 @@
             "npx tsc -p tsconfig.json --noEmit"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 (juceipt 명령 출력 scan·daily; founder-ux: finish the task without help, empty state gives the next step); src/cli/main.ts:226 defaults to 'receipts' and reads only top-level .json, while src/sources/scan.ts:184-190 writes <out>/<agent>/<session>/receipt.json and <out>/index.json"
+        },
+        {
+          "taskId": "JUCEIPT-SOURCES-TOP-SENTENCE-NEXT-SCAN",
+          "scope": "In sourcesCommand in src/cli/main.ts, change the human-readable (non --json) output of `juceipt sources` so it opens with one plain Korean sentence built from the real counts (e.g. 'AI 작업 기록이 있는 곳 N군데를 찾았어요.', or when every source has 0 sessions 'AI 작업 기록을 아직 찾지 못했어요 — AI로 작업을 하면 자동으로 생겨요.'), changes each empty line from '<agent>: 기록 없음' to '<agent>: 기록 없음 — 이 컴퓨터에서 쓴 적이 없거나 기록이 없어요', and replaces the developer next line '다음: juceipt sources --json' with a Founder action ('다음: juceipt scan 을 실행해 영수증을 만들어 보세요' when any records exist, otherwise '다음: AI로 작업한 뒤 juceipt sources 를 다시 실행하세요'); keep the relative time, size text, --json output and exit codes unchanged, and update tests/sources-cli.test.ts (plus the README.md sources example line only if it quotes the old next line) with cases for found and all-empty sources.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-cli.test.ts",
+            "README.md"
+          ],
+          "tests": [
+            "npm run build",
+            "npx vitest run tests/sources-cli.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 'founder-ux Skill 규칙(맨 위 한 문장, … 빈 화면 이유+다음 행동 …)으로 아래 화면을 하나씩 점검 … 대상: juceipt 명령 출력'; base 762d88e src/cli/main.ts:272-277 prints only per-agent lines, bare '기록 없음', and '다음: juceipt sources --json'"
         }
       ],
       "skills": {
