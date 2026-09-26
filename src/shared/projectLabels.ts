@@ -13,7 +13,55 @@ export const PROJECT_LABELS: Record<string, ProjectLabel> = {
   'jucontroler-app': { name: '통합 관제 화면', goal: '여러 프로젝트 진행 상황을 한눈에 확인' },
   'juceipt-planning': { name: 'JuCeipt 기획', goal: 'JuCeipt 기획안 정리와 실행 준비' },
   jutell: { name: 'JuTell', goal: '짧고 쉬운 작업 보고서' },
+  juai: { name: 'JuAi', goal: '대화로 일을 맡기는 비서' },
+  'ai-agent-marketplace': { name: 'AI 인력사무소', goal: '일감을 맡기고 결과를 받는 장터' },
+  juradar: { name: 'JuRadar', goal: '돌아가는 작업을 한눈에 살피는 레이더' },
 };
+
+/** 목표 카드에 등록된 한국어 목표가 없을 때. */
+export const PLAN_GOAL_UNSET = '목표가 아직 정리되지 않았어요';
+
+function knownProject(projectId: string, labels: Record<string, ProjectLabel>): ProjectLabel | undefined {
+  const key = projectId.trim().toLowerCase();
+  return Object.prototype.hasOwnProperty.call(labels, key) ? labels[key] : undefined;
+}
+
+/**
+ * 계획 화면 프로젝트 이름.
+ * 등록된 이름 → 보드 lane.name → id.
+ */
+export function planLaneDisplayName(projectId: string, laneName?: unknown, labels: Record<string, ProjectLabel> = PROJECT_LABELS): string {
+  const known = knownProject(projectId, labels)?.name?.trim();
+  if (known) return known;
+  if (typeof laneName === 'string' && laneName.trim()) return laneName.trim();
+  return projectId.trim() || '알 수 없는 프로젝트';
+}
+
+/** 목표 카드에 보이는 한국어 한 줄. 등록된 목표만 쓰고, 없으면 안내 문장. */
+export function planVisibleGoal(projectId: string, labels: Record<string, ProjectLabel> = PROJECT_LABELS): string {
+  const goal = knownProject(projectId, labels)?.goal?.trim();
+  return goal || PLAN_GOAL_UNSET;
+}
+
+/** 영문 단어가 세 개 이상 이어지면 라틴 문장. 제품 이름 한두 개는 문장이 아니다. */
+export function isLatinSentence(text: string): boolean {
+  const words = text.match(/[A-Za-z]{2,}/g) ?? [];
+  return words.length >= 3;
+}
+
+/** 원문 보기용. 화면에 이미 보인 한국어 목표와 같은 줄은 빼서 매니페스트 원문만 남긴다. */
+export function foldedManifestGoal(visibleGoal: string, ...candidates: unknown[]): string {
+  const seen = new Set<string>();
+  const lines: string[] = [];
+  for (const value of candidates) {
+    if (typeof value !== 'string') continue;
+    const text = value.trim();
+    if (!text || text === visibleGoal || seen.has(text)) continue;
+    seen.add(text);
+    lines.push(text);
+  }
+  return lines.join('\n');
+}
 
 const AI_DISPLAY_NAMES: Record<string, string> = {
   codex: 'Codex',

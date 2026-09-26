@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { must } from './bridge.js';
-import { PROJECT_LABELS } from '../shared/projectLabels.js';
+import { PROJECT_LABELS, foldedManifestGoal, planLaneDisplayName, planVisibleGoal } from '../shared/projectLabels.js';
 import { founderTaskTitle, isPlanStudioTaskDone, isPlanStudioTaskHold, sortPlanStudioTasks } from '../shared/types.js';
 import { InlineConfirm } from './components.js';
 
@@ -9,6 +9,7 @@ const FLOW = ['계획', '확인', '작업', '검수', '시험', '사람 확인',
 interface BoardLane {
   id?: string;
   project?: string;
+  name?: string;
   current?: { stage?: number | string; taskId?: string; worker?: unknown; qa?: unknown; [key: string]: unknown };
   workerChain?: unknown;
   qaChain?: unknown;
@@ -61,11 +62,9 @@ function label(value: unknown, fallback = '—'): string {
 }
 
 function projectPresentation(project: string, lane?: BoardLane): { name: string; goal: string } {
-  const known = PROJECT_LABELS[project];
-  const current = lane?.current ?? {};
   return {
-    name: known?.name ?? label(project, '알 수 없는 프로젝트'),
-    goal: label(lane?.goal ?? lane?.summary ?? current.goal ?? current.summary, known?.goal ?? '현재 작업 목표를 확인하세요.'),
+    name: planLaneDisplayName(project, lane?.name, PROJECT_LABELS),
+    goal: planVisibleGoal(project, PROJECT_LABELS),
   };
 }
 
@@ -448,7 +447,15 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
   const selected = tasks.find(t => t.id === selectedId) ?? tasks[0] ?? null;
   const projectLane = lanes.find(l => str(l.project ?? l.id) === project);
   const presentation = projectPresentation(project, projectLane);
-  const goalText = draft.goal.trim() || presentation.goal;
+  const goalText = presentation.goal;
+  const manifestGoal = foldedManifestGoal(
+    goalText,
+    draft.goal,
+    projectLane?.goal,
+    projectLane?.summary,
+    projectLane?.current?.goal,
+    projectLane?.current?.summary,
+  );
   const activeLane = useMemo(
     () => lanes.find(l => str(l.current?.taskId ?? l.id) === (selected?.id ?? '') || str(l.current?.taskId ?? l.id) === (selected?.title ?? '')),
     [lanes, selected],
@@ -627,6 +634,7 @@ export function PlanStudio({ onClose, initialProject }: { onClose: () => void; i
                 <p className="muted">선택한 프로젝트: {presentation.name}</p>
                 <details>
                   <summary>원문 보기</summary>
+                  {manifestGoal ? <p className="muted mono">{manifestGoal}</p> : null}
                   <pre className="mono">{rawText(projectLane ?? draft)}</pre>
                 </details>
               </>}
