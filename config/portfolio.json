@@ -6758,6 +6758,34 @@
             "npm test"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): 개발자 글자는 원문 보기 안, juceipt receipt 출력 점검; src/cli/main.ts receiptCommand at de10a73 prints 'HTML 경로:' / '다음: HTML 파일을 열어 결과를 확인하세요.' / '...HTML을 만들 수 없어요.'"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-PHONE-NO-HSCROLL",
+          "scope": "In the CSS constant of src/render/index.ts, stop the receipt view from scrolling sideways at phone width: make the original request <pre> wrap (white-space:pre-wrap; overflow-wrap:anywhere), let long file names, commands and evidence refs in code, td and .meta-val break (overflow-wrap:anywhere), give .req-table/.ev-table table-layout:fixed or put them in an overflow-x:auto wrapper so the page itself never scrolls, and add an @media (max-width:600px) rule that shrinks body padding (24px→12px) and .card padding (28px→16px) while keeping the 16px body text and the 48px 원문 보기 summary; add a vitest case in tests/receipt-render-founder.test.ts that renders a receipt with a 300-character unbroken English request and a very long file path and checks that renderHtml output contains the pre-wrap, overflow-wrap and max-width:600px rules; do not change any wording or other sections.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면을 founder-ux 규칙으로 점검 — rule 12 'The screen must work at phone width with no horizontal scroll'; base src/render/index.ts CSS has no pre/td wrapping and fixed 24px+28px padding"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SUMMARY-TRUE-CHECK-REASON",
+          "scope": "In importance() in src/sources/summary.ts, stop giving the reason '테스트나 검증 확인이 필요함' for nearly every non-ready receipt: today it regex-matches JSON.stringify(receipt), which always contains '확인' from the label '확인 후 받기'. Pick the reason from real receipt fields instead: validation-needed only when a delivered_outcomes item of kind 'validation' is not success, or the request text asks for tests/verification (test|테스트|검증|verify) and no validation outcome succeeded; otherwise fall through to the existing change-count and not-finished reasons, and for review_required receipts with remaining_items use a plain reason such as '빠진 확인이 있음'. Keep the scoring order, links, missing-check line and every other line unchanged; add vitest cases in tests/scan-summary.test.ts showing that a review_required receipt whose only gap is unknown cost does not get the test reason, and that a receipt with a failed validation outcome still does.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): juceipt scan 출력 점검 — '빠진 확인 항목의 쉬운 설명'; base src/sources/summary.ts importance() tests /test|테스트|검증|validation|확인/ against JSON.stringify(receipt), so ACCEPTANCE_LABEL.review_required '확인 후 받기' always matches"
         }
       ],
       "skills": {
