@@ -16977,6 +16977,17 @@
             "node --test tests/target-user-exclusion-parity.test.mjs"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:139-145 '### 4.3 초기 범위에서 제외되는 사용자 ... 대규모 기업 개발 조직 / 전문 보안 감사 담당자 / 전문 코드 리뷰어 / 복잡한 모노레포 운영팀 / 규제 산업의 공식 검증 담당자 / 현재 지원 Provider가 아닌 코딩 에이전트만 사용하는 사람'"
+        },
+        {
+          "taskId": "JUTELL-SCOPE-EXAMPLE-TERMS-GLOSSARY-PARITY",
+          "scope": "Add an offline node:test asserting the four §3.1 예시 term explanations in PRODUCT_SCOPE.md (API, GUI, IDE, Component) match the corresponding ### headings' wording in glossary-ko.md verbatim, so future edits to either can't silently drift.",
+          "files": [
+            "tests/scope-example-terms-glossary-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/scope-example-terms-glossary-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:57-62 예시: * API(프로그램끼리 정보를 주고받는 연결 통로) * GUI(사용자가 눈으로 보고 조작하는 프로그램 화면) * IDE(코드를 작성하고 실행하는 작업 공간) * Component(화면을 구성하는 재사용 가능한 조각) — GUI/IDE/Component wording already differs from .agents/skills/beginner-bridge/references/glossary-ko.md:17,24,29 at commit cbb5725"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
