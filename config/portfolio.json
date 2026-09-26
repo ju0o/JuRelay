@@ -10934,6 +10934,19 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target, no new product behavior; src/adapters/juplan.mjs:23 at 8b38105 `if (!object(saved)) return { reason: 'malformed' };` has no CLI line test (only JuCeipt and repository-status-file malformed are covered)",
           "title": "잘못된 계획 상태를 쉽게 알려줘"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-MALFORMED-PLAN-STEP",
+          "scope": "기존 JuPlan 오프라인 E2E에 JSON 배열 원본의 UNKNOWN·malformed 한국어 안내 검사를 추가하고 상세 Quickstart 단계 목록을 동기화한다.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "node --test tests/e2e-script.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "qaRuntime": [
