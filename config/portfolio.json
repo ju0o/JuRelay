@@ -12508,6 +12508,18 @@
           ],
           "ssotEvidence": "README.md:40 \"`lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)\"; Founder direction 2026-09-25: \"SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검) ... 작은 변경만\"",
           "title": "관리 명령과 도움말 동작 점검 보강"
+        },
+        {
+          "taskId": "JUAI-CHECK-SUBS-REJECT",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) for branches that have no test yet: matchSubs puts every user id under the same keyword (for example two users on \"MCP\" give [\"a\",\"x\"]) and returns an empty Map when nothing matches; takeQuota with staff:true returns left === Infinity; and a 'daily' rejection adds to today's usage row for user_id 'reject:*'.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검) … 작은 변경만'; lib.mjs:162 'Returns Map keyword -> [user ids]' (check.mjs only asserts the keys), lib.mjs:57 'reject:*' insert and lib.mjs:65 'left: staff ? Infinity' are not asserted"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
