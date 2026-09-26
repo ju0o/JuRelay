@@ -1,6 +1,5 @@
 import {
   aiDisplayName,
-  holdAutoProceedText,
   isLatinSentence,
   isSelfReviewOption,
   projectDisplayName,
@@ -13,13 +12,17 @@ import { NEW_TASK_TITLE, controlRoomTaskId, controlRoomTaskTitle, founderTaskTit
 export const CONTROL_ROOM_HOLD_PREVIEW = 3;
 
 export interface ControlRoomStatusSentence {
-  tone: 'teal' | 'amber';
-  /** One sentence for the top of the control room. */
+  tone: 'teal' | 'amber' | 'muted';
+  /** One sentence for the top of the control room. Never empty. */
   text: string;
   /** Empty when the Founder has nothing to choose. */
   actionLabel: '' | '고르기';
   workingProjects: number;
   chooseCount: number;
+  /** Holds that proceed on their own (waitMin set, not a self-review). */
+  autoCount: number;
+  /** Muted second line. Empty when nothing proceeds on its own. */
+  autoLine: string;
 }
 
 export type ControlRoomRowState = '일하는 중' | '쉬는 중' | '확인 필요';
@@ -151,13 +154,20 @@ function hasBlocker(lane: Record<string, unknown>): boolean {
 
 /**
  * A hold the system will finish without the Founder.
- * A clock (start + wait) and a recommended choice other than "I'll look myself".
+ * waitMin alone is enough — a missing start clock still means "proceeds in N minutes".
+ * "I'll look myself" still waits for the Founder, even when waitMin is set.
  */
 function willAutoProceed(hold: NormalizedHold): boolean {
   if (hold.choice || hold.choiceLabel) return false;
-  if (!holdAutoProceedText(hold.heldSeen, hold.waitMin)) return false;
+  if (hold.waitMin === null) return false;
   const recommended = hold.options[hold.recommendedIndex] ?? '';
   return !isSelfReviewOption(recommended);
+}
+
+/** Muted line for holds that retry on their own. */
+function autoProceedLine(count: number): string {
+  if (count <= 0) return '';
+  return `자동으로 다시 하는 중 ${count}개 · 원하면 골라 주세요`;
 }
 
 /** Latin words that are product or AI names, not developer status text. */
@@ -251,14 +261,37 @@ function rowState(lane: Record<string, unknown>, founderOnLane: boolean): { stat
   return { state: '쉬는 중', tone: 'muted' };
 }
 
+/** Holds with a wait that the system finishes. Chosen and self-review holds are not included. */
+function autoProceedCountOnLane(lane: Record<string, unknown>): number {
+  return visibleHoldEntries(lane.holds).filter((hold) => willAutoProceed(hold)).length;
+}
+
+/**
+ * Sentence shown before the board arrives. The card always has this line — never a blank block.
+ */
+export function controlRoomLoadingStatus(): ControlRoomStatusSentence {
+  return {
+    tone: 'muted',
+    text: '상태를 확인하고 있어요',
+    actionLabel: '',
+    workingProjects: 0,
+    chooseCount: 0,
+    autoCount: 0,
+    autoLine: '',
+  };
+}
+
 /**
  * Top sentence. Amber when the Founder has something to choose.
- * Otherwise how many projects are working, and that nothing is waiting on them.
+ * Only gates and holds with no waitMin (and self-review holds) count as choices.
+ * Holds that proceed on their own are a muted line, not part of that count.
  */
 export function controlRoomStatusSentence(board: unknown): ControlRoomStatusSentence {
   const lanes = lanesOf(board);
   const chooseCount = lanes.reduce((sum, lane, index) => sum + founderHoldsOnLane(lane, controlRoomLaneKey(lane, index)).length, 0);
+  const autoCount = lanes.reduce((sum, lane) => sum + autoProceedCountOnLane(lane), 0);
   const workingProjects = lanes.filter((lane) => hasCurrentWork(lane) && !isPaused(lane)).length;
+  const autoLine = autoProceedLine(autoCount);
   if (chooseCount > 0) {
     return {
       tone: 'amber',
@@ -266,6 +299,8 @@ export function controlRoomStatusSentence(board: unknown): ControlRoomStatusSent
       actionLabel: '고르기',
       workingProjects,
       chooseCount,
+      autoCount,
+      autoLine,
     };
   }
   return {
@@ -274,6 +309,8 @@ export function controlRoomStatusSentence(board: unknown): ControlRoomStatusSent
     actionLabel: '',
     workingProjects,
     chooseCount: 0,
+    autoCount,
+    autoLine,
   };
 }
 

@@ -11,7 +11,7 @@ import { countWorkingTasks, scopeBoard, sharedSeatsView } from '../shared/projec
 import type { SharedSeatsView } from '../shared/projectScope.js';
 import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from '../shared/tokens.js';
 import type { TokenFinding, TokensView } from '../shared/tokens.js';
-import { controlRoomFounderHoldPreview, controlRoomFounderHolds, controlRoomLaneKey, controlRoomSimpleRows, controlRoomStatusSentence } from '../shared/controlRoomSimple.js';
+import { controlRoomFounderHoldPreview, controlRoomFounderHolds, controlRoomLaneKey, controlRoomLoadingStatus, controlRoomSimpleRows, controlRoomStatusSentence } from '../shared/controlRoomSimple.js';
 
 export interface ControlRoomHoldExplain {
   sentence?: unknown;
@@ -1814,15 +1814,24 @@ export function AiAssignCard({ board, now }: { board: unknown; now?: number }): 
   );
 }
 
-function SimpleStatusCard({ board, note, onChoose }: {
-  board: ControlRoomBoard;
+/**
+ * One-line status. Always has a sentence: the board summary, or "상태를 확인하고 있어요" while loading.
+ * Auto-proceed holds are a muted second line, not part of the choose count.
+ */
+export function SimpleStatusCard({ board, loading = false, note, onChoose }: {
+  board: ControlRoomBoard | null;
+  /** True before the first board arrives. */
+  loading?: boolean;
   note: string;
   onChoose: () => void;
 }): React.ReactElement {
-  const status = controlRoomStatusSentence(board);
+  const status = loading || board === null ? controlRoomLoadingStatus() : controlRoomStatusSentence(board);
   return (
-    <section className={`cr-simple-status ${status.tone}`} aria-label={status.text}>
+    <section className={`cr-simple-status ${status.tone}`} aria-label={status.text} aria-busy={loading || board === null}>
       <p className="cr-simple-status-text">{status.text}</p>
+      {status.autoLine ? (
+        <p className="cr-simple-auto muted" style={{ flexBasis: '100%', margin: 0, fontSize: 16, fontWeight: 500 }}>{status.autoLine}</p>
+      ) : null}
       {note ? <p className="cr-simple-note" role="status">{note}</p> : null}
       {status.actionLabel ? (
         <button type="button" className="btn cr-simple-choose" onClick={onChoose}>{status.actionLabel}</button>
@@ -1994,12 +2003,11 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
           <CrTopGuide onDismiss={dismissGuide} />
         </div>
       )}
-      {board && <SimpleStatusCard board={{ ...board, lanes: sortedLanes }} note={jumpNote} onChoose={showHolds} />}
+      <SimpleStatusCard board={board ? { ...board, lanes: sortedLanes } : null} loading={board === null && !error} note={jumpNote} onChoose={showHolds} />
       {sortedLanes.length > 0 && <SimpleProjectList lanes={sortedLanes} onRefresh={load} />}
       {sortedLanes.length > 0 && <FounderHoldSection lanes={sortedLanes} onRefresh={load} />}
-      {board === null && !error ? <div className="control-empty">작업 PC에서 불러오는 중…</div>
-      : error && lanes.length === 0 ? <div className="control-empty">{error}{errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}</div>
-      : !sortedLanes.length ? <div className="control-empty" role="status"><p>아직 진행 중인 프로젝트가 없어요. 지금 하실 일은 없어요.</p><p className="muted">계획이 승인되면 프로젝트가 여기에 자동으로 나타나요. 이 화면은 5초마다 알아서 새로 고쳐요.</p></div> : null}
+      {error && lanes.length === 0 ? <div className="control-empty">{error}{errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}</div>
+      : board !== null && !sortedLanes.length ? <div className="control-empty" role="status"><p>아직 진행 중인 프로젝트가 없어요. 지금 하실 일은 없어요.</p><p className="muted">계획이 승인되면 프로젝트가 여기에 자동으로 나타나요. 이 화면은 5초마다 알아서 새로 고쳐요.</p></div> : null}
       <details className="cr-more">
         <summary>자세히 보기</summary>
         {board && <CrTopBody board={board} note="" onShowHolds={showHolds} />}
