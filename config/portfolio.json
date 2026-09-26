@@ -2155,6 +2155,64 @@
             "AGENTRELAY-LOVABLE-SHELL-R2"
           ],
           "title": "새 디자인: 색·글꼴·왼쪽 메뉴·맨 위 줄 (다시)"
+        },
+        {
+          "taskId": "AGENTRELAY-V2-PROJECT-WINDOW",
+          "scope": "Each live status card gets a '이 프로젝트만 새 창으로' button. A new IPC handler window:openProject(projectId) validates the id with isValidProjectId and opens a second BrowserWindow loading the same UI with ?project=<id> (same preload, same security options as createWindow); several project windows may be open at once, and asking again for an open project focuses it instead of opening a duplicate. Window title 'Agent Relay · <프로젝트 이름>' via projectLabels. Pure helper for the window key/title + test. founder-ux wording (plain Korean, no ids/codes on screen, raw under 원문 보기, three-line errors what/why/what to do + [다시 시도], PC off vs on-but-failing). Never hard-code sample data; keep every existing feature, IPC contract and test; no new npm dependencies. Lanes of other sessions (jutell, juai, ai-agent-marketplace, juradar) are shown as they are, never changed.",
+          "files": [
+            "src/backend/main.ts",
+            "src/backend/preload.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/shared/projectLabels.ts",
+            "test/v2-project-window.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 V2 direction: one Agent Relay per project in its own window, several at once; they share one RAM/AI-seat limit (engine already shares manifest maxBuilders=3 + minFreeMemoryMb RAM guard across lanes); JuControler supervises all with a Supervisor per project plus Tester/QA and Skill harness; Agent Relay stays the rail (plan→build→check→test→apply) and still works alone. Founder: '그렇게 모두 진행'.",
+          "title": "프로젝트마다 따로 창 열기"
+        },
+        {
+          "taskId": "AGENTRELAY-V2-PROJECT-SCOPE",
+          "scope": "When the UI has ?project=<id>, every screen shows only that project: pure scopeBoard(board, projectId) in new src/shared/projectScope.ts filters lanes, holds, today-done, token findings and work records; the page header shows the project name and the existing lane-pause control ('이 프로젝트 잠시 멈춤'/'다시 시작' with inline confirm). The main window (no ?project) stays the all-projects view. Test scopeBoard with a multi-lane board fixture. founder-ux wording (plain Korean, no ids/codes on screen, raw under 원문 보기, three-line errors what/why/what to do + [다시 시도], PC off vs on-but-failing). Never hard-code sample data; keep every existing feature, IPC contract and test; no new npm dependencies. Lanes of other sessions (jutell, juai, ai-agent-marketplace, juradar) are shown as they are, never changed.",
+          "files": [
+            "src/shared/projectScope.ts",
+            "src/frontend/App.tsx",
+            "src/frontend/controlRoom.tsx",
+            "test/v2-project-scope.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 V2 direction: one Agent Relay per project in its own window, several at once; they share one RAM/AI-seat limit (engine already shares manifest maxBuilders=3 + minFreeMemoryMb RAM guard across lanes); JuControler supervises all with a Supervisor per project plus Tester/QA and Skill harness; Agent Relay stays the rail (plan→build→check→test→apply) and still works alone. Founder: '그렇게 모두 진행'.",
+          "dependsOn": [
+            "AGENTRELAY-V2-PROJECT-WINDOW"
+          ],
+          "title": "창마다 그 프로젝트 기록만"
+        },
+        {
+          "taskId": "AGENTRELAY-V2-SHARED-SEATS",
+          "scope": "Every window shows the shared limit from board.capacity {maxBuilders, busy, lowMemory, freeMb}: one line '전체 AI 자리 N개 중 M개 사용 중' with a small bar, plus for a project window '이 프로젝트는 다음 차례예요' when its lane has QUEUED work but no free seat, and amber 'RAM이 부족해서 새 작업을 잠시 멈췄어요 (남은 X GB)' when lowMemory. If board.capacity is missing, show nothing (never guess). Pure helper in src/shared/projectScope.ts + test. founder-ux wording (plain Korean, no ids/codes on screen, raw under 원문 보기, three-line errors what/why/what to do + [다시 시도], PC off vs on-but-failing). Never hard-code sample data; keep every existing feature, IPC contract and test; no new npm dependencies. Lanes of other sessions (jutell, juai, ai-agent-marketplace, juradar) are shown as they are, never changed.",
+          "files": [
+            "src/shared/projectScope.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/style.css",
+            "test/v2-shared-seats.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 V2 direction: one Agent Relay per project in its own window, several at once; they share one RAM/AI-seat limit (engine already shares manifest maxBuilders=3 + minFreeMemoryMb RAM guard across lanes); JuControler supervises all with a Supervisor per project plus Tester/QA and Skill harness; Agent Relay stays the rail (plan→build→check→test→apply) and still works alone. Founder: '그렇게 모두 진행'.",
+          "dependsOn": [
+            "AGENTRELAY-V2-PROJECT-SCOPE"
+          ],
+          "title": "같이 쓰는 AI 자리 보여주기"
         }
       ],
       "qaRuntime": [
@@ -9831,6 +9889,57 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 15:48: '(2) actl AI 창 카드 … 그 전엔 기존 /api/panes'; founder-ux actl AI window card: 'whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'; base f9121adb9fff9846c7eb26f5ebfb9fae86d3661a operator/public/app.js:1942 falls back to '조용해요' and test/actl-panes-plain.test.mjs:38-39 pins 'Claude Team · Team 폴더 | 조용해요'",
           "title": "작업 상태를 쉽게 보여줘요"
+        },
+        {
+          "taskId": "JCAPP-V2-RAIL-ROWS",
+          "scope": "In the Agent Relay tab (and a compact version on 홈), one row per active project: name, a 5-step rail 계획 → 만들기 → 검사 → 시험 → 반영 with the current step lit (from the lane's current task state in the relay board), plain state (일하는 중 / 차례 기다림 / 멈춤 N건 / 쉬는 중), and above the rows the shared-seat bar from board.capacity ('AI 자리 N개 중 M개 사용 중', amber when lowMemory; hidden when capacity is missing). Pure helpers in operator/public/app.js exported for tests + test. founder-ux wording (plain Korean, no ids/codes on screen, raw under 원문 보기, three-line errors what/why/what to do + [다시 시도], PC off vs on-but-failing). Never hard-code sample data; keep every existing feature, IPC contract and test; no new npm dependencies. Lanes of other sessions (jutell, juai, ai-agent-marketplace, juradar) are shown as they are, never changed.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/v2-rail-rows.test.mjs"
+          ],
+          "tests": [
+            "node --test test/v2-rail-rows.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 V2 direction: one Agent Relay per project in its own window, several at once; they share one RAM/AI-seat limit (engine already shares manifest maxBuilders=3 + minFreeMemoryMb RAM guard across lanes); JuControler supervises all with a Supervisor per project plus Tester/QA and Skill harness; Agent Relay stays the rail (plan→build→check→test→apply) and still works alone. Founder: '그렇게 모두 진행'.",
+          "title": "허브: 프로젝트마다 레일 한 줄"
+        },
+        {
+          "taskId": "JCAPP-V2-PROJECT-SUPERVISOR",
+          "scope": "Keep a per-project Supervisor map in the registry (projectSupervisors: {projectId: seat}), default = the current global supervisor. Each rail row shows '담당: <Supervisor 이름>' with a [바꾸기] select of the known seats (inline '바꿨어요 ✓'); POST /api/relay/project-supervisor with the same auth as neighbouring routes. directiveDispatch sends a directive that names a project to that project's seat and falls back to the global supervisor. Tests for the registry map, the route validation and the dispatch fallback. founder-ux wording (plain Korean, no ids/codes on screen, raw under 원문 보기, three-line errors what/why/what to do + [다시 시도], PC off vs on-but-failing). Never hard-code sample data; keep every existing feature, IPC contract and test; no new npm dependencies. Lanes of other sessions (jutell, juai, ai-agent-marketplace, juradar) are shown as they are, never changed.",
+          "files": [
+            "lib/registry.mjs",
+            "lib/directiveDispatch.mjs",
+            "operator/server.mjs",
+            "operator/public/app.js",
+            "test/v2-project-supervisor.test.mjs"
+          ],
+          "tests": [
+            "node --test test/v2-project-supervisor.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 V2 direction: one Agent Relay per project in its own window, several at once; they share one RAM/AI-seat limit (engine already shares manifest maxBuilders=3 + minFreeMemoryMb RAM guard across lanes); JuControler supervises all with a Supervisor per project plus Tester/QA and Skill harness; Agent Relay stays the rail (plan→build→check→test→apply) and still works alone. Founder: '그렇게 모두 진행'.",
+          "dependsOn": [
+            "JCAPP-V2-RAIL-ROWS"
+          ],
+          "title": "허브: 프로젝트별 담당 Supervisor"
+        },
+        {
+          "taskId": "JCAPP-V2-PROJECT-QA-SKILLS",
+          "scope": "Tapping a rail row opens that project's panel: the latest Tester result for that project (readTesterRuns filtered by project; '통과 ✓ · N분 전' or amber '확인 필요' with the plain reason), the QA verdict of its last finished task from the relay board, and the Skills attached to its lane (existing lane-skills data) with the existing change control. Pure filter helper in lib/testerRuns.mjs + test. founder-ux wording (plain Korean, no ids/codes on screen, raw under 원문 보기, three-line errors what/why/what to do + [다시 시도], PC off vs on-but-failing). Never hard-code sample data; keep every existing feature, IPC contract and test; no new npm dependencies. Lanes of other sessions (jutell, juai, ai-agent-marketplace, juradar) are shown as they are, never changed.",
+          "files": [
+            "lib/testerRuns.mjs",
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/v2-project-qa-skills.test.mjs"
+          ],
+          "tests": [
+            "node --test test/v2-project-qa-skills.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 V2 direction: one Agent Relay per project in its own window, several at once; they share one RAM/AI-seat limit (engine already shares manifest maxBuilders=3 + minFreeMemoryMb RAM guard across lanes); JuControler supervises all with a Supervisor per project plus Tester/QA and Skill harness; Agent Relay stays the rail (plan→build→check→test→apply) and still works alone. Founder: '그렇게 모두 진행'.",
+          "dependsOn": [
+            "JCAPP-V2-RAIL-ROWS"
+          ],
+          "title": "허브: 프로젝트마다 시험·Skill 한눈에"
         }
       ],
       "skills": {
