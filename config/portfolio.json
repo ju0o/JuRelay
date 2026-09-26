@@ -13309,6 +13309,42 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:875 '## 22. 문서 관계' (lists the six document paths at lines 877-893)",
           "title": "안내된 문서가 실제로 있는지 확인"
+        },
+        {
+          "taskId": "JUTELL-FIXTURE-REPORT-STATE-LABELS",
+          "scope": "Add a new offline node:test, tests/fixture-report-state-labels.test.mjs, that reads the five 보고서 상태 labels from the `* 보고서 상태:` bullet in .agents/skills/beginner-bridge/references/report-format.md §1 (확인 완료, 추가 확인 필요, 일부 확인, 작업 보류, 범위 밖) and checks that every `보고서 상태:` value in tests/results/scenario-*/*.fixture.md is exactly one of them, using the same fixture-discovery pattern as tests/fixture-confirm-state-labels.test.mjs.",
+          "files": [
+            "tests/fixture-report-state-labels.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/fixture-report-state-labels.test.mjs",
+            "node --test tests/fixture-confirm-state-labels.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:185-191 '### 6.4 보고서 상태 … 현재 작업 전체의 최종 상태를 나타낸다. 이 네 가지를 같은 표현으로 섞지 않는다.'"
+        },
+        {
+          "taskId": "JUTELL-FIXTURE-RISK-LEVEL-LABELS",
+          "scope": "Add a new offline node:test, tests/fixture-risk-level-labels.test.mjs, that takes the four risk labels from the BEGINNER_REPORT_SPEC ### 12.1–12.4 headings (낮음, 중간, 높음, 판정 불가) and checks that every `위험도:` value in tests/results/scenario-*/*.fixture.md starts with one of them (any text after ` — ` is ignored).",
+          "files": [
+            "tests/fixture-risk-level-labels.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/fixture-risk-level-labels.test.mjs",
+            "node --test tests/fixture-risk-reason.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:497-541 '### 12.1 낮음 … ### 12.2 중간 … ### 12.3 높음 … ### 12.4 판정 불가'"
+        },
+        {
+          "taskId": "JUTELL-USER-ACTION-LABELS-SPEC-PARITY",
+          "scope": "Add a new offline node:test, tests/user-action-labels-spec-parity.test.mjs, that pulls the label before the colon in each `> ...:` example under BEGINNER_REPORT_SPEC ### 9.1–9.4 (사용자 확인 필요, 추가 테스트 권장, 설정 필요, 사용자 결정 필요) and checks that they match, in the same order, the `* 사용자 행동:` list in report-format.md §1 and the 사용자 행동 labels in .agents/skills/beginner-bridge/SKILL.md.",
+          "files": [
+            "tests/user-action-labels-spec-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/user-action-labels-spec-parity.test.mjs",
+            "node --test tests/info-system-scope-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:323-357 '## 9. 사용자 행동 … > 사용자 확인 필요: … > 추가 테스트 권장: … > 설정 필요: … > 사용자 결정 필요:'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
