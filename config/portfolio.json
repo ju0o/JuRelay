@@ -12921,6 +12921,23 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
+        },
+        {
+          "taskId": "JCAPP-PAUSED-WORD-ONE",
+          "scope": "In operator/public/app.js, make every paused-lane word match the shared projection's '쉬게 해 둠' (railRowModel/liveCardModel), since today the idle rail's '쉬는 중' means something else: (1) projectManagerView row (~line 227) reads '<name> · 쉬게 해 둠' when lane.paused, else '<name> · 켜 둠' instead of '쉬는 중'/'진행 중'; (2) its lede (~line 229) second sentence becomes '쉬게 해 둔 프로젝트는 새 작업을 시작하지 않아요.'; (3) the live-card 다시 켜기 failure line (~line 2813) becomes '바꾸지 못했어요 — 아직 쉬게 해 둔 상태예요.'. Buttons, POST bodies and success lines stay the same. Update the pins in test/project-manager.test.mjs:26 and test/lovable-live-cards.test.mjs:196, and assert that projectManagerView never prints '쉬는 중' for a paused lane",
+          "files": [
+            "operator/public/app.js",
+            "test/project-manager.test.mjs",
+            "test/lovable-live-cards.test.mjs"
+          ],
+          "tests": [
+            "node --test test/project-manager.test.mjs",
+            "node --test test/lovable-live-cards.test.mjs",
+            "node --test test/live-status-projection.test.mjs",
+            "node --test test/live-status-sentences.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: one shared live-status projection for Home and Progress including the Korean status sentence; 2026-09-25: 같은 용어·같은 색 … 문구가 같아야 함"
         }
       ],
       "skills": {
