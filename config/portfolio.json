@@ -13305,6 +13305,54 @@
             "git diff --check"
           ],
           "ssotEvidence": "README.md:48 '멤버 AI 대화는 무료 모델만, 1인 기본 하루 5회(피드백 보너스 최대 +3) · 30초 간격 · 서버 전체 하루 300회.'"
+        },
+        {
+          "taskId": "JUAI-CHECK-BONUS-DAY-USER",
+          "scope": "Add assertions to check.mjs only (lib.mjs stays as is), on a fresh in-memory DB built from SCHEMA: once grantBonus hits bonusMax for one member, a different member still gets a bonus that same quota day, and the capped member gets bonuses again at the next quota day (09:00 KST = 00:00 UTC); peekQuota shows bonus 0 on that new day until a bonus is granted.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:48 '1인 기본 하루 5회(피드백 보너스 최대 +3)'; README.md:40 '`lib.mjs` 사용량 제한 ... 순수 로직 (`check.mjs`로 점검)'"
+        },
+        {
+          "taskId": "JUAI-CHECK-PRUNE-USER-KEYS",
+          "scope": "Add assertions to check.mjs only (lib.mjs stays as is), on a fresh in-memory DB built from SCHEMA: pruneState deletes kv keys in the shape bot.mjs really writes, with the date after a user id (mentor:<uid>:<date>, subsent:<uid>:<date>), when they are older than 45 days, keeps recent ones, and leaves the same rows when run a second time.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:40 '`lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)'; bot.mjs writes `mentor:${uid}:${day}` and `subsent:${uid}:${day}`"
+        },
+        {
+          "taskId": "JUAI-CHECK-KV-ROUNDTRIP",
+          "scope": "Import kvGet and kvSet from db.mjs into check.mjs and add assertions only (db.mjs stays as is), on a fresh in-memory DB built from SCHEMA: kvGet gives undefined for a missing key, kvSet then kvGet gives back numbers, true and objects unchanged, and a second kvSet on the same key replaces the value without adding a row.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:28 'node check.mjs              # 로직 점검'; bot.mjs:88-89 uses kvGet/kvSet for alert throttling"
+        },
+        {
+          "taskId": "JUAI-CHECK-CHUNK-LAST-FENCE",
+          "scope": "Add assertions to check.mjs only (lib.mjs stays as is) for chunk branches no test covers yet: an unclosed ``` in the last or only chunk gets a closing fence (chunk('```\\nabc') equals ['```\\nabc\\n```']), and a single line longer than max inside a code block is split so every piece stays within max plus the fence overhead and has an even number of fences.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:40 '`lib.mjs` ... 순수 로직 (`check.mjs`로 점검)'; Founder direction 2026-09-23 (small low-risk changes, main/service untouched)"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
