@@ -11077,6 +11077,35 @@
             "node --test test/"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux 'No developer text on the surface'"
+        },
+        {
+          "taskId": "JCAPP-RELAY-TOP-LINE",
+          "scope": "In operator/public/app.js add a pure relayTopLine(board, now) and render it right under the lede in relayView's page-title only when board.available. It returns one sentence about what the Founder should do on the 진행 tab: with unskipped holds, homeHealth(board)'s '멈춘 작업 N건 — N분 안에 고르지 않으면 추천대로 진행해요.' plus homeHoldButton(board); else, when any lane waits on the Founder (hubGateCount(lane) > 0 || lane.state === 'HUMAN_GATE' || lane.current?.stage === 5, the same rule as liveCardModel's gated), '결정을 기다리는 프로젝트 N개가 있어요.' plus a [보러 가기] button with data-hub-lane set to the first such lane; else HOME_CALM '지금 하실 일은 없어요. 알아서 진행 중이에요.'. The line has no raw ids and no red; the lede, the board-down and loading branches, and the other relayView blocks stay unchanged. Add test/relay-top-line.test.mjs, which extracts the real functions the same way test/v2-rail-rows.test.mjs does and covers the three cases plus 'no line when board unavailable'.",
+          "files": [
+            "operator/public/app.js",
+            "test/relay-top-line.test.mjs"
+          ],
+          "tests": [
+            "node --test test/relay-top-line.test.mjs",
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/board-down-plain.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:11): founder-ux 규칙 '맨 위 한 문장' for the hub's 진행 tab. founder-ux rule 1: 'One sentence at the top: what this screen is for, and what to do now.' relayView at 67b4933 has only a generic lede."
+        },
+        {
+          "taskId": "JCAPP-HOME-BANNER-LANE-WAITS",
+          "scope": "Make the 홈 banner in operator/public/app.js home() stop saying '지금 하실 일은 없어요' while a 지금 상황 live card says 결정 필요. Compute gated lanes from the board the same way liveCardModel does (hubGateCount(lane) > 0 || lane.state === 'HUMAN_GATE' || lane.current?.stage === 5). calm also requires zero gated lanes. When the only reason calm fails is gated lanes (no holds, no open decisions), the banner reads '<strong>결정을 기다리는 프로젝트 N개</strong>' with a home-banner-button [보러 가기] (data-hub-lane = the first gated lane) and uses the top-status--attention class, never red. The hold and decision banners stay unchanged. Add hubGateCount to the renderHome extraction in test/home-all-ok.test.mjs and add cases for: a lane at stage 5, a HUMAN_GATE lane, and 'holds still win over gated lanes'.",
+          "files": [
+            "operator/public/app.js",
+            "test/home-all-ok.test.mjs"
+          ],
+          "tests": [
+            "node --test test/home-all-ok.test.mjs",
+            "node --test test/home-hub.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): the hub home carries the Live status card with 대표님 할 일 (없음/확인 필요/결정 필요/설정 필요); JCAPP-HOME-CALM-TRUTH: '홈 top line never says 지금 하실 일이 없어요 while a hold … or open gate exists'. liveCardModel at 67b4933 marks stage 5 / HUMAN_GATE lanes 결정 필요, but home() calm checks only holds and /api gates."
         }
       ],
       "skills": {
