@@ -6581,6 +6581,32 @@
             "npx tsc -p tsconfig.json --noEmit"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: '영수증 보기 화면 — 판정 \\'확인 후 받기\\' 같은 말의 뜻'"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-DARK-CONTRAST",
+          "scope": "In the CSS constant of src/render/index.ts, add one @media (prefers-color-scheme: dark) block that gives the page background, .card, .meta, .notice-good/.notice-warn/.notice-danger, .state-pill, .muted/.kicker/h2.request/.block h3 text and the 원문 보기 tables readable dark colours (keep teal/green = done, amber = needs a look, red = real danger only). Also raise the body font inside 원문 보기 (.req-table/.ev-table 13px, th 11px, code 12px, .ev 11px, .footer 11px) to at least 14px. Leave all wording, layout and light colours as they are, and add a regression test in tests/receipt-render-founder.test.ts asserting renderHtml output contains the dark-scheme media query and no font-size below 14px.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): 비개발자 UX 고도화 — founder-ux rule 12 '글자 16px·버튼 44px … Contrast must pass in light and dark' applied to 영수증 보기 화면; git grep 'prefers-color-scheme' at 132daeb finds nothing, and src/render/index.ts CSS sets .req-table/.ev-table font-size:13px, th 11px, .footer 11px"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SUMMARY-EMPTY-PRIORITY-LINE",
+          "scope": "In buildScanSummary in src/sources/summary.ts, replace the formal empty line '- 우선 확인할 영수증이 없습니다.' with a plain 해요체 empty state that gives the reason and the next step: '- 먼저 볼 영수증이 없어요 — 모두 받아도 되는 작업이에요. 새 작업이 끝나면 juceipt scan 을 다시 실행하세요' when there are receipts, or '- 먼저 볼 영수증이 없어요 — 이 기간에 AI 작업 기록이 없어요. juceipt scan --since 7d 로 기간을 늘려 보세요' when there are none. Change nothing else, and update or add the matching expectations in tests/scan-summary.test.ts.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux '빈 화면 이유+다음 행동' for juceipt scan output; src/sources/summary.ts:81 at 132daeb still reads '- 우선 확인할 영수증이 없습니다.' with no reason and no next step"
         }
       ],
       "skills": {
