@@ -8070,6 +8070,33 @@
             "node --test tests/e2e-cleanup.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-STALE-EXAMPLE-TEST",
+          "scope": "Add one offline test to tests/quickstart-registry-example.test.mjs, modelled on 'README Quickstart current.json example reads cleanly on the status board', that writes the README Quickstart current.json example verbatim (observedAt left as written) and asserts exit 0 and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: my-project(stale: 관찰한 지 너무 오래됐어요) — README 처음 쓰는 법의 reason 표를 보세요\\n', so the README sentence '그대로 두면 5분이 지난 오래된 상태로 보입니다' stays true.",
+          "files": [
+            "tests/quickstart-registry-example.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/quickstart-registry-example.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; README.md (b4f99c3) 빠른 시작 2단계: '`observedAt`은 지금 UTC 시각(끝에 `Z`)으로 바꾸세요. 그대로 두면 5분이 지난 오래된 상태로 보입니다.'"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-FIELD-TYPO-STEP",
+          "scope": "Add a twentieth step run_field_typo to scripts/e2e.sh after run_projects_typo (label '칸 이름 오타 안내', next command board). It writes a temp registry with one otherwise valid entry plus an extra field colour, and passes only on exit 1, empty stdout and first stderr line exactly '프로젝트 목록 파일 내용이 올바르지 않아요 — 1번째 항목의 colour는 쓸 수 없는 이름이에요 — 지우거나 철자를 확인하세요'. Sync docs/getting-started.md (JSON example line, next list, step bullet) and the ordered step list in tests/e2e-script.test.mjs.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md",
+            "tests/e2e-script.test.mjs"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target with no runtime integration; scripts/status-board.mjs (b4f99c3) registryHint: \"if (rule === 'is not a known field') return `${at}의 ${field}는 쓸 수 없는 이름이에요 — 지우거나 철자를 확인하세요`\""
         }
       ],
       "qaRuntime": [
