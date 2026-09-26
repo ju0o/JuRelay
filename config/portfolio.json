@@ -5318,7 +5318,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux: no English error text on the surface; every error in 3 lines what/why/what-to-do with a button); index.ts:1520 and :1586 still send plain 'Bad Request: malformed URL'"
+          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux: no English error text on the surface; every error in 3 lines what/why/what-to-do with a button); index.ts:1520 and :1586 still send plain 'Bad Request: malformed URL'",
+          "title": "잘못된 주소일 때 한국어 안내 보여주기"
         },
         {
           "taskId": "JUPLAN-STUDIO-DEV-FILES-FOLD",
@@ -5331,7 +5332,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux rule 2: JSON and developer text go behind one folded 원문 보기; target includes the PRD/WBS/ERD/SSOT views); index.ts:932 PLAN_EXPORT_FILES links raw JSON/DBML directly on the Studio home surface"
+          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux rule 2: JSON and developer text go behind one folded 원문 보기; target includes the PRD/WBS/ERD/SSOT views); index.ts:932 PLAN_EXPORT_FILES links raw JSON/DBML directly on the Studio home surface",
+          "title": "어려운 원문 파일은 접어서 숨기기"
         },
         {
           "taskId": "JUPLAN-STUDIO-H3-1REM",
@@ -5344,7 +5346,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux rule 12: 글자 16px 이상); index.ts:929 STUDIO_STYLE still has h3{font-size:.95rem;...}"
+          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux rule 12: 글자 16px 이상); index.ts:929 STUDIO_STYLE still has h3{font-size:.95rem;...}",
+          "title": "작은 제목 글씨 더 크게 키우기"
         }
       ],
       "qaRuntime": [
@@ -6359,7 +6362,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 비개발자 UX 고도화 — 영수증 보기 화면, 개발자 글자는 원문 보기 안; src/reconciler/index.ts:540 title '패키지 설치 명령 관찰: ' + raw command reaches Level 1 via src/receipt/index.ts:71 impact_items text = i.title"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 비개발자 UX 고도화 — 영수증 보기 화면, 개발자 글자는 원문 보기 안; src/reconciler/index.ts:540 title '패키지 설치 명령 관찰: ' + raw command reaches Level 1 via src/receipt/index.ts:71 impact_items text = i.title",
+          "title": "영수증의 중요한 영향을 쉬운 말로 보여주기"
         },
         {
           "taskId": "JUCEIPT-DAILY-IMPACT-PLAIN-WORDS",
@@ -6372,7 +6376,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): juceipt 명령 출력(daily) 비개발자 UX — 개발자 글자는 원문 보기 안; src/daily/index.ts:105 `${IMPACT_SEVERITY_LABEL[impact.severity]} — ${impact.title}` prints raw titles like '패키지 설치 명령 관찰: npm install …'"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): juceipt 명령 출력(daily) 비개발자 UX — 개발자 글자는 원문 보기 안; src/daily/index.ts:105 `${IMPACT_SEVERITY_LABEL[impact.severity]} — ${impact.title}` prints raw titles like '패키지 설치 명령 관찰: npm install …'",
+          "title": "하루 요약의 중요 영향을 쉬운 말로 정리"
         }
       ],
       "skills": {
@@ -10788,7 +10793,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:58 '10-receipt register and final-versus-Receipt reconciliation complete; 0 Founder seven-task rows join both artifacts; mapping `UNDECIDED` per docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.2/§7; M3 decision pending'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:58 '10-receipt register and final-versus-Receipt reconciliation complete; 0 Founder seven-task rows join both artifacts; mapping `UNDECIDED` per docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.2/§7; M3 decision pending'",
+          "title": "일일 가치 기록에 대조 결과 반영"
         },
         {
           "taskId": "JUCEIPTPLAN-INDEX-M3-ARTIFACT-JOIN-GAP-SYNC",
@@ -10799,7 +10805,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:219 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'",
+          "title": "핵심 문서 목록에 대조 결과 반영"
         }
       ]
     },
@@ -11609,7 +11616,8 @@
             "node --test tests/evidence-scope-rule-parity.test.mjs",
             "node --test tests/skill-report-contract.test.mjs tests/info-system-scope-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:249 '모든 문장에 근거와 확인 상태를 반복해서 붙이지 않는다.' (§7.7 근거 표기 범위)"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:249 '모든 문장에 근거와 확인 상태를 반복해서 붙이지 않는다.' (§7.7 근거 표기 범위)",
+          "title": "중요한 말에만 근거 달기 규칙 맞추기"
         },
         {
           "taskId": "JUTELL-CODE-EXPECTATION-NOT-CONFIRMED",
@@ -11620,7 +11628,8 @@
           "tests": [
             "node --test tests/code-expectation-not-confirmed.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:309 '### 8.4 예상 표현 … 코드 예상만으로 `확인됨`을 사용하지 않는다.'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:309 '### 8.4 예상 표현 … 코드 예상만으로 `확인됨`을 사용하지 않는다.'",
+          "title": "짐작만으로 확인됐다고 쓰지 않기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
