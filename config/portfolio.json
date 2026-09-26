@@ -9161,6 +9161,38 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 글자 16px·버튼 44px",
           "title": "영수증 원문 글씨 키워 가독성 개선"
+        },
+        {
+          "taskId": "JUCEIPT-M2-SCORE-BATCH-A",
+          "scope": "Fill the 7 UNSCORED judgment fields plus pm_note in evaluation.json for m2-001..m2-006 by comparing each task's claude-final.txt against its receipt.json/receipt.html per the scoring contract in m2/README.md, without changing acceptance state or making the M2 GO/RETRY/KILL/SCALE call",
+          "files": [
+            "m2/tasks/m2-001/evaluation.json",
+            "m2/tasks/m2-002/evaluation.json",
+            "m2/tasks/m2-003/evaluation.json",
+            "m2/tasks/m2-004/evaluation.json",
+            "m2/tasks/m2-005/evaluation.json",
+            "m2/tasks/m2-006/evaluation.json"
+          ],
+          "tests": [
+            "node -e \"const fs=require('fs');const fields=['receipt_vs_claude_final','false_factual_claim','missed_material_gap','level1_understandable_10s','human_next_action_useful','review_or_evidence_needed','acceptance_state_feels_correct'];for(const t of ['m2-001','m2-002','m2-003','m2-004','m2-005','m2-006']){const e=JSON.parse(fs.readFileSync('m2/tasks/'+t+'/evaluation.json','utf8'));for(const f of fields){if(e[f]===undefined||e[f]==='UNSCORED')throw new Error(t+' '+f+' still UNSCORED')}if(!e.pm_note||!e.pm_note.trim())throw new Error(t+' pm_note empty')}console.log('ok')\""
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:226 'Finish PR #4 14-task Receipt-vs-final scoring | M2 NOW'; m2/README.md:39-41 'evaluation.json is generated with every field set to UNSCORED... PM fills the scorecard'"
+        },
+        {
+          "taskId": "JUCEIPT-M2-SCORE-BATCH-B",
+          "scope": "Fill the 7 UNSCORED judgment fields plus pm_note in evaluation.json for m2-007..m2-012 by comparing each task's claude-final.txt against its receipt.json/receipt.html per the scoring contract in m2/README.md, without changing acceptance state or making the M2 GO/RETRY/KILL/SCALE call",
+          "files": [
+            "m2/tasks/m2-007/evaluation.json",
+            "m2/tasks/m2-008/evaluation.json",
+            "m2/tasks/m2-009/evaluation.json",
+            "m2/tasks/m2-010/evaluation.json",
+            "m2/tasks/m2-011/evaluation.json",
+            "m2/tasks/m2-012/evaluation.json"
+          ],
+          "tests": [
+            "node -e \"const fs=require('fs');const fields=['receipt_vs_claude_final','false_factual_claim','missed_material_gap','level1_understandable_10s','human_next_action_useful','review_or_evidence_needed','acceptance_state_feels_correct'];for(const t of ['m2-007','m2-008','m2-009','m2-010','m2-011','m2-012']){const e=JSON.parse(fs.readFileSync('m2/tasks/'+t+'/evaluation.json','utf8'));for(const f of fields){if(e[f]===undefined||e[f]==='UNSCORED')throw new Error(t+' '+f+' still UNSCORED')}if(!e.pm_note||!e.pm_note.trim())throw new Error(t+' pm_note empty')}console.log('ok')\""
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:226 'Finish PR #4 14-task Receipt-vs-final scoring | M2 NOW'; m2/README.md:39-41 'evaluation.json is generated with every field set to UNSCORED... PM fills the scorecard'"
         }
       ],
       "skills": {
