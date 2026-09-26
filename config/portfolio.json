@@ -16154,6 +16154,20 @@
           ],
           "ssotEvidence": "docs/GLOSSARY_POLICY.md:95 ### 4.3 IDE와 AI Agent 실행 환경 — IDE는 코드를 작성하고 실행하는 개발 도구라는 일반 정의로 설명한다. AI Agent가 파일을 읽고 수정하는 실행 환경을 자동으로 IDE라고 부르지 않는다.",
           "title": "개발 도구 용어 설명 일치 확인"
+        },
+        {
+          "taskId": "JUTELL-SECRET-REDACT-EXPOSED-SKILL-PARITY",
+          "scope": "Add one sub-bullet under SKILL.md 실행 절차 step 8 with the BEGINNER_REPORT_SPEC §16.3 masking forms (`[REDACTED]`, `****`, show only the variable name) and the §16.4 already-exposed guidance (never say the exposure can be fully undone; revoke the key or token, issue a new value, remove it from logs and code, move it to an environment variable, never repeat the real value), plus a new test-only offline node:test tests/secret-redact-exposed-skill-parity.test.mjs that checks that §16.3 and §16.4 still hold these items and that SKILL.md step 8 carries each one.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/secret-redact-exposed-skill-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/secret-redact-exposed-skill-parity.test.mjs",
+            "node --test tests/forbidden-phrases-skill-parity.test.mjs tests/baseline-state-skill-parity.test.mjs tests/final-checklist-spec-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:721-745 '### 16.3 최종 보고 전 … `[REDACTED]` … `****` … 변수 이름만 표시' and '### 16.4 이미 출력된 경우 … 완전히 되돌릴 수 있다고 표현하지 않는다 … 해당 키 또는 토큰 폐기 … 새 값 발급 … 실제 비밀 값은 다시 반복 출력하지 않는다'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
