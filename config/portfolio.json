@@ -12710,6 +12710,29 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 '1. The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` per `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.2/§7; M3 decision is pending.'",
           "title": "사업 전체 지도에 3단계 진행상황 반영"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-M2-FINAL-COMPARE-LINE-SYNC",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md, change only line 155 ('PM must still compare each `claude-final.txt` against its Receipt.') to say the 14-task final-versus-Receipt comparison is recorded in docs/qa/M2_RECEIPT_VALUE_SCORECARD.md and M2 is closed by the A-14 GO decision, without changing any M3 line or recording any M3 decision.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:155 'PM must still compare each `claude-final.txt` against its Receipt.' contradicts docs/operations/PM_STATUS_BOARD.md:175 'M2 is closed by the A-14 GO decision; the scorecard remains the evidence record.'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-B0-STATE-M2-GO-SYNC",
+          "scope": "Change only the B0 state cells that still say 'ACTIVE DEPENDENCY' (docs/operations/PM_STATUS_BOARD.md line 199 and docs/planning/BUSINESS_PRODUCT_WBS.md lines 29 and 40) to match the GTM §8 wording 'ACTIVE — M2 GO (A-14)', keeping the B0 alias-vs-separate-gate choice explicitly unresolved.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md",
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/business/GROWTH_MONETIZATION_GTM.md:338 '| B0 Core Value Proof | M2 Receipt Value Proof; alias-vs-separate-demand-gate choice unresolved | ACTIVE — M2 GO (A-14) |' vs docs/operations/PM_STATUS_BOARD.md:199 '| B0 | Core value proof | M2 | 🟢 ACTIVE DEPENDENCY |'"
         }
       ]
     },
