@@ -13720,6 +13720,54 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 'check.mjs (순수 로직 + 자체 점검)'; lib.mjs:12 '/** Quota day rolls over at 09:00 KST, which is exactly 00:00 UTC. */'",
           "title": "한국 시간 기준 날짜 바뀜 계산 확인"
+        },
+        {
+          "taskId": "JUAI-CHECK-REDACT-PII-BOUNDS",
+          "scope": "Add check.mjs assertions only (lib.mjs stays as is) for redact() PII edges: an upper-case email (USER@Example.COM) becomes [가림], a non-010 number (011-1234-5678) and a longer digit run (0101234567890) are left unchanged, and two phone numbers in one text are both replaced.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs PII = [/[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}/gi, /(?<!\\d)010(?:-\\d{4}-\\d{4}|\\d{8})(?!\\d)/g]"
+        },
+        {
+          "taskId": "JUAI-CHECK-EXTRACT-JSON-ESCAPE",
+          "scope": "Add check.mjs assertions only (lib.mjs stays as is) for extractJson branches with no test yet: an escaped quote followed by a brace inside a string ('{\"x\":\"q\\\\\"}\"}') parses to { x: 'q\"}' }, only the first of two objects is returned ('{\"a\":1} {\"b\":2}' gives { a: 1 }), and a stray '}' before the first '{' is ignored ('x } {\"a\":1}' gives { a: 1 }).",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs: /** First JSON object in model output (models like to wrap it in prose or fences). */ export function extractJson(text)"
+        },
+        {
+          "taskId": "JUAI-CHECK-STRIPANSI-MULTI",
+          "scope": "Add check.mjs assertions only (lib.mjs stays as is) for stripAnsi: multi-parameter codes are removed (stripAnsi('\\x1b[1;32mok\\x1b[0m') === 'ok'), a non-color CSI code like '\\x1b[2K' is removed, and plain bracket text without ESC ('[31m') is left unchanged.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs: export const stripAnsi = (s) => s.replace(/\\x1b\\[[0-9;]*[A-Za-z]/g, \"\")"
+        },
+        {
+          "taskId": "JUAI-CHECK-CHUNK-EXACT-MAX",
+          "scope": "Add check.mjs assertions only (lib.mjs stays as is) for the chunk size boundary: text exactly max long stays one chunk (chunk('abc', 3) deep-equals ['abc']), and two lines whose joined length equals max stay together (chunk('ab\\ncd', 5) deep-equals ['ab\\ncd']).",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: SSOT is README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs: /** Split for Discord's 2000-char limit, preferring line breaks, never breaking a ``` block open. */ export function chunk(text, max = 1900)"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
