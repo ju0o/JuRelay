@@ -37,7 +37,8 @@ export type ControlRoomOperation =
   | 'controlRoom:automationStatus'
   | 'controlRoom:automationOn'
   | 'controlRoom:automationOff'
-  | 'controlRoom:promoteHub';
+  | 'controlRoom:promoteHub'
+  | 'controlRoom:nightReports';
 export type PlanStudioAction = 'get' | 'save' | 'chat' | 'request' | 'approve';
 export type GateAction = 'list' | 'answer';
 export type ControlRoomErrorCode = 'EXEC_FAILED' | 'REMOTE_FAILED' | 'INVALID_JSON' | 'INVALID_INPUT';
@@ -752,6 +753,289 @@ export function workingSummary(lanes: unknown, nowMs: number = Date.now()): stri
   }
   if (segments.length === 0) return '지금 일하는 AI: 쉬는 중';
   return `지금 일하는 AI: ${segments.join(' / ')}`;
+}
+
+// ── 밤 보고서 수신 목록 (읽기 전용) ─────────────────────────────────────────
+// `night review --json`은 LAST_NIGHT_RUN과 NIGHT_REPORT 수신 여부를 한 JSON으로 준다.
+// 막힘이 있으면 종료 코드 1이지만 stdout JSON은 그대로 목록이다. 사용자 인자는 없다.
+
+export interface NightReportRow {
+  title: string;
+  status: string;
+  detail: string;
+  tone: 'ok' | 'look';
+}
+
+export interface NightReportList {
+  sentence: string;
+  rows: NightReportRow[];
+  raw: string;
+}
+
+const END_REASON_KO: Record<string, string> = {
+  WBS_EXHAUSTED: '할 일을 다 끝냈어요',
+  DEADLINE_COMPLETE: '정한 시각에 끝냈어요',
+  DEADLINE_FORCED_CHECKPOINT: '정한 시각에 기록을 남기고 멈췄어요',
+};
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}
+
+function infoMap(info: unknown): Record<string, string> {
+  const out: Record<string, string> = {};
+  if (!Array.isArray(info)) return out;
+  for (const line of info) {
+    if (typeof line !== 'string') continue;
+    const idx = line.indexOf(':');
+    if (idx <= 0) continue;
+    const key = line.slice(0, idx).trim();
+    const value = line.slice(idx + 1).trim();
+    if (key && !(key in out)) out[key] = value;
+  }
+  return out;
+}
+
+function blockerText(blockers: unknown): string {
+  if (!Array.isArray(blockers)) return '';
+  return blockers.filter((line): line is string => typeof line === 'string').join('\n');
+}
+
+/** 시각을 '방금' / '3분 전' / '오후 2:10'으로. ISO 문자열은 화면에 올리지 않는다. */
+function founderWhen(value: unknown, nowMs: number): string {
+  if (typeof value !== 'string' || !value.trim()) return '';
+  const ms = Date.parse(value);
+  if (!Number.isFinite(ms)) return '';
+  const delta = nowMs - ms;
+  if (delta >= 0 && delta < 60_000) return '방금';
+  if (delta >= 0 && delta < 60 * 60_000) return `${Math.max(1, Math.floor(delta / 60_000))}분 전`;
+  if (delta >= 0 && delta < 24 * 60 * 60_000) return `${Math.max(1, Math.floor(delta / 3_600_000))}시간 전`;
+  const at = new Date(ms);
+  const hour = at.getHours();
+  const minute = String(at.getMinutes()).padStart(2, '0');
+  const ampm = hour < 12 ? '오전' : '오후';
+  const h12 = hour % 12 || 12;
+  return `${at.getMonth() + 1}월 ${at.getDate()}일 ${ampm} ${h12}:${minute}`;
+}
+
+function reportDayLabel(source: string): string {
+  const match = /NIGHT_REPORT_(\d{4})-(\d{2})-(\d{2})/.exec(source);
+  if (!match) return '';
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (!month || !day) return '';
+  return `${month}월 ${day}일`;
+}
+
+function titleFor(kind: 'report' | 'run', source: string): string {
+  const day = reportDayLabel(source);
+  if (kind === 'report') return day ? `${day} 밤 보고서` : '밤 보고서';
+  return '어젯밤 기록';
+}
+
+function arrivalDetail(status: string, when: unknown, nowMs: number): string {
+  const rel = founderWhen(when, nowMs);
+  if (status === '받았어요') {
+    if (!rel) return '이 컴퓨터로 도착했어요';
+    if (rel === '방금') return '방금 도착했어요';
+    return `${rel}에 도착했어요`;
+  }
+  if (status === '보내는 중이에요') return '지금 이 컴퓨터로 보내는 중이에요.';
+  if (status === '보내지 못했어요') return '다른 컴퓨터는 켜져 있었는데, 보고서를 보내지 못했어요.';
+  if (status === '연습으로만 만들었어요') return '실제로 이 컴퓨터에 보내지는 않았어요.';
+  if (status === '확인하지 못했어요') return '도착했는지는 아직 확인하지 못했어요.';
+  return '밤 작업이 끝나면 여기에 자동으로 나타나요.';
+}
+
+function reportStatusFrom(transfer: string, reportPath: string, blockers: string): { status: string; tone: 'ok' | 'look' } {
+  const state = transfer.trim().toUpperCase();
+  if (state === 'DELIVERED') return { status: '받았어요', tone: 'ok' };
+  if (state === 'DRY_RUN') return { status: '연습으로만 만들었어요', tone: 'look' };
+  if (state === 'PENDING') return { status: '보내는 중이에요', tone: 'look' };
+  if (state.includes('FAIL') || blockers.includes('REPORT_TRANSFER_FAILED') || blockers.includes('reportTransferError')) {
+    return { status: '보내지 못했어요', tone: 'look' };
+  }
+  if (blockers.includes('REPORT_MISSING')) return { status: '아직 안 왔어요', tone: 'look' };
+  if (reportPath || state) return { status: '확인하지 못했어요', tone: 'look' };
+  return { status: '아직 안 왔어요', tone: 'look' };
+}
+
+function rowsFromReview(payload: Record<string, unknown>, nowMs: number): NightReportRow[] {
+  const info = infoMap(payload.info);
+  const blockers = blockerText(payload.blockers);
+  const reportPath = info.report ?? '';
+  const reportStatus = reportStatusFrom(info.reportTransferState ?? '', reportPath, blockers);
+  const when = info.endedAt || info.startedAt || '';
+  const report: NightReportRow = {
+    title: titleFor('report', reportPath),
+    status: reportStatus.status,
+    detail: arrivalDetail(reportStatus.status, when, nowMs),
+    tone: reportStatus.tone,
+  };
+  const missingRun = blockers.includes('NO_LAST_NIGHT_RUN');
+  const hasRun = !missingRun && Boolean(info.runId || info.startedAt || info.endedAt || info.endReason);
+  const reason = hasRun ? (END_REASON_KO[info.endReason ?? ''] ?? (info.endReason ? '끝난 이유를 확인하지 못했어요' : '')) : '';
+  const runDetail = hasRun ? arrivalDetail('받았어요', info.endedAt ?? '', nowMs) : '밤 작업이 끝나면 여기에 자동으로 나타나요.';
+  const run: NightReportRow = {
+    title: '어젯밤 기록',
+    status: hasRun ? '받았어요' : '아직 안 왔어요',
+    detail: reason ? `${reason} · ${runDetail}` : runDetail,
+    tone: hasRun ? 'ok' : 'look',
+  };
+  return [report, run];
+}
+
+function kindFromText(text: string): 'report' | 'run' | null {
+  if (/NIGHT_REPORT/i.test(text)) return 'report';
+  if (/LAST_NIGHT_RUN/i.test(text)) return 'run';
+  return null;
+}
+
+function textOf(record: Record<string, unknown>): string {
+  return ['kind', 'type', 'name', 'file', 'path', 'id']
+    .map((key) => record[key])
+    .filter((value): value is string => typeof value === 'string')
+    .join(' ');
+}
+
+function statusFromRecord(record: Record<string, unknown>): { status: string; tone: 'ok' | 'look' } {
+  const state = [record.state, record.status, record.reportTransferState]
+    .filter((value): value is string => typeof value === 'string')
+    .join(' ');
+  if (/PENDING/i.test(state)) return { status: '보내는 중이에요', tone: 'look' };
+  if (/FAIL/i.test(state)) return { status: '보내지 못했어요', tone: 'look' };
+  if (/DRY_RUN/i.test(state)) return { status: '연습으로만 만들었어요', tone: 'look' };
+  if (record.received === false || record.ok === false) return { status: '아직 안 왔어요', tone: 'look' };
+  if (/DELIVERED|RECEIVED/i.test(state) || record.received === true || record.ok === true) {
+    return { status: '받았어요', tone: 'ok' };
+  }
+  if (state.trim()) return { status: '확인하지 못했어요', tone: 'look' };
+  return { status: '받았어요', tone: 'ok' };
+}
+
+function firstTime(record: Record<string, unknown>): unknown {
+  for (const key of ['at', 'receivedAt', 'endedAt', 'updatedAt']) {
+    if (typeof record[key] === 'string' && record[key]) return record[key];
+  }
+  return '';
+}
+
+function rowFromItem(item: unknown, nowMs: number): NightReportRow[] {
+  if (typeof item === 'string') {
+    const kind = kindFromText(item);
+    if (!kind) return [];
+    return [{
+      title: titleFor(kind, item),
+      status: '받았어요',
+      detail: arrivalDetail('받았어요', '', nowMs),
+      tone: 'ok',
+    }];
+  }
+  const record = asRecord(item);
+  if (!record) return [];
+  const source = textOf(record);
+  const kind = kindFromText(source);
+  if (!kind) return [];
+  const status = statusFromRecord(record);
+  return [{
+    title: titleFor(kind, source),
+    status: status.status,
+    detail: arrivalDetail(status.status, firstTime(record), nowMs),
+    tone: status.tone,
+  }];
+}
+
+function explicitItems(payload: unknown): unknown[] | null {
+  if (Array.isArray(payload)) return payload;
+  const record = asRecord(payload);
+  if (!record) return null;
+  for (const key of ['reports', 'items', 'nightReports', 'received', 'files']) {
+    if (Array.isArray(record[key])) return record[key] as unknown[];
+  }
+  return null;
+}
+
+function isReviewPayload(payload: unknown): payload is Record<string, unknown> {
+  const record = asRecord(payload);
+  if (!record) return false;
+  if (record.kind === 'REVIEW') return true;
+  return Array.isArray(record.info) && Array.isArray(record.blockers);
+}
+
+function nightReportSentence(rows: NightReportRow[]): string {
+  if (rows.length === 0 || rows.every((row) => row.tone !== 'ok')) {
+    return '아직 받은 밤 보고서가 없어요. 밤 작업이 끝나면 여기에 자동으로 나타나요.';
+  }
+  if (rows.every((row) => row.tone === 'ok')) {
+    return '받은 밤 보고서가 있어요. 지금 하실 일은 없어요.';
+  }
+  return '일부만 도착했어요. 나머지는 밤 작업이 끝나면 알아서 채워져요. 지금 하실 일은 없어요.';
+}
+
+/**
+ * 원격 JSON을 대표님용 수신 목록으로 바꾼다. 경로·해시·영문 상태어는 raw에만 남긴다.
+ */
+export function presentNightReports(payload: unknown, nowMs: number = Date.now()): NightReportList {
+  const items = explicitItems(payload);
+  const rows = items
+    ? items.flatMap((item) => rowFromItem(item, nowMs))
+    : isReviewPayload(payload)
+      ? rowsFromReview(payload, nowMs)
+      : [];
+  let raw = '';
+  try {
+    raw = JSON.stringify(payload, null, 2);
+  } catch {
+    raw = '';
+  }
+  return { sentence: nightReportSentence(rows), rows, raw };
+}
+
+function thrownStdout(cause: unknown): string {
+  if (!cause || typeof cause !== 'object') return '';
+  const stdout = (cause as { stdout?: unknown }).stdout;
+  if (typeof stdout === 'string') return stdout;
+  if (Buffer.isBuffer(stdout)) return stdout.toString('utf8');
+  return '';
+}
+
+function thrownCode(cause: unknown): number | null {
+  if (!cause || typeof cause !== 'object') return null;
+  const code = (cause as { code?: unknown }).code;
+  return typeof code === 'number' ? code : null;
+}
+
+/**
+ * 관제실 밤 보고서 수신 목록. `night review --json`만 호출하고, 가짜 실행기로 시험한다.
+ * 막힘으로 종료 코드가 1이어도 stdout JSON은 목록으로 읽는다. 연결 실패(255·응답 없음)는 꺼짐으로 구분한다.
+ */
+export async function runControlRoomNightReports(
+  execFileImpl: ControlRoomExec = execFile,
+  nowMs: number = Date.now(),
+): Promise<NightReportList> {
+  const operation: ControlRoomOperation = 'controlRoom:nightReports';
+  const args = [...SSH_BASE_ARGS, 'review', '--json'];
+  const parseStdout = (stdout: string): NightReportList => {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(stdout);
+    } catch (cause) {
+      throw new ControlRoomError('INVALID_JSON', operation, '작업 PC의 응답을 읽지 못했습니다. 잠시 후 자동으로 다시 시도합니다.', cause);
+    }
+    return presentNightReports(parsed, nowMs);
+  };
+
+  try {
+    const { stdout } = await execFileImpl('ssh', args, { shell: false, timeout: EXEC_TIMEOUT });
+    return parseStdout(stdout);
+  } catch (cause) {
+    if (cause instanceof ControlRoomError) throw cause;
+    const code = thrownCode(cause);
+    const stdout = thrownStdout(cause).trim();
+    if (code !== null && code !== 255 && stdout) return parseStdout(stdout);
+    throw execFailure(operation, cause);
+  }
 }
 
 // Aliases for relay wiring flexibility.

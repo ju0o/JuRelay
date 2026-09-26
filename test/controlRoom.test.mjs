@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomLaneSet, runControlRoomResume, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioSave, shQuote } from "../dist/server/backend/controlRoom.js";
+import { ControlRoomError, presentNightReports, runControlRoom, runControlRoomApprovalAdd, runControlRoomLaneSet, runControlRoomNightReports, runControlRoomResume, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioSave, shQuote } from "../dist/server/backend/controlRoom.js";
 
 test("board uses the fixed ssh command and parses JSON", async () => {
   let call;
@@ -298,6 +298,89 @@ test("controlRoom write actions surface EXEC_FAILED and INVALID_JSON", async () 
   assert.equal(invalidAdd.code, "INVALID_JSON");
   assert.equal(invalidAdd.operation, "controlRoom:approvalAdd");
   assert.match(invalidAdd.message, /응답을 읽지 못했습니다/);
+});
+
+const NIGHT_SSH = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=5", "asus", "~/.agents/skills/auto-night-orchestrator/scripts/night", "review", "--json"];
+const NIGHT_NOW = Date.parse("2026-09-25T21:10:00.000Z");
+
+function visibleNightText(list) {
+  return [list.sentence, ...list.rows.flatMap((row) => [row.title, row.status, row.detail])].join("\n");
+}
+
+test("night reports uses review --json and shows a read-only Korean list", async () => {
+  let call;
+  const stdout = JSON.stringify({
+    kind: "REVIEW",
+    ok: true,
+    blockers: [],
+    info: [
+      "runId: night-1",
+      "startedAt: 2026-09-25T18:49:30.592Z",
+      "endedAt: 2026-09-25T19:59:02.054Z",
+      "endReason: DEADLINE_COMPLETE",
+      "reportTransferState: DELIVERED",
+      "report: /home/skkse12/.local/share/AgentRelay/data/portfolio-execution/NIGHT_REPORT_2026-09-26.md sha256=abc123",
+    ],
+  });
+  const value = await runControlRoomNightReports(async (...args) => {
+    call = args;
+    return { stdout, stderr: "" };
+  }, NIGHT_NOW);
+
+  assert.equal(call[0], "ssh");
+  assert.deepEqual(call[1], NIGHT_SSH);
+  assert.deepEqual(call[2], { shell: false, timeout: 10_000 });
+  assert.equal(value.rows.length, 2);
+  assert.equal(value.rows[0].title, "9월 26일 밤 보고서");
+  assert.equal(value.rows[0].status, "받았어요");
+  assert.equal(value.rows[0].tone, "ok");
+  assert.equal(value.rows[1].title, "어젯밤 기록");
+  assert.equal(value.rows[1].status, "받았어요");
+  assert.match(value.rows[1].detail, /정한 시각에 끝냈어요/);
+  assert.match(value.sentence, /지금 하실 일은 없어요/);
+  const visible = visibleNightText(value);
+  assert.doesNotMatch(visible, /NIGHT_REPORT|LAST_NIGHT_RUN|DELIVERED|DEADLINE|sha256|\/home\/|night-1|2026-09-25T/);
+  assert.match(value.raw, /NIGHT_REPORT_2026-09-26/);
+});
+
+test("night reports keeps the list when review exits 1 with JSON", async () => {
+  const payload = { kind: "REVIEW", ok: false, blockers: ["NO_LAST_NIGHT_RUN: no durable checkpoint"], info: [] };
+  const err = Object.assign(new Error("blocked"), { code: 1, stdout: JSON.stringify(payload), stderr: "" });
+  const value = await runControlRoomNightReports(async () => { throw err; }, NIGHT_NOW);
+  assert.match(value.sentence, /아직 받은 밤 보고서가 없어요/);
+  assert.deepEqual(value.rows.map((row) => row.status), ["아직 안 왔어요", "아직 안 왔어요"]);
+  assert.deepEqual(value.rows.map((row) => row.tone), ["look", "look"]);
+  assert.doesNotMatch(visibleNightText(value), /NO_LAST_NIGHT_RUN|LAST_NIGHT_RUN|NIGHT_REPORT/);
+  assert.match(value.raw, /NO_LAST_NIGHT_RUN/);
+});
+
+test("night reports accepts an explicit reception list", () => {
+  const value = presentNightReports({
+    reports: [
+      { file: "NIGHT_REPORT_2026-09-26.md", received: true, at: "2026-09-25T20:00:00.000Z" },
+      { file: "LAST_NIGHT_RUN.json", received: false },
+    ],
+  }, NIGHT_NOW);
+  assert.equal(value.rows[0].title, "9월 26일 밤 보고서");
+  assert.equal(value.rows[0].status, "받았어요");
+  assert.match(value.rows[0].detail, /1시간 전/);
+  assert.equal(value.rows[1].title, "어젯밤 기록");
+  assert.equal(value.rows[1].status, "아직 안 왔어요");
+  assert.match(value.sentence, /일부만 도착했어요/);
+  assert.doesNotMatch(visibleNightText(value), /NIGHT_REPORT|LAST_NIGHT_RUN|2026-09-25T/);
+});
+
+test("night reports distinguishes offline from a bad reply", async () => {
+  const offline = await runControlRoomNightReports(async () => { throw new Error("offline"); }).catch((error) => error);
+  assert.ok(offline instanceof ControlRoomError);
+  assert.equal(offline.code, "EXEC_FAILED");
+  assert.equal(offline.operation, "controlRoom:nightReports");
+  assert.match(offline.message, /연결할 수 없습니다/);
+
+  const invalid = await runControlRoomNightReports(async () => ({ stdout: "nope", stderr: "" })).catch((error) => error);
+  assert.ok(invalid instanceof ControlRoomError);
+  assert.equal(invalid.code, "INVALID_JSON");
+  assert.match(invalid.message, /응답을 읽지 못했습니다/);
 });
 
 test("injection payload stays inside one single-quoted argument", async () => {

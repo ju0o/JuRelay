@@ -2075,6 +2075,127 @@ function LaunchProjectPick({ lanes, onLater, onStarted }: {
   );
 }
 
+interface NightReportRowView {
+  title: string;
+  status: string;
+  detail: string;
+  tone: 'ok' | 'look';
+}
+
+interface NightReportListView {
+  sentence: string;
+  rows: NightReportRowView[];
+  raw: string;
+}
+
+const NIGHT_REPORTS_REFRESH_MS = 30_000;
+
+/** 수신 목록 응답이 화면용 모양인지. 아니면 오류 세 줄로 보낸다. */
+function asNightReportList(value: unknown): NightReportListView | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const record = value as Record<string, unknown>;
+  if (typeof record.sentence !== 'string' || !Array.isArray(record.rows)) return null;
+  const rows: NightReportRowView[] = [];
+  for (const item of record.rows) {
+    if (!item || typeof item !== 'object') return null;
+    const row = item as Record<string, unknown>;
+    if (typeof row.title !== 'string' || typeof row.status !== 'string' || typeof row.detail !== 'string') return null;
+    if (row.tone !== 'ok' && row.tone !== 'look') return null;
+    rows.push({ title: row.title, status: row.status, detail: row.detail, tone: row.tone });
+  }
+  return { sentence: record.sentence, rows, raw: typeof record.raw === 'string' ? record.raw : '' };
+}
+
+/** 밤 보고서를 못 읽었을 때의 세 줄. 꺼짐과 '켜져 있는데 실패'를 나눈다. */
+function nightReportFailureLines(message: string): [string, string, string] {
+  const kind = laneErrorKind(message);
+  if (kind === 'offline') {
+    return [
+      '밤 보고서를 가져오지 못했어요.',
+      '다른 컴퓨터가 꺼져 있거나 네트워크가 끊긴 것 같아요.',
+      '컴퓨터가 켜지면 다시 시도해 주세요.',
+    ];
+  }
+  if (kind === 'remote-failed' || kind === 'bad-reply') {
+    return [
+      '밤 보고서를 가져오지 못했어요.',
+      '다른 컴퓨터는 켜져 있는데, 목록을 읽다 문제가 났어요.',
+      '잠시 뒤 다시 시도해 주세요.',
+    ];
+  }
+  return [
+    '밤 보고서를 가져오지 못했어요.',
+    '목록을 아직 읽지 못한 것 같아요.',
+    '다시 시도해 주세요. 자세한 내용은 원문 보기에 있어요.',
+  ];
+}
+
+/** 읽기 전용. 밤 보고서와 어젯밤 기록이 이 컴퓨터에 도착했는지만 보여 준다. */
+function NightReportsCard(): React.ReactElement {
+  const [list, setList] = useState<NightReportListView | null>(null);
+  const [error, setError] = useState('');
+  const [errorDetail, setErrorDetail] = useState('');
+  const load = useCallback(async (): Promise<void> => {
+    try {
+      const next = asNightReportList(await must<unknown>({ op: 'controlRoom:nightReports' }));
+      if (!next) {
+        setList(null);
+        setError('작업 PC의 응답을 읽지 못했습니다. 잠시 후 자동으로 다시 시도합니다.');
+        setErrorDetail('');
+        return;
+      }
+      setList(next);
+      setError('');
+      setErrorDetail('');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+      setErrorDetail((e as { detail?: string })?.detail ?? '');
+    }
+  }, []);
+  useEffect(() => {
+    let alive = true;
+    const refresh = (): void => { if (alive) void load(); };
+    refresh();
+    const timer = window.setInterval(refresh, NIGHT_REPORTS_REFRESH_MS);
+    return () => { alive = false; window.clearInterval(timer); };
+  }, [load]);
+  const failed = list === null && error ? nightReportFailureLines(error) : null;
+  return (
+    <section className="cr-today" aria-label="밤 보고서">
+      <h2 className="cr-section-title">밤 보고서</h2>
+      {list === null && !error ? <p className="cr-empty-line" role="status">불러오는 중…</p>
+        : failed ? <div className="cr-token-error" role="status">
+          <p>{failed[0]}</p>
+          <p>{failed[1]}</p>
+          <p>{failed[2]}</p>
+          <button className="btn cr-bottom-btn" type="button" onClick={() => void load()}>다시 시도</button>
+          {(errorDetail || error) && <details><summary>원문 보기</summary><pre className="mono">{errorDetail || error}</pre></details>}
+        </div>
+        : list && <>
+          <p className="cr-today-count" role="status">{list.sentence}</p>
+          {list.rows.length === 0
+            ? <p className="cr-empty-line">아직 받은 밤 보고서가 없어요 — 밤 작업이 끝나면 자동으로 생겨요.</p>
+            : <ul className="cr-today-list">
+              {list.rows.map((row, index) => (
+                <li key={`${row.title}-${index}`}>
+                  <p className="cr-today-title">
+                    <strong>{row.title}</strong>
+                    {' · '}
+                    {row.tone === 'ok'
+                      ? <strong className="cr-token-ok">{row.status}</strong>
+                      : <span className="cr-token-finding-title"><strong>{row.status}</strong></span>}
+                  </p>
+                  <p className="cr-ai-detail">{row.detail}</p>
+                </li>
+              ))}
+            </ul>}
+          <p className="cr-empty-line">보기만 해요. 30초마다 알아서 새로 고쳐요.</p>
+          {list.raw && <details><summary>원문 보기</summary><pre className="mono">{list.raw}</pre></details>}
+        </>}
+    </section>
+  );
+}
+
 export function ControlRoom(): React.ReactElement {
   const [board, setBoard] = useState<ControlRoomBoard | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -2251,6 +2372,7 @@ export function ControlRoom(): React.ReactElement {
             <AiAssignCard board={board} />
             <TokensCard />
             <TodayCard board={board} />
+            <NightReportsCard />
             <RuntimeEnvCard />
           </div>
         )}
