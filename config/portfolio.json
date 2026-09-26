@@ -5872,6 +5872,48 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:08 (대화로 바꾸기 → 미리보기 → 적용 → 되돌리기; founder-ux rule 7 result sentence within a second) — index.ts:2101 editSuccessResult returns only {ok, edited}, unlike undoSuccessResult:2123 which has stage/nextAction/summary",
           "title": "이름 바꾼 결과를 한국어 한 줄로 안내"
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-PARSE-PLAIN",
+          "scope": "In parseApplyProposal in packages/runtime/src/index.ts, replace the two INVALID_PROPOSAL messages that still show developer words ('제안이 올바른 JSON이 아닙니다…' and '제안 JSON이 GraphChangeProposal 형식이 아닙니다. addNodes와 addEdges를 확인한 뒤…') with plain Korean covering what happened, why and what to do next, with no JSON/GraphChangeProposal/addNodes wording. Example: 'AI가 보낸 제안을 읽지 못했어요. 제안의 형식이 맞지 않아요. JuControler 계획 탭에서 다시 제안해 달라고 말해 주세요.' Keep the INVALID_PROPOSAL code, ok:false, stage and nextAction unchanged, update the existing test expectations, and add a regression that neither message contains 'JSON', 'GraphChangeProposal' or 'addNodes'.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/proposal-korean-blockers.test.ts",
+            "packages/runtime/test/runtime.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기, founder-ux 규칙(개발자 글자는 원문 보기 안, 오류 3줄); index.ts:1897,1901 at 992914b still say 'JSON' / 'GraphChangeProposal 형식' / 'addNodes와 addEdges'"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-REVIEW-BANNER-ACTION",
+          "scope": "In renderLifecycleBanner in packages/runtime/src/index.ts, change the READY_FOR_FINAL_REVIEW banner '검토가 끝나면 확정해 주세요' so it names the one place the Founder does it, in the same style as the drafting banner. Example: '검토가 끝나면 JuControler 계획 탭에서 확정해 달라고 말해 주세요'. Keep the closed 원문 보기 with the snapshot command and leave the FROZEN and drafting banners as they are. Update the banner assertions in the two existing tests and add one assertion that the review banner mentions JuControler 계획 탭.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-founder-banner.test.ts",
+            "packages/runtime/test/runtime.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 founder-ux 규칙 '맨 위 한 문장 … 지금 할 일' and 2026-09-24 launch bar 'obvious next action'; index.ts:1374 at 992914b shows '검토가 끝나면 확정해 주세요' with no way to do it except the folded CLI command"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-FINDING-FOLD-AFTER",
+          "scope": "In renderValidationSection in packages/runtime/src/index.ts, move each finding's closed 원文 보기 fold (renderFindingFold) after the plain Korean sentence instead of between the Korean level label and the sentence, so each row reads level → sentence → 원문 보기, the same order the gate rows use. Change no text, classes, codes or fold contents. Update the expected-markup assertion in studio-finding-korean.test.ts and add one check that the sentence comes before the fold.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-finding-korean.test.ts",
+            "packages/runtime/test/studio-finding-no-ids.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 대상 '검증 문제 표시', founder-ux 규칙 '개발자 글자는 원문 보기 안'; index.ts renderValidationSection at 992914b emits <span class=\"level\">…</span>${renderFindingFold(...)}<p>${surface}</p>, so 원문 보기 comes before the sentence the Founder reads"
         }
       ],
       "qaRuntime": [
