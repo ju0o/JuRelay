@@ -10686,6 +10686,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): 같은 용어·같은 색 ... Agent Relay 앱·actl 보드와 문구가 같아야 함; operator/public/app.js:2021 pill `lane.state === 'RUNNING' ? '진행 중' : lane.state === 'IDLE' ? '쉬는 중'` vs app.js:563 railRowModel `'차례 기다림' : '일하는 중'`",
           "title": "진행 줄 상태 표시 말을 통일하기"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-RESUME-INLINE",
+          "scope": "In operator/public/app.js, the live card's 설정 필요 button '다시 켜기' on a paused lane currently only opens 더보기 and says '열었어요 ✓'. Change liveCardModel's paused todo.open to data-project-toggle=\"<lane id>\" data-paused=\"false\" (no data-quick-tab) so the button unpauses the lane through the existing POST /api/relay/project-toggle handler. When the clicked toggle is not inside [data-project-manager], that handler writes its result on the clicked card: '다시 켰어요 ✓ 다음 작업부터 이어서 해요.' then render({patch:true}), or '바꾸지 못했어요 — ' + plainError(...) with the raw text under 원문 보기. The 프로젝트 관리 path stays unchanged. Update the paused-lane asserts in test/lovable-live-cards.test.mjs.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-live-cards.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-live-cards.test.mjs",
+            "node --test test/project-manager.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): live card 대표님 할 일 '있으면 버튼'; founder-ux Live status card: 'If it is not 없음, give one button that does it or opens it'; rule 7 'Show the result where the Founder clicked, within a second'"
+        },
+        {
+          "taskId": "JCAPP-ACTL-CARD-FOUR-WORDS",
+          "scope": "In operator/public/app.js relayPanesPanel tailState, an AI pane with an UNKNOWN or unmapped state and no readable tail (no answerReady, no lastRequest) now reads muted '쉬는 중' instead of '조용해요'. Every actl AI window card then uses only 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨. busy(), the working count and the readiness line are unchanged, and the raw state stays under 원문 보기. Update the '조용해요' expectations in test/actl-panes-plain.test.mjs and test/lovable-ai-windows.test.mjs, and add an assert that no card label outside those four words appears.",
+          "files": [
+            "operator/public/app.js",
+            "test/actl-panes-plain.test.mjs",
+            "test/lovable-ai-windows.test.mjs"
+          ],
+          "tests": [
+            "node --test test/actl-panes-plain.test.mjs",
+            "node --test test/lovable-ai-windows.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): actl AI 창 카드 '같은 용어' as the Agent Relay app and actl Board; founder-ux Live status card: 'For an actl AI window, the card says … whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'"
         }
       ],
       "skills": {
