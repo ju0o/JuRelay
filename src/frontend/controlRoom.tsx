@@ -6,7 +6,8 @@ import type { ControlRoomModelUsage } from '../shared/types.js';
 import { controlRoomTaskId, controlRoomTaskTitle, founderTaskTitle, controlRoomHasDoneData, controlRoomTodayCount, controlRoomTodayDone, controlRoomVerifiedDoneTotal, controlRoomWorkingItems, controlRoomRoutingLine, laneAttention } from '../shared/types.js';
 import { PROJECT_LABELS, aiDisplayName, projectFromSearch, projectWindowKey, barPercent, envReasonText, envTone, normalizeEnvs, ramText, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
 import type { EnvRow, EnvTone, NormalizedHold } from '../shared/projectLabels.js';
-import { scopeBoard } from '../shared/projectScope.js';
+import { scopeBoard, sharedSeatsView } from '../shared/projectScope.js';
+import type { SharedSeatsView } from '../shared/projectScope.js';
 import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from '../shared/tokens.js';
 import type { TokenFinding, TokensView } from '../shared/tokens.js';
 
@@ -45,6 +46,8 @@ interface ControlRoomBoard {
   models?: Record<string, ControlRoomModelUsage>;
   todayDone?: unknown;
   routing?: unknown;
+  /** Shared seat limit. Absent means the card stays hidden. */
+  capacity?: unknown;
 }
 type FlowState = 'done' | 'active' | 'blocked' | 'pending';
 type ActionStatus = { state: 'pending' | 'done' | 'error'; text: string } | null;
@@ -968,6 +971,35 @@ function LaneView({ lane, onRefresh, canOpenWindow = true }: {
   );
 }
 
+/** 공유 자리 한 줄. capacity가 없으면 호출하지 않는다. */
+function SharedSeatsCard({ view }: { view: SharedSeatsView }): React.ReactElement {
+  return (
+    <section className={`shared-seats${view.memory ? ' is-low' : ''}`} aria-label="전체 AI 자리">
+      <p className="shared-seats-line">
+        전체 AI 자리 <strong className="shared-seats-count">{view.max}</strong>개 중 <strong className="shared-seats-count">{view.busy}</strong>개 사용 중
+      </p>
+      <div
+        className="shared-seats-bar"
+        role="progressbar"
+        aria-label={view.line}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={view.percent}
+      >
+        <span style={{ width: `${view.percent}%` }} />
+      </div>
+      {view.waiting && <p className="shared-seats-wait">{view.waiting}</p>}
+      {view.memory && <p className="shared-seats-memory">{view.memory}</p>}
+      {view.raw && (
+        <details className="shared-seats-raw">
+          <summary>원문 보기</summary>
+          <pre className="mono">{view.raw}</pre>
+        </details>
+      )}
+    </section>
+  );
+}
+
 /** Stable key for lane selection — lane id first, never a bare index. */
 function laneSelectKey(lane: ControlRoomLane, index: number): string {
   if (typeof lane.id === 'string' && lane.id) return lane.id;
@@ -1009,6 +1041,7 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
           ?? (next as Record<string, unknown>)?.doneToday
           ?? (next as Record<string, unknown>)?.completedToday
           ?? (next as Record<string, unknown>)?.done,
+        capacity: (next as Record<string, unknown> | null)?.capacity,
       };
       setBoard(scopeBoard(normalized, projectFromSearch(window.location.search)));
       setError('');
@@ -1036,9 +1069,11 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
   const decisionCount = sortedLanes.filter(lane => laneAttention(lane) === 'decision').length;
   const activeLane = sortedLanes.find((lane, index) => laneSelectKey(lane, index) === selectedId) ?? sortedLanes[0];
   const activeKey = activeLane ? laneSelectKey(activeLane, sortedLanes.indexOf(activeLane)) : null;
+  const seats = sharedSeatsView(board, only);
   return (
     <main className="control-room">
       <div className="control-room-head"><div>{only ? <h1>{projectDisplayName(only)}</h1> : <h1>관제실</h1>}{decisionCount > 0 && <p className="control-decision-count">결정 대기 {decisionCount}건</p>}<p className="muted">5초마다 자동으로 새로 고쳐요.</p></div><button className="btn" onClick={only ? () => window.close() : onClose}>닫기</button></div>
+      {seats && <SharedSeatsCard view={seats} />}
       {!only && <><EnvsCard /><TokensCard /><TodayCard board={board} /><WhoLine board={board} /><ModelUsagePanel models={board?.models} /></>}
       {board === null && !error ? <div className="control-empty">작업 PC에서 불러오는 중…</div>
       : error && lanes.length === 0 ? <div className="control-empty">{error}{errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}</div>

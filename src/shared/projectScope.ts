@@ -1,9 +1,10 @@
 /**
- * Pure project filter for a control-room board.
+ * Pure project filter for a control-room board, and the shared-seat line.
  * An empty project id returns the same board. Otherwise the result is a new
  * board whose lanes match that id (lane `id` or `project`, trimmed, case-insensitive).
  * Holds, today-done items, token findings and work records in the result belong
- * only to those lanes. The input board is never changed.
+ * only to those lanes. Board-wide `capacity` is kept as-is (every window shares it).
+ * The input board is never changed.
  */
 
 const OWNED_LISTS = [
@@ -114,4 +115,110 @@ export function scopeBoard<T>(board: T, projectId: string): T {
     next.tokens = scopedTokens(source.tokens, allowed);
   }
   return next as T;
+}
+
+/** Founder-facing shared-seat card. Null means the board did not say — never guess. */
+export interface SharedSeatsView {
+  /** 전체 AI 자리 N개 중 M개 사용 중 */
+  line: string;
+  max: number;
+  busy: number;
+  /** Bar fill, 0–100. */
+  percent: number;
+  /** Project window only: 이 프로젝트는 다음 차례예요. Otherwise null. */
+  waiting: string | null;
+  /** Amber line when lowMemory is true and freeMb is a real number. Otherwise null. */
+  memory: string | null;
+  /** Capacity JSON for 원문 보기. Not for the surface. */
+  raw: string;
+}
+
+const QUEUED_STATE = 'QUEUED';
+
+function isSafeCount(value: unknown): value is number {
+  return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+}
+
+function isFreeMb(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0;
+}
+
+/** Megabytes → GB, one decimal, trailing .0 dropped. */
+function formatFreeGb(freeMb: number): string {
+  const tenths = Math.round((freeMb / 1024) * 10);
+  const whole = Math.trunc(tenths / 10);
+  const frac = Math.abs(tenths % 10);
+  return frac === 0 ? String(whole) : `${whole}.${frac}`;
+}
+
+function seatPercent(busy: number, max: number): number {
+  if (max <= 0) return busy > 0 ? 100 : 0;
+  return Math.max(0, Math.min(100, Math.round((busy / max) * 100)));
+}
+
+function isQueuedValue(value: unknown): boolean {
+  return value === QUEUED_STATE;
+}
+
+/** True only when this lane itself carries QUEUED work. Does not invent a queue. */
+function laneHasQueuedWork(lane: unknown): boolean {
+  const record = asRecord(lane);
+  if (!record) return false;
+  if (isQueuedValue(record.state) || isQueuedValue(record.status)) return true;
+  const current = asRecord(record.current);
+  if (current && (isQueuedValue(current.state) || isQueuedValue(current.status) || isQueuedValue(current.stage))) {
+    return true;
+  }
+  const counts = asRecord(record.counts);
+  const queuedCount = counts?.QUEUED;
+  if (typeof queuedCount === 'number' && Number.isFinite(queuedCount) && queuedCount > 0) return true;
+  if (!Array.isArray(record.tasks)) return false;
+  return record.tasks.some(task => {
+    if (isQueuedValue(task)) return true;
+    const item = asRecord(task);
+    return item !== null && (isQueuedValue(item.state) || isQueuedValue(item.status));
+  });
+}
+
+/**
+ * Shared seat line from `board.capacity` `{ maxBuilders, busy, lowMemory, freeMb }`.
+ * Returns null when capacity is missing or the two counts are not real numbers.
+ * `projectId` is the open project window; a blank id never adds the waiting line.
+ * Does not change `board`.
+ */
+export function sharedSeatsView(board: unknown, projectId = ''): SharedSeatsView | null {
+  const source = asRecord(board);
+  if (!source || !Object.prototype.hasOwnProperty.call(source, 'capacity')) return null;
+  const capacity = asRecord(source.capacity);
+  if (!capacity) return null;
+  if (!isSafeCount(capacity.maxBuilders) || !isSafeCount(capacity.busy)) return null;
+
+  const max = capacity.maxBuilders;
+  const busy = capacity.busy;
+  const waiting = projectKey(projectId) !== ''
+    && busy >= max
+    && Array.isArray(source.lanes)
+    && source.lanes.some(lane => laneMatches(lane, projectKey(projectId)) && laneHasQueuedWork(lane))
+    ? '이 프로젝트는 다음 차례예요'
+    : null;
+  const memory = capacity.lowMemory === true && isFreeMb(capacity.freeMb)
+    ? `RAM이 부족해서 새 작업을 잠시 멈췄어요 (남은 ${formatFreeGb(capacity.freeMb)} GB)`
+    : null;
+
+  let raw = '';
+  try {
+    raw = JSON.stringify(capacity, null, 2) ?? '';
+  } catch {
+    raw = '';
+  }
+
+  return {
+    line: `전체 AI 자리 ${max}개 중 ${busy}개 사용 중`,
+    max,
+    busy,
+    percent: seatPercent(busy, max),
+    waiting,
+    memory,
+    raw,
+  };
 }

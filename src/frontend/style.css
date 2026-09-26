@@ -1060,6 +1060,53 @@ h1 { font-size: 22px; }
 .control-room-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
 .control-room h1 { margin: 0 0 4px; font-size: 22px; }
 .control-room-head p { margin: 0; }
+/* 공유 AI 자리 — 본문 16px, 숫자는 더 크게. 부족/대기는 호박색(빨강 아님). */
+.shared-seats {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 16px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.shared-seats-line { margin: 0 0 8px; font-size: 16px; }
+.shared-seats-count { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.shared-seats-bar {
+  width: 100%;
+  max-width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.shared-seats-bar > span { display: block; height: 100%; background: var(--accent); }
+.shared-seats.is-low .shared-seats-bar > span { background: #E8C270; }
+.shared-seats-wait,
+.shared-seats-memory { margin: 8px 0 0; font-size: 16px; color: #E8C270; }
+.app[data-theme="light"] .shared-seats.is-low .shared-seats-bar > span { background: #7a4a00; }
+.app[data-theme="light"] .shared-seats-wait,
+.app[data-theme="light"] .shared-seats-memory { color: #7a4a00; }
+.shared-seats-raw { margin-top: 4px; }
+.shared-seats-raw summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+.shared-seats-raw pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-width: 100%;
+  margin: 0;
+  font-size: 12px;
+}
 .control-tabs { display: flex; gap: 6px; overflow-x: auto; border-bottom: 1px solid var(--border); }
 .control-tab { border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--muted); padding: 10px 14px; cursor: pointer; white-space: nowrap; }
 .control-tab:hover, .control-tab.active { color: var(--fg); border-bottom-color: var(--accent); }
