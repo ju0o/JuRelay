@@ -10824,6 +10824,34 @@
             "node --test test/"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): actl AI 창 카드 '같은 용어' as the Agent Relay app and actl Board; founder-ux Live status card: 'For an actl AI window, the card says … whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'"
+        },
+        {
+          "taskId": "JCAPP-RELAY-LANE-PILL-FROM-RAIL",
+          "scope": "In operator/public/app.js relayLaneView (진행 lane header, ~line 2024), replace the hand-written pill ternary with railRowModel(lane).state so the pill says exactly what the rail row and the live card say: '결정 기다림' instead of '결정 기다리는 중' for HUMAN_GATE, '결정 기다림' instead of '일하는 중' for a running task at board stage 5, and '멈춤 N건' for a lane with open holds instead of the dev-ish '확인 중'. Keep the plain `<span class=\"pill\">` markup, and update the asserts in test/agent-relay-module.test.mjs:187 and test/lovable-live-cards.test.mjs:88, adding cases for stage 5 and for a held lane.",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs",
+            "test/lovable-live-cards.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/lovable-live-cards.test.mjs test/v2-rail-rows.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: 허브 홈과 진행 탭 … 같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함; founder-ux Live status card: 'the same everywhere'"
+        },
+        {
+          "taskId": "JCAPP-RELAY-LOADING-SAME-AS-HOME",
+          "scope": "In operator/public/app.js relayView (~line 2127), change the still-loading line '릴레이 보드를 확인 중이에요. 잠시 후 다시 불러올게요.' to 홈 homeHub's wording '프로젝트 현황을 확인 중이에요.' (keep data-view-key=\"relay-unavailable\"), so 진행 and 홈 use the same words while the board loads and the 릴레이 보드 jargon leaves the surface. Update the asserts in test/agent-relay-module.test.mjs:110/114 and test/board-down-plain.test.mjs:52.",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs",
+            "test/board-down-plain.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/board-down-plain.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: 허브 홈과 진행 탭 … 같은 용어 … 문구가 같아야 함; founder-ux rule 2/5: no developer text on the surface, empty states explain themselves"
         }
       ],
       "skills": {
