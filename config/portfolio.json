@@ -4114,6 +4114,20 @@
           ],
           "ssotEvidence": "Founder request 2026-09-25 15:46: 'Live Pane 쉬운 상태 카드' — founder-ux Live status card rule 'the same everywhere' with 일하는 중/쉬는 중/답 기다림/연결 안 됨 and 복사할 답 준비 여부",
           "title": "에이전트 상태를 쉬운 말로 보여주기"
+        },
+        {
+          "taskId": "ACTL-ENV-SOURCES-MODEL-R2",
+          "scope": "From base 3295d54c, add src/actl/core/sources.py (environment = {id, kind: local|ssh|wsl, target, label, enabled}, saved under 'environments' via the existing config.py load/save; pure tmux_argv(env, args): local → ['tmux', …], ssh → the existing ssh transport for that target, wsl → ['wsl','-d',distro,'--','tmux',…]) and a per-thread using_environment(env) context manager in tmux.py that replaces the REMOTE_SSH_TARGET reads (set_remote_ssh still sets a default ssh environment so `--ssh T` behaves exactly as today). Routing must go only through the existing tmux._tmux_base(socket_path), and for local or no active environment it must keep returning exactly ['tmux','-S',socket_path] (args[1] == '-S'), because tests monkeypatch tmux._tmux_base and check args[1]. send_prompt_staged, target_exists, send_keys and delete-buffer must keep calling tmux._tmux_base through the module at call time, and must not add an environment-built argv, a cached base or an ssh/wsl prefix to the local path. list_panes rows carry env id; panes are keyed '<env>:%N' only across multiple environments, so single-environment output is unchanged. Offline fake-runner tests go in tests/test_env_sources_model.py: tmux_argv per kind, using_environment isolation across two threads, --ssh back-compat. Before you finish, save the full untruncated log with `python3 tests/run_tests.py > /tmp/full_test.log 2>&1; grep -n -B5 -A60 'FAIL' /tmp/full_test.log` and fix every failure it shows. test_transport_socket.test_isolated_tmux_concurrent_sends_do_not_interleave and test_transport_socket.test_v08_disposable_socket_utf8_multiline_one_paste_one_enter must pass with 0 failed; do not edit tests/test_transport_socket.py.",
+          "files": [
+            "src/actl/core/sources.py",
+            "src/actl/core/tmux.py",
+            "src/actl/core/config.py",
+            "tests/test_env_sources_model.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T)."
         }
       ],
       "qaRuntime": [
