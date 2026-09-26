@@ -7085,6 +7085,20 @@
           ],
           "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder",
           "title": "프로젝트 이름 자동 인식 확인 검사"
+        },
+        {
+          "taskId": "JUPLAN-AR-PROJECT-IDENTITY",
+          "scope": "Add a machine-readable Agent Relay project-identity manifest (projectId, PM channel, SSOT path, and current lane state mirroring CONTROL_TOWER.md) and reference it from the existing AR-JUPLAN-001 intake-contract doc, with an offline regression test.",
+          "files": [
+            "docs/agent-relay/project-identity.json",
+            "docs/agent-relay/AR-JUPLAN-001.md",
+            "packages/runtime/test/agent-relay-project-identity.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- packages/runtime/test/agent-relay-project-identity.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-27 (AR-JUPLAN-001 deliverable 1); docs/roadmap/MASTER_WBS.md:207-216; docs/agent-relay/AR-JUPLAN-001.md:17-23 Identity section"
         }
       ],
       "qaRuntime": [
