@@ -10919,6 +10919,17 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 '1. The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` per `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.2/§7; M3 decision is pending.'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-CANONICAL-HTML-NEXT-AGENT-M3-JOIN-GAP-SYNC",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html, change only the line-126 'Next Agent may do' muted sentence 'Current execution milestone is M3 Daily Value Decision; the evidence register is complete and the decision remains pending.' to use the SSOT name 'M3 Daily Agent Value Decision' and say that the 10-receipt register and final-versus-Receipt reconciliation are complete, 0 Founder seven-task rows join both a Claude final and a Receipt, the mapping is UNDECIDED, and the M3 decision is pending, matching the line-17 pill and the line-84 gate state; do not record any M3 decision.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 '1. The 10-receipt register and final-versus-Receipt reconciliation are complete; 0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` per `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.2/§7; M3 decision is pending.'"
         }
       ]
     },
