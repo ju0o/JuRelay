@@ -4108,6 +4108,50 @@
           "title": "여러 환경(이 컴퓨터·SSH·WSL) 연결 뼈대"
         },
         {
+          "taskId": "ACTL-BOARD-FIRST-LIST-FAST",
+          "scope": "In src/actl/gui.py the first refresh must not wait behind the persistent transport or other scheduled work: run the first rows_now as soon as the window opens using the one-shot remote_discover + _rows(hydrate=False) path (it takes ~2s) and render cards immediately, then hydrate details in the background; if the scheduler/transport is still connecting, show cards from the one-shot path instead of '찾는 중'. Add a timing log line ('첫 목록 N초'). Test with fake remote functions that the first render happens before the transport connects and does not call scheduler.submit.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/core/remote_scheduler.py",
+            "tests/test_board_first_list_fast.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 '지금 actl도 ASUS연결 안됨'. Supervisor repro on MainPC (interactive desktop, PrintWindow captures): board 5085e7b stays '새로고침 중… ASUS에서 에이전트를 찾는 중' for 45s+, and at 90s shows only 2 cards although `actl discover --json` on ASUS returns 5 panes; in the same desktop session remote_discover() takes 0.9s and _rows(hydrate=False) 1.4s, so the delay is in the GUI refresh scheduling (remote_scheduler / persistent tmux -C transport startup), not the data. Earlier today the board said 'ASUS에 연결할 수 없습니다' because ASUS ~/.local/bin/actl ran older code whose `discover --json` printed a table.",
+          "title": "보드: 켜고 3초 안에 창 목록 보이기"
+        },
+        {
+          "taskId": "ACTL-BOARD-SHOW-ALL-PANES",
+          "scope": "The board shows only rows for mapped agents (2 of 5 discovered panes). Show every discovered pane: mapped ones as today, unmapped ones as a card '연결 안 된 창 · <AI 이름> · <폴더 이름>' with a [연결하기] button (existing remap action), grouped after mapped cards. Card title must never be blank: fall back to the friendly AI name + folder name. Tests: 5 detections (2 mapped) → 5 cards with non-empty titles.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/tui.py",
+            "src/actl/live_card.py",
+            "tests/test_board_show_all_panes.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 '지금 actl도 ASUS연결 안됨'. Supervisor repro on MainPC (interactive desktop, PrintWindow captures): board 5085e7b stays '새로고침 중… ASUS에서 에이전트를 찾는 중' for 45s+, and at 90s shows only 2 cards although `actl discover --json` on ASUS returns 5 panes; in the same desktop session remote_discover() takes 0.9s and _rows(hydrate=False) 1.4s, so the delay is in the GUI refresh scheduling (remote_scheduler / persistent tmux -C transport startup), not the data. Earlier today the board said 'ASUS에 연결할 수 없습니다' because ASUS ~/.local/bin/actl ran older code whose `discover --json` printed a table.",
+          "title": "보드: 찾은 AI 창을 전부 보이기 (연결 안 된 창 포함)"
+        },
+        {
+          "taskId": "ACTL-REMOTE-VERSION-CHECK",
+          "scope": "When the remote `actl discover --json` output is not JSON or the remote actl version (add `actl version --json` if missing) differs from the board's, show one amber line '작업 PC의 actl이 예전 버전이에요 — 업데이트가 필요해요' (raw under 원문 보기) instead of '연결할 수 없습니다'; unreachable stays for real ssh failures only. Tests with fake remote outputs (table text, older version, ssh failure).",
+          "files": [
+            "src/actl/core/remote.py",
+            "src/actl/gui.py",
+            "src/actl/cli.py",
+            "tests/test_remote_version_check.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 '지금 actl도 ASUS연결 안됨'. Supervisor repro on MainPC (interactive desktop, PrintWindow captures): board 5085e7b stays '새로고침 중… ASUS에서 에이전트를 찾는 중' for 45s+, and at 90s shows only 2 cards although `actl discover --json` on ASUS returns 5 panes; in the same desktop session remote_discover() takes 0.9s and _rows(hydrate=False) 1.4s, so the delay is in the GUI refresh scheduling (remote_scheduler / persistent tmux -C transport startup), not the data. Earlier today the board said 'ASUS에 연결할 수 없습니다' because ASUS ~/.local/bin/actl ran older code whose `discover --json` printed a table.",
+          "title": "보드와 ASUS actl 버전이 다르면 쉬운 말로 알려주기"
+        },
+        {
           "taskId": "ACTL-ENV-SCAN",
           "scope": "Keep `--ssh T` working exactly as today (it becomes a one-environment setup). Plain Korean on every Founder surface; raw errors only under 원문 보기; never red for a down environment (amber). Offline tests with fake runners only — never touch a real tmux/ssh/wsl in tests. Add `actl envs scan [--json]` and `actl envs list|on|off <id>`: scan finds candidates without enabling anything — local tmux (tmux on PATH and a server answers), WSL distros on Windows (`wsl -l -q`, UTF-16 output decoded, then `wsl -d X -- tmux ls` with a 5s timeout), SSH hosts from ~/.ssh/config Host entries without wildcards (BatchMode=yes, ConnectTimeout=3, `tmux ls`). Each candidate: id, kind, label ('이 컴퓨터', 'ASUS (SSH)', 'WSL Ubuntu'), reachable, tmux sessions count, already enabled. Tests with fake runners for each kind and for unreachable/no-tmux cases.",
           "files": [
