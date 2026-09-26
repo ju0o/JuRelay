@@ -8550,6 +8550,33 @@
             "npx tsc -p tsconfig.json --noEmit"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상 juceipt daily 출력, 영어 작업 제목을 쉬운 한국어 요약으로; founder-ux rule 1 (맨 위/끝 한 문장: 지금 할 일)"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-MISSING-CHECK-ONE-WORD",
+          "scope": "In renderLevel1 of src/render/index.ts, one idea currently has three names on the same screen: the pill says '빠진 확인 N건', the warn block heading says '아직 확인되지 않음', and the empty block heading, notice and empty texts say '남은 확인'; use '빠진 확인' everywhere (the pill, SUMMARY.md and the scan output already use it): heading '빠진 확인 · N건', empty heading '빠진 확인', the review_required notice becoming '…아래 빠진 확인은 AI가 끝냈다고 말했지만 확인 근거가 부족한 내용이에요.', the failed verdict becoming '…아래 빠진 확인과 받기 전 내가 할 일을 보고…', and the empty texts '빠진 확인이 없어요 — 기록으로 모두 확인됐어요' / '빠진 확인을 판단할 기록이 없어요 — AI에게 무엇을 확인했는지 다시 물어보세요'; update the expectations in tests/receipt-render-founder.test.ts and add one assertion that Level 1 HTML never contains '아직 확인되지 않음' or '남은 확인'.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 영수증 보기 화면 — 판정 '확인 후 받기' 같은 말의 뜻, 빠진 확인 항목의 쉬운 설명"
+        },
+        {
+          "taskId": "JUCEIPT-CLI-ERROR-FS-CAUSE-LINES",
+          "scope": "In the main() catch block of src/cli/main.ts, replace the generic fallback '왜: 실행 중 문제가 생겼어요. / 할 일: 입력과 옵션을 확인한 뒤 다시 실행하세요.' (used for scan, run and receipt) with specific plain Korean lines chosen from err.code: EACCES/EPERM → '왜: 이 폴더에 쓸 권한이 없어요.' / '할 일: --out 으로 내 폴더를 지정해 다시 실행하세요.'; ENOSPC → '왜: 저장 공간이 부족해요.' / '할 일: 공간을 비운 뒤 다시 실행하세요.'; ENOENT → '왜: 폴더나 파일이 없어요.' / '할 일: 경로를 확인한 뒤 다시 실행하세요.'; keep the current generic lines for other errors. Also remove the developer word 'JSON' from daily's non-default empty-folder output ('왜: 그 폴더에 영수증 파일이 없어요.' / '할 일: juceipt scan 을 먼저 실행하거나 영수증이 있는 폴더를 지정하세요.'). Keep the '원문 보기 (개발용)' line shown only with --show-raw and keep the exit codes. Update tests/daily-cli.test.ts line ~278 and add a scan test in tests/sources-scan-cli.test.ts for an --out path that cannot be written (for example a path under an existing regular file, which gives ENOTDIR/ENOENT, or a chmod 0o500 temp dir).",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux Skill 규칙(… 오류 3줄 …)으로 juceipt 명령 출력(scan, daily, receipt) 점검"
         }
       ],
       "skills": {
