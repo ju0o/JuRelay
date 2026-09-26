@@ -3955,7 +3955,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder choice 2026-09-26: 'Cut the 19 remote ops per board refresh … add a test that counts wrapper calls per _rows() so the lower number can't creep back up'; BACKLOG.md 원격 polling fan-out: '측정된 refresh 1회당 원격 작업 19개'"
+          "ssotEvidence": "Founder choice 2026-09-26: 'Cut the 19 remote ops per board refresh … add a test that counts wrapper calls per _rows() so the lower number can't creep back up'; BACKLOG.md 원격 polling fan-out: '측정된 refresh 1회당 원격 작업 19개'",
+          "title": "웹 보드 더 빠르게 불러오기"
         },
         {
           "taskId": "ACTL-TK-CARD-LINE-LIVE-WORDS",
@@ -3970,7 +3971,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder request 2026-09-25 15:46: Live Pane 쉬운 상태 카드 — AI 창 카드마다 '일하는 중/쉬는 중/답 기다림/연결 안 됨' (founder-ux Live status card, same everywhere)"
+          "ssotEvidence": "Founder request 2026-09-25 15:46: Live Pane 쉬운 상태 카드 — AI 창 카드마다 '일하는 중/쉬는 중/답 기다림/연결 안 됨' (founder-ux Live status card, same everywhere)",
+          "title": "카드 상태 말을 머리글과 똑같이"
         },
         {
           "taskId": "ACTL-TUI-LIVE-CARD-STATUS",
@@ -3985,7 +3987,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder request 2026-09-25 15:46: 'Live Pane 쉬운 상태 카드' — founder-ux Live status card rule 'the same everywhere' with 일하는 중/쉬는 중/답 기다림/연결 안 됨 and 복사할 답 준비 여부"
+          "ssotEvidence": "Founder request 2026-09-25 15:46: 'Live Pane 쉬운 상태 카드' — founder-ux Live status card rule 'the same everywhere' with 일하는 중/쉬는 중/답 기다림/연결 안 됨 and 복사할 답 준비 여부",
+          "title": "터미널 화면 상태를 쉬운 말로 통일"
         },
         {
           "taskId": "ACTL-ENV-SOURCES-MODEL",
@@ -6089,7 +6092,8 @@
             "pnpm --filter @juplan/runtime test -- studio-first-run-guide.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "첫 화면에 지금 할 일 한 줄 안내"
         },
         {
           "taskId": "JUPLAN-STUDIO-GUIDE-TOP-SENTENCE",
@@ -6102,7 +6106,8 @@
             "pnpm --filter @juplan/runtime test -- studio-empty-error-guide.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "문제 화면에도 다음 할 일 안내"
         },
         {
           "taskId": "JUPLAN-PROPOSAL-PREVIEW-ITEM-NAMES",
@@ -6117,7 +6122,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대상 '대화로 바꾸기 → 미리보기 → 적용 → 되돌리기'; A-23/A-24 'apply-proposal with preview/undo'"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대상 '대화로 바꾸기 → 미리보기 → 적용 → 되돌리기'; A-23/A-24 'apply-proposal with preview/undo'",
+          "title": "적용 전에 바뀌는 항목 이름 보여주기"
         },
         {
           "taskId": "JUPLAN-DOC-EMPTY-TABLE-GUIDE",
@@ -6130,7 +6136,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '빈 화면 이유+다음 행동' — 대상 'PRD/WBS/ERD/SSOT 보기'"
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '빈 화면 이유+다음 행동' — 대상 'PRD/WBS/ERD/SSOT 보기'",
+          "title": "빈 표에 이유와 다음 할 일 알려주기"
         },
         {
           "taskId": "JUPLAN-UNDO-SUMMARY-CLEAR",
@@ -6143,7 +6150,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '누르면 1초 안에 결과 문장' — 대상 '대화로 바꾸기 → 미리보기 → 적용 → 되돌리기'"
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '누르면 1초 안에 결과 문장' — 대상 '대화로 바꾸기 → 미리보기 → 적용 → 되돌리기'",
+          "title": "되돌리기 결과를 헷갈리지 않게 알려주기"
         }
       ],
       "qaRuntime": [
@@ -7595,7 +7603,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 원문·개발자 정보는 원문 보기로 숨긴다"
+          "ssotEvidence": "Founder direction 2026-09-23: 원문·개발자 정보는 원문 보기로 숨긴다",
+          "title": "기본 화면에서 파일 위치 숨기기"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-DELIVERED-FILES-PLAIN",
@@ -7612,7 +7621,8 @@
             "npm test",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux 규칙으로 영수증 보기 화면 점검 — 개발자 글자(파일 경로 등)는 원문 보기 안; base 83e6774 src/receipt/index.ts:108-112 deliveredItemText returns raw outcome.title for mutations, src/render/index.ts:33-34 shows the artifact basename in 최종 결과"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux 규칙으로 영수증 보기 화면 점검 — 개발자 글자(파일 경로 등)는 원문 보기 안; base 83e6774 src/receipt/index.ts:108-112 deliveredItemText returns raw outcome.title for mutations, src/render/index.ts:33-34 shows the artifact basename in 최종 결과",
+          "title": "받은 결과를 쉬운 말로 보여 주기"
         },
         {
           "taskId": "JUCEIPT-CLI-RAW-PATHS-FOLDED-R2",
@@ -7625,7 +7635,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 원문·개발자 정보는 원문 보기로 숨긴다"
+          "ssotEvidence": "Founder direction 2026-09-23: 원문·개발자 정보는 원문 보기로 숨긴다",
+          "title": "영수증·하루 요약에서 파일 위치 숨기기"
         }
       ],
       "skills": {
@@ -9417,7 +9428,8 @@
           "tests": [
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "JuPlan 확인 시각 없을 때 안내 점검"
         },
         {
           "taskId": "JUCONTROLER-E2E-AGENT-RELAY-MISSING-RUNNER",
@@ -9430,7 +9442,8 @@
           "tests": [
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "Agent Relay 실행기·모드 없을 때 안내 점검"
         },
         {
           "taskId": "JUCONTROLER-E2E-AGENT-RELAY-LANE-FIELDS",
@@ -9446,7 +9459,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior'; README.md:105-106 documents missing-state/invalid-holds, and src/adapters/agent-relay.mjs laneStatus returns them, but scripts/e2e.sh has no step for either"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior'; README.md:105-106 documents missing-state/invalid-holds, and src/adapters/agent-relay.mjs laneStatus returns them, but scripts/e2e.sh has no step for either",
+          "title": "Agent Relay 작업줄 상태·보류 오류 안내 점검"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-MISSING-LANE-LINE-TEST",
@@ -9459,7 +9473,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; README.md:104 '| `missing-lane` | 보드 스냅샷에 그 id의 레인이 없어요. |' and scripts/status-board.mjs reasonWords 'missing-lane': '그 레인이 보드에 없어요', but the Korean CLI line for this reason has no test"
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; README.md:104 '| `missing-lane` | 보드 스냅샷에 그 id의 레인이 없어요. |' and scripts/status-board.mjs reasonWords 'missing-lane': '그 레인이 보드에 없어요', but the Korean CLI line for this reason has no test",
+          "title": "Agent Relay 작업줄 없을 때 현황 안내 점검"
         }
       ],
       "qaRuntime": [
@@ -12202,7 +12217,8 @@
             "node --test test/live-status-projection.test.mjs test/v2-rail-rows.test.mjs test/lovable-live-cards.test.mjs test/v2-project-supervisor.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.'"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.'",
+          "title": "진행 목록과 카드 상태 똑같이 맞추기"
         },
         {
           "taskId": "JCAPP-HOME-STAT-WORKING-MATCHES-CARDS",
@@ -12216,7 +12232,8 @@
             "node --test test/home-all-ok.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress … add focused fixture tests'; ~/.agents/skills/auto-night-orchestrator/scripts/night-board.py:15 ACTIVE = (\"QUEUED\", \"RUNNING\", \"QA\", \"REQUEST_CHANGES\") and :77 'if s in (\"RUNNING\", \"REQUEST_CHANGES\"): return 2'"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress … add focused fixture tests'; ~/.agents/skills/auto-night-orchestrator/scripts/night-board.py:15 ACTIVE = (\"QUEUED\", \"RUNNING\", \"QA\", \"REQUEST_CHANGES\") and :77 'if s in (\"RUNNING\", \"REQUEST_CHANGES\"): return 2'",
+          "title": "지금 일하는 숫자를 카드와 맞추기"
         }
       ],
       "skills": {
@@ -13112,7 +13129,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:199 '| B0 | Core value proof | M2 | 🟢 ACTIVE — M2 GO (A-14) |'; docs/operations/PM_STATUS_BOARD.md:173 '0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` ... M3 decision is pending'; docs/product/MASTER_ROADMAP.md:96 'M3 status: 10-receipt register filled; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:199 '| B0 | Core value proof | M2 | 🟢 ACTIVE — M2 GO (A-14) |'; docs/operations/PM_STATUS_BOARD.md:173 '0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` ... M3 decision is pending'; docs/product/MASTER_ROADMAP.md:96 'M3 status: 10-receipt register filled; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED'",
+          "title": "기획 보고서 현황을 최신으로 맞추기"
         },
         {
           "taskId": "JUCEIPTPLAN-UNPLANNED-DECISION-STATUS-NOTE",
@@ -14180,7 +14198,8 @@
           "tests": [
             "node --test tests/report-length-limits-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:128 '* 주요 파일은 최대 3개' / :129 '* 전체 보고서는 기본적으로 12문장 이내' / :143 '* 주요 파일은 최대 5개'; report-format.md:65 '단순 작업은 기본 항목마다 1~2문장, 주요 파일 최대 3개, 전체 기본 12문장 또는 약 25줄을 우선한다.'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:128 '* 주요 파일은 최대 3개' / :129 '* 전체 보고서는 기본적으로 12문장 이내' / :143 '* 주요 파일은 최대 5개'; report-format.md:65 '단순 작업은 기본 항목마다 1~2문장, 주요 파일 최대 3개, 전체 기본 12문장 또는 약 25줄을 우선한다.'",
+          "title": "보고서 길이 기준 일치 확인"
         },
         {
           "taskId": "JUTELL-REQUEST-TYPE-OUTPUT-PARITY",
@@ -14191,7 +14210,8 @@
           "tests": [
             "node --test tests/request-type-output-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:37 '이 경우 사용자가 별도로 요청하지 않았다면 코드를 수정하지 않는다.' / :41 '전체 작업 보고서를 생성하지 않고 요청받은 코드나 파일만 설명한다.' / :47 '실제로 변경하지 않은 내용을 완료한 것처럼 표현하지 않는다.'; SKILL.md:120-122"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:37 '이 경우 사용자가 별도로 요청하지 않았다면 코드를 수정하지 않는다.' / :41 '전체 작업 보고서를 생성하지 않고 요청받은 코드나 파일만 설명한다.' / :47 '실제로 변경하지 않은 내용을 완료한 것처럼 표현하지 않는다.'; SKILL.md:120-122",
+          "title": "요청 종류별 답변 방식 일치 확인"
         },
         {
           "taskId": "JUTELL-EVAL-PRINCIPLES-SCENARIOS-PARITY",
@@ -14202,7 +14222,8 @@
           "tests": [
             "node --test tests/eval-principles-scenarios-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:808-814 '* 평가자는 전체 코드를 보지 않음 … * 실제 확인과 예상을 혼동하면 실패 * 사용자 확인 항목을 찾지 못하면 실패 * 7개 질문 중 6개 이상 통과해야 이해 가능'; docs/TEST_SCENARIOS.md:559 '* 6~7점: 이해 가능'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:808-814 '* 평가자는 전체 코드를 보지 않음 … * 실제 확인과 예상을 혼동하면 실패 * 사용자 확인 항목을 찾지 못하면 실패 * 7개 질문 중 6개 이상 통과해야 이해 가능'; docs/TEST_SCENARIOS.md:559 '* 6~7점: 이해 가능'",
+          "title": "비개발자 평가 기준 일치 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -14680,7 +14701,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "layout.mjs:16 \"access: \\\"open\\\" = everyone writes, \\\"readonly\\\" = only agents/staff post ..., \\\"botsonly\\\" = only the bots talk, \\\"private\\\" = staff + agents only\"; README.md:40 \"lib.mjs ... 순수 로직 (check.mjs로 점검)\""
+          "ssotEvidence": "layout.mjs:16 \"access: \\\"open\\\" = everyone writes, \\\"readonly\\\" = only agents/staff post ..., \\\"botsonly\\\" = only the bots talk, \\\"private\\\" = staff + agents only\"; README.md:40 \"lib.mjs ... 순수 로직 (check.mjs로 점검)\"",
+          "title": "서버 채널 설정이 올바른지 점검"
         },
         {
           "taskId": "JUAI-CHECK-DAILY-REJECT-NOBUMP",
@@ -14692,7 +14714,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "lib.mjs:47 \"/** Per-member AI chat quota. Records the use only when allowed. */\""
+          "ssotEvidence": "lib.mjs:47 \"/** Per-member AI chat quota. Records the use only when allowed. */\"",
+          "title": "하루 한도 넘긴 요청이 사용량에 안 쌓이는지 점검"
         },
         {
           "taskId": "JUAI-CHECK-ADMIN-PLAN-INPUT",
@@ -14704,7 +14727,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "lib.mjs:133-135 \"if (!plan || typeof plan !== \\\"object\\\" || !ADMIN_ACTIONS.includes(plan.action)) return null; const p = plan.params && typeof plan.params === \\\"object\\\" ? plan.params : {};\""
+          "ssotEvidence": "lib.mjs:133-135 \"if (!plan || typeof plan !== \\\"object\\\" || !ADMIN_ACTIONS.includes(plan.action)) return null; const p = plan.params && typeof plan.params === \\\"object\\\" ? plan.params : {};\"",
+          "title": "관리자 명령에 잘못된 값이 와도 안전한지 점검"
         },
         {
           "taskId": "JUAI-CHECK-KV-SCALARS",
@@ -14716,7 +14740,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "db.mjs:22 \"export const kvGet = (db, key) => { const v = ...get(key)?.value; return v === undefined ? undefined : JSON.parse(v); };\""
+          "ssotEvidence": "db.mjs:22 \"export const kvGet = (db, key) => { const v = ...get(key)?.value; return v === undefined ? undefined : JSON.parse(v); };\"",
+          "title": "빈 값도 저장한 그대로 돌아오는지 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
