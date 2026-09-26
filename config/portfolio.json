@@ -11440,6 +11440,28 @@
           ],
           "ssotEvidence": "docs/getting-started.md:249 claims '다섯 가지 오류' (five error kinds) but scripts/status-board.mjs:70-76 korean() branch count is unguarded by any test; Founder direction 2026-09-26",
           "title": "오류 안내 다섯 가지가 실제와 맞는지 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-OFFLINE-ACCEPTANCE-COUNT-SYNC",
+          "scope": "Add an offline test asserting docs/offline-acceptance.md's 통과 기준 claim ('다섯' items) matches the actual number of `- [ ]` checklist bullets under its 체크리스트 section",
+          "files": [
+            "tests/offline-acceptance-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/offline-acceptance-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/offline-acceptance.md:22 '위 다섯 항목이 모두 체크되면 오프라인 수락 통과입니다' has no test counting the 5 checklist bullets against this Korean number word, unlike the identical pattern already locked for korean() branch counts in tests/korean-error-count-sync.test.mjs"
+        },
+        {
+          "taskId": "JUCONTROLER-CONTRACT-FILES-TABLE-SYNC",
+          "scope": "Add an offline test asserting every file path in docs/getting-started.md's 약속(계약) 파일 table exists under docs/integration/",
+          "files": [
+            "tests/contract-files-table-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-files-table-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:225-231 lists 6 backticked docs/integration/*.json paths in the 약속(계약) 파일 table; no existing sync test (docs-links.test.mjs only parses markdown [text](path) links) checks these paths resolve to real files, so a renamed/removed contract file would silently break the doc"
         }
       ],
       "qaRuntime": [
