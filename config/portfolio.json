@@ -11218,6 +11218,20 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, no new product behavior; scripts/e2e.sh:181 run_malformed_source checks the repository-status-file malformed line, but tests/status-board-cli.test.mjs only covers malformed for juceipt (553) and juplan (566)",
           "title": "저장소 상태 파일 모양 오류 안내"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-EARLY-STEPS-STDOUT-CHECK",
+          "scope": "In scripts/e2e.sh, change only the five steps that still send status-board stdout to /dev/null (run_needs_action, run_stale, run_human_gate, run_source_stale, run_unlisted_reason): save stdout to $tmp/<name>.json and, following the node -e pattern of run_future_observed, fail each step unless the single row is correct — held RUNNING stale=false reason hold; old READY stale=true reason stale; gated RUNNING stale=false reason human-gate; flagged READY stale=true reason source-stale; custom READY stale=true reason upstream-paused. Keep the existing Korean stderr cmp checks, the step names, labels, next commands, step order and the output JSON shape exactly as they are.",
+          "files": [
+            "scripts/e2e.sh"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/e2e-failure-output.test.mjs tests/e2e-cleanup.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; scripts/e2e.sh:67,125,133,141,149 at b97d6f9 send status-board stdout to /dev/null, so these steps check only the Korean stderr line and never the projection"
         }
       ],
       "qaRuntime": [
