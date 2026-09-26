@@ -6252,6 +6252,48 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기 점검; earlier A-23/A-24 apply-proposal with preview/undo"
+        },
+        {
+          "taskId": "JUPLAN-PRD-EMPTY-SECTION-GUIDE",
+          "scope": "In renderPrdMarkdown in packages/runtime/src/documents.ts, add a new PRD-only constant and use it for the ten top-level PRD sections (개요, 문제, 사용자 유형, 목표·비목표, 요구사항, 기능, 성공 기준, 제약, 로드맵, 빠진 정보) when they have nothing to show. Each empty section should then read '아직 없음 — 이 부분에 넣을 계획 항목이 아직 없어요. JuControler 계획 탭에서 더해 달라고 말해 주세요.' instead of the bare '아직 없음'. Leave the shared EMPTY constant, bullets(), the empty must/should/could/wont and now/next/later subsections, table cells and the other documents unchanged. Add a test that an empty-graph PRD shows the new line once under each of the ten headings, and that the existing '## heading\\n\\n아직 없음' assertions still pass.",
+          "files": [
+            "packages/runtime/src/documents.ts",
+            "packages/runtime/test/documents.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux rule '빈 화면 이유+다음 행동' for JuPlan Studio PRD/WBS/ERD/SSOT 보기; documents.ts:3 const EMPTY = \"아직 없음\" is what bullets()/groupedSection print for every empty PRD section (documents.ts:41-44,119)"
+        },
+        {
+          "taskId": "JUPLAN-DOMAIN-DOC-EMPTY-GUIDE",
+          "scope": "In packages/runtime/src/index.ts, change DOMAIN_DOC_EMPTY (today '- (아직 없음)', which nodeLines prints when one of the 8 domain docs such as /view/docs/evidence has no items) to the line '아직 없음 — 이 영역에 넣을 계획 항목이 아직 없어요. JuControler 계획 탭에서 더해 달라고 말해 주세요.', shown as a paragraph without the leading '- ' bullet and without brackets. Update the two runtime.test.ts assertions that pin '(아직 없음)' and '- (아직 없음)' so they expect the new line and check that '(아직 없음)' no longer appears.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux rule '빈 화면 이유+다음 행동' for JuPlan Studio 문서 보기; packages/runtime/src/index.ts:246 const DOMAIN_DOC_EMPTY = \"- (아직 없음)\""
+        },
+        {
+          "taskId": "JUPLAN-QA-DOC-ALL-COVERED",
+          "scope": "In renderQaPlanMarkdown in packages/runtime/src/documents.ts, when the plan has at least one AcceptanceCriterion and every one of them has a test, write '없어요 ✓ 모든 완료 기준에 시험이 있어요.' under '## 시험이 없는 완료 기준' instead of the bare '아직 없음', which today reads as if something is still missing. Keep the no-criterion case at '아직 없음' (existing test at documents.test.ts:406), and leave the table, bullets() and EMPTY unchanged. Add a documents.test.ts case where every criterion has a test and the new line appears.",
+          "files": [
+            "packages/runtime/src/documents.ts",
+            "packages/runtime/test/documents.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux rules '빈 화면 이유+다음 행동' and '끝남 = teal/OK' for JuPlan Studio 검증·문서 보기; documents.ts:521 prints `## 시험이 없는 완료 기준\\n\\n${bullets(uncovered)}` → '아직 없음' even when every criterion has a test"
         }
       ],
       "qaRuntime": [
