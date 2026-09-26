@@ -20,7 +20,8 @@
     "test:v2:night": "node test/v2/night-run.test.mjs",
     "test:v2:founder": "node test/v2/founder-bridge.test.mjs && node test/v2/founder-ui.test.mjs && node test/v2/project-scope.test.mjs",
     "test:v2": "npm run test:v2:runner && npm run test:v2:night && npm run test:v2:founder",
-    "test": "npm run test:fs && npm run test:vnext && npm run test:v03 && npm run test:v2",
+    "test:night-buttons": "node test/automation-toggle.test.mjs && node test/lane-pause.test.mjs && node test/night-schedule.test.mjs && node test/night-schedule-card.test.mjs && node test/hub-promote.test.mjs && node test/hub-promote-button.test.mjs",
+    "test": "npm run test:fs && npm run test:vnext && npm run test:v03 && npm run test:v2 && npm run test:night-buttons",
     "pretest": "npm run build:server",
     "build:win": "vite build && tsc -p tsconfig.server.json && electron-builder --config electron.builder.yml"
   },
