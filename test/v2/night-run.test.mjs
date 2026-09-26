@@ -198,3 +198,14 @@ test("holdUntilDeadline: exhausted WBS does not finish early; only the deadline 
   const early = await new NightRunSupervisor({ runner, checkpointPath: join(await mkdtemp(join(tmpdir(), "agent-relay-night-")), "LAST_NIGHT_RUN.json"), clock: () => new Date("2026-09-23T16:00:00.000Z"), sleep: async () => {}, runId: "early-test" }).run({ deadline: "05:00", intervalMs: 1 });
   assert.equal(early.endReason, "WBS_EXHAUSTED");
 });
+
+test("night report does not count a HOLD whose redo already finished", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "agent-relay-night-")); const { writeFile: write, mkdir } = await import("node:fs/promises");
+  await write(join(dir, "state.json"), JSON.stringify({ tasks: [{ taskId: "A-WORDS", state: "HOLD" }, { taskId: "A-WORDS-R3-R2", state: "HOLD" }, { taskId: "A-WORDS-R4", state: "VERIFIED_DONE" }, { taskId: "B-REAL", state: "HOLD" }] }));
+  await mkdir(join(dir, "holds"));
+  for (const id of ["A-WORDS", "A-WORDS-R3-R2", "B-REAL"]) await write(join(dir, "holds", `${id}.json`), JSON.stringify({ taskId: id, projectId: "p", explain: { sentence: `${id} stuck` } }));
+  const record = { schema: "agent-relay.last-night-run.v1", runId: "dry", startedAt: "2026-09-23T17:00:00.000Z", deadline: "2026-09-23T18:00:00.000Z", endedAt: "2026-09-23T18:00:00.000Z", endReason: "DEADLINE_COMPLETE", shutdownState: "FINALIZING", lanes: [] };
+  await finalizeNightRun({ record, checkpointPath: join(dir, "LAST_NIGHT_RUN.json"), reportPath: join(dir, "R.md"), persist: async (v) => v, send: async () => ({ state: "DELIVERED" }), requestShutdown: async () => ({ state: "REQUESTED" }), poweroff: async () => ({ ok: true, status: "POWEROFF_REQUESTED" }) });
+  const report = await readFile(join(dir, "R.md"), "utf8");
+  assert.match(report, /멈춘 작업: 1개/); assert.doesNotMatch(report, /A-WORDS stuck/);
+});

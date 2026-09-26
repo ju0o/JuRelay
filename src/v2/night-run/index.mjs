@@ -96,7 +96,7 @@ export function buildNightReport(record, ctx = {}) {
   if (record.shutdownState === "REPORTING") lines.push("> 이 보고서가 MainPC에 보이면 전송은 성공했어요. 그다음 MainPC(30초 뒤) → ASUS 순서로 꺼져요. 아침에 ASUS를 켜면 자동 작업이 알아서 다시 시작돼요.", "");
   lines.push("## 한눈에", `- 시간: ${kst(record.startedAt)} ~ ${kst(record.endedAt || record.deadline)}`,
     `- 끝낸 작업: **${done.length}개** (프로젝트 ${Object.keys(byLane).length}곳)`,
-    `- 멈춘 작업: ${holds.length}개${holds.length ? " — 쉬운 설명과 선택지가 준비돼 있고, 답이 없으면 30분 뒤 추천대로 다시 설계돼요" : ""}`,
+    `- 멈춘 작업: ${holds.length}개${holds.length ? " — 쉬운 설명과 선택지가 준비돼 있고, 답이 없으면 5분 뒤 추천대로 다시 설계돼요" : ""}`,
     `- 끝난 이유: ${record.endReason === "DEADLINE_COMPLETE" ? "정한 시간이 되어 마무리했어요" : record.endReason === "WBS_EXHAUSTED" ? "할 일을 다 끝냈어요" : "예상과 다르게 끝났어요 (" + (record.endReason || "알 수 없음") + ")"}`, "");
   lines.push("## 프로젝트별로 끝낸 것");
   if (!done.length) lines.push("- 이번 밤에 끝난 작업이 없어요.");
@@ -135,7 +135,10 @@ async function nightReportContext(dataDir) {
   const state = await read(join(dataDir, "state.json"));
   const manifest = await read(new URL("../../../config/portfolio.json", import.meta.url).pathname);
   const holds = [];
-  try { for (const f of await readdir(join(dataDir, "holds"))) { const h = await read(join(dataDir, "holds", f)); if (h && (state?.tasks || []).some((t) => t.taskId === h.taskId && t.state === "HOLD")) holds.push(h); } } catch {}
+  // A HOLD whose redo family (…-R2, -R3-R2) already has a VERIFIED_DONE task is superseded, not stuck (2026-09-26: 35 of 44 were).
+  const root = (id) => id.replace(/(-R\d+)+$/, "");
+  const doneRoots = new Set((state?.tasks || []).filter((t) => t.state === "VERIFIED_DONE").map((t) => root(t.taskId)));
+  try { for (const f of await readdir(join(dataDir, "holds"))) { const h = await read(join(dataDir, "holds", f)); if (h && !doneRoots.has(root(h.taskId)) && (state?.tasks || []).some((t) => t.taskId === h.taskId && t.state === "HOLD")) holds.push(h); } } catch {}
   return { state, manifest, holds };
 }
 
