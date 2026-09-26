@@ -2436,6 +2436,43 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 16:09: '4) 밤 작업 예약: 끝나는 시각 → 새 하위 명령 night schedule HH:MM|list|cancel'; backend already at db8881e src/backend/controlRoom.ts:454-469 (runControlRoomScheduleSet/List/Cancel) and src/shared/types.ts:153-155, with no frontend caller",
           "title": "설정에서 밤 작업 끝낼 시간 예약"
+        },
+        {
+          "taskId": "AGENTRELAY-LAUNCH-PROJECT-PICK",
+          "scope": "When the app opens (once per launch), show a small card at the top of 관제실: '이번에 돌릴 프로젝트' with one checkbox row per lane (friendly name, checked = not paused) and two buttons [이대로 시작] (primary) and [나중에]. [이대로 시작] runs pause/resume only for rows whose box changed, using the same backend call 설정 → 프로젝트 관리 uses, then shows '3개 켜고 2개 쉬게 했어요 ✓' inline and closes the card. A '다음부터 묻지 않기' checkbox (remembered locally, re-enable in 설정 → 프로젝트 관리) hides the card on later launches. Reuse the existing project-manager helpers; no new backend. Pure helper (which ids to pause/resume from before/after) + test.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/App.tsx",
+            "src/shared/projectManager.ts",
+            "test/launch-project-pick.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 21:1x using the Agent Relay app: 'Agent-Relay에 필요없는 정보들은 좀 정리하고 그리고 프로젝트도 매 번 내가 그걸 GUI로 켜면 이 프로젝트는 빼기 이 프로젝트 넣기 이런거도 가능?' Backend already exists: board lanes[] carry paused; `night roadmap pause|resume <id>`; 설정 → 프로젝트 관리 (App.tsx ~2642) already toggles.",
+          "title": "앱을 켤 때 '이번에 돌릴 프로젝트' 고르기"
+        },
+        {
+          "taskId": "AGENTRELAY-TRIM-NOISE",
+          "scope": "Remove noise from the Founder surfaces: (1) 관제실's inner head (second '관제실' title, '5초마다 자동으로 새로 고쳐요.', 닫기 button — controlRoom.tsx ~2000) since the top bar already titles the page; (2) the first-run 3-step guide only until 알겠어요 (already remembered) and never in capture/tester mode; (3) paused lanes leave the 관제실 row list and become one muted line '쉬는 프로젝트 N개 · 설정에서 켜기'; (4) the top bar keeps only the page title and the 자동 실행 toggle — '실행 환경: …' moves to 설정, the ☀ theme button moves to 설정; (5) the left-rail bottom box shows only when the PC is NOT connected (connected is the normal state). Keep every feature reachable in 설정. Tests for the row filter and the head/rail rendering conditions.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "test/trim-noise.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 21:1x using the Agent Relay app: 'Agent-Relay에 필요없는 정보들은 좀 정리하고 그리고 프로젝트도 매 번 내가 그걸 GUI로 켜면 이 프로젝트는 빼기 이 프로젝트 넣기 이런거도 가능?' Backend already exists: board lanes[] carry paused; `night roadmap pause|resume <id>`; 설정 → 프로젝트 관리 (App.tsx ~2642) already toggles.",
+          "dependsOn": [
+            "AGENTRELAY-LAUNCH-PROJECT-PICK"
+          ],
+          "title": "앱에서 필요 없는 정보 정리"
         }
       ],
       "qaRuntime": [
