@@ -10974,6 +10974,32 @@
             "node --test tests/e2e-script.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-RECEIPT-MALFORMED-STEP",
+          "scope": "Add step run_receipt_malformed to scripts/e2e.sh right after run_plan_malformed (label '영수증 모양 오류 안내', next command board; add it to the step loop, labels and commands), modelled on run_plan_malformed: write [] as a juceipt-receipt current.json for project arr and pass only when the board row is UNKNOWN, stale true, reason malformed and stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: arr(malformed: 저장된 값이 JSON 객체가 아니에요) — README 처음 쓰는 법의 reason 표를 보세요'; add the matching step line to the docs/getting-started.md step list and the ['run-receipt-malformed', '영수증 모양 오류 안내'] entry to tests/e2e-script.test.mjs.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md",
+            "tests/e2e-script.test.mjs"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; tests/status-board-cli.test.mjs:537 already covers 'names a receipt that is a JSON array with the plain-Korean malformed reason', but scripts/e2e.sh has no receipt malformed step"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-PLAN-UPDATED-AT-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names a source without observedAt or updatedAt with the plain-Korean missing-observedAt reason': it writes a juplan-status current.json for project plan with status READY and only updatedAt set to now (no observedAt), runs scripts/status-board.mjs, and asserts exit 0, one row [plan, READY, false, no reason] whose observedAt equals the saved updatedAt, and stderr exactly '프로젝트 1개 모두 상태를 읽었어요\\n'.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:170 \"| `updatedAt` | no | `observedAt` fallback after `observedAt`. |\" — src/adapters/juplan.mjs uses saved.updatedAt as a fallback, but no status-board CLI test checks it"
         }
       ],
       "qaRuntime": [
