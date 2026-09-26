@@ -6073,6 +6073,47 @@
             "pnpm typecheck"
           ],
           "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-PREVIEW-ITEM-NAMES",
+          "scope": "Add an `items` string array to a successful apply-proposal preview and apply result in evaluateProposal (packages/runtime/src/index.ts). It lists, in plain Korean, each added node as \"더해요: '<label>' (<NODE_TYPE_LABELS kind>)\" and each removed node as \"빼요: '<label>' (<kind>)\", using 더했어요/뺐어요 when applying. No ids appear, so the Founder can see which items change before applying, not just how many. Update the existing toEqual expectations in runtime.test.ts and proposal-remove.test.ts, and add a new test file covering one add and one remove in both preview and apply.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/proposal-remove.test.ts",
+            "packages/runtime/test/proposal-preview-items.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대상 '대화로 바꾸기 → 미리보기 → 적용 → 되돌리기'; A-23/A-24 'apply-proposal with preview/undo'"
+        },
+        {
+          "taskId": "JUPLAN-DOC-EMPTY-TABLE-GUIDE",
+          "scope": "Keep the table header, but replace the bare '아직 없음' after an empty table in packages/runtime/src/documents.ts with one reason-and-next-step line that still starts with '아직 없음'. This covers markdownTable with zero rows (API/event/test tables) and renderWbsMarkdown with no WbsTask, for example '아직 없음 — 이 표에 넣을 계획 항목이 아직 없어요. JuControler 계획 탭에서 더해 달라고 말해 주세요.' Leave bullet sections and empty cells alone. Add documents.test.ts assertions for the WBS, API and test-plan empty cases.",
+          "files": [
+            "packages/runtime/src/documents.ts",
+            "packages/runtime/test/documents.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '빈 화면 이유+다음 행동' — 대상 'PRD/WBS/ERD/SSOT 보기'"
+        },
+        {
+          "taskId": "JUPLAN-UNDO-SUMMARY-CLEAR",
+          "scope": "In undoSuccessResult in packages/runtime/src/index.ts, change the undo summary '바로 전 상태로 되돌렸어요 · 항목 N개' to '바로 전 상태로 되돌렸어요 ✓ 지금 계획은 항목 N개예요'. Today it reads as if N items were taken back, when N is the size of the restored plan, and the new line gets the same ✓ done mark the edit result uses. Update the expectation in undo-json.test.ts.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/undo-json.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '누르면 1초 안에 결과 문장' — 대상 '대화로 바꾸기 → 미리보기 → 적용 → 되돌리기'"
         }
       ],
       "qaRuntime": [
