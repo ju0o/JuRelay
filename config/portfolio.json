@@ -7747,6 +7747,34 @@
             "bash scripts/e2e.sh"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; at 08d0d27, tests/e2e-docs-sync.test.mjs compares only the example's steps name/label (`JSON.parse(json).steps.map(({ name, label }) => ...)`), so the documented projects/statuses/key order are never checked against real output"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-CURRENT-JSON-EXAMPLE",
+          "scope": "In README section '3. 빠른 시작 (처음 쓰는 법)' step 2, add a second copy-ready ```json example of `<dataRoot>/current.json` (schema project-status.v1, projectId my-project, status, observedAt, source {kind,id}) after the registry example, with one plain-Korean line saying to change observedAt to the current UTC time (...Z) or it will show as stale after 5 minutes; then add one test to tests/quickstart-registry-example.test.mjs that takes both ```json blocks, sets dataRoot to a temp folder, writes the second block as current.json with observedAt set to now, runs scripts/status-board.mjs, and checks exit 0 and stderr exactly '프로젝트 1개 모두 상태를 읽었어요\\n' (keep the existing test that takes the first block unchanged).",
+          "files": [
+            "README.md",
+            "tests/quickstart-registry-example.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/quickstart-registry-example.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target (README.md step 2 at 8b100d5 says '상태 파일은 `<dataRoot>/current.json`에 둡니다' but gives no example, so the copied registry alone always ends in UNKNOWN/unavailable per tests/quickstart-registry-example.test.mjs)"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-LINKS-TEST",
+          "scope": "Add one offline test, tests/docs-links.test.mjs, that finds every relative markdown link [text](target) (not http/https) in README.md and docs/getting-started.md and checks that each file target exists relative to the linking file, and that each '#anchor' target matches a heading in the same file using GitHub-style slugs (lowercase, drop punctuation except '-' and spaces, spaces become '-'), with no change to any document.",
+          "files": [
+            "tests/docs-links.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/docs-links.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target (README.md:77,123 and docs/getting-started.md:3,106,135,151,153 at 8b100d5 link to docs/getting-started.md, docs/architecture.md, integration/PROJECT_STATUS_CONTRACT.md and #프로젝트-목록registryjson-규칙, and no test checks those links)"
         }
       ],
       "qaRuntime": [
