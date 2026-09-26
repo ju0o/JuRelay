@@ -12672,6 +12672,20 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
+        },
+        {
+          "taskId": "JCAPP-HOLD-COUNT-SAME-NOW",
+          "scope": "In operator/public/app.js, give homeHoldCount, homeHoldWaitMin, homeHealth and homeHoldButton an optional now argument that they pass to holdResolved(hold, lane, now), the same clock railRowModel uses. homeStats(board, now) and relayTopLine(board, now) pass their now through, so the 홈 '멈춘 작업' stat, banner and 진행 top line count exactly the open holds the live cards show as '멈춤 N'. Keep each helper a one-line const so the existing test extraction lists still work. Extend test/live-status-projection.test.mjs to assert that homeStats(BOARD, NOW).holds equals the sum of liveCardModel(lane, BOARD.done, NOW).holds over the fixture lanes, and that relayTopLine(BOARD, NOW) names that same count.",
+          "files": [
+            "operator/public/app.js",
+            "test/live-status-projection.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-projection.test.mjs",
+            "node --test test/live-status-sentences.test.mjs test/live-status-colors.test.mjs test/hold-wait-from-board.test.mjs test/home-all-ok.test.mjs test/relay-top-line.test.mjs test/lovable-home-top.test.mjs test/lovable-home-order.test.mjs test/home-hold-jump.test.mjs test/agent-relay-module.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' At base, railRowModel (app.js:565) filters holds with holdResolved(hold, lane, now), but homeHoldCount/homeHoldWaitMin (app.js:784-786) and homeHoldButton (app.js:794) call holdResolved(hold, lane) with Date.now(). So homeStats.holds and relayTopLine can disagree with the card's '멈춤 N' for the same board."
         }
       ],
       "skills": {
