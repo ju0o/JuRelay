@@ -6222,6 +6222,36 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:08: '진짜 비개발자도 보면 이해가 되게' founder-ux 규칙으로 JuPlan Studio 화면 점검; packages/runtime/src/index.ts:1036 at 0d1a8e2 returns `${shown} / ${total}개 항목`",
           "title": "항목 개수와 검색 안내를 쉬운 말로 바꾸기"
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-BLOCKED-SUMMARY",
+          "scope": "When a chat change is blocked, apply-proposal returns no summary sentence, so the chat has nothing short to tell the Founder; add one plain-Korean `summary` to every blocked preview/apply result from failedProposal in packages/runtime/src/index.ts and proposalFileMissingResult in packages/runtime/src/cli.ts (e.g. '계획은 그대로예요 — 막는 문제 1개 때문에 바꾸지 못했어요'; the preview wording says it would not change); it must not include any code, id or English word; blockers, stage and nextAction stay as they are; update the exact-shape expectation in proposal-file-missing.test.ts and add one test covering blocked preview, blocked apply and an unreadable proposal.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/src/cli.ts",
+            "packages/runtime/test/proposal-file-missing.test.ts",
+            "packages/runtime/test/proposal-blocked-summary.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 누르면 1초 안에 결과 문장, 오류 3줄 — 대상: 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기"
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-PREVIEW-EDGE-ITEMS",
+          "scope": "A proposal that only adds connections previews as '연결 2개를 더해요' but its `items` list is empty, so the Founder can't see which items get connected; in proposalChangeItems in packages/runtime/src/index.ts, also list each added edge after the node lines, in plain Korean, using the item names (from the proposal's addNodes or the current plan) and EDGE_TYPE_LABELS, e.g. \"더해요: 연결 '주문 화면' → '주문 저장' (관련 있음)\"; if an end is missing, say '알 수 없는 항목', never the id; edges removed together with a node stay counted only; add one new test showing preview and apply items for edge-only and mixed proposals with no ids in the text.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/proposal-preview-edge-items.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기 점검; earlier A-23/A-24 apply-proposal with preview/undo"
         }
       ],
       "qaRuntime": [
