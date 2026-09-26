@@ -4309,6 +4309,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T).",
           "title": "작업할 컴퓨터 목록 저장하고 골라 쓰기"
+        },
+        {
+          "taskId": "ACTL-BOARD-REMOTE-MAPPING-TRUTH",
+          "scope": "MainPC board 586b513 shows 'Claude Team · 연결 안 됨 · 확인 필요' although ASUS `actl discover --json` reports that pane (%0) with mapping MATCH; the remote board builds rows from the MainPC config. For the ssh board, treat the remote discovery's mapping (MATCH + detected agent) as the mapping when the local config has none, so the card reads 연결됨 and 확인 필요 is empty. Also clear the left column 'ASUS에서 에이전트를 찾는 중…' once the first list rendered. Tests: remote detections with mapping MATCH and an empty local config → connected card; loading line removed after first render.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/tui.py",
+            "tests/test_board_remote_mapping_truth.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Supervisor PrintWindow capture of JuActlBoard on MainPC 2026-09-26 20:3x (board 586b513, ASUS actl-live 586b513); ASUS discover: %0 claude-team MATCH, %1 opencode UNMAPPED",
+          "title": "보드: ASUS에서 이미 연결된 창을 '연결 안 됨'으로 보이지 않게"
         }
       ],
       "qaRuntime": [
