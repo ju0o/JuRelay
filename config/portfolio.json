@@ -9408,6 +9408,18 @@
           ],
           "ssotEvidence": "JuCeipt-Private/docs/operations/PM_STATUS_BOARD.md:157 'Can human-review-required draft be READY (m2-014) correct?' and :226 'Finish PR #4 14-task Receipt-vs-final scoring — M2 NOW'",
           "title": "사람 검토가 필요한 초안을 확인해요"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-COST-CURRENCY-LABEL",
+          "scope": "In renderLevel1's costText (src/render/index.ts), replace the raw ISO currency-code fallback shown when cost currency is neither USD nor KRW with a plain Korean unit phrase so no English/ISO currency code appears on the unfolded Level 1 receipt view, and add a regression test covering a non-USD/KRW currency.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts"
+          ],
+          "ssotEvidence": "src/render/index.ts:31 (base 63df4dde) `p.cost_summary.currency === \"USD\" ? \"달러\" : p.cost_summary.currency === \"KRW\" ? \"원\" : p.cost_summary.currency ?? \"\"` falls through to a raw currency code; founder-ux skill rule #2: 'No developer text on the surface... enum words'"
         }
       ],
       "skills": {
