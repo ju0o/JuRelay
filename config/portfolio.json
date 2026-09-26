@@ -4229,7 +4229,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T)."
+          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T).",
+          "title": "작업할 컴퓨터 목록 저장하고 골라 쓰기"
         }
       ],
       "qaRuntime": [
@@ -6476,7 +6477,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "검사 문제를 세 줄로 쉽게 알려줘요"
         }
       ],
       "qaRuntime": [
@@ -8168,7 +8170,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙 '빈 화면 이유+다음 행동' 대상 '영수증 보기 화면'; src/render/index.ts:74 at 8bf49aa shows '중요한 영향이 없어요 — 원문 보기에서 확인하세요'"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙 '빈 화면 이유+다음 행동' 대상 '영수증 보기 화면'; src/render/index.ts:74 at 8bf49aa shows '중요한 영향이 없어요 — 원문 보기에서 확인하세요'",
+          "title": "영향 없음 안내에 이유와 할 일 보여주기"
         },
         {
           "taskId": "JUCEIPT-RUN-RECEIPT-NEXT-LINE-MATCHES-STATE",
@@ -8183,7 +8186,8 @@
             "npm test",
             "bash scripts/e2e.sh"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 대상 'juceipt 명령 출력(scan, daily, receipt)', founder-ux 규칙 '맨 위 한 문장 ... 지금 하실 일'; src/cli/main.ts:161 and :208 at 8bf49aa print the same next line for every verdict, while scanCommand (:289-292) already varies it by state"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 대상 'juceipt 명령 출력(scan, daily, receipt)', founder-ux 규칙 '맨 위 한 문장 ... 지금 하실 일'; src/cli/main.ts:161 and :208 at 8bf49aa print the same next line for every verdict, while scanCommand (:289-292) already varies it by state",
+          "title": "판정 결과에 맞게 다음 할 일 안내하기"
         }
       ],
       "skills": {
@@ -10219,7 +10223,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; src/adapters/agent-relay.mjs:48 \"if (!Array.isArray(board.lanes)) throw new AgentRelayBoardError('invalid-lanes', 'lanes must be an array');\" is covered by the CLI test (tests/status-board-cli.test.mjs:265) but has no E2E step"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; src/adapters/agent-relay.mjs:48 \"if (!Array.isArray(board.lanes)) throw new AgentRelayBoardError('invalid-lanes', 'lanes must be an array');\" is covered by the CLI test (tests/status-board-cli.test.mjs:265) but has no E2E step",
+          "title": "작업 목록 오류 안내 전체 점검"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-NON-OBJECT-BOARD-LINE-TEST",
@@ -10232,7 +10237,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; src/adapters/agent-relay.mjs:46 \"if (!object(board)) throw new AgentRelayBoardError('not-object', 'expected an object');\" and src/project-status.mjs:127-128 \"} catch { return unknownEntry('invalid');\" have no CLI regression test for a non-object board"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; src/adapters/agent-relay.mjs:46 \"if (!object(board)) throw new AgentRelayBoardError('not-object', 'expected an object');\" and src/project-status.mjs:127-128 \"} catch { return unknownEntry('invalid');\" have no CLI regression test for a non-object board",
+          "title": "잘못된 보드 모양 안내 확인"
         },
         {
           "taskId": "JUCONTROLER-E2E-NON-OBJECT-BOARD-STEP",
@@ -10247,7 +10253,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: Make the existing offline E2E and Korean Quickstart the next bounded acceptance target; follows done JUCONTROLER-STATUS-CLI-NON-OBJECT-BOARD-LINE-TEST (tests/status-board-cli.test.mjs:279) and the adapter's not-object code (src/adapters/agent-relay.mjs:46)"
+          "ssotEvidence": "Founder direction 2026-09-26: Make the existing offline E2E and Korean Quickstart the next bounded acceptance target; follows done JUCONTROLER-STATUS-CLI-NON-OBJECT-BOARD-LINE-TEST (tests/status-board-cli.test.mjs:279) and the adapter's not-object code (src/adapters/agent-relay.mjs:46)",
+          "title": "보드 모양 오류 안내 전체 점검"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-RESERVED-LANE-ID-LINE-TEST",
@@ -10260,7 +10267,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:141 'A lane with id `agent-relay` is rejected as a duplicate of the runner entry.'; Founder direction 2026-09-26 offline E2E/Quickstart acceptance target"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:141 'A lane with id `agent-relay` is rejected as a duplicate of the runner entry.'; Founder direction 2026-09-26 offline E2E/Quickstart acceptance target",
+          "title": "겹치는 작업 이름 오류 안내 확인"
         }
       ],
       "qaRuntime": [
@@ -13232,7 +13240,8 @@
             "node --test test/live-status-sentences.test.mjs test/live-status-projection.test.mjs test/live-status-card-html.test.mjs test/live-status-colors.test.mjs test/juplan-module.test.mjs test/juplan-status.test.mjs test/channel-thread-plain.test.mjs test/home-done-today.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' Today liveCardModel reads its own now, but humanAgo at operator/public/app.js:149 calls Date.now(), and card.last is not pinned in test/live-status-sentences.test.mjs"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' Today liveCardModel reads its own now, but humanAgo at operator/public/app.js:149 calls Date.now(), and card.last is not pinned in test/live-status-sentences.test.mjs",
+          "title": "마지막 끝난 일 시간을 카드와 맞추기"
         }
       ],
       "skills": {
@@ -15251,7 +15260,8 @@
             "node --test tests/important-unverified-state-parity.test.mjs",
             "node --test tests/info-system-scope-parity.test.mjs tests/verify-state-mapping-parity.test.mjs tests/no-tool-state-parity.test.mjs tests/report-state-priority-parity.test.mjs tests/skill-report-contract.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:466 위 항목과 직접 관련된 핵심 동작을 확인하지 못했다면 `확인 완료`를 사용하지 않는다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:466 위 항목과 직접 관련된 핵심 동작을 확인하지 못했다면 `확인 완료`를 사용하지 않는다.",
+          "title": "중요 기능 미확인 시 완료 표시 막기"
         },
         {
           "taskId": "JUTELL-CONFIRMED-STATE-MEANING-PARITY",
@@ -15264,7 +15274,8 @@
             "node --test tests/confirmed-state-meaning-parity.test.mjs",
             "node --test tests/evidence-scope-rule-parity.test.mjs tests/code-expectation-not-confirmed.test.mjs tests/info-system-scope-parity.test.mjs tests/skill-report-contract.test.mjs tests/forbidden-phrases-skill-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:483-485 `확인 완료`는 프로젝트 전체가 완벽하게 정상 작동한다는 의미가 아니다. AI Agent가 확인한 작업 범위 안에서 필요한 검증이 완료됐다는 의미다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:483-485 `확인 완료`는 프로젝트 전체가 완벽하게 정상 작동한다는 의미가 아니다. AI Agent가 확인한 작업 범위 안에서 필요한 검증이 완료됐다는 의미다.",
+          "title": "확인 완료가 뜻하는 범위 분명히 알리기"
         },
         {
           "taskId": "JUTELL-SUMMARY-FIRST-SKILL-PARITY",
@@ -15277,7 +15288,8 @@
             "node --test tests/summary-first-skill-parity.test.mjs",
             "node --test tests/final-checklist-spec-parity.test.mjs tests/expression-accuracy-skill-parity.test.mjs tests/token-diet-guidance-parity.test.mjs tests/next-action-suggestions-parity.test.mjs tests/user-format-priority-parity.test.mjs tests/skill-report-contract.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:375-386 보고서 앞부분에는 비개발자가 먼저 알아야 할 정보를 배치한다. … 파일 경로와 기술 세부사항은 그다음에 배치한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:375-386 보고서 앞부분에는 비개발자가 먼저 알아야 할 정보를 배치한다. … 파일 경로와 기술 세부사항은 그다음에 배치한다.",
+          "title": "보고 첫머리에 핵심 요약부터 보여주기"
         },
         {
           "taskId": "JUTELL-SCOPE-EVAL-QUESTIONS-PARITY",
@@ -15289,7 +15301,8 @@
             "node --test tests/scope-eval-questions-parity.test.mjs",
             "node --test tests/evaluation-questions-parity.test.mjs tests/eval-principles-scenarios-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:638 비개발자 평가 자는 보고서를 읽고 다음 7개 질문에 답한다. / docs/PRODUCT_SCOPE.md:648 7개 중 6개 이상에 추가 질문 없이 답할 수 있어야 한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:638 비개발자 평가 자는 보고서를 읽고 다음 7개 질문에 답한다. / docs/PRODUCT_SCOPE.md:648 7개 중 6개 이상에 추가 질문 없이 답할 수 있어야 한다.",
+          "title": "이해도 평가 질문이 서로 맞는지 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
