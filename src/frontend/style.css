@@ -2207,3 +2207,110 @@ h1 { font-size: 22px; }
 @media (prefers-reduced-motion: reduce) {
   .settings-card-lv { animation: none; }
 }
+
+/* ── 관제실 첫 화면: 상태 한 줄 · 프로젝트 줄 · 고를 일. 나머지는 자세히 보기 ── */
+.cr-simple-status,
+.cr-simple-row,
+.cr-founder-holds,
+.cr-more {
+  min-width: 0;
+  max-width: 100%;
+  font-family: 'Noto Sans KR', 'IBM Plex Sans KR', 'Malgun Gothic', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.cr-simple-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 16px;
+  background: #12151a;
+  border: 1px solid #232830;
+  border-radius: 14px;
+  color: #E6E8EC;
+}
+.cr-simple-status.teal { border-color: #7dd3c0; color: #7dd3c0; }
+.cr-simple-status.amber { border-color: #e8c170; color: #e8c170; }
+.cr-simple-status-text,
+.cr-simple-note { margin: 0; flex: 1 1 220px; font-size: 16px; font-weight: 700; overflow-wrap: anywhere; }
+.cr-simple-note { flex-basis: 100%; font-weight: 700; color: #7dd3c0; }
+.cr-simple-choose,
+.cr-simple-more,
+.cr-simple-row,
+.cr-more > summary {
+  min-height: 44px;
+  min-width: 44px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.cr-simple-choose,
+.cr-simple-more {
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: #e8c170;
+  border: 1px solid #e8c170;
+  color: #0b0d10;
+  cursor: pointer;
+}
+.cr-simple-projects { display: flex; flex-direction: column; gap: 8px; margin: 0 0 16px; }
+.cr-simple-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  background: #12151a;
+  border: 1px solid #232830;
+  border-radius: 14px;
+  color: #E6E8EC;
+  cursor: pointer;
+}
+.cr-simple-row.open { border-color: #7dd3c0; }
+.cr-simple-name { font-weight: 700; }
+.cr-simple-doing { flex: 1 1 180px; min-width: 0; overflow-wrap: anywhere; font-weight: 500; }
+.cr-simple-chip {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid #232830;
+  font-weight: 700;
+}
+.cr-simple-chip.teal { color: #7dd3c0; border-color: #7dd3c0; background: rgba(125, 211, 192, 0.16); }
+.cr-simple-chip.amber { color: #e8c170; border-color: #e8c170; background: rgba(232, 193, 112, 0.16); }
+.cr-simple-chip.muted { color: #8b93a1; }
+.cr-founder-holds { display: flex; flex-direction: column; gap: 12px; margin: 0 0 16px; }
+.cr-more { margin-top: 8px; color: #E6E8EC; }
+.cr-more > summary {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #E6E8EC;
+}
+.app[data-theme="light"] .cr-simple-status,
+.app[data-theme="light"] .cr-simple-row {
+  background: #ffffff;
+  color: #1d1d1f;
+  border-color: #d5d8e0;
+}
+.app[data-theme="light"] .cr-simple-status.teal,
+.app[data-theme="light"] .cr-simple-chip.teal,
+.app[data-theme="light"] .cr-simple-note { color: #0d6b5c; }
+.app[data-theme="light"] .cr-simple-status.amber,
+.app[data-theme="light"] .cr-simple-chip.amber { color: #7a4a00; }
+.app[data-theme="light"] .cr-simple-chip.muted,
+.app[data-theme="light"] .cr-simple-doing { color: #1d1d1f; }
+.app[data-theme="light"] .cr-more,
+.app[data-theme="light"] .cr-more > summary { color: #1d1d1f; }
+@media (max-width: 720px) {
+  .cr-simple-choose,
+  .cr-simple-more { width: 100%; }
+  .cr-simple-chip { margin-left: 0; }
+}

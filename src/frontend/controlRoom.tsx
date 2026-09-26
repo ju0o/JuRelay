@@ -11,6 +11,7 @@ import { countWorkingTasks, scopeBoard, sharedSeatsView } from '../shared/projec
 import type { SharedSeatsView } from '../shared/projectScope.js';
 import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from '../shared/tokens.js';
 import type { TokenFinding, TokensView } from '../shared/tokens.js';
+import { controlRoomFounderHoldPreview, controlRoomFounderHolds, controlRoomLaneKey, controlRoomSimpleRows, controlRoomStatusSentence } from '../shared/controlRoomSimple.js';
 
 export interface ControlRoomHoldExplain {
   sentence?: unknown;
@@ -284,6 +285,9 @@ export function EnvsCard(): React.ReactElement {
     </section>
   );
 }
+
+/** Same environment card, mounted only from the folded detail section. */
+const RuntimeEnvCard = EnvsCard;
 
 function TokenFindingRow({ f }: { f: TokenFinding }): React.ReactElement {
   return (
@@ -1810,6 +1814,86 @@ export function AiAssignCard({ board, now }: { board: unknown; now?: number }): 
   );
 }
 
+function SimpleStatusCard({ board, note, onChoose }: {
+  board: ControlRoomBoard;
+  note: string;
+  onChoose: () => void;
+}): React.ReactElement {
+  const status = controlRoomStatusSentence(board);
+  return (
+    <section className={`cr-simple-status ${status.tone}`} aria-label={status.text}>
+      <p className="cr-simple-status-text">{status.text}</p>
+      {note ? <p className="cr-simple-note" role="status">{note}</p> : null}
+      {status.actionLabel ? (
+        <button type="button" className="btn cr-simple-choose" onClick={onChoose}>{status.actionLabel}</button>
+      ) : null}
+    </section>
+  );
+}
+
+function SimpleProjectList({ lanes, onRefresh }: {
+  lanes: ControlRoomLane[];
+  onRefresh: () => Promise<void>;
+}): React.ReactElement | null {
+  const rows = controlRoomSimpleRows({ lanes });
+  const [openKey, setOpenKey] = useState<string | null>(null);
+  if (rows.length === 0) return null;
+  return (
+    <section className="cr-simple-projects" aria-label="프로젝트 한 줄">
+      {rows.map((row) => {
+        const open = openKey === row.key;
+        const lane = lanes.find((item, index) => controlRoomLaneKey(item, index) === row.key);
+        return (
+          <div key={row.key} className="cr-simple-project">
+            <button
+              type="button"
+              className={`cr-simple-row${open ? ' open' : ''}`}
+              aria-expanded={open}
+              onClick={() => setOpenKey(open ? null : row.key)}
+            >
+              <span className="cr-simple-name">{row.name}</span>
+              <span className="cr-simple-doing">{row.doing}</span>
+              <span className={`cr-simple-chip ${row.tone}`}>{row.state}</span>
+            </button>
+            {open && lane ? <ProjectCard lane={lane} onRefresh={onRefresh} /> : null}
+          </div>
+        );
+      })}
+    </section>
+  );
+}
+
+function FounderHoldSection({ lanes, onRefresh }: {
+  lanes: ControlRoomLane[];
+  onRefresh: () => Promise<void>;
+}): React.ReactElement | null {
+  const items = controlRoomFounderHolds({ lanes });
+  const [showAll, setShowAll] = useState(false);
+  const preview = controlRoomFounderHoldPreview(items, showAll);
+  if (items.length === 0) return null;
+  return (
+    <section id="lane-hold" className="cr-founder-holds" aria-label="대표님이 고를 일">
+      {preview.shown.map((item) => {
+        const lane = lanes.find((entry, index) => controlRoomLaneKey(entry, index) === item.laneKey);
+        const gate = (lane?.humanGate ?? lane?.founderGate) as Record<string, unknown> | undefined;
+        const hold = item.kind === 'hold' && lane ? visibleHoldEntries(lane.holds)[item.holdIndex] : undefined;
+        return (
+          <article key={item.key} className="hold-card">
+            <p className="hold-card-title">{item.projectName} · {item.title}</p>
+            <p className="hold-sentence">{item.sentence}</p>
+            {item.kind === 'gate' && gate ? <GateForm gate={gate} onRefresh={onRefresh} /> : null}
+            {hold ? <HoldOptionButtons hold={hold} gateId={null} taskTitle={item.title} onRefresh={onRefresh} /> : null}
+            {item.raw ? <details><summary>원문 보기</summary><pre className="mono">{item.raw}</pre></details> : null}
+          </article>
+        );
+      })}
+      {preview.hidden > 0 ? (
+        <button type="button" className="btn cr-simple-more" onClick={() => setShowAll(true)}>더 보기</button>
+      ) : null}
+    </section>
+  );
+}
+
 export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactElement {
   const [board, setBoard] = useState<ControlRoomBoard | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -1887,6 +1971,10 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
   useEffect(() => {
     if (!pendingJump.current) return;
     const node = document.getElementById('lane-hold');
+    if (node) {
+      const folded = node.closest('details');
+      if (folded && !folded.open) folded.open = true;
+    }
     if (!node) {
       setJumpNote('멈춘 작업을 화면에서 찾지 못했어요 · 다시 시도');
       pendingJump.current = false;
@@ -1901,40 +1989,48 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
   return (
     <main className="control-room">
       <div className="control-room-head"><div>{only ? <h1>{projectDisplayName(only)}</h1> : <h1>관제실</h1>}{decisionCount > 0 && <p className="control-decision-count">결정 대기 {decisionCount}건</p>}<p className="muted">5초마다 자동으로 새로 고쳐요.</p></div><button className="btn" onClick={only ? () => window.close() : onClose}>닫기</button></div>
-      {(guideOpen || board) && (
+      {guideOpen && (
         <div className="cr-top">
-          {guideOpen && <CrTopGuide onDismiss={dismissGuide} />}
-          {board && <CrTopBody board={board} note={jumpNote} onShowHolds={showHolds} />}
+          <CrTopGuide onDismiss={dismissGuide} />
         </div>
       )}
-      {seats && <SharedSeatsCard view={seats} />}
-      {!only && <>
-        {/* The visible 오늘 끝난 일 list is in cr-bottom, under the holds. This keeps the older above-the-tabs check seeing the same element. */}
-        {false && <TodayCard board={board} />}
-        <WhoLine board={board} />
-        <ModelUsagePanel models={board?.models} />
-      </>}
+      {board && <SimpleStatusCard board={{ ...board, lanes: sortedLanes }} note={jumpNote} onChoose={showHolds} />}
+      {sortedLanes.length > 0 && <SimpleProjectList lanes={sortedLanes} onRefresh={load} />}
+      {sortedLanes.length > 0 && <FounderHoldSection lanes={sortedLanes} onRefresh={load} />}
       {board === null && !error ? <div className="control-empty">작업 PC에서 불러오는 중…</div>
       : error && lanes.length === 0 ? <div className="control-empty">{error}{errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}</div>
-      : !sortedLanes.length ? <div className="control-empty" role="status"><p>아직 진행 중인 프로젝트가 없어요. 지금 하실 일은 없어요.</p><p className="muted">계획이 승인되면 프로젝트가 여기에 자동으로 나타나요. 이 화면은 5초마다 알아서 새로 고쳐요.</p></div> : <>
-        <section className="cr-projects" aria-label="프로젝트">
-          <h2 className="cr-section-title">프로젝트</h2>
-          <div className="cr-project-grid">
-            {sortedLanes.map((lane, index) => (
-              <ProjectCard key={laneSelectKey(lane, index)} lane={lane} onRefresh={load} />
-            ))}
+      : !sortedLanes.length ? <div className="control-empty" role="status"><p>아직 진행 중인 프로젝트가 없어요. 지금 하실 일은 없어요.</p><p className="muted">계획이 승인되면 프로젝트가 여기에 자동으로 나타나요. 이 화면은 5초마다 알아서 새로 고쳐요.</p></div> : null}
+      <details className="cr-more">
+        <summary>자세히 보기</summary>
+        {board && <CrTopBody board={board} note="" onShowHolds={showHolds} />}
+        {seats && <SharedSeatsCard view={seats} />}
+        {!only && <>
+          {/* The visible 오늘 끝난 일 list is in cr-bottom, under the holds. This keeps the older above-the-tabs check seeing the same element. */}
+          {false && <TodayCard board={board} />}
+          <WhoLine board={board} />
+          <ModelUsagePanel models={board?.models} />
+        </>}
+        {sortedLanes.length > 0 && <>
+          <section className="cr-projects" aria-label="프로젝트">
+            <h2 className="cr-section-title">프로젝트</h2>
+            <div className="cr-project-grid">
+              {sortedLanes.map((lane, index) => (
+                <ProjectCard key={laneSelectKey(lane, index)} lane={lane} onRefresh={load} />
+              ))}
+            </div>
+          </section>
+          <div className="control-tabs" role="tablist" aria-label="프로젝트 목록">{sortedLanes.map((lane, index) => { const presentation = projectPresentation(lane); const key = laneSelectKey(lane, index); const isActive = key === activeKey; const attn = laneAttention(lane); return <button className={`control-tab${isActive ? ' active' : ''}`} key={lane.id ?? lane.project ?? index} onClick={() => setSelectedId(key)} role="tab" aria-selected={isActive} aria-label={`${presentation.name}: ${presentation.goal}`}><span>{presentation.name}</span>{attn === 'decision' && <span className="attn-badge decision">결정 필요</span>}{attn === 'hold' && <span className="attn-badge hold">{holdBadgeText(visibleHoldEntries(lane.holds).length)}</span>}<small style={{ display: 'block', marginTop: 4 }}>{presentation.goal}</small></button>; })}</div>
+          {activeLane && <LaneView lane={activeLane} onRefresh={load} canOpenWindow={!only} />}
+        </>}
+        {!only && (
+          <div className="cr-bottom">
+            <AiAssignCard board={board} />
+            <TokensCard />
+            <TodayCard board={board} />
+            <RuntimeEnvCard />
           </div>
-        </section>
-        <div className="control-tabs" role="tablist" aria-label="프로젝트 목록">{sortedLanes.map((lane, index) => { const presentation = projectPresentation(lane); const key = laneSelectKey(lane, index); const isActive = key === activeKey; const attn = laneAttention(lane); return <button className={`control-tab${isActive ? ' active' : ''}`} key={lane.id ?? lane.project ?? index} onClick={() => setSelectedId(key)} role="tab" aria-selected={isActive} aria-label={`${presentation.name}: ${presentation.goal}`}><span>{presentation.name}</span>{attn === 'decision' && <span className="attn-badge decision">결정 필요</span>}{attn === 'hold' && <span className="attn-badge hold">{holdBadgeText(visibleHoldEntries(lane.holds).length)}</span>}<small style={{ display: 'block', marginTop: 4 }}>{presentation.goal}</small></button>; })}</div>
-        {activeLane && <LaneView lane={activeLane} onRefresh={load} canOpenWindow={!only} />}
-      </>}
-      {!only && (
-        <div className="cr-bottom">
-          <AiAssignCard board={board} />
-          <TokensCard />
-          <TodayCard board={board} />
-        </div>
-      )}
+        )}
+      </details>
     </main>
   );
 }
