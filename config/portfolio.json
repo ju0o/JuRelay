@@ -5531,7 +5531,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기 → 적용, founder-ux rule 2 (개발자 글자는 원문 보기 안); index.ts founderMergeFailedMessage returns '이미 있는 항목 id와 겹칩니다: ${ids.join(\", \")}'"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기 → 적용, founder-ux rule 2 (개발자 글자는 원문 보기 안); index.ts founderMergeFailedMessage returns '이미 있는 항목 id와 겹칩니다: ${ids.join(\", \")}'",
+          "title": "막힌 제안 이유를 쉬운 말로 안내"
         },
         {
           "taskId": "JUPLAN-DRAFT-LOCK-KOREAN",
@@ -5544,7 +5545,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기, founder-ux rule 10 (오류 3줄: 무슨 일·왜·할 일); index.ts:58 throws `${DRAFT_LOCKED_CODE}: concurrent mutation of .juplan/plan/draft.json is not allowed`"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기, founder-ux rule 10 (오류 3줄: 무슨 일·왜·할 일); index.ts:58 throws `${DRAFT_LOCKED_CODE}: concurrent mutation of .juplan/plan/draft.json is not allowed`",
+          "title": "동시에 저장할 때 한국어로 안내"
         },
         {
           "taskId": "JUPLAN-PROPOSAL-FILE-MISSING-KOREAN",
@@ -5557,7 +5559,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기, founder-ux rules 2 and 10 (no English error text or file paths on the surface; errors say what happened and what to do); cli.ts die() prints `BLOCKED: ${message}` straight from readFile errors"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기, founder-ux rules 2 and 10 (no English error text or file paths on the surface; errors say what happened and what to do); cli.ts die() prints `BLOCKED: ${message}` straight from readFile errors",
+          "title": "제안 파일이 없을 때 쉬운 안내"
         }
       ],
       "qaRuntime": [
@@ -6744,7 +6747,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): juceipt 명령 출력(scan, daily, receipt) 점검 — 누르면 결과 문장, 한 가지 분명한 다음 행동; src/cli/main.ts runCommand at de10a73 prints '완료: 영수증을 생성했습니다.' and '다음: HTML 파일을 열어 결과를 확인하세요.' without any path unless --show-paths"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): juceipt 명령 출력(scan, daily, receipt) 점검 — 누르면 결과 문장, 한 가지 분명한 다음 행동; src/cli/main.ts runCommand at de10a73 prints '완료: 영수증을 생성했습니다.' and '다음: HTML 파일을 열어 결과를 확인하세요.' without any path unless --show-paths",
+          "title": "만든 영수증 여는 곳 바로 알려주기"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-CMD-NO-HTML-JARGON",
@@ -6757,7 +6761,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): 개발자 글자는 원문 보기 안, juceipt receipt 출력 점검; src/cli/main.ts receiptCommand at de10a73 prints 'HTML 경로:' / '다음: HTML 파일을 열어 결과를 확인하세요.' / '...HTML을 만들 수 없어요.'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): 개발자 글자는 원문 보기 안, juceipt receipt 출력 점검; src/cli/main.ts receiptCommand at de10a73 prints 'HTML 경로:' / '다음: HTML 파일을 열어 결과를 확인하세요.' / '...HTML을 만들 수 없어요.'",
+          "title": "영수증 안내 문구를 쉬운 말로 바꾸기"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-PHONE-NO-HSCROLL",
@@ -6771,7 +6776,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면을 founder-ux 규칙으로 점검 — rule 12 'The screen must work at phone width with no horizontal scroll'; base src/render/index.ts CSS has no pre/td wrapping and fixed 24px+28px padding"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면을 founder-ux 규칙으로 점검 — rule 12 'The screen must work at phone width with no horizontal scroll'; base src/render/index.ts CSS has no pre/td wrapping and fixed 24px+28px padding",
+          "title": "휴대폰에서 영수증이 옆으로 안 밀리게"
         },
         {
           "taskId": "JUCEIPT-SCAN-SUMMARY-TRUE-CHECK-REASON",
@@ -6785,7 +6791,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): juceipt scan 출력 점검 — '빠진 확인 항목의 쉬운 설명'; base src/sources/summary.ts importance() tests /test|테스트|검증|validation|확인/ against JSON.stringify(receipt), so ACCEPTANCE_LABEL.review_required '확인 후 받기' always matches"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): juceipt scan 출력 점검 — '빠진 확인 항목의 쉬운 설명'; base src/sources/summary.ts importance() tests /test|테스트|검증|validation|확인/ against JSON.stringify(receipt), so ACCEPTANCE_LABEL.review_required '확인 후 받기' always matches",
+          "title": "확인이 필요한 진짜 이유 보여주기"
         }
       ],
       "skills": {
@@ -8298,7 +8305,8 @@
             "bash scripts/e2e.sh",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target"
+          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target",
+          "title": "깨진 상태 기록을 알기 쉽게 안내"
         },
         {
           "taskId": "JUCONTROLER-E2E-PROJECT-MISMATCH-STEP",
@@ -8313,7 +8321,8 @@
             "bash scripts/e2e.sh",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior. README.md:101 row '| `project-mismatch` | 파일 속 `projectId`가 목록의 `projectId`와 달라요.' has no E2E coverage at base."
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior. README.md:101 row '| `project-mismatch` | 파일 속 `projectId`가 목록의 `projectId`와 달라요.' has no E2E coverage at base.",
+          "title": "다른 프로젝트 기록이 섞이면 알려주기"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-FUTURE-OBSERVED-LINE-TEST",
@@ -8325,7 +8334,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target. README.md:112 '| `future-observedAt` | 관찰 시각이 지금보다 뒤예요. | 원본 컴퓨터의 시계를 확인하세요. |' has no CLI stderr test at base."
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target. README.md:112 '| `future-observedAt` | 관찰 시각이 지금보다 뒤예요. | 원본 컴퓨터의 시계를 확인하세요. |' has no CLI stderr test at base.",
+          "title": "미래 시각이 찍힌 기록을 알려주기"
         }
       ],
       "qaRuntime": [
@@ -10808,7 +10818,8 @@
             "node --test test/project-manager.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): live card 대표님 할 일 '있으면 버튼'; founder-ux Live status card: 'If it is not 없음, give one button that does it or opens it'; rule 7 'Show the result where the Founder clicked, within a second'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): live card 대표님 할 일 '있으면 버튼'; founder-ux Live status card: 'If it is not 없음, give one button that does it or opens it'; rule 7 'Show the result where the Founder clicked, within a second'",
+          "title": "멈춘 작업을 버튼 하나로 다시 켜기"
         },
         {
           "taskId": "JCAPP-ACTL-CARD-FOUR-WORDS",
@@ -10823,7 +10834,8 @@
             "node --test test/lovable-ai-windows.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): actl AI 창 카드 '같은 용어' as the Agent Relay app and actl Board; founder-ux Live status card: 'For an actl AI window, the card says … whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): actl AI 창 카드 '같은 용어' as the Agent Relay app and actl Board; founder-ux Live status card: 'For an actl AI window, the card says … whether it is 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨'",
+          "title": "AI 창 상태를 네 가지 말로 통일"
         },
         {
           "taskId": "JCAPP-RELAY-LANE-PILL-FROM-RAIL",
@@ -10837,7 +10849,8 @@
             "node --test test/agent-relay-module.test.mjs test/lovable-live-cards.test.mjs test/v2-rail-rows.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48: 허브 홈과 진행 탭 … 같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함; founder-ux Live status card: 'the same everywhere'"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: 허브 홈과 진행 탭 … 같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함; founder-ux Live status card: 'the same everywhere'",
+          "title": "진행 화면 상태 표시를 같은 말로 맞추기"
         },
         {
           "taskId": "JCAPP-RELAY-LOADING-SAME-AS-HOME",
@@ -10851,7 +10864,8 @@
             "node --test test/agent-relay-module.test.mjs test/board-down-plain.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48: 허브 홈과 진행 탭 … 같은 용어 … 문구가 같아야 함; founder-ux rule 2/5: no developer text on the surface, empty states explain themselves"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: 허브 홈과 진행 탭 … 같은 용어 … 문구가 같아야 함; founder-ux rule 2/5: no developer text on the surface, empty states explain themselves",
+          "title": "불러오는 중 안내를 홈과 같은 말로"
         }
       ],
       "skills": {
@@ -12755,7 +12769,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "README.md:47 '- 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다.'"
+          "ssotEvidence": "README.md:47 '- 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다.'",
+          "title": "위험한 관리 작업은 꼭 확인받게 점검"
         },
         {
           "taskId": "JUAI-CHECK-PARSE-EDGES",
@@ -12768,7 +12783,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "README.md:40 '- `lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)'"
+          "ssotEvidence": "README.md:40 '- `lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)'",
+          "title": "봇이 잘못된 답을 걸러내는지 점검"
         },
         {
           "taskId": "JUAI-CHECK-QUOTA-STAFF-LIMITS",
@@ -12780,7 +12796,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs takeQuota: 'if (global >= limits.globalDaily) return { ok: false, reason: \"global\" }' runs before the 'if (!staff)' gap/daily block"
+          "ssotEvidence": "Founder direction 2026-09-23: SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); lib.mjs takeQuota: 'if (global >= limits.globalDaily) return { ok: false, reason: \"global\" }' runs before the 'if (!staff)' gap/daily block",
+          "title": "운영진 사용 횟수 제한 규칙 점검"
         },
         {
           "taskId": "JUAI-CHECK-LAYOUT-KEYS",
@@ -12792,7 +12809,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); layout.mjs: '#사용법 contents ... Each entry is one Discord message (≤2000 chars).' and 'bot.mjs looks channels up by key'"
+          "ssotEvidence": "Founder direction 2026-09-23: SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); layout.mjs: '#사용법 contents ... Each entry is one Discord message (≤2000 chars).' and 'bot.mjs looks channels up by key'",
+          "title": "채널·역할 설정과 안내문 길이 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
