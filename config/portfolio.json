@@ -10462,6 +10462,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; base 24f572c scripts/e2e.sh run_project_mismatch (line ~193) checks this line in E2E and scripts/status-board.mjs:12 maps 'project-mismatch' to '파일 속 프로젝트 ID가 달라요', but tests/status-board-cli.test.mjs has no project-mismatch test",
           "title": "다른 프로젝트는 상태를 몰라요"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-MALFORMED-RECEIPT-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names a receipt without receipt_id with the plain-Korean missing-receipt-id reason'. It writes a juceipt-receipt current.json that is the JSON array [] for project 'arr' and asserts exit 0, stdout rows [['arr','UNKNOWN',true,'malformed']] with source id 'juceipt/arr', and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: arr(malformed: 저장된 값이 JSON 객체가 아니에요) — README 처음 쓰는 법의 reason 표를 보세요\\n'. Test-only: no change to src/, scripts/ or docs/.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/juceipt.mjs receiptReason returns 'malformed' for a non-object receipt, and no CLI test covers the JuCeipt case"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-RELAY-MISSING-OBSERVED-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names an Agent Relay lane missing from the board with the plain-Korean missing-lane reason'. It writes an agent-relay-board current.json with kind BOARD, runner {day:'IDLE',night:'RUNNING'} and lanes [{id:'lane',state:'RUNNING'}] but no observedAt or generatedAt, registers project 'lane', and asserts exit 0, stdout rows [['lane','RUNNING',true,'missing-observedAt','agent-relay/lanes/lane']], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: lane(missing-observedAt: 관찰 시각이 없거나 틀렸어요) — README 처음 쓰는 법의 reason 표를 보세요\\n'. Test-only: no change to src/, scripts/ or docs/.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs sets staleReason 'missing-observedAt' when the board has no timestamp, and the CLI tests cover this reason only for a JuPlan source"
         }
       ],
       "qaRuntime": [
