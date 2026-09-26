@@ -5561,6 +5561,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기, founder-ux rules 2 and 10 (no English error text or file paths on the surface; errors say what happened and what to do); cli.ts die() prints `BLOCKED: ${message}` straight from readFile errors",
           "title": "제안 파일이 없을 때 쉬운 안내"
+        },
+        {
+          "taskId": "JUPLAN-PLAN-HTML-STUDIO-SHELL",
+          "scope": "In generateProjections in packages/runtime/src/index.ts, build exports/plan.html (the Studio 계획 한 장 요약 link) with the existing studioDocument shell and renderViewHeader, so the page gets lang=ko, the viewport meta, STUDIO_STYLE (16px text, light/dark contrast, 44px links) and the '← Studio 홈으로' back link. Today it is an unstyled page with no viewport and no way back. Keep the same top sentence, lifecycle line and counts, keep the escaping, and update the plan.html assertions in runtime.test.ts plus add a regression test for the shell and the back link.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/plan-html-shell.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙(글자 16px·버튼 44px, 밝은/어두운 화면 대비)으로 JuPlan Studio 화면(PRD/WBS/ERD/SSOT 보기) 점검"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-CHANGE-UNDO-HINT",
+          "scope": "In STUDIO_LIVE_SECTIONS_SCRIPT in packages/runtime/src/index.ts, add one plain-Korean next step after the teal change-done line '계획이 바뀌었어요 ✓ 새 항목 N개 · 빠진 항목 N개', for example '마음에 안 들면 JuControler 계획 탭에서 되돌려 달라고 말해 주세요'. This matches the wording the planning banner already uses, so after 적용 the Founder knows how to 되돌리기. Hide it together with the line in the unchanged and failed-refresh cases, and cover it in studio-change-done-line.test.ts.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-change-done-line.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대상 JuPlan Studio 화면 — 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기; founder-ux 누르면 1초 안에 결과 문장 + 다음 행동"
         }
       ],
       "qaRuntime": [
