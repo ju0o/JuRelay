@@ -25,6 +25,13 @@ import type { SharedSeatsView } from '../shared/projectScope.js';
 import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from '../shared/tokens.js';
 import type { TokenFinding, TokensView } from '../shared/tokens.js';
 import { controlRoomFounderHoldPreview, controlRoomFounderHolds, controlRoomLaneKey, controlRoomLoadingStatus, controlRoomSimpleRows, controlRoomStatusSentence } from '../shared/controlRoomSimple.js';
+import {
+  automationEnabledFromStatus,
+  automationResultText,
+  automationToggleLabel,
+  automationToggleOp,
+  type ConnectionPhase,
+} from '../shared/connectionState.js';
 
 export interface ControlRoomHoldExplain {
   sentence?: unknown;
@@ -1970,6 +1977,158 @@ function FounderHoldSection({ lanes, onRefresh }: {
   );
 }
 
+type AutomationNote =
+  | { kind: 'pending'; text: string }
+  | { kind: 'ok'; text: string }
+  | { kind: 'err'; lines: [string, string, string]; raw?: string; retry: 'status' | 'toggle' };
+
+/**
+ * 자동 실행을 읽거나 켜거나 끄지 못했을 때의 세 줄.
+ * 다른 컴퓨터가 꺼진 경우와, 켜져 있는데 실패한 경우를 따로 말한다.
+ * 백엔드 문장은 이 줄에 넣지 않고 원문 보기로 보낸다.
+ */
+function automationFailureLines(action: 'status' | 'on' | 'off', message: string): [string, string, string] {
+  const kind = laneErrorKind(message);
+  const happened = action === 'status'
+    ? '자동 실행 상태를 읽지 못했어요.'
+    : action === 'on'
+      ? '자동 실행을 켜지 못했어요.'
+      : '자동 실행을 끄지 못했어요.';
+  if (kind === 'offline') {
+    return [happened, '다른 컴퓨터가 꺼져 있거나 네트워크가 끊긴 것 같아요.', '컴퓨터가 켜지면 다시 시도해 주세요.'];
+  }
+  if (kind === 'remote-failed' || kind === 'bad-reply') {
+    return [
+      happened,
+      action === 'status'
+        ? '다른 컴퓨터는 켜져 있는데, 상태를 읽지 못했어요.'
+        : '다른 컴퓨터는 켜져 있는데, 바꾸는 중에 문제가 났어요.',
+      '잠시 뒤 다시 시도해 주세요.',
+    ];
+  }
+  return [happened, '요청이 끝나지 않은 것 같아요.', '다시 시도해 주세요. 자세한 내용은 원문 보기에 있어요.'];
+}
+
+/**
+ * 관제실의 자동 실행 켜기/끄기.
+ * 버튼 글자는 지금 누를 일의 한국어 동사고, 누르면 그 자리에서 결과를 보여 준다.
+ */
+function AutomationToggle(): React.ReactElement {
+  const [phase, setPhase] = useState<ConnectionPhase>('checking');
+  const [enabled, setEnabled] = useState<boolean | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<AutomationNote | null>(null);
+
+  const readStatus = useCallback(async (): Promise<void> => {
+    const status = await must({ op: 'controlRoom:automationStatus' });
+    setEnabled(automationEnabledFromStatus(status));
+    setPhase('ok');
+  }, []);
+
+  function statusError(err: unknown): AutomationNote {
+    const message = err instanceof Error ? err.message : String(err);
+    setPhase(laneErrorKind(message) === 'offline' ? 'offline' : 'error');
+    return {
+      kind: 'err',
+      lines: automationFailureLines('status', message),
+      raw: laneErrorRaw(message, (err as { detail?: string }).detail),
+      retry: 'status',
+    };
+  }
+
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      try {
+        await readStatus();
+      } catch (err) {
+        if (!alive) return;
+        setNote(statusError(err));
+      }
+    })();
+    return () => { alive = false; };
+  }, [readStatus]);
+
+  async function reload(): Promise<void> {
+    if (busy) return;
+    setBusy(true);
+    setNote({ kind: 'pending', text: '확인하는 중…' });
+    try {
+      await readStatus();
+      setNote(null);
+    } catch (err) {
+      setNote(statusError(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function toggle(): Promise<void> {
+    if (busy || phase === 'checking') return;
+    const op = automationToggleOp(enabled);
+    const turningOn = op === 'controlRoom:automationOn';
+    setBusy(true);
+    setNote({ kind: 'pending', text: turningOn ? '켜는 중…' : '끄는 중…' });
+    try {
+      if (turningOn) await must({ op: 'controlRoom:automationOn' });
+      else await must({ op: 'controlRoom:automationOff' });
+      setNote({ kind: 'ok', text: automationResultText(op) });
+      setEnabled(turningOn);
+      setPhase('ok');
+      try {
+        await readStatus();
+      } catch {
+        /* 켠/끈 결과는 이미 보여 줬다. 상태 다시 읽기가 실패해도 그 문장은 유지한다. */
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setPhase(laneErrorKind(message) === 'offline' ? 'offline' : 'error');
+      setNote({
+        kind: 'err',
+        lines: automationFailureLines(turningOn ? 'on' : 'off', message),
+        raw: laneErrorRaw(message, (err as { detail?: string }).detail),
+        retry: 'toggle',
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const label = automationToggleLabel(enabled, phase);
+  const attention = phase === 'offline' || phase === 'error';
+
+  return (
+    <section className="conn-cluster" aria-label="자동 실행" style={{ marginLeft: 0, marginBottom: 12, width: '100%' }}>
+      <p className="conn-status">AI가 일을 알아서 이어갈지 여기서 켜고 끌 수 있어요.</p>
+      <button
+        className={`btn conn-toggle${enabled === true && !attention ? ' on' : ''}${attention ? ' attention' : ''}`}
+        type="button"
+        disabled={busy || phase === 'checking'}
+        aria-pressed={enabled === true}
+        onClick={() => void toggle()}
+      >
+        {label}
+      </button>
+      {note?.kind === 'pending' && <p className="conn-status" role="status">{note.text}</p>}
+      {note?.kind === 'ok' && <p className="conn-result ok" role="status">{note.text}</p>}
+      {note?.kind === 'err' && (
+        <div className="cr-pause-err conn-result" role="status">
+          <p>{note.lines[0]}</p>
+          <p>{note.lines[1]}</p>
+          <p>{note.lines[2]}</p>
+          <button className="btn conn-retry" type="button" disabled={busy} onClick={() => void (note.retry === 'status' ? reload() : toggle())}>다시 시도</button>
+          {note.raw ? (
+            <details className="conn-raw">
+              <summary>원문 보기</summary>
+              <pre className="mono">{note.raw}</pre>
+            </details>
+          ) : null}
+        </div>
+      )}
+    </section>
+  );
+}
+
 /** 이번 앱 실행에서 고르기 카드를 이미 닫았으면 true. 관제실을 나갔다 들어와도 유지되고, 앱을 다시 열면 초기화된다. */
 let launchPickClosedThisLaunch = false;
 
@@ -2338,6 +2497,7 @@ export function ControlRoom(): React.ReactElement {
         </div>
       )}
       <SimpleStatusCard board={board ? { ...board, lanes: sortedLanes } : null} loading={board === null && !error} note={jumpNote} onChoose={showHolds} />
+      <AutomationToggle />
       {rowSplit.shown.length > 0 && <SimpleProjectList lanes={rowSplit.shown} onRefresh={load} />}
       {rowSplit.resting > 0 && (
         <p className="cr-resting muted" role="status">{restingProjectsLine(rowSplit.resting)}</p>
