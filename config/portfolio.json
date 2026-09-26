@@ -7763,6 +7763,32 @@
             "npm test"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rules 2 and 10 (English error text and paths behind 원문 보기; errors in three short lines) for juceipt scan/daily/receipt output; main.ts catch block ends every error with '원문: ' + rawMessage"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-EMPTY-LINES-REASON",
+          "scope": "In koreanSummary in src/daily/index.ts, replace the bare empty values that daily now prints ('검토 필요 작업: 없음', '작업 제목: 없음', '전달 결과: 없음', '판정별 개수: 없음', '중요 영향: 중요 영향 없음', and the evidence-sources fallback '없음') with short plain 해요체 empty states that give the reason and, where it helps, the next step (for example '검토 필요 작업: 없어요 — 모두 받아도 되는 작업이에요', '전달 결과: 기록에서 받은 결과를 찾지 못했어요 — 영수증을 열어 AI 보고를 확인하세요', '중요 영향: 중요한 영향이 없어요'); leave every non-empty line, the top sentence, the 상태 뜻 line and the 원문 보기 block unchanged, and add tests in tests/daily.test.ts for all-ready and no-outcome/no-impact receipts proving that no line ends in a bare '없음'.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux 규칙 '빈 화면 이유+다음 행동' 으로 juceipt daily 출력 점검"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SUMMARY-REVIEW-ALWAYS-LISTED",
+          "scope": "In importance() in src/sources/summary.ts, a review_required receipt with no remaining_items and fewer than 5 changes gets score 0, so SUMMARY.md opens with '확인 후 받기 1개 … 아래 우선 확인할 영수증부터 보세요.' and then says '먼저 볼 영수증이 없어요 — 확인이 필요한 영수증이 있어요'; give every non-ready receipt a positive score (review_required with no remaining items gets a low score and the reason '사람이 한 번 더 보고 받을 작업이에요'), remove the now-unreachable contradictory empty line, keep all existing reasons, ordering and the other two empty states, and add a regression in tests/scan-summary.test.ts proving that such a receipt appears under '우선 확인할 영수증' with its 영수증 열기 link.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux 규칙 '맨 위 한 문장 … 지금 할 일' 로 juceipt scan 출력 점검, '확인 후 받기' 같은 판정의 뜻을 알 수 있게"
         }
       ],
       "skills": {
