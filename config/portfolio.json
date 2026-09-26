@@ -8188,6 +8188,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: 대상 'juceipt 명령 출력(scan, daily, receipt)', founder-ux 규칙 '맨 위 한 문장 ... 지금 하실 일'; src/cli/main.ts:161 and :208 at 8bf49aa print the same next line for every verdict, while scanCommand (:289-292) already varies it by state",
           "title": "판정 결과에 맞게 다음 할 일 안내하기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-VERDICT-NO-RAW-POINTER",
+          "scope": "In the renderLevel1 verdictSentence map in src/render/index.ts, rewrite only the failed ('작업이 끝나지 않았어요. 실패한 이유를 원문에서 확인하고 다시 시도하세요.') and unknown ('작업 결과를 판단할 수 없어요. 원문 근거를 확인하세요.') sentences so they stop sending the Founder to the developer-only 원문 보기 area. Point instead at what Level 1 already shows, in plain 해요체, for example failed: '작업이 끝나지 않았어요. 아래 아직 확인되지 않음과 받기 전 내가 할 일을 보고 다시 맡겨 주세요.' and unknown: '기록이 부족해 결과를 판단할 수 없어요. 받기 전에 결과를 직접 확인해 주세요.'. Leave the other four sentences, the notices and the CSS as they are. Update the expected verdict map in tests/receipt-render-founder.test.ts, and add an assertion that the visible part (before <details class=\"raw-source\") of the failed and unknown receipts does not contain '원문'.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux: developer text stays inside 원문 보기, and the top sentence says what to do now); src/render/index.ts:49,51 at a69cf5e still say '원문에서 확인하고' and '원문 근거를 확인하세요'"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-READS-SCAN-FOLDER",
+          "scope": "In dailyCommand in src/cli/main.ts, let `juceipt daily` read what `juceipt scan` writes, so the Founder can run it right after scan without help. scan writes <out>/<agent>/<session>/receipt.json plus <out>/index.json, but daily only reads top-level *.json and defaults to 'receipts', so today it fails or reads index.json as a receipt. Change three things: (1) when neither --receipts nor --receipts-dir is given, default to '.juceipt/scans' (scan's default out); (2) collect top-level *.json except index.json/INDEX.json, plus nested receipt.json files found with fs.readdir recursive, sorted, and keep the flat receipts/ directory working exactly as now; (3) update the help line and the README daily usage so they say --receipts is optional and defaults to the scan folder. Keep the existing empty-folder, missing-folder and broken-file three-line errors. In tests/daily-cli.test.ts, add a case that builds a temp scan-shaped folder (index.json plus two <agent>/<id>/receipt.json copied from receipts/t01 and t02) and checks that daily --receipts <tmp> prints '작업 2건' without error. Update the existing help assertion only if the help string changes.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts",
+            "README.md"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-cli.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 (juceipt 명령 출력 scan·daily; founder-ux: finish the task without help, empty state gives the next step); src/cli/main.ts:226 defaults to 'receipts' and reads only top-level .json, while src/sources/scan.ts:184-190 writes <out>/<agent>/<session>/receipt.json and <out>/index.json"
         }
       ],
       "skills": {
