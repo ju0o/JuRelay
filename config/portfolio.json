@@ -15658,6 +15658,17 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: 'Reconcile which captured tasks actually have both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL on only that evidence'; docs/validation/M3_DAILY_VALUE_VALIDATION.md §7 'Next authorized step': 'The evidence-bounded result is `UNDECIDED` (`0 joined rows`); the PM records the M3 decision separately.'; PM_STATUS_BOARD.md:174 '2. Record the M3 GO / DEFER / KILL decision.'",
           "title": "충분한 근거가 모일 때까지 보류"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-DECISION-CHECKBOX-DEFER",
+          "scope": "Resolve the open GO/DEFER/KILL checklist item in BUSINESS_PRODUCT_WBS.md §4.3 (line 147) to DEFER, citing the M3 validation evidence that 0 of 7 Founder register rows have both a Claude final and a Receipt.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:71 'These identifiers do not form a committed seven-row join, so no row is retained or mapped by inference.'; Founder direction 2026-09-27"
         }
       ]
     },
