@@ -14982,6 +14982,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress ... add focused fixture tests.'",
           "title": "놓친 진행 상태도 정확히 안내"
+        },
+        {
+          "taskId": "JCAPP-RELAY-FLOW-SENT-BACK",
+          "scope": "In operator/public/app.js relayFlowRow (진행 tab, rendered directly under the live card), when current.state is 'REQUEST_CHANGES' say the same rework wording as liveCardModel's sentBack case ('검사에서 나온 점을 고치는 중') instead of the plain stage sentence '지금 만들기 단계예요.'; add a REQUEST_CHANGES case to test/idle-lane-meaning.test.mjs's existing relayFlowRow tests.",
+          "files": [
+            "operator/public/app.js",
+            "test/idle-lane-meaning.test.mjs"
+          ],
+          "tests": [
+            "node --test test/idle-lane-meaning.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js comment above relayFlowRow: 'The flow row sits right under the live card, so its chips use the live card's words (not STAGE_KO).' vs liveCardModel's sentBack branch ('REQUEST_CHANGES: QA sent the work back...'); Founder direction 2026-09-26 (one shared live-status projection for Home and Progress)"
+        },
+        {
+          "taskId": "JCAPP-HOME-WORKING-SENT-BACK",
+          "scope": "In operator/public/app.js homeWorking (홈 '지금 일하는 중' list), when a running lane's current.state is 'REQUEST_CHANGES' say the same rework wording as liveCardModel's sentBack case instead of '(STAGE_KO[c.stage] || \"작업\") + \" 중\"' which reads '작업 중' as if it were a fresh build; add a REQUEST_CHANGES case to test/idle-lane-meaning.test.mjs's existing homeWorking test.",
+          "files": [
+            "operator/public/app.js",
+            "test/idle-lane-meaning.test.mjs"
+          ],
+          "tests": [
+            "node --test test/idle-lane-meaning.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js liveCardModel sentBack branch (JCAPP-LIVE-CARD-SENT-BACK-TRUE, already done) vs homeWorking which never reads current.state; Founder direction 2026-09-26 (one shared live-status projection for Home and Progress)"
         }
       ],
       "skills": {
