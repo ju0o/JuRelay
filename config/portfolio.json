@@ -7057,6 +7057,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "JUPLAN-V1-INTAKE-ERRORS-PLAIN-R2",
+          "scope": "Add packages/runtime/test/intake-errors.test.ts only (no edits to ideaDiscover.ts/cli.ts/index.ts, which already implement Korean-name id derivation and the missing-scan-folder message) asserting deriveProjectId/createNewProject auto-derives an ASCII id from a Korean-only project name without --id and that createExistingProject on a nonexistent path rejects with the existing Korean message '폴더를 찾을 수 없어요. 경로가 없거나 다른 곳에 있어요. 저장소 경로를 확인한 뒤 다시 스캔해 주세요.' instead of a raw ENOENT/lstat error.",
+          "files": [
+            "packages/runtime/test/intake-errors.test.ts"
+          ],
+          "tests": [
+            "pnpm -r build",
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder"
         }
       ],
       "qaRuntime": [
