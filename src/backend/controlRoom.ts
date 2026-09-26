@@ -49,7 +49,7 @@ export type ControlRoomExec = (
 ) => Promise<{ stdout: string; stderr: string }>;
 
 export const PROJECT_ID_PATTERN = /^[a-z][a-z0-9-]{1,40}$/;
-export const TASK_ID_PATTERN = /^[A-Za-z][A-Za-z0-9-]{1,40}$/;
+export const TASK_ID_PATTERN = /^[A-Za-z][A-Za-z0-9-]{1,100}$/;
 export const SCHEDULE_TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 export const HOLD_OPTIONS = ['retry', 'narrow', 'skip'] as const;
 export type HoldOption = (typeof HOLD_OPTIONS)[number];
