@@ -6421,6 +6421,34 @@
             "npx tsc -p tsconfig.json --noEmit"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux rule 10 '오류 3줄' (what happened, why, what to do) for juceipt 명령 출력 daily; src/cli/main.ts dailyCommand parses with JSON.parse unguarded, and the catch block's non-ENOENT daily branch always says '왜: 지정한 폴더에 영수증 JSON 파일이 없어요.', which is wrong when the file exists but is broken"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-NEXT-LINE-MATCHES-STATE",
+          "scope": "In dailyCommand in src/cli/main.ts, change the last line, which is always '다음: <receiptsDir>의 검토 필요 작업을 확인하세요.' even when nothing needs checking. Build it from the aggregateDailyReport counts instead. If any receipt is review_required, partial, failed, cancelled or unknown, print one plain Korean verb sentence telling the Founder to open those receipts first. If there are none, print '다음: 지금 하실 일은 없어요 — 새 작업이 끝나면 juceipt scan 을 다시 실행하세요' so it agrees with the top sentence. Update tests/daily-cli.test.ts line 23 and add one all-ready case and one needs-review case.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux rules (one top sentence saying what to do now, empty states give reason plus next action) applied to juceipt command output (daily)"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-VERDICT-MEANING-ALL-LABELS",
+          "scope": "In koreanSummary in src/daily/index.ts, rename the jargon line '수용 상태:' to '판정별 개수:'. Extend the '상태 뜻:' line so it also explains 판단할 수 없음 (unknown: the records are too thin to judge, so check the result yourself before taking it), keeping the existing '상태 뜻: 받아도 됨은 확인된 작업, 확인 후 받기는 사람이 한 번 더 볼 작업' prefix unchanged. Update the expectations in tests/daily.test.ts, tests/daily-corpus.test.ts and tests/daily-m2-corpus.test.ts.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/daily-corpus.test.ts",
+            "tests/daily-m2-corpus.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: explain what verdicts such as '확인 후 받기' mean in juceipt command output (scan, daily, receipt); src/types.ts:365 ACCEPTANCE_LABEL unknown '판단할 수 없음' is shown in daily output but missing from its 상태 뜻 line"
         }
       ],
       "skills": {
