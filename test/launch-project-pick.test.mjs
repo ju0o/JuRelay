@@ -104,11 +104,12 @@ test("관제실 card, settings re-enable, and no developer text on the surface",
   const app = await read("src/frontend/App.tsx");
   const css = await read("src/frontend/style.css");
   const card = room.slice(room.indexOf("function LaunchProjectPick"), room.indexOf("export function ControlRoom"));
-  const head = room.indexOf('className="control-room-head"');
+  const main = room.indexOf('<main className="control-room">');
   const pick = room.indexOf("<LaunchProjectPick");
   const status = room.indexOf("<SimpleStatusCard");
-  assert.ok(head !== -1 && pick !== -1 && status !== -1);
-  assert.ok(head < pick && pick < status, "the card sits at the top of 관제실");
+  assert.ok(main !== -1 && pick !== -1 && status !== -1);
+  assert.ok(main < pick && pick < status, "the card sits at the top of 관제실");
+  assert.equal(room.slice(main, pick).includes("control-room-head"), false);
   assert.match(card, /이번에 돌릴 프로젝트/);
   assert.match(card, /체크한 프로젝트만 바로 시작하고, 뺀 프로젝트는 이번엔 쉬어요\./);
   assert.ok(card.indexOf("이대로 시작") < card.indexOf(">나중에<"));

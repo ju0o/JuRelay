@@ -43,6 +43,15 @@ let startView: StartView = parseStartView(process.argv);
 
 /** `--capture=<png>`: background screenshot mode for the automated Tester (no window shown, no focus). */
 const capturePath = parseCapturePath(process.argv);
+
+/**
+ * Capture and tester launches tell the page to skip the first-run guide.
+ * A normal open has no --capture and no --view, so the query stays off.
+ */
+function quietLaunchQuery(): { capture: string } | undefined {
+  const testerView = process.argv.some((arg) => arg.startsWith('--view='));
+  return capturePath || testerView ? { capture: '1' } : undefined;
+}
 /** Resolved when the renderer asks for its start view = the UI has mounted and applied it. */
 let markRendererReady: () => void = () => undefined;
 const rendererReady = new Promise<void>(resolve => { markRendererReady = resolve; });
@@ -617,7 +626,8 @@ function createWindow(): void {
     // over an error box when the HMR URL is unreachable.
     if (devUrl && !fellBackToFile && fs.existsSync(clientPath)) {
       fellBackToFile = true;
-      void mainWindow?.loadFile(clientPath);
+      const quietQuery = quietLaunchQuery();
+      void mainWindow?.loadFile(clientPath, quietQuery ? { query: quietQuery } : undefined);
       return;
     }
     if (capturePath) { void finishCapture('페이지 로드 실패: ' + code + ' ' + desc); return; }
@@ -646,7 +656,9 @@ function createWindow(): void {
   // Everything else (npm start, packaged app, offline fallback): load the
   // static build output exactly as before.
   if (devUrl) {
-    void mainWindow.loadURL(devUrl);
+    const quietQuery = quietLaunchQuery();
+    const url = quietQuery ? `${devUrl}${devUrl.includes('?') ? '&' : '?'}capture=1` : devUrl;
+    void mainWindow.loadURL(url);
     return;
   }
 
@@ -659,7 +671,8 @@ function createWindow(): void {
     return;
   }
 
-  void mainWindow.loadFile(clientPath);
+  const quietQuery = quietLaunchQuery();
+  void mainWindow.loadFile(clientPath, quietQuery ? { query: quietQuery } : undefined);
 }
 
 /** How long the UI may keep loading data after it mounted before we take the picture. */

@@ -19,7 +19,8 @@ test("controlRoom has no quota/board jargon", async () => {
   const source = await read("src/frontend/controlRoom.tsx");
   assert.doesNotMatch(source, /quota/);
   assert.doesNotMatch(source, /board를 읽습니다/);
-  assert.match(source, /5초마다 자동으로 새로 고쳐요\./);
+  assert.match(source, /이 화면은 5초마다 알아서 새로 고쳐요\./);
+  assert.doesNotMatch(source, /5초마다 자동으로 새로 고쳐요\./);
   assert.doesNotMatch(source, /WORKER → QA/);
   assert.doesNotMatch(source, /<h1>Control Room<\/h1>/);
   assert.doesNotMatch(source, /Worker Agent 바꾸기/);

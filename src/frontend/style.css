@@ -2285,6 +2285,7 @@ h1 { font-size: 22px; }
 .settings-card-lv h3 { margin: 0 0 8px; font-size: 18px; }
 .settings-card-lv .muted,
 .settings-env-note { color: #8b93a1; }
+.settings-env-summary { margin: 0 0 8px; font-size: 16px; }
 .lv-num { font-family: 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace; font-variant-numeric: tabular-nums; }
 .settings-parallel { margin: 0; font-size: 16px; }
 .settings-update .update-row { font-size: 16px; }
@@ -2374,6 +2375,8 @@ h1 { font-size: 22px; }
   cursor: pointer;
 }
 .cr-simple-projects { display: flex; flex-direction: column; gap: 8px; margin: 0 0 16px; }
+.cr-resting { margin: 0 0 16px; font-size: 16px; line-height: 1.5; color: #8b93a1; }
+.app[data-theme="light"] .cr-resting { color: #515154; }
 .cr-simple-row {
   display: flex;
   flex-wrap: wrap;

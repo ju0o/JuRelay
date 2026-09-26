@@ -580,12 +580,20 @@ function ShellConnectionProvider({ children }: { children: React.ReactNode }): R
   return <ShellConnectionContext.Provider value={value}>{children}</ShellConnectionContext.Provider>;
 }
 
-/** 레일 맨 아래. 연결됨 / PC 꺼짐 / 켜져 있는데 실패 — 문장을 하나로 뭉치지 않는다. */
-function RailConnection(): React.ReactElement {
+/**
+ * Bottom rail box only when the work PC is not in the normal connected state.
+ * Checking stays quiet. Offline and "on but failed" each keep their own sentence.
+ */
+export function railConnectionVisible(phase: ConnectionPhase): boolean {
+  return phase === 'offline' || phase === 'error';
+}
+
+/** 레일 맨 아래. 연결이 정상일 때는 숨기고, PC 꺼짐 / 켜져 있는데 실패만 보여 준다. */
+function RailConnection(): React.ReactElement | null {
   const conn = useShellConnection();
-  const attention = conn.phase === 'offline' || conn.phase === 'error';
+  if (!railConnectionVisible(conn.phase)) return null;
   return (
-    <div className={`rail-conn${conn.phase === 'ok' ? ' ok' : attention ? ' attention' : ' checking'}`}>
+    <div className="rail-conn attention">
       <p role="status">{conn.statusText}</p>
       {conn.pollRaw && (
         <details className="conn-raw">
@@ -1713,14 +1721,6 @@ function AppInner(): React.ReactElement {
                     <h1>{pageCopy.title}</h1>
                     <p className="shell-lead">{pageCopy.lead}</p>
                   </div>
-                  <p className="shell-env">{shellEnvLine(envLabels, envPhase)}</p>
-                  <button
-                    type="button"
-                    className="mini theme-toggle"
-                    title={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
-                    aria-label={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
-                    onClick={toggleTheme}
-                  >{theme === 'dark' ? '☀️' : '🌙'}</button>
                   <ConnectionBar />
                 </div>
                 {msg && (
@@ -1731,7 +1731,7 @@ function AppInner(): React.ReactElement {
                 )}
                 <div className="shell-main">
           {controlRoomMode ? (
-            <ControlRoom onClose={() => setControlRoomMode(false)} />
+            <ControlRoom />
           ) : approvalsMode ? (
             <ApprovalsPanel onClose={() => setApprovalsMode(false)} />
           ) : planStudioMode ? (
@@ -1760,7 +1760,14 @@ function AppInner(): React.ReactElement {
             />
           ) : showSettings && settings ? (
             <div className="settings-page">
-              <SettingsEnvSection rows={envRows} phase={envPhase} />
+              <SettingsEnvSection rows={envRows} phase={envPhase} summary={shellEnvLine(envLabels, envPhase)} />
+              <section className="settings-section settings-card-lv" aria-label="화면 밝기">
+                <h3>화면</h3>
+                <p className="muted">밝은 화면과 어두운 화면 중에서 고를 수 있어요.</p>
+                <button type="button" className="btn theme-toggle" onClick={toggleTheme}>
+                  {theme === 'dark' ? '밝게 보기' : '어둡게 보기'}
+                </button>
+              </section>
               <section className="settings-section settings-card-lv" aria-label="동시에 일하는 AI 수">
                 <h3>동시에 일하는 AI 수</h3>
                 <p className="settings-parallel">{parallelLine}</p>
@@ -2883,12 +2890,13 @@ export function settingsParallelLine(board: unknown): string {
     : '아직 알 수 없어요 — 관제실이 연결되면 보여요';
 }
 
-function SettingsEnvSection({ rows, phase }: { rows: EnvRow[]; phase: ConnectionPhase }): React.ReactElement {
+function SettingsEnvSection({ rows, phase, summary }: { rows: EnvRow[]; phase: ConnectionPhase; summary: string }): React.ReactElement {
   const cards = settingsEnvCards(rows);
   return (
     <section className="settings-section settings-card-lv" aria-label="실행 환경">
       <h3>실행 환경</h3>
       <p className="muted">AI가 일할 컴퓨터예요. 지금은 이 컴퓨터(ASUS)에서만 일해요.</p>
+      <p className="settings-env-summary">{summary}</p>
       {rows.length === 0 && (
         <p className="settings-env-note">{shellEnvLine([], phase).replace(/^실행 환경: /, '')}</p>
       )}

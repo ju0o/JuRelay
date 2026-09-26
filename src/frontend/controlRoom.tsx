@@ -8,6 +8,7 @@ import { PROJECT_LABELS, aiDisplayName, projectFromSearch, projectWindowKey, bar
 import type { EnvRow, EnvTone, NormalizedHold } from '../shared/projectLabels.js';
 import {
   decodeLaneNames,
+  isLaneOn,
   LANE_NAMES_STORAGE_KEY,
   laneErrorKind,
   laneErrorLines,
@@ -1400,6 +1401,60 @@ export function crTopRememberGuide(write: ((key: string, value: string) => void)
   }
 }
 
+/**
+ * Capture and tester launches pass capture=1 or tester=1 on the page address.
+ * A normal open has neither, so the guide can still show once.
+ */
+export function isCaptureOrTesterSearch(search: string): boolean {
+  const raw = typeof search === 'string' ? search.replace(/^\?/, '') : '';
+  const params = new URLSearchParams(raw);
+  const on = (value: string | null): boolean => {
+    const text = (value ?? '').trim().toLowerCase();
+    return text === '1' || text === 'true' || text === 'yes';
+  };
+  return on(params.get('capture')) || on(params.get('tester'));
+}
+
+/**
+ * First-run guide until 알겠어요 is remembered.
+ * Capture and tester screens never show it, even on a fresh computer.
+ */
+export function crTopGuideVisible(dismissed: boolean, search: string): boolean {
+  if (isCaptureOrTesterSearch(search)) return false;
+  return dismissed !== true;
+}
+
+/**
+ * A project the Founder turned off (paused or enabled false), including a pause stage.
+ * A hold or a blocker is not this — that row stays on the list.
+ */
+export function isRestingProjectLane(lane: unknown): boolean {
+  if (!lane || typeof lane !== 'object' || Array.isArray(lane)) return false;
+  const record = lane as Record<string, unknown>;
+  if (!isLaneOn(record)) return true;
+  const current = record.current;
+  if (!current || typeof current !== 'object' || Array.isArray(current)) return false;
+  const cur = current as Record<string, unknown>;
+  return cur.paused === true || /pause/i.test(String(cur.stage ?? ''));
+}
+
+/** Active rows stay. Resting projects collapse into one count. */
+export function controlRoomRowSplit<T>(lanes: readonly T[]): { shown: T[]; resting: number } {
+  const shown: T[] = [];
+  let resting = 0;
+  for (const lane of lanes) {
+    if (isRestingProjectLane(lane)) resting += 1;
+    else shown.push(lane);
+  }
+  return { shown, resting };
+}
+
+/** One muted line. Zero resting projects produce no line. */
+export function restingProjectsLine(count: number): string {
+  if (!Number.isFinite(count) || count < 1) return '';
+  return `쉬는 프로젝트 ${Math.floor(count)}개 · 설정에서 켜기`;
+}
+
 function crTopLanes(board: unknown): Record<string, unknown>[] {
   if (!board || typeof board !== 'object' || Array.isArray(board)) return [];
   const lanes = (board as { lanes?: unknown }).lanes;
@@ -2020,16 +2075,18 @@ function LaunchProjectPick({ lanes, onLater, onStarted }: {
   );
 }
 
-export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactElement {
+export function ControlRoom(): React.ReactElement {
   const [board, setBoard] = useState<ControlRoomBoard | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [errorDetail, setErrorDetail] = useState('');
   const [guideOpen, setGuideOpen] = useState(() => {
+    let search = '';
+    try { search = window.location.search; } catch { search = ''; }
     try {
-      return !crTopGuideDismissed((key) => localStorage.getItem(key));
+      return crTopGuideVisible(crTopGuideDismissed((key) => localStorage.getItem(key)), search);
     } catch {
-      return true;
+      return crTopGuideVisible(false, search);
     }
   });
   const [jumpNote, setJumpNote] = useState('');
@@ -2082,7 +2139,7 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
   const only = projectFromSearch(window.location.search).toLowerCase();
   const lanes = (board?.lanes ?? []).filter(lane => !only || projectWindowKey(projectOf(lane)) === only);
   const sortedLanes = sortLanesByAttention(lanes);
-  const decisionCount = sortedLanes.filter(lane => laneAttention(lane) === 'decision').length;
+  const rowSplit = controlRoomRowSplit(sortedLanes);
   const activeLane = sortedLanes.find((lane, index) => laneSelectKey(lane, index) === selectedId) ?? sortedLanes[0];
   const activeKey = activeLane ? laneSelectKey(activeLane, sortedLanes.indexOf(activeLane)) : null;
   const seats = sharedSeatsView(board, only);
@@ -2142,7 +2199,6 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
 
   return (
     <main className="control-room">
-      <div className="control-room-head"><div>{only ? <h1>{projectDisplayName(only)}</h1> : <h1>관제실</h1>}{decisionCount > 0 && <p className="control-decision-count">결정 대기 {decisionCount}건</p>}<p className="muted">5초마다 자동으로 새로 고쳐요.</p></div><button className="btn" onClick={only ? () => window.close() : onClose}>닫기</button></div>
       {showPick && (
         <LaunchProjectPick
           lanes={sortedLanes}
@@ -2161,7 +2217,10 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
         </div>
       )}
       <SimpleStatusCard board={board ? { ...board, lanes: sortedLanes } : null} loading={board === null && !error} note={jumpNote} onChoose={showHolds} />
-      {sortedLanes.length > 0 && <SimpleProjectList lanes={sortedLanes} onRefresh={load} />}
+      {rowSplit.shown.length > 0 && <SimpleProjectList lanes={rowSplit.shown} onRefresh={load} />}
+      {rowSplit.resting > 0 && (
+        <p className="cr-resting muted" role="status">{restingProjectsLine(rowSplit.resting)}</p>
+      )}
       {sortedLanes.length > 0 && <FounderHoldSection lanes={sortedLanes} onRefresh={load} />}
       {error && lanes.length === 0 ? <div className="control-empty">{error}{errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}</div>
       : board !== null && !sortedLanes.length ? <div className="control-empty" role="status"><p>아직 진행 중인 프로젝트가 없어요. 지금 하실 일은 없어요.</p><p className="muted">계획이 승인되면 프로젝트가 여기에 자동으로 나타나요. 이 화면은 5초마다 알아서 새로 고쳐요.</p></div> : null}
