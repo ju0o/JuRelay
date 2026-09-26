@@ -6822,6 +6822,38 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): juceipt scan 출력 점검 — '빠진 확인 항목의 쉬운 설명'; base src/sources/summary.ts importance() tests /test|테스트|검증|validation|확인/ against JSON.stringify(receipt), so ACCEPTANCE_LABEL.review_required '확인 후 받기' always matches",
           "title": "확인이 필요한 진짜 이유 보여주기"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SUMMARY-MEANING-TITLE-LIST",
+          "scope": "In buildScanSummary in src/sources/summary.ts, write every verdict on the '상태 뜻:' line in plain 해요체. Keep the existing prefix '상태 뜻: 받아도 됨은 확인된 작업, 확인 후 받기는 사람이 한 번 더 볼 작업', and add that 판단할 수 없음 means the records are too thin to judge, so check the result yourself before accepting it (matching the daily wording). Also replace the single '작업 제목: a — 받아도 됨; b — 확인 후 받기' line with a '작업 제목' heading followed by one '- 제목 — 판정' bullet per receipt, or a plain empty sentence when there are none. Update tests/scan-summary.test.ts to assert the new meaning text and one bullet per title, with no '; ' join.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts tests/sources-scan-cli.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — juceipt scan 출력에서 판정 '확인 후 받기' 같은 말의 뜻, 한눈에 이해 (founder-ux rule 1/2); src/sources/summary.ts buildScanSummary currently lumps 판단할 수 없음 into 문제 있음 and joins all titles with '; ' on one line"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-TITLE-REVIEW-LIST",
+          "scope": "In koreanSummary in src/daily/index.ts, stop joining every task into one long line with '; '. Turn '작업 제목:' and '검토 필요 작업:' into short headings, each followed by one '- 제목 — 판정' bullet per task; review bullets keep their human actions after ': '. Keep '없음'-style plain empty text when a list is empty, and leave the other summary lines unchanged. Update the exact-string expectations in tests/daily.test.ts, tests/daily-corpus.test.ts, tests/daily-cli.test.ts and tests/daily-m2-corpus.test.ts (only where they assert these two lines) to the new bullet layout.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/daily-corpus.test.ts",
+            "tests/daily-cli.test.ts",
+            "tests/daily-m2-corpus.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts tests/daily-corpus.test.ts tests/daily-cli.test.ts tests/daily-m2-corpus.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — juceipt daily 출력을 '진짜 비개발자도 보면 이해가 되게' (founder-ux rule 1: 한눈에); src/daily/index.ts koreanSummary joins every 작업 제목 and 검토 필요 작업 into single '; '-separated lines (tests/daily.test.ts:45,47)"
         }
       ],
       "skills": {
