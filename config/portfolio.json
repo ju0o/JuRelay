@@ -17079,6 +17079,28 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:57-62 예시: * API(프로그램끼리 정보를 주고받는 연결 통로) * GUI(사용자가 눈으로 보고 조작하는 프로그램 화면) * IDE(코드를 작성하고 실행하는 작업 공간) * Component(화면을 구성하는 재사용 가능한 조각) — GUI/IDE/Component wording already differs from .agents/skills/beginner-bridge/references/glossary-ko.md:17,24,29 at commit cbb5725",
           "title": "주요 용어 설명을 일관되게 유지"
+        },
+        {
+          "taskId": "JUTELL-FEATURE-CONFIG-PARITY",
+          "scope": "Add an offline parity test for TEST_SCENARIOS §14.5 covering Feature IDs, duplicate detection, profile limits precedence, reference paths, and safe fallback wording.",
+          "files": [
+            "tests/feature-config-scenarios-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/feature-config-scenarios-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:963-969 '공식 Feature ID가 ... 일치한다 ... 설정 오류가 안전한 기본값으로 처리된다.'"
+        },
+        {
+          "taskId": "JUTELL-USER-ACTION-GUIDANCE-PARITY",
+          "scope": "Add an offline parity test ensuring the four SPEC §9.1–§9.4 user-action categories and their conditional-use rules remain aligned in the Skill and report-format reference.",
+          "files": [
+            "tests/user-action-guidance-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/user-action-guidance-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:327-357 '사용자 행동은 다음 중 필요한 항목만 작성한다.'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
