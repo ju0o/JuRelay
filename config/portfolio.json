@@ -2383,7 +2383,8 @@
             "npm run typecheck",
             "npm run build:client"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 16:09 item 5: '허브 [반영하기] = 새 하위 명령 night promote hub(JuControler-Private ff-merge + promote-operator.sh, 누를 때만)'; the backend is already in 79151ab:src/backend/controlRoom.ts:536 runControlRoomPromoteHub, and no frontend calls it yet"
+          "ssotEvidence": "Founder direction 2026-09-25 16:09 item 5: '허브 [반영하기] = 새 하위 명령 night promote hub(JuControler-Private ff-merge + promote-operator.sh, 누를 때만)'; the backend is already in 79151ab:src/backend/controlRoom.ts:536 runControlRoomPromoteHub, and no frontend calls it yet",
+          "title": "허브 새 버전을 버튼 하나로 반영"
         },
         {
           "taskId": "AGENTRELAY-PLAN-REQUEST-RESULT-LIST",
@@ -2400,7 +2401,8 @@
             "npm run typecheck",
             "npm run build:client"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 16:09 item 2: '[새 작업 부탁] 프로젝트 선택+한 문장 → night plan request, 결과 작업 목록 표시'; at 79151ab:src/frontend/planStudio.tsx:523-538 submitRequest only shows '보냈어요 ✓' and never lists the tasks it produced"
+          "ssotEvidence": "Founder direction 2026-09-25 16:09 item 2: '[새 작업 부탁] 프로젝트 선택+한 문장 → night plan request, 결과 작업 목록 표시'; at 79151ab:src/frontend/planStudio.tsx:523-538 submitRequest only shows '보냈어요 ✓' and never lists the tasks it produced",
+          "title": "요청하면 새로 생긴 작업 바로 보여주기"
         },
         {
           "taskId": "AGENTRELAY-CONTROL-ROOM-SIMPLE-FIX",
@@ -4351,7 +4353,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T). Founder rewrite choice: 범위 줄이기 — 보드 화면만 먼저, 글자 화면은 다음에."
+          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T). Founder rewrite choice: 범위 줄이기 — 보드 화면만 먼저, 글자 화면은 다음에.",
+          "title": "처음 켤 때 다른 컴퓨터 연결 물어보기"
         }
       ],
       "qaRuntime": [
@@ -6658,7 +6661,8 @@
             "git diff --check",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (Founder choice 2026-09-26): 'Keep already-passing read-only screens unchanged; add one mobile walkthrough regression covering the plan map, PRD/WBS/ERD views, Korean labels, empty-state next action, 16px text, 44px targets, and hidden raw text.'"
+          "ssotEvidence": "Founder direction 2026-09-23 (Founder choice 2026-09-26): 'Keep already-passing read-only screens unchanged; add one mobile walkthrough regression covering the plan map, PRD/WBS/ERD views, Korean labels, empty-state next action, 16px text, 44px targets, and hidden raw text.'",
+          "title": "휴대폰에서 기획 화면 잘 보이는지 확인"
         }
       ],
       "qaRuntime": [
@@ -8456,7 +8460,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 영수증 보기 화면 — '빠진 확인 항목의 쉬운 설명, 영어 작업 제목을 쉬운 한국어 요약으로'; src/receipt/index.ts:126 subject = gap.title.replace(/^[^:]+:\\s*/, '') copies the raw request item text (src/reconciler/index.ts:370/379/389/398/478 build titles with '+ it.text')"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 영수증 보기 화면 — '빠진 확인 항목의 쉬운 설명, 영어 작업 제목을 쉬운 한국어 요약으로'; src/receipt/index.ts:126 subject = gap.title.replace(/^[^:]+:\\s*/, '') copies the raw request item text (src/reconciler/index.ts:370/379/389/398/478 build titles with '+ it.text')",
+          "title": "빠진 확인 목록을 한국어로 보여주기"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-COST-KNOWN-PLAIN",
@@ -8470,7 +8475,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09 (founder-ux: 개발자 글자는 원문 보기 안, 한국어 라벨); src/render/index.ts renderLevel1 costText for status 'known' = (p.cost_summary.amount + ' ' + (p.cost_summary.currency ?? '')).trim()"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09 (founder-ux: 개발자 글자는 원문 보기 안, 한국어 라벨); src/render/index.ts renderLevel1 costText for status 'known' = (p.cost_summary.amount + ' ' + (p.cost_summary.currency ?? '')).trim()",
+          "title": "비용을 쉬운 한국어 문장으로 알려주기"
         },
         {
           "taskId": "JUCEIPT-TASK-TITLE-KOREAN-SNIPPET-FALLBACK",
@@ -8485,7 +8491,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: '진짜 비개발자도 보면 이해가 되게' … 대상: juceipt 명령 출력(scan, daily, receipt)과 영수증 보기 화면 — 영어 작업 제목을 쉬운 한국어 요약으로"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '진짜 비개발자도 보면 이해가 되게' … 대상: juceipt 명령 출력(scan, daily, receipt)과 영수증 보기 화면 — 영어 작업 제목을 쉬운 한국어 요약으로",
+          "title": "한국어 요청은 내 말 그대로 제목 달기"
         },
         {
           "taskId": "JUCEIPT-MISSING-CHECK-NO-PATH-IN-KOREAN-SUBJECT",
@@ -8498,7 +8505,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(개발자 글자는 원문 보기 안) … 대상: 영수증 보기 화면 — 빠진 확인 항목의 쉬운 설명"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(개발자 글자는 원문 보기 안) … 대상: 영수증 보기 화면 — 빠진 확인 항목의 쉬운 설명",
+          "title": "빠진 확인 목록에서 개발 용어 빼기"
         }
       ],
       "skills": {
@@ -10652,7 +10660,8 @@
             "node --test tests/e2e-docs-sync.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; tests/status-board-cli.test.mjs:217 already pins this Agent Relay missing-observedAt line, but scripts/e2e.sh:436 has no matching step"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; tests/status-board-cli.test.mjs:217 already pins this Agent Relay missing-observedAt line, but scripts/e2e.sh:436 has no matching step",
+          "title": "Agent Relay 보드 시각 누락 안내 점검"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-RELAY-RUNNER-LINES-TEST",
@@ -10664,7 +10673,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target, with no new product behavior; scripts/e2e.sh:291-309 (run_missing_runner, run_missing_runner_mode) pin these lines, but tests/status-board-cli.test.mjs has no CLI regression test for missing-runner or missing-runner-mode"
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target, with no new product behavior; scripts/e2e.sh:291-309 (run_missing_runner, run_missing_runner_mode) pin these lines, but tests/status-board-cli.test.mjs has no CLI regression test for missing-runner or missing-runner-mode",
+          "title": "Agent Relay 실행기 정보 누락 안내 확인"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-RELAY-LANE-FIELDS-LINES-TEST",
@@ -10676,7 +10686,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; the e2e steps run_missing_state/run_invalid_holds exist at base but tests/status-board-cli.test.mjs has no missing-state or invalid-holds test"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; the e2e steps run_missing_state/run_invalid_holds exist at base but tests/status-board-cli.test.mjs has no missing-state or invalid-holds test",
+          "title": "Agent Relay 작업칸 정보 누락 안내 확인"
         },
         {
           "taskId": "JUCONTROLER-E2E-RELAY-FUTURE-OBSERVED-STEP",
@@ -10690,7 +10701,8 @@
             "bash scripts/e2e.sh",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs sets staleReason 'future-observedAt' when age < 0, but scripts/e2e.sh at base has no Agent Relay future-observedAt step"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs sets staleReason 'future-observedAt' when age < 0, but scripts/e2e.sh at base has no Agent Relay future-observedAt step",
+          "title": "Agent Relay 보드 미래 시각 안내 점검"
         }
       ],
       "qaRuntime": [
@@ -13758,7 +13770,8 @@
             "node --test test/live-status-sentences.test.mjs test/live-status-colors.test.mjs test/live-status-projection.test.mjs test/live-status-card-html.test.mjs test/lovable-live-cards.test.mjs test/agent-relay-module.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' + founder-ux Live status card '확인 상태: exactly one of 확인됨 / 일부 확인 / 확인하지 못함, with the evidence in one short phrase'"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' + founder-ux Live status card '확인 상태: exactly one of 확인됨 / 일부 확인 / 확인하지 못함, with the evidence in one short phrase'",
+          "title": "검사에서 돌려받은 일 고치는 중으로 보여주기"
         },
         {
           "taskId": "JCAPP-RAIL-STEPS-IDLE-AFTER-DONE",
@@ -13775,7 +13788,8 @@
             "node --test test/live-status-card-html.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
+          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.",
+          "title": "다 끝난 일은 진행 단계도 완료로 표시"
         },
         {
           "taskId": "JCAPP-GATED-NEXT-NO-AUTO",
@@ -13793,7 +13807,8 @@
             "node --test test/agent-relay-module.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
+          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.",
+          "title": "결정 기다리는 일은 저절로 진행 안 된다고 안내"
         }
       ],
       "skills": {
@@ -15987,7 +16002,8 @@
             "node --test tests/conditional-items-scope-parity.test.mjs tests/main-files-exclude-parity.test.mjs tests/main-files-tiebreak-parity.test.mjs tests/report-length-limits-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:148-155 \"## 8. 파일 역할 설명 — 주요 파일은 경로만 나열하지 않고 역할을 한 문장으로 설명한다. 파일 내용이나 연결 관계를 확인한 경우 확정 표현을 사용함 / 파일명만 보고 판단한 경우 예상 표현을 사용함 …\""
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:148-155 \"## 8. 파일 역할 설명 — 주요 파일은 경로만 나열하지 않고 역할을 한 문장으로 설명한다. 파일 내용이나 연결 관계를 확인한 경우 확정 표현을 사용함 / 파일명만 보고 판단한 경우 예상 표현을 사용함 …\"",
+          "title": "보고서에 파일 역할 한 줄 설명"
         },
         {
           "taskId": "JUTELL-FACT-EXPECTATION-SCOPE-PARITY",
@@ -15999,7 +16015,8 @@
             "node --test tests/fact-expectation-scope-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:386 ### 7.2 사실과 예상 분리 원칙 — 실행한 결과는 `확인됨` 또는 `실행 결과로 확인됨` / 코드만 보고 판단한 결과는 `예상됨` / 실행할 수 없는 결과는 `확인하지 못함` / 사용자가 직접 볼 내용은 `사용자 확인 필요`"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:386 ### 7.2 사실과 예상 분리 원칙 — 실행한 결과는 `확인됨` 또는 `실행 결과로 확인됨` / 코드만 보고 판단한 결과는 `예상됨` / 실행할 수 없는 결과는 `확인하지 못함` / 사용자가 직접 볼 내용은 `사용자 확인 필요`",
+          "title": "사실과 예상 구분 규칙 지키기 점검"
         },
         {
           "taskId": "JUTELL-SCENARIO-A-FAILURE-EXAMPLES-CHECK",
@@ -16011,7 +16028,8 @@
             "node --test tests/results/scenario-a/failure-examples.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:275 ## 5.7 실패 예시 — 실제 화면을 보지 않고 “정상적으로 표시됩니다”라고 작성 / 모든 파일을 길게 나열 / 같은 내용을 여러 항목에서 반복 / 테스트하지 않았는데 “모든 테스트 통과”라고 작성 / 사용자 확인 항목이 없음"
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:275 ## 5.7 실패 예시 — 실제 화면을 보지 않고 “정상적으로 표시됩니다”라고 작성 / 모든 파일을 길게 나열 / 같은 내용을 여러 항목에서 반복 / 테스트하지 않았는데 “모든 테스트 통과”라고 작성 / 사용자 확인 항목이 없음",
+          "title": "짧은 보고서 실수 문구 자동 점검"
         },
         {
           "taskId": "JUTELL-SCENARIO-B-FAILURE-EXAMPLES-CHECK",
@@ -16023,7 +16041,8 @@
             "node --test tests/results/scenario-b/failure-examples.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:468 ## 6.7 실패 예시 — 빈 검색어만 설명하고 정상 검색 흐름을 언급하지 않음 / 테스트하지 않고 “검색 기능 전체가 정상”이라고 작성 / 사용자 확인 항목이 빈 검색어만 포함 / 실제 화면 미확인 상태에서 확정 표현 사용"
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:468 ## 6.7 실패 예시 — 빈 검색어만 설명하고 정상 검색 흐름을 언급하지 않음 / 테스트하지 않고 “검색 기능 전체가 정상”이라고 작성 / 사용자 확인 항목이 빈 검색어만 포함 / 실제 화면 미확인 상태에서 확정 표현 사용",
+          "title": "검색 보고서 실수 문구 자동 점검"
         },
         {
           "taskId": "JUTELL-GLOSSARY-IDE-RULE-PARITY",
@@ -16035,7 +16054,8 @@
             "node --test tests/glossary-ide-rule-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:95 ### 4.3 IDE와 AI Agent 실행 환경 — IDE는 코드를 작성하고 실행하는 개발 도구라는 일반 정의로 설명한다. AI Agent가 파일을 읽고 수정하는 실행 환경을 자동으로 IDE라고 부르지 않는다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:95 ### 4.3 IDE와 AI Agent 실행 환경 — IDE는 코드를 작성하고 실행하는 개발 도구라는 일반 정의로 설명한다. AI Agent가 파일을 읽고 수정하는 실행 환경을 자동으로 IDE라고 부르지 않는다.",
+          "title": "개발 도구 용어 설명 일치 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
