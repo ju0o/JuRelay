@@ -17660,6 +17660,50 @@
           ],
           "ssotEvidence": "lib.mjs:40-43 grantBonus stores usage rows under user_id 'bonus:<id>'; lib.mjs:29-32 pruneState's usage-table prune is a generic day>60 rule with no user_id filter, but no check.mjs assertion proves bonus rows are actually caught by it",
           "title": "오래된 보너스 기록 정리 검증"
+        },
+        {
+          "taskId": "JUAI-CHECK-ADMIN-PLAN-NOTICE-RULE",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) for validateAdminPlan's post_notice and add_rule actions: missing text returns null, valid text returns the action with trimmed text.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:137 need = { release: [], answer: [\"text\"], set_topic: [...], post_notice: [\"text\"], add_rule: [\"text\"], ... } — post_notice/add_rule have no check.mjs coverage yet"
+        },
+        {
+          "taskId": "JUAI-CHECK-ADMIN-PLAN-CHANNEL-CRUD",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) for validateAdminPlan's create_channel (requires name) and delete_channel (requires channel) actions, covering the missing-field null case and the valid case.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:137 need = { ..., create_channel: [\"name\"], delete_channel: [\"channel\"], ... } — neither action has check.mjs coverage yet"
+        },
+        {
+          "taskId": "JUAI-CHECK-ADMIN-PLAN-FEATURE",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) for validateAdminPlan's implement_feature action: missing description returns null, valid description returns the action, and a description longer than 1800 chars is truncated like other string params.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:137 need = { ..., implement_feature: [\"description\"] } — untested action; lib.mjs str(v,1800) truncation already tested for other actions but not this one"
+        },
+        {
+          "taskId": "JUAI-CHECK-SCHEMA-TABLES",
+          "scope": "Add check.mjs assertions only (no db.mjs change) verifying SCHEMA creates every expected table (usage, kv, cards, picks, answers, votes, faq, talk_requests, subs, profiles) by querying sqlite_master on a fresh in-memory DB.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "db.mjs:5-14 ten CREATE TABLE IF NOT EXISTS statements in SCHEMA — no check.mjs assertion currently confirms the full table list exists after db.exec(SCHEMA)"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
