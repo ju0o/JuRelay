@@ -10922,6 +10922,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 15:48: 허브 홈과 진행 탭 … 같은 용어 … 문구가 같아야 함; founder-ux rule 2/5: no developer text on the surface, empty states explain themselves",
           "title": "불러오는 중 안내를 홈과 같은 말로"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-HOURS-RUNNING",
+          "scope": "In operator/public/app.js liveCardModel (~line 520), change the running time on the live card's 지금 하는 일 line so 60 minutes or more reads as hours: '2시간째' for a whole hour and '2시간 10분째' otherwise. Under 60 minutes it keeps 'N분째', with a minimum of 1분째. Add asserts for 5분째, 60분 → '1시간째' and 130분 → '2시간 10분째', and keep the existing 분째 pins green.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-live-cards.test.mjs",
+            "test/agent-relay-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-live-cards.test.mjs",
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48 (live status card per founder-ux 'Live status card': 지금 하는 일 … 'how long it has run'), founder-ux rule 4 'Times are relative or local'"
+        },
+        {
+          "taskId": "JCAPP-RELAY-LANE-NAME-ONE",
+          "scope": "In operator/public/app.js, make the 진행 lane tabs and lane header show the same project name as the live card. relayView (~line 2131) builds names as board.names first, then projectName, while liveProjectCard uses PROJECT_NAMES first; change relayView to use PROJECT_NAMES first and then board.names, then projectName. relayLaneView's h3 (`names[lane.id] || lane.id`, ~line 2024) falls back to projectName(lane.id) and never the raw id. Add asserts that, for a lane whose board.names entry differs from PROJECT_NAMES (e.g. jucontroler-app), the tab, the h3 and the live card name read the same string, and that no raw lane id is shown.",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux 'No developer text on the surface'"
         }
       ],
       "skills": {
