@@ -12373,6 +12373,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 홈과 진행에 하나의 shared live-status projection을 정의하고 focused fixture tests를 추가",
           "title": "홈과 진행 상태를 똑같이 보여줘요"
+        },
+        {
+          "taskId": "JCAPP-TOP-LINES-GATED-FROM-PROJECTION",
+          "scope": "In operator/public/app.js, home() banner (~line 835) and relayTopLine (~line 2144) stop re-deriving 'lane waits on the Founder' with their own inline `hubGateCount(lane) > 0 || lane.state === 'HUMAN_GATE' || lane.current?.stage === 5` and instead filter lanes by `railRowModel(lane, now).gated` (now = Date.now() default, relayTopLine gets an optional now), so the 홈 banner '결정을 기다리는 프로젝트 N개' and 진행 top line count exactly the lanes whose live card says 결정 필요; add railRowModel (and its helpers) to the extraction lists of the tests that execute home()/relayTopLine, and extend test/live-status-projection.test.mjs to assert on the fixture board that relayTopLine's gated count equals the number of cards with todo '결정 필요' when no open hold exists, and that the inline stage-5 rule appears only inside railRowModel in app.js",
+          "files": [
+            "operator/public/app.js",
+            "test/live-status-projection.test.mjs",
+            "test/relay-top-line.test.mjs",
+            "test/home-all-ok.test.mjs",
+            "test/lovable-home-order.test.mjs",
+            "test/board-down-plain.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-projection.test.mjs test/relay-top-line.test.mjs test/home-all-ok.test.mjs test/lovable-home-order.test.mjs test/board-down-plain.test.mjs test/agent-relay-module.test.mjs test/v2-rail-rows.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests' — base 6057ff5 operator/public/app.js:835 and :2144 still duplicate railRowModel's gated rule from :568"
+        },
+        {
+          "taskId": "JCAPP-LIVE-STATUS-COLOR-RULES-TEST",
+          "scope": "Add test/live-status-colors.test.mjs that runs the real railRowModel and liveCardModel (extracted from operator/public/app.js the same way as test/live-status-projection.test.mjs) on test/fixtures/live-status/board.json, collects every tone they emit (rail.tone, card.check.tone, card.todo.tone), and asserts against operator/public/app.css that each tone has a `.live-chip--<tone>` rule whose color token matches its meaning (good → --tx-good, warn → --tx-warn, muted → --muted), that no .live-chip, .live-hold, .lane-rail-step or .top-status--hold/--attention rule uses a --*-bad token, and that .top-status--hold/--attention use the amber --tx-warn/--bg-warn/--bd-warn tokens; test only, no app code change",
+          "files": [
+            "test/live-status-colors.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-colors.test.mjs test/live-status-projection.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: shared live-status projection '… and color rules; add focused fixture tests'; founder-ux Skill rule 11 'green (teal) = done / OK, amber = needs a look, red = only real danger … Being stuck is amber, not red'"
         }
       ],
       "skills": {
