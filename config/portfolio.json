@@ -7895,6 +7895,21 @@
             "npm test"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 ('진짜 비개발자도 보면 이해가 되게', 영수증 보기 화면 점검) — src/render/index.ts:42 at ecda902 `${r.actor.agent_name}가 한 작업`; agent names 'Claude Team'/'Cline'/'Grok' at src/sources/discover.ts:50,95,97"
+        },
+        {
+          "taskId": "JUCEIPT-TASK-LIST-WHO-WHEN",
+          "scope": "The task lists in scan's SUMMARY.md ('작업 제목' and '우선 확인할 영수증' in buildScanSummary, src/sources/summary.ts) and in daily's koreanSummary ('작업 제목:' and '검토 필요 작업:' in src/daily/index.ts) show only the generic taskTitle, so the committed corpus prints '기능 만들기 — 확인 후 받기' nine times and the Founder cannot tell the tasks apart. Fix: add an exported helper in src/daily/index.ts that turns task.finished_at into local Korean time the same way renderLevel1 already does (Intl ko-KR month/day/hour/minute with 오전/오후, or '끝난 시각 기록 없음' when missing or invalid). Add actor.agent_name and task.finished_at to the delegated_tasks and review_queue items in aggregateDailyReport. Append ' · <AI 이름> · <현지 시각>에 끝남' after the verdict label on each of those list lines, keeping the existing '<title> — <verdict>' prefix. Do not touch src/render/index.ts. Update the exact-match expectations in tests/daily.test.ts and tests/scan-summary.test.ts, and add assertions that two same-title receipts from different AIs or times produce different lines and that a missing finished_at shows the fallback. Tests must compute the expected time with the exported helper, not a hard-coded timezone string.",
+          "files": [
+            "src/daily/index.ts",
+            "src/sources/summary.ts",
+            "tests/daily.test.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '진짜 비개발자도 보면 이해가 되게' — 대상 juceipt 명령 출력(scan, daily)… 영어 작업 제목을 쉬운 한국어 요약으로; founder-ux rule 4 (times relative or local); tests/daily-corpus.test.ts:38 shows repeated '기능 만들기 — 확인 후 받기'"
         }
       ],
       "skills": {
