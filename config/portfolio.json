@@ -5248,6 +5248,45 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: JuPlan validates and applies AI change proposals (apply-proposal with preview/undo); founder-ux 규칙의 클릭 결과와 다음 행동을 즉시 보여 준다.",
           "title": "변경 결과와 다음 행동 보기"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-BAD-URL-KOREAN",
+          "scope": "In serve() in packages/runtime/src/index.ts, send the two sendPlain(400, \"Bad Request: malformed URL\") responses (a malformed non-view path such as /exports/%ZZ, and a path that leaves the exports folder) as a Korean HTML guide page instead: reuse renderStudioGuidePage with what happened, a plain-words reason, the next step, and a link back to Studio home. Keep status 400, and keep /events 403/405 as they are. Extend the existing 400/404/500 test so it checks for text/html, Korean text, href=\"/\", and no 'Bad Request'.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux: no English error text on the surface; every error in 3 lines what/why/what-to-do with a button); index.ts:1520 and :1586 still send plain 'Bad Request: malformed URL'"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-DEV-FILES-FOLD",
+          "scope": "In renderExportsSection in packages/runtime/src/index.ts, keep the Korean-readable plan files (계획 원본 읽기, 계획 그림 (SVG), 계획 한 장 요약 (HTML)) on the 계획 파일 line, and move the files that open as raw developer text (계획 원본 (JSON), 데이터 구조 (DBML), 진행 상태 (JSON)) into one folded <details><summary>원문 보기</summary> under that line. Keep the same hrefs, labels and 200 responses. Update studio-plan-file-labels.test.ts to pin which links are visible and which are folded.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-plan-file-labels.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux rule 2: JSON and developer text go behind one folded 원문 보기; target includes the PRD/WBS/ERD/SSOT views); index.ts:932 PLAN_EXPORT_FILES links raw JSON/DBML directly on the Studio home surface"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-H3-1REM",
+          "scope": "In the STUDIO_STYLE constant in packages/runtime/src/index.ts, raise the h3 section headings still below 16px (h3{font-size:.95rem} for 계획 파일 / 문서 (N) / 다이어그램 (N) and the document sub-headings) to at least 1rem. Change nothing else. Add an assertion to the existing studio-touch-size.test.ts that the served style gives h3 at least 1rem.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-touch-size.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux rule 12: 글자 16px 이상); index.ts:929 STUDIO_STYLE still has h3{font-size:.95rem;...}"
         }
       ],
       "qaRuntime": [
