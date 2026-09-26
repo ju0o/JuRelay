@@ -4052,6 +4052,18 @@
             "ACTL-BOARD-ALL-ENVS"
           ],
           "title": "README: 이 컴퓨터만 / SSH / WSL 쓰는 법"
+        },
+        {
+          "taskId": "ACTL-WEB-BOARD-OP-BUDGET-BASEFIX",
+          "scope": "`python3 tests/run_tests.py` already fails on the integration tip 76de498 before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output: _web_pane_title_uses_korean_live_suffix\nPASS test_version_one.test_version_matches_pyproject\nPASS test_writer_guard_cli.test_canonical_tmux_socket_path_from_env_and_default\nPASS test_writer_guard_cli.test_direct_allowed_after_managed_release\nPASS test_writer_guard_cli.test_direct_send_busy_when_managed_holds_matching_pane\nPASS test_writer_guard_cli.test_expired_lease_from_reused_pane_does_not_block_copied_fixture\nPASS test_writer_guard_cli.test_managed_transport_with_pre_send_hook_still_works\nPASS test_writer_guard_cli.test_other_pane_not_blocked_by_managed_hold\nPaste prompt.\nFinish with a line containing only:\n\n::send\n\n✗ BUSY: MANAGED reservation holds target %9 on runtime rt_v11_paste\nPASS test_writer_guard_cli.test_paste_mode_busy_zero_keys\nPASS test_writer_guard_cli.test_send_keys_busy_zero_keys\nPASS test_writer_guard_cli.test_tmux_target_context_key_also_blocks\n590 passed, 6 failed\n",
+          "files": [
+            "tests/test_serve_op_budget.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "qaRuntime": [
