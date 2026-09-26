@@ -13852,6 +13852,18 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.",
           "title": "결정 기다리는 일은 저절로 진행 안 된다고 안내"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-NO-STARTEDAT-TRUE",
+          "scope": "In test/live-status-sentences.test.mjs add a test that copies every live-status fixture lane, removes current.startedAt (the field night-board.py leaves out of lane.current), runs the real liveCardModel and railRowModel on the copy, and checks two things: 지금 하는 일 has no '분째', 'NaN' or a stray ' · ' at the end and equals the pinned WANT sentence with the ' · N분째 / N시간째' suffix removed; and check, todo, next, steps and the rail row match the original lane exactly.",
+          "files": [
+            "test/live-status-sentences.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-sentences.test.mjs",
+            "node --test test/live-status-projection.test.mjs test/live-status-colors.test.mjs test/live-status-card-html.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence ... add focused fixture tests'; ~/.agents/skills/auto-night-orchestrator/scripts/night-board.py:108 builds lane.current as {taskId,title,state,stage,attempts,worker,qa} with no startedAt, while test/fixtures/live-status/board.json adds startedAt to 10 of its 11 running lanes"
         }
       ],
       "skills": {
