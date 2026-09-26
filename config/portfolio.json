@@ -7207,6 +7207,45 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-27 (AR-JUPLAN-001 deliverable 1); docs/roadmap/MASTER_WBS.md:207-216; docs/agent-relay/AR-JUPLAN-001.md:17-23 Identity section",
           "title": "Agent Relay 신분증 만들기"
+        },
+        {
+          "taskId": "JUPLAN-AR-PACKET-SCHEMA",
+          "scope": "Add a TypeScript schema and pure validator for AR-JUPLAN-001's TASK_PACKET, RESULT_PACKET, and QA_PACKET shapes so the bounded intake/result contract can be checked in code instead of prose alone, with no CLI dispatch wiring or Product behavior change.",
+          "files": [
+            "packages/runtime/src/agentRelayPackets.ts",
+            "packages/runtime/test/agent-relay-packet-schema.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-packet-schema.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 'bounded task intake/result routing'; docs/agent-relay/AR-JUPLAN-001.md:44-53,74-81,103-109 packet shapes are prose-only, no validator exists"
+        },
+        {
+          "taskId": "JUPLAN-AR-LANE-STATUS-MAP",
+          "scope": "Add a docs/agent-relay/lane-status.json manifest plus a validating test mapping JuPlan's CONTROL_TOWER lane-state vocabulary into an Agent Relay-consumable lane-status structure, completing AR-JUPLAN-001's lane-status deliverable alongside the existing project-identity.json.",
+          "files": [
+            "docs/agent-relay/lane-status.json",
+            "packages/runtime/test/agent-relay-lane-status.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-lane-status.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 'lane status ... mapping' deliverable; nothing exists yet per repo grep for 'lane status' at beb642c"
+        },
+        {
+          "taskId": "JUPLAN-AR-GATE-PACKET-MAP",
+          "scope": "Add a docs/agent-relay/founder-gate-packet.json manifest plus a validating test representing the Founder Gate packet shape (FOUNDER_GATE QA verdict, DEC-G012/b80e0aa isolation) so Agent Relay can recognize when the JuPlan lane stops for Founder review, completing AR-JUPLAN-001's Founder Gate packet mapping deliverable.",
+          "files": [
+            "docs/agent-relay/founder-gate-packet.json",
+            "packages/runtime/test/agent-relay-gate-packet.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-gate-packet.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 'Founder Gate packet mapping' deliverable; docs/agent-relay/AR-JUPLAN-001.md:118,130,147,161 mentions FOUNDER_GATE only in prose, no manifest exists; CONTROL_TOWER.md:29 keeps DEC-G012/b80e0aa separately Founder-gated"
         }
       ],
       "qaRuntime": [
