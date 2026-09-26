@@ -9630,6 +9630,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target; no runtime integration or new product behavior",
           "title": "실패할 때 다음 할 일을 알려줘요"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-UNREADABLE-SOURCE-STEP",
+          "scope": "Add step run_unreadable_source to scripts/e2e.sh right after run_bad_board_kind (label '읽을 수 없는 원본 안내', next command board, added to the step loop and to the labels and commands maps). Model it on run_malformed_source: write a temp repository-status-file current.json that is broken JSON (`{\"status\":`) for project `garbled`, run status-board, require exit 0, one row with status UNKNOWN and reason unavailable, and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: garbled(unavailable: 상태 파일이 없거나 읽을 수 없어요) — README 처음 쓰는 법의 reason 표를 보세요'. Then sync the docs/getting-started.md '`bash scripts/e2e.sh` 결과 읽는 법' section: the ```json example steps, the step bullet, and the `next` bullet group.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; README.md §3 reason table at 172d7b0: '`unavailable` | `current.json`이 없거나 JSON으로 읽을 수 없어요.' (src/project-status.mjs:80-82 maps a JSON.parse failure to unavailable, but E2E only checks a missing file)"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-FIELD-TYPO-SOURCE-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names a source without status with the plain-Korean missing-status reason'. It writes a repository-status-file current.json for project `typo` that is valid project-status.v1 except for one extra misspelled field `observedat`, runs scripts/status-board.mjs, and asserts exit 0, rows [['typo','UNKNOWN',true,'invalid']], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: typo(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요\\n'. Test only, no source change.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26 (offline E2E and Korean Quickstart as acceptance target); README.md §3 reason table at 172d7b0: '`invalid` | `current.json`이 `project-status.v1` 모양이 아니거나 … | 빠진 칸, 틀린 `projectId` … 확인하고 원본에서 다시 저장하세요.' (src/project-status.mjs strict `fields` check; today the only CLI invalid test uses an Agent Relay board)"
         }
       ],
       "qaRuntime": [
