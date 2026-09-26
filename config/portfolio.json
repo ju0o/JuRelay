@@ -11673,6 +11673,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11 비개발자 UX 고도화: 오류 3줄, 누르면 1초 안에 결과 문장); founder-ux rule 10 'Explain every error in three short lines: what happened, why …, and what to do'",
           "title": "승인·재시작 실패 안내를 쉬운 말로"
+        },
+        {
+          "taskId": "JCAPP-RELAY-FLOW-AI-NAME",
+          "scope": "In operator/public/app.js relayFlowRow (진행 lane, right under the live card), show the '담당:' AI through the existing aiName() so the sentence reads '지금 검사 단계예요. 담당: Cline · 2번째 시도예요.' instead of the raw runtime id 'cline'/'claude-team', the same friendly names as the live card; the chips, data-step keys, tries wording and the idle sentence stay unchanged; update the raw-id pins in test/agent-relay-module.test.mjs (lines 64 and 77 → 'Cline' / 'Codex'), add the runtimeName/aiName line (app.js line 175) to the function harness in test/idle-lane-meaning.test.mjs so relayFlowRow still loads there, and add one assert that no raw runtime id such as 'claude-team' shows after '담당:'",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs",
+            "test/idle-lane-meaning.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/idle-lane-meaning.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48 hub request): 허브 홈과 진행 탭에 founder-ux 'Live status card' 규칙 그대로 … 같은 용어; founder-ux 지금 하는 일 = 'the AI in its friendly name'; app.js relayFlowRow builds \"'담당: ' + who\" from raw current.qa/current.worker"
+        },
+        {
+          "taskId": "JCAPP-RELAY-IDLE-LINE-MATCHES-CARD",
+          "scope": "In operator/public/app.js relayLaneView (진행), stop the flow row under the live card saying '계획된 일을 다 끝내고 쉬는 중이에요' while the card above says the lane waits (an open humanGate, an open hold, or lane.paused): when lane.state is 'IDLE', pass idleLaneSentence(lane, done) only if liveCardModel(lane, done).todo.word is '없음', otherwise pass that model's doing line (e.g. '대표님 결정을 기다리는 중' / '쉬게 해 둔 프로젝트예요'); idleLaneSentence, relayFlowRow and liveCardModel themselves are unchanged; add asserts in test/agent-relay-module.test.mjs for an IDLE lane with humanGate, an IDLE lane with an open hold, and an IDLE paused lane (none contains '계획된 일을 다 끝내고'), and that a plain IDLE lane keeps the idle sentence",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/idle-lane-meaning.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48 hub request): 진행 탭에 Live status card … 같은 용어 — and 2026-09-25 13:11 '진짜 비개발자도 보면 이해가 되게'; app.js relayLaneView passes \"lane.state === 'IDLE' ? idleLaneSentence(lane, done) : null\" regardless of liveCardModel's gated/holds/paused"
         }
       ],
       "skills": {
