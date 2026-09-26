@@ -95,6 +95,18 @@ test('settings page keeps update, 저장 폴더, 프로젝트 관리 and 고급 
   assert.doesNotMatch(appSrc, /원격 실행.*ssh|controlRoom:remoteRun/, 'remote execution stays on hold');
 });
 
+test('storage and settings-file paths sit only under 원문 보기', () => {
+  const page = appSrc.slice(appSrc.indexOf('<div className="settings-page">'), appSrc.indexOf('작업 기록 — AI에게'));
+  const raw = page.indexOf('<summary>원문 보기</summary>');
+  assert.ok(raw > 0, 'raw fold exists');
+  for (const s of ['{settings.dataRoot ||', '{settings.settingsFile}']) {
+    assert.ok(page.indexOf(s) > raw, `${s} must be inside 원문 보기`);
+  }
+  assert.doesNotMatch(page, /title=\{settings\.dataRoot\}/);
+  const splash = appSrc.slice(appSrc.indexOf('저장공간 유실 화면'), appSrc.indexOf('openProjectNames ='));
+  assert.ok(splash.indexOf('{settings.dataRoot}') > splash.indexOf('원문 보기'));
+});
+
 test('settings styles use the Lovable tokens and honour reduced motion', () => {
   const block = css.slice(css.indexOf('/* ── 설정: 실행 환경'));
   for (const s of ['#12151a', '#232830', '#7dd3c0', '#e8c170', '#8b93a1', 'border-radius: 14px', 'fade-slide-in 0.38s', 'JetBrains Mono', 'min-height: 44px', 'prefers-reduced-motion']) {

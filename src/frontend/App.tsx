@@ -1617,9 +1617,12 @@ function AppInner(): React.ReactElement {
         <div className="splash-logo">Agent Relay</div>
         <div className="splash-err" style={{ whiteSpace: 'pre-line' }}>
           {'저장 폴더를 찾을 수 없습니다 (외장 드라이브가 빠졌거나 폴더가 옮겨졌을 수 있어요).\n\n'}
-          {settings.dataRoot}
-          {'\n\n새 저장공간을 선택하세요.'}
+          {'새 저장공간을 선택하세요.'}
         </div>
+        <details style={{ marginTop: 12 }}>
+          <summary>원문 보기</summary>
+          <pre className="splash-err" style={{ whiteSpace: 'pre-wrap' }}>{settings.dataRoot}</pre>
+        </details>
         <button className="btn primary" onClick={() => void changeDataRoot()}>📁 새 저장공간 선택</button>
       </div>
     </div>
@@ -1772,11 +1775,11 @@ function AppInner(): React.ReactElement {
               </div>
               <div className="settings-section">
                 <span className="flabel">저장 폴더</span>
-                <div className="field" style={{ marginTop: 4 }}>
-                  <span className={`fvalue mono${settings.dataRoot ? '' : ' muted'}`} title={settings.dataRoot}>
-                    {settings.dataRoot || '(저장공간이 선택되지 않았습니다)'}
-                  </span>
-                </div>
+                <p className={settings.dataRoot ? '' : 'muted'} style={{ margin: '4px 0' }}>
+                  {settings.dataRoot
+                    ? '작업 기록을 저장할 폴더가 연결돼 있어요.'
+                    : '아직 저장 폴더를 고르지 않았어요 — 변경을 눌러 골라 주세요.'}
+                </p>
                 <div className="modalbtns" style={{ justifyContent: 'flex-start' }}>
                   <button className="btn primary" onClick={() => void changeDataRoot()}>변경</button>
                   <button
@@ -1786,9 +1789,13 @@ function AppInner(): React.ReactElement {
                     onClick={() => { void must({ op: 'folder:open', folder: settings.dataRoot }); }}
                   >폴더 열기</button>
                 </div>
-                <p className="muted" style={{ fontSize: 11, margin: '4px 0 0' }}>
-                  설정 파일: {settings.settingsFile}
-                </p>
+                <details style={{ marginTop: 4 }}>
+                  <summary>원문 보기</summary>
+                  <p className="muted mono" style={{ margin: '4px 0 0', wordBreak: 'break-all' }}>
+                    저장 폴더: {settings.dataRoot || '-'}<br />
+                    설정 파일: {settings.settingsFile}
+                  </p>
+                </details>
               </div>
               <ProjectManager />
               <div className="settings-section shell-advanced">
