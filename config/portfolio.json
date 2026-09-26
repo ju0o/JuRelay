@@ -13242,6 +13242,23 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' Today liveCardModel reads its own now, but humanAgo at operator/public/app.js:149 calls Date.now(), and card.last is not pinned in test/live-status-sentences.test.mjs",
           "title": "마지막 끝난 일 시간을 카드와 맞추기"
+        },
+        {
+          "taskId": "JCAPP-RELAY-RAILS-ONE-CLOCK",
+          "scope": "In operator/public/app.js, give relayView an optional third argument now (default Date.now(), read once) and pass it to relayTopLine, relayLaneView and the rails; otherView reads now once and passes it to both laneRails(data?.board, false, now) and relayView, and updateHomeView reads now once and passes it to both laneRails(board, true, now) and home(), so the 진행 top line, rail rows, lane pill, live card and hold cards (and 홈's compact rails, banner and cards) count the same open holds; update the existing source-text pins for the new call shapes and add a relay-top-line case where a hold deadline between two fixed nows reads '멈춘 작업 1건' in relayView at the earlier now and not at the later one.",
+          "files": [
+            "operator/public/app.js",
+            "test/relay-top-line.test.mjs",
+            "test/v2-rail-rows.test.mjs",
+            "test/v2-project-qa-skills.test.mjs",
+            "test/ai-routing-view.test.mjs",
+            "test/home-working-line.test.mjs"
+          ],
+          "tests": [
+            "node --test test/relay-top-line.test.mjs test/v2-rail-rows.test.mjs test/v2-project-qa-skills.test.mjs test/ai-routing-view.test.mjs test/home-working-line.test.mjs test/live-status-projection.test.mjs test/live-status-card-html.test.mjs test/live-status-sentences.test.mjs test/live-status-colors.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' At base, relayView (app.js:2158,2166) calls relayTopLine(board) and relayLaneView(...) with no now, and otherView (app.js:1928) and updateHomeView (app.js:1672) call laneRails without now, so each part reads Date.now() on its own."
         }
       ],
       "skills": {
