@@ -3836,7 +3836,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Cut the 19 remote ops per board refresh … add a test that counts wrapper calls per _rows() so the lower number can't creep back up' (display-message part done in ACTL-ROWS-PANE-SNAPSHOT; the per-pane `ps -g` calls at src/actl/core/activity.py:46, run twice via the 0.4s resample, are what remains)"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Cut the 19 remote ops per board refresh … add a test that counts wrapper calls per _rows() so the lower number can't creep back up' (display-message part done in ACTL-ROWS-PANE-SNAPSHOT; the per-pane `ps -g` calls at src/actl/core/activity.py:46, run twice via the 0.4s resample, are what remains)",
+          "title": "작업 중인지 확인할 때 컴퓨터 부담 줄이기"
         },
         {
           "taskId": "ACTL-LIVE-CARD-LAST-ASKED",
@@ -3851,7 +3852,8 @@
             "python3 tests/run_tests.py",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:46: 'AI 창 카드마다: 어떤 AI·어느 폴더, 일하는 중/쉬는 중/답 기다림/연결 안 됨, 마지막에 시킨 일 한 줄, 복사할 답 준비 여부'; src/actl/live_card.py:47 reads row.get('last_asked'), but nothing in src/ sets it"
+          "ssotEvidence": "Founder direction 2026-09-25 15:46: 'AI 창 카드마다: 어떤 AI·어느 폴더, 일하는 중/쉬는 중/답 기다림/연결 안 됨, 마지막에 시킨 일 한 줄, 복사할 답 준비 여부'; src/actl/live_card.py:47 reads row.get('last_asked'), but nothing in src/ sets it",
+          "title": "마지막에 시킨 일 카드에 보여주기"
         }
       ],
       "qaRuntime": [
@@ -5603,7 +5605,8 @@
             "pnpm typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙(글자 16px·버튼 44px, 밝은/어두운 화면 대비)으로 JuPlan Studio 화면(PRD/WBS/ERD/SSOT 보기) 점검"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙(글자 16px·버튼 44px, 밝은/어두운 화면 대비)으로 JuPlan Studio 화면(PRD/WBS/ERD/SSOT 보기) 점검",
+          "title": "계획 한 장 요약을 보기 쉽게 정리"
         },
         {
           "taskId": "JUPLAN-STUDIO-CHANGE-UNDO-HINT",
@@ -5617,7 +5620,8 @@
             "pnpm typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대상 JuPlan Studio 화면 — 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기; founder-ux 누르면 1초 안에 결과 문장 + 다음 행동"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대상 JuPlan Studio 화면 — 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기; founder-ux 누르면 1초 안에 결과 문장 + 다음 행동",
+          "title": "계획 바뀐 뒤 되돌리는 방법 안내"
         },
         {
           "taskId": "JUPLAN-DOMAIN-DOC-ITEM-KOREAN",
@@ -5631,7 +5635,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙 — 개발자 글자는 원문 보기 안, 한국어 라벨; 대상 JuPlan Studio PRD/WBS/ERD/SSOT 보기"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙 — 개발자 글자는 원문 보기 안, 한국어 라벨; 대상 JuPlan Studio PRD/WBS/ERD/SSOT 보기",
+          "title": "문서 항목 종류와 상태를 한국어로"
         },
         {
           "taskId": "JUPLAN-STUDIO-PORT-BUSY-KOREAN",
@@ -5644,7 +5649,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙 — 오류 3줄(무슨 일·왜·할 일), 개발자 글자는 표면에 두지 않기; 대상 JuPlan Studio 화면"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙 — 오류 3줄(무슨 일·왜·할 일), 개발자 글자는 표면에 두지 않기; 대상 JuPlan Studio 화면",
+          "title": "Studio가 이미 열려 있을 때 쉬운 안내"
         },
         {
           "taskId": "JUPLAN-STUDIO-EVENTS-REPLY-KOREAN",
@@ -5657,7 +5663,8 @@
             "pnpm --filter @juplan/runtime test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙 — 개발자 글자는 원문 보기 안, 한국어 문장; 대상 JuPlan Studio 화면(실시간 새로 고침)"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙 — 개발자 글자는 원문 보기 안, 한국어 문장; 대상 JuPlan Studio 화면(실시간 새로 고침)",
+          "title": "잘못된 접속 안내를 쉬운 한국어로"
         }
       ],
       "qaRuntime": [
@@ -6904,7 +6911,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — juceipt scan 출력에서 판정 '확인 후 받기' 같은 말의 뜻, 한눈에 이해 (founder-ux rule 1/2); src/sources/summary.ts buildScanSummary currently lumps 판단할 수 없음 into 문제 있음 and joins all titles with '; ' on one line"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — juceipt scan 출력에서 판정 '확인 후 받기' 같은 말의 뜻, 한눈에 이해 (founder-ux rule 1/2); src/sources/summary.ts buildScanSummary currently lumps 판단할 수 없음 into 문제 있음 and joins all titles with '; ' on one line",
+          "title": "요약의 판정 설명과 작업 목록 정리"
         },
         {
           "taskId": "JUCEIPT-DAILY-TITLE-REVIEW-LIST",
@@ -6921,7 +6929,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — juceipt daily 출력을 '진짜 비개발자도 보면 이해가 되게' (founder-ux rule 1: 한눈에); src/daily/index.ts koreanSummary joins every 작업 제목 and 검토 필요 작업 into single '; '-separated lines (tests/daily.test.ts:45,47)"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — juceipt daily 출력을 '진짜 비개발자도 보면 이해가 되게' (founder-ux rule 1: 한눈에); src/daily/index.ts koreanSummary joins every 작업 제목 and 검토 필요 작업 into single '; '-separated lines (tests/daily.test.ts:45,47)",
+          "title": "하루 요약 작업 목록 보기 쉽게"
         },
         {
           "taskId": "JUCEIPT-TASK-TITLE-WORD-BOUNDARY",
@@ -6934,7 +6943,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: '영어 작업 제목을 쉬운 한국어 요약으로' — taskTitle (src/daily/index.ts:20) is used for every receipt view title (src/render/index.ts renderHtml/renderLevel1) and the daily list, and its unanchored regex /install|setup|readme/, /implement|add|build|create|feature/ … gives English titles the wrong meaning"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '영어 작업 제목을 쉬운 한국어 요약으로' — taskTitle (src/daily/index.ts:20) is used for every receipt view title (src/render/index.ts renderHtml/renderLevel1) and the daily list, and its unanchored regex /install|setup|readme/, /implement|add|build|create|feature/ … gives English titles the wrong meaning",
+          "title": "영어 요청에 엉뚱한 제목 안 붙게"
         },
         {
           "taskId": "JUCEIPT-SCAN-CLI-VERDICT-MEANING",
@@ -6947,7 +6957,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: 'juceipt 명령 출력(scan, daily, receipt)… 판정 '확인 후 받기' 같은 말의 뜻' — at base, receiptCommand prints '판정 뜻:' and runCommand prints advice, but scanCommand (src/cli/main.ts:254-277) prints only '작업 N개를 봤어요 — 받아도 됨 …, 확인 후 받기 …, 문제 있음 …' and never says what the words mean"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 'juceipt 명령 출력(scan, daily, receipt)… 판정 '확인 후 받기' 같은 말의 뜻' — at base, receiptCommand prints '판정 뜻:' and runCommand prints advice, but scanCommand (src/cli/main.ts:254-277) prints only '작업 N개를 봤어요 — 받아도 됨 …, 확인 후 받기 …, 문제 있음 …' and never says what the words mean",
+          "title": "작업 찾기 결과에 판정 뜻 보여주기"
         }
       ],
       "skills": {
@@ -8505,7 +8516,8 @@
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/e2e-failure-output.test.mjs tests/e2e-cleanup.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; scripts/status-board.mjs reasonWords already has 'future-observedAt': '관찰 시각이 미래예요', and done task JUCONTROLER-STATUS-CLI-FUTURE-OBSERVED-LINE-TEST covers only the CLI test"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; scripts/status-board.mjs reasonWords already has 'future-observedAt': '관찰 시각이 미래예요', and done task JUCONTROLER-STATUS-CLI-FUTURE-OBSERVED-LINE-TEST covers only the CLI test",
+          "title": "계획 상태 미래 시각 안내 전체 점검"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-FUTURE-GENERATED-LINE-TEST",
@@ -8517,7 +8529,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no new product behavior; src/adapters/juceipt.mjs sets staleReason 'future-generated-at' when age < 0, and scripts/status-board.mjs reasonWords has 'future-generated-at': '영수증 generated_at이 미래예요', but no CLI or E2E test checks that line at base 2497e9d"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no new product behavior; src/adapters/juceipt.mjs sets staleReason 'future-generated-at' when age < 0, and scripts/status-board.mjs reasonWords has 'future-generated-at': '영수증 generated_at이 미래예요', but no CLI or E2E test checks that line at base 2497e9d",
+          "title": "영수증 미래 시각 안내 확인"
         },
         {
           "taskId": "JUCONTROLER-E2E-FUTURE-GENERATED-STEP",
@@ -8532,7 +8545,8 @@
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder choice 2026-09-26: Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; ce3baf8 tests/status-board-cli.test.mjs:157 'names a receipt generated in the future with the plain-Korean future-generated-at reason' (CLI covered, E2E not)"
+          "ssotEvidence": "Founder choice 2026-09-26: Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; ce3baf8 tests/status-board-cli.test.mjs:157 'names a receipt generated in the future with the plain-Korean future-generated-at reason' (CLI covered, E2E not)",
+          "title": "영수증 미래 시각 안내 전체 점검"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-MISSING-GENERATED-LINE-TEST",
@@ -8544,7 +8558,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder choice 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target, no new product behavior; ce3baf8 scripts/status-board.mjs:29 reasonWords 'missing-generated-at': '영수증 generated_at이 없거나 틀렸어요' and src/adapters/juceipt.mjs:28 return it, but no CLI test asserts the line"
+          "ssotEvidence": "Founder choice 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target, no new product behavior; ce3baf8 scripts/status-board.mjs:29 reasonWords 'missing-generated-at': '영수증 generated_at이 없거나 틀렸어요' and src/adapters/juceipt.mjs:28 return it, but no CLI test asserts the line",
+          "title": "영수증 발행 시각 누락 안내 확인"
         }
       ],
       "qaRuntime": [
@@ -11089,7 +11104,8 @@
             "node --test test/agent-relay-module.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48 (live status card per founder-ux 'Live status card': 지금 하는 일 … 'how long it has run'), founder-ux rule 4 'Times are relative or local'"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48 (live status card per founder-ux 'Live status card': 지금 하는 일 … 'how long it has run'), founder-ux rule 4 'Times are relative or local'",
+          "title": "작업 시간이 길면 '몇 시간째'로 보여주기"
         },
         {
           "taskId": "JCAPP-RELAY-LANE-NAME-ONE",
@@ -11102,7 +11118,8 @@
             "node --test test/agent-relay-module.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux 'No developer text on the surface'"
+          "ssotEvidence": "Founder direction 2026-09-25 15:48: '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux 'No developer text on the surface'",
+          "title": "진행 화면 프로젝트 이름을 하나로 맞추기"
         },
         {
           "taskId": "JCAPP-RELAY-TOP-LINE",
@@ -11117,7 +11134,8 @@
             "node --test test/board-down-plain.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:11): founder-ux 규칙 '맨 위 한 문장' for the hub's 진행 tab. founder-ux rule 1: 'One sentence at the top: what this screen is for, and what to do now.' relayView at 67b4933 has only a generic lede."
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:11): founder-ux 규칙 '맨 위 한 문장' for the hub's 진행 tab. founder-ux rule 1: 'One sentence at the top: what this screen is for, and what to do now.' relayView at 67b4933 has only a generic lede.",
+          "title": "진행 화면 맨 위에 지금 할 일 한 줄 안내"
         },
         {
           "taskId": "JCAPP-HOME-BANNER-LANE-WAITS",
@@ -11131,7 +11149,8 @@
             "node --test test/home-hub.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): the hub home carries the Live status card with 대표님 할 일 (없음/확인 필요/결정 필요/설정 필요); JCAPP-HOME-CALM-TRUTH: '홈 top line never says 지금 하실 일이 없어요 while a hold … or open gate exists'. liveCardModel at 67b4933 marks stage 5 / HUMAN_GATE lanes 결정 필요, but home() calm checks only holds and /api gates."
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): the hub home carries the Live status card with 대표님 할 일 (없음/확인 필요/결정 필요/설정 필요); JCAPP-HOME-CALM-TRUTH: '홈 top line never says 지금 하실 일이 없어요 while a hold … or open gate exists'. liveCardModel at 67b4933 marks stage 5 / HUMAN_GATE lanes 결정 필요, but home() calm checks only holds and /api gates.",
+          "title": "결정할 일이 있으면 홈에서도 알려주기"
         }
       ],
       "skills": {
@@ -13088,7 +13107,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25): 'lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs:16-33 pruneState uses olderThan(date, now, 45) for kv and 60 for usage, but check.mjs only tests dates far from those limits"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25): 'lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs:16-33 pruneState uses olderThan(date, now, 45) for kv and 60 for usage, but check.mjs only tests dates far from those limits",
+          "title": "오래된 기록 정리 기준일 점검"
         },
         {
           "taskId": "JUAI-CHECK-PEEK-CLAMP",
@@ -13100,7 +13120,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "README.md:40 \"`lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)\"; lib.mjs peekQuota uses left: Math.max(0, total - used), and no test covers that clamp"
+          "ssotEvidence": "README.md:40 \"`lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)\"; lib.mjs peekQuota uses left: Math.max(0, total - used), and no test covers that clamp",
+          "title": "남은 사용 횟수가 음수로 안 보이게 점검"
         },
         {
           "taskId": "JUAI-CHECK-CHUNK-LINES",
@@ -13112,7 +13133,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "README.md:40 \"순수 로직 (`check.mjs`로 점검)\"; lib.mjs chunk doc says \"Split for Discord's 2000-char limit, preferring line breaks, never breaking a ``` block open\""
+          "ssotEvidence": "README.md:40 \"순수 로직 (`check.mjs`로 점검)\"; lib.mjs chunk doc says \"Split for Discord's 2000-char limit, preferring line breaks, never breaking a ``` block open\"",
+          "title": "긴 답변을 줄 단위로 깔끔히 나누기 점검"
         },
         {
           "taskId": "JUAI-CHECK-FAQ-RANK",
@@ -13124,7 +13146,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "README.md:40 \"`lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)\""
+          "ssotEvidence": "README.md:40 \"`lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)\"",
+          "title": "자주 묻는 질문에 가장 맞는 답 고르기 점검"
         },
         {
           "taskId": "JUAI-CHECK-HELP-KEYS",
@@ -13136,7 +13159,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "README.md:8 \"멤버 명령어: `!도움말` · `!남은횟수` · `!구독 단어` · `!구독목록` · `!구독취소 단어`\"; bot.mjs:120 sends HELP_TEXT((k) => `<#${ids[k]}>`) for !도움말"
+          "ssotEvidence": "README.md:8 \"멤버 명령어: `!도움말` · `!남은횟수` · `!구독 단어` · `!구독목록` · `!구독취소 단어`\"; bot.mjs:120 sends HELP_TEXT((k) => `<#${ids[k]}>`) for !도움말",
+          "title": "도움말 속 채널과 명령어 안내 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
