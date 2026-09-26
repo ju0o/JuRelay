@@ -7595,6 +7595,19 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux 규칙으로 영수증 보기 화면 점검 — 개발자 글자(파일 경로 등)는 원문 보기 안; base 83e6774 src/receipt/index.ts:108-112 deliveredItemText returns raw outcome.title for mutations, src/render/index.ts:33-34 shows the artifact basename in 최종 결과"
+        },
+        {
+          "taskId": "JUCEIPT-CLI-RAW-PATHS-FOLDED-R2",
+          "scope": "Hide file paths from the default success output of only the receipt screens (the run and receipt commands) and the daily summary command in src/cli/main.ts; show the receipt.json and receipt.html paths under '원문 보기 (개발용):' only when --show-raw is given (keep --show-paths as an alias), and keep each plain-Korean '다음:' line unchanged; the scan command and tests/sources-scan-cli.test.ts are explicitly out of scope and must not change; update the receipt-cli test 'renders a receipt with plain Korean output and explains a missing receipt' and the daily-cli tests 'prints Korean next actions for run and receipt' and 'prints the Korean summary for a Receipt JSON directory' so they assert the default output contains no runDir/tempDir or receipt.html/receipt.json path while the '다음:' line is present, and that --show-raw output contains '원문 보기 (개발용):' plus those paths; these assertions must fail on base 83e6774 (whose default output prints '영수증 화면: <path>' and '영수증 화면 파일: <path>') and pass after the change",
+          "files": [
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 원문·개발자 정보는 원문 보기로 숨긴다"
         }
       ],
       "skills": {
