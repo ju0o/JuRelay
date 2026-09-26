@@ -5472,6 +5472,49 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08, 대상: 계획 그림/다이어그램 보기): founder-ux rule 12 — must work at phone width; index.ts:698 renderDiagramViewPage renders map-scroll with no overflow hint while renderPlanMapSection does",
           "title": "넓은 지도를 옆으로 넘겨 보게 알려줘"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-FINDING-NO-IDS",
+          "scope": "In renderValidationSection in packages/runtime/src/index.ts, stop putting the plan-core finding messages that contain raw ids, hashes or enum words on the Studio 검증 결과 surface. These are DUPLICATE_NODE_ID/EDGE_ID, DANGLING_EDGE_FROM/TO, RELATES_TO_MISSING_DESCRIPTION, VERIFIED_WITHOUT_EVIDENCE, DANGLING_*/EDGE_*EVIDENCE_REF*, EVIDENCE_LINE_RANGE_INVERTED, PROJECT_PLAN_ID_MISMATCH, CONTENT_HASH_MISMATCH, LIFECYCLE_REVISION_MISMATCH and IMPLEMENTED_WITH_UNKNOWN_KNOWLEDGE, which show text like '연결 e-3의 시작 항목 n-x을 찾을 수 없습니다', '저장된 내용 해시 \"…\"' or '상태 \"READY_FOR_FINAL_REVIEW\"'. For each of these codes, show one id-free plain-Korean sentence that says what is wrong and what to do (for example '어떤 연결이 없는 항목을 가리켜요. JuControler 계획 탭에서 그 연결을 지워 달라고 말해 주세요.'). Put the original message next to the code inside the existing 원문 보기 fold. Leave findings without ids (ORPHAN_NODE, TRACEABILITY_*, UNKNOWN_SURFACED, G*_MISSING_*), validateV1Plan's return value, apply-proposal output and plan-core unchanged. Add a test that writes a draft with a dangling edge and a duplicate id, then asserts that the served 검증 결과 surface outside <details> contains no raw id or code while the original message stays inside 원문 보기.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-finding-no-ids.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙(개발자 글자는 원문 보기 안, 오류 3줄) — 대상: JuPlan Studio 검증 문제 표시"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-NODES-EMPTY-STATE",
+          "scope": "In renderNodesSection in packages/runtime/src/index.ts, give the Studio 계획 항목 list two fixes. (1) When the plan has zero nodes it currently shows only '0 / 0개 항목' and an empty list; show a plain-Korean reason and next step instead, in the same style as the empty 계획 지도 (for example '아직 계획 항목이 없어요.' / '기획을 아직 시작하지 않아서 비어 있어요.' / '기획을 진행하면 여기에 항목이 채워져요.'). (2) Extend the search no-match line '검색과 일치하는 계획 항목이 없어요.' with a next step such as '다른 말로 찾거나 지우기를 눌러 주세요.'. Keep the search input, 지우기 button, count, data-live key and filter script behaviour unchanged. Update the existing runtime.test.ts expectation that pins the old no-match string, and add a test for the zero-node empty state.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/studio-nodes-empty-state.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '빈 화면 이유+다음 행동' — 대상: JuPlan Studio 화면"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-EXPORTS-EMPTY-GUIDE",
+          "scope": "In renderExportsSection in packages/runtime/src/index.ts, replace the single formal line '아직 내보낸 파일이 없습니다. 기획을 진행한 뒤 다시 열어 보세요.' with the Studio's usual three short 해요체 lines: what (아직 내보낸 파일이 없어요), why (기획이 아직 한 번도 끝나지 않아 문서와 그림이 만들어지지 않았어요) and what happens next (기획을 진행하면 문서와 그림이 여기에 자동으로 생겨요). Keep the data-live key and every non-empty branch unchanged. Update the runtime.test.ts assertion that pins the old string, and check that the old '습니다' line is gone.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '빈 화면 이유+다음 행동' — 대상: JuPlan Studio (PRD/WBS/ERD/SSOT 보기)"
         }
       ],
       "qaRuntime": [
