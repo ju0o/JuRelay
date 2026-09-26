@@ -7909,6 +7909,19 @@
             "node --test tests/*.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; README.md:17 '파일이 없거나 오래됐으면(기본 5분)'; src/project-status.mjs:74 'optionsObject.freshnessMs ?? 5 * 60 * 1000'"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-EMPTY-KNOWN-IDS-TEST",
+          "scope": "Add one offline subtest to the 'fails nonzero with no stdout for unavailable or invalid registries' block in tests/status-board-cli.test.mjs: run scripts/status-board.mjs on a temp registry {\"projects\":[]} with --project-id nope and assert exit code 1, empty stdout, first stderr line exactly '그런 프로젝트 ID가 목록에 없어요 — --project-id 값을 확인하세요 (목록에 있는 ID: 없음)', and second line 'Unknown projectId: nope'. This locks in the docs/getting-started.md promise '목록이 비었으면 `없음`으로 나옵니다', which no test checks today; only the test file changes.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "docs/getting-started.md (base 4fea7c0) '상태판 안내 문장 읽는 법' table: '괄호 속 ID 중 하나로 `--project-id`를 다시 적습니다. 목록이 비었으면 `없음`으로 나옵니다.'; scripts/status-board.mjs: `.join(', ') || '없음'`; Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target"
         }
       ],
       "qaRuntime": [
