@@ -11717,6 +11717,17 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 기존 오프라인 E2E와 한국어 Quickstart를 다음 bounded acceptance target으로 삼고 runtime integration과 새 product behavior는 만들지 않는다.",
           "title": "오프라인 설치 검증 실전 테스트"
+        },
+        {
+          "taskId": "JUCONTROLER-CONTRACT-ROLE-ORDER-SYNC",
+          "scope": "Add one offline Node test asserting the role order '(PM·Worker·QA·Tester)' quoted in docs/getting-started.md's 약속(계약) 파일 table matches the role enum in docs/integration/ai-assignment.schema.json",
+          "files": [
+            "tests/contract-role-order-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:224 quotes 역할(PM·Worker·QA·Tester); docs/integration/ai-assignment.schema.json:28 enum is [pm,worker,qa,tester]; no existing test cross-checks them (git grep '역할(' over tests/ at 1ad0ff8 returns nothing)"
         }
       ],
       "qaRuntime": [
