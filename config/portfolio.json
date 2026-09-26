@@ -4716,6 +4716,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-26: '그 매핑 된 것들은 전부 다 보이게'. Capture 2026-09-27 03:36 of 59ba751 shows no AI window list and a clipped environment list. Add a test in tests/test_gui_board_look.py that the board model yields one AI-window row per agent grouped by environment and that the found-environment prompts collapse to one summary line when there are 2 or more.",
           "title": "보드: AI 창 목록이 스크롤 없이 보이게"
+        },
+        {
+          "taskId": "ACTL-BOARD-WINDOW-LIST-FIRST",
+          "scope": "MainPC capture of JuActlBoard 9db6dbd at 1456x939: the left column now scrolls and the header reads '불러오는 중', but the AI window rows are still below '프로젝트' and '환경', so they are off-screen; and the two found-environment cards still show in full under the new '찾은 환경 2개 · 연결할지 고르기' line. In src/actl/gui.py only: (1) put the 'AI 창' section FIRST in the left column (above '프로젝트'), one row per AI window 'name · 환경 · 상태' grouped by environment, clicking a row selects it; (2) when there are 2+ found-environment prompts, show only the one summary line with a '열기' button that expands the cards (collapsed by default), so the window list starts high on screen. Nothing else changes.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_board_look.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: '그 매핑 된 것들은 전부 다 보이게'. Captures 2026-09-27 03:36 (59ba751) and 03:47 (9db6dbd): AI window list still off-screen. Test in tests/test_gui_board_look.py: left-column section order starts with 'AI 창'; found-environment prompts are collapsed by default when 2 or more.",
+          "title": "보드: AI 창 목록을 왼쪽 맨 위로"
         }
       ],
       "qaRuntime": [
