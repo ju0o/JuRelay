@@ -4729,6 +4729,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-26: '그 매핑 된 것들은 전부 다 보이게'. Captures 2026-09-27 03:36 (59ba751) and 03:47 (9db6dbd): AI window list still off-screen. Test in tests/test_gui_board_look.py: left-column section order starts with 'AI 창'; found-environment prompts are collapsed by default when 2 or more.",
           "title": "보드: AI 창 목록을 왼쪽 맨 위로"
+        },
+        {
+          "taskId": "ACTL-BOARD-ROW-STATE-NAMES",
+          "scope": "MainPC capture of JuActlBoard b37c1ab: the AI window list is now first (good). Three small fixes in src/actl/gui.py: (1) the selected row says '쉬는 중' while '선택한 창' says '상태: 답이 준비됐어요' — rows and the detail must use the same one state sentence from the same function; (2) two rows are both 'Claude Team · ASUS (SSH)' and cannot be told apart — when names repeat within an environment append the tmux window/session label or '1', '2' (plain Korean, no pane ids); (3) rows sit under an 'ASUS (SSH)' group heading, so drop the repeated environment from each row. Nothing else changes.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_board_look.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder approved design 2026-09-26; capture 2026-09-27 03:57 of b37c1ab. Tests in tests/test_gui_board_look.py: row state text equals detail state text for the same agent; duplicate names in one environment get distinct labels; rows under a group heading omit the environment.",
+          "title": "보드: AI 창 줄 상태 맞추기·같은 이름 구분"
         }
       ],
       "qaRuntime": [
