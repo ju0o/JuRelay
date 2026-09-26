@@ -6237,7 +6237,8 @@
             "pnpm typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 누르면 1초 안에 결과 문장, 오류 3줄 — 대상: 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 누르면 1초 안에 결과 문장, 오류 3줄 — 대상: 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기",
+          "title": "막힌 변경 내용을 짧게 알려요"
         },
         {
           "taskId": "JUPLAN-PROPOSAL-PREVIEW-EDGE-ITEMS",
@@ -6251,7 +6252,8 @@
             "pnpm typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기 점검; earlier A-23/A-24 apply-proposal with preview/undo"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기 점검; earlier A-23/A-24 apply-proposal with preview/undo",
+          "title": "연결되는 항목을 자세히 보여요"
         },
         {
           "taskId": "JUPLAN-PRD-EMPTY-SECTION-GUIDE",
@@ -6265,7 +6267,8 @@
             "pnpm --filter @juplan/runtime typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux rule '빈 화면 이유+다음 행동' for JuPlan Studio PRD/WBS/ERD/SSOT 보기; documents.ts:3 const EMPTY = \"아직 없음\" is what bullets()/groupedSection print for every empty PRD section (documents.ts:41-44,119)"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux rule '빈 화면 이유+다음 행동' for JuPlan Studio PRD/WBS/ERD/SSOT 보기; documents.ts:3 const EMPTY = \"아직 없음\" is what bullets()/groupedSection print for every empty PRD section (documents.ts:41-44,119)",
+          "title": "빈 계획 항목에 작성 안내를 보여요"
         },
         {
           "taskId": "JUPLAN-DOMAIN-DOC-EMPTY-GUIDE",
@@ -6279,7 +6282,8 @@
             "pnpm --filter @juplan/runtime typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux rule '빈 화면 이유+다음 행동' for JuPlan Studio 문서 보기; packages/runtime/src/index.ts:246 const DOMAIN_DOC_EMPTY = \"- (아직 없음)\""
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux rule '빈 화면 이유+다음 행동' for JuPlan Studio 문서 보기; packages/runtime/src/index.ts:246 const DOMAIN_DOC_EMPTY = \"- (아직 없음)\"",
+          "title": "빈 문서 영역에 작성 안내를 보여요"
         },
         {
           "taskId": "JUPLAN-QA-DOC-ALL-COVERED",
@@ -6293,7 +6297,8 @@
             "pnpm --filter @juplan/runtime typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux rules '빈 화면 이유+다음 행동' and '끝남 = teal/OK' for JuPlan Studio 검증·문서 보기; documents.ts:521 prints `## 시험이 없는 완료 기준\\n\\n${bullets(uncovered)}` → '아직 없음' even when every criterion has a test"
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux rules '빈 화면 이유+다음 행동' and '끝남 = teal/OK' for JuPlan Studio 검증·문서 보기; documents.ts:521 prints `## 시험이 없는 완료 기준\\n\\n${bullets(uncovered)}` → '아직 없음' even when every criterion has a test",
+          "title": "완료 기준 시험 상태를 정확히 알려요"
         }
       ],
       "qaRuntime": [
@@ -7880,7 +7885,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux: 개발자 글자는 원문 보기 안; 영수증 보기 화면 점검) — src/render/index.ts:33-34 at ecda902 promises '파일 이름은 원문 보기에 있어요' while git grep primary_artifact_display finds no renderer inside 원문 보기"
+          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux: 개발자 글자는 원문 보기 안; 영수증 보기 화면 점검) — src/render/index.ts:33-34 at ecda902 promises '파일 이름은 원문 보기에 있어요' while git grep primary_artifact_display finds no renderer inside 원문 보기",
+          "title": "최종 결과 파일을 보여줘"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-AGENT-PARTICLE",
@@ -7894,7 +7900,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 ('진짜 비개발자도 보면 이해가 되게', 영수증 보기 화면 점검) — src/render/index.ts:42 at ecda902 `${r.actor.agent_name}가 한 작업`; agent names 'Claude Team'/'Cline'/'Grok' at src/sources/discover.ts:50,95,97"
+          "ssotEvidence": "Founder direction 2026-09-25 ('진짜 비개발자도 보면 이해가 되게', 영수증 보기 화면 점검) — src/render/index.ts:42 at ecda902 `${r.actor.agent_name}가 한 작업`; agent names 'Claude Team'/'Cline'/'Grok' at src/sources/discover.ts:50,95,97",
+          "title": "작업 주체 이름을 자연스럽게 표시"
         },
         {
           "taskId": "JUCEIPT-TASK-LIST-WHO-WHEN",
@@ -7909,7 +7916,8 @@
             "npm test",
             "npx tsc -p tsconfig.json --noEmit"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:09: '진짜 비개발자도 보면 이해가 되게' — 대상 juceipt 명령 출력(scan, daily)… 영어 작업 제목을 쉬운 한국어 요약으로; founder-ux rule 4 (times relative or local); tests/daily-corpus.test.ts:38 shows repeated '기능 만들기 — 확인 후 받기'"
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '진짜 비개발자도 보면 이해가 되게' — 대상 juceipt 명령 출력(scan, daily)… 영어 작업 제목을 쉬운 한국어 요약으로; founder-ux rule 4 (times relative or local); tests/daily-corpus.test.ts:38 shows repeated '기능 만들기 — 확인 후 받기'",
+          "title": "작업 목록을 쉽게 구분해요"
         }
       ],
       "skills": {
@@ -9847,7 +9855,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, no runtime integration; the matching CLI line test is already at base (9badd0f tests/status-board-cli.test.mjs:171 'names a status file with a misspelled field with the plain-Korean invalid reason')"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, no runtime integration; the matching CLI line test is already at base (9badd0f tests/status-board-cli.test.mjs:171 'names a status file with a misspelled field with the plain-Korean invalid reason')",
+          "title": "오타 상태도 알기 쉽게 안내"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-DUPLICATE-LANE-LINE-TEST",
@@ -9859,7 +9868,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target; src/adapters/agent-relay.mjs at 9badd0f throws AgentRelayBoardError('duplicate-lane', ...) but no status-board CLI test covers it yet"
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target; src/adapters/agent-relay.mjs at 9badd0f throws AgentRelayBoardError('duplicate-lane', ...) but no status-board CLI test covers it yet",
+          "title": "중복 레인 상태를 정확히 안내"
         },
         {
           "taskId": "JUCONTROLER-E2E-DUPLICATE-LANE-STEP",
@@ -9873,7 +9883,8 @@
             "bash scripts/e2e.sh",
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/e2e-output-contract.test.mjs tests/status-board-cli.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; tests/status-board-cli.test.mjs:219 already pins the duplicate-lane CLI line that the E2E doesn't check yet"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; tests/status-board-cli.test.mjs:219 already pins the duplicate-lane CLI line that the E2E doesn't check yet",
+          "title": "중복 레인 오류를 바로 안내"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-LANE-WITHOUT-ID-LINE-TEST",
@@ -9884,7 +9895,8 @@
           "tests": [
             "node --test tests/status-board-cli.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs:57 'every lane needs a text id' has no CLI line test"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs:57 'every lane needs a text id' has no CLI line test",
+          "title": "이름 없는 레인 상태를 안내"
         }
       ],
       "qaRuntime": [
@@ -12728,7 +12740,8 @@
             "node --test test/lovable-home-top.test.mjs test/live-status-projection.test.mjs test/lovable-home-order.test.mjs test/live-status-sentences.test.mjs test/live-status-colors.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
+          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.",
+          "title": "일하는 AI 수를 정확히 보여줘"
         },
         {
           "taskId": "JCAPP-HOLD-COUNT-SAME-NOW",
@@ -12742,7 +12755,8 @@
             "node --test test/live-status-sentences.test.mjs test/live-status-colors.test.mjs test/hold-wait-from-board.test.mjs test/home-all-ok.test.mjs test/relay-top-line.test.mjs test/lovable-home-top.test.mjs test/lovable-home-order.test.mjs test/home-hold-jump.test.mjs test/agent-relay-module.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' At base, railRowModel (app.js:565) filters holds with holdResolved(hold, lane, now), but homeHoldCount/homeHoldWaitMin (app.js:784-786) and homeHoldButton (app.js:794) call holdResolved(hold, lane) with Date.now(). So homeStats.holds and relayTopLine can disagree with the card's '멈춤 N' for the same board."
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' At base, railRowModel (app.js:565) filters holds with holdResolved(hold, lane, now), but homeHoldCount/homeHoldWaitMin (app.js:784-786) and homeHoldButton (app.js:794) call holdResolved(hold, lane) with Date.now(). So homeStats.holds and relayTopLine can disagree with the card's '멈춤 N' for the same board.",
+          "title": "멈춘 작업 수를 정확히 맞춰줘"
         },
         {
           "taskId": "JCAPP-RAIL-GATE-WITH-HOLD",
@@ -12760,7 +12774,8 @@
             "node --test test/v2-rail-rows.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.'"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.'",
+          "title": "결정과 멈춤 상태를 함께 알려줘"
         }
       ],
       "skills": {
