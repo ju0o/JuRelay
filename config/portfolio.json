@@ -2570,7 +2570,8 @@
             "node test/connection-state.test.mjs && node test/lovable-shell.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "package.json:27 test script omits these files; Founder direction 2026-09-27 (wire automationOn/automationOff/automationStatus into a control-room UI toggle) is already implemented at src/frontend/App.tsx ShellConnectionProvider/ConnectionBar (~lines 511-637, rendered ~1723) with tests test/connection-state.test.mjs and test/lovable-shell.test.mjs not yet in the aggregate"
+          "ssotEvidence": "package.json:27 test script omits these files; Founder direction 2026-09-27 (wire automationOn/automationOff/automationStatus into a control-room UI toggle) is already implemented at src/frontend/App.tsx ShellConnectionProvider/ConnectionBar (~lines 511-637, rendered ~1723) with tests test/connection-state.test.mjs and test/lovable-shell.test.mjs not yet in the aggregate",
+          "title": "자동 실행 전환이 제대로 작동해요"
         }
       ],
       "qaRuntime": [
@@ -14842,7 +14843,8 @@
             "node --test test/home-hub.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "founder/BACKLOG_POST_V1.md:22-25 \"Persona polish ... project/role label on the NEEDS YOU card itself\""
+          "ssotEvidence": "founder/BACKLOG_POST_V1.md:22-25 \"Persona polish ... project/role label on the NEEDS YOU card itself\"",
+          "title": "확인할 프로젝트와 결정 한눈에"
         }
       ],
       "skills": {
@@ -17260,7 +17262,8 @@
           "tests": [
             "node --test tests/results/scenario-p/glossary-necessity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:292-294 (결과/위험/검증 필요 조건, 반복 설명 금지), docs/GLOSSARY_POLICY.md:27-33 §2.3; Founder choice 2026-09-27"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:292-294 (결과/위험/검증 필요 조건, 반복 설명 금지), docs/GLOSSARY_POLICY.md:27-33 §2.3; Founder choice 2026-09-27",
+          "title": "필요한 용어만 쉽게 설명"
         },
         {
           "taskId": "JUTELL-GLOSSARY-EXTRA-EXPLANATION-PARITY",
@@ -17272,7 +17275,8 @@
           "tests": [
             "node --test tests/glossary-extra-explanation-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:50-58 §3.2 '다음 경우에만 현재 작업에서의 역할을 한 문장 더 설명한다' (핵심 용어/사용자 승인 필요/일반 정의로 이해 어려움) — absent from glossary-ko.md and SKILL.md"
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:50-58 §3.2 '다음 경우에만 현재 작업에서의 역할을 한 문장 더 설명한다' (핵심 용어/사용자 승인 필요/일반 정의로 이해 어려움) — absent from glossary-ko.md and SKILL.md",
+          "title": "추가 설명이 필요한 때를 안내"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -17887,7 +17891,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:55 SUMMARY_KEYS=[...] feeds the daily public summary; layout.mjs:46-47 staff/botlog have access:'private' and layout.mjs:41 playground has access:'botsonly'; check.mjs:26 only asserts each SUMMARY_KEYS entry exists in channelByKey, never that its access is public-safe"
+          "ssotEvidence": "layout.mjs:55 SUMMARY_KEYS=[...] feeds the daily public summary; layout.mjs:46-47 staff/botlog have access:'private' and layout.mjs:41 playground has access:'botsonly'; check.mjs:26 only asserts each SUMMARY_KEYS entry exists in channelByKey, never that its access is public-safe",
+          "title": "매일 요약을 누구나 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
