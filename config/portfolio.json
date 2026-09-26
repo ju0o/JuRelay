@@ -4329,6 +4329,21 @@
           "title": "연결한 모든 환경의 창을 보드에 전부"
         },
         {
+          "taskId": "ACTL-ENV-BOARD-DEDUPE-FIXES",
+          "scope": "MainPC board 3b19527 capture (2026-09-26 22:5x): (1) the board already runs `--ssh asus` ('ASUS 연결됨') yet asks '다른 컴퓨터(ASUS)도 찾았어요. 연결할까요?' — the default ssh target counts as an enabled environment and is never asked; (2) 'Claude Team · Team 폴더' appears 3 times although ASUS has one claude pane — dedupe panes by (environment host, pane id) so the same ASUS pane reached via --ssh and via an 'asus' environment is one card; header count follows; (3) the WSL scan lists 'docker-desktop' — skip docker-desktop / docker-desktop-data distros. Tests for all three with fake scans.",
+          "files": [
+            "src/actl/core/sources.py",
+            "src/actl/gui.py",
+            "src/actl/tui.py",
+            "tests/test_env_board_dedupe.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Supervisor PrintWindow capture of JuActlBoard 3b19527 on MainPC; ASUS tmux has a single claude pane (%0).",
+          "title": "보드: 같은 창 여러 번·이미 쓰는 ASUS 다시 묻기·docker 목록 고치기"
+        },
+        {
           "taskId": "ACTL-ENV-README",
           "scope": "README.md (and README Korean section if present): a short 'Environments' section for open-source users — works with only local terminals out of the box; `actl envs scan` finds SSH hosts and WSL distros and the board asks before connecting each; `actl envs on|off <id>`; --ssh T still works. Include a Windows → WSL example (codex/claude/opencode inside WSL tmux). No screenshots required.",
           "files": [
