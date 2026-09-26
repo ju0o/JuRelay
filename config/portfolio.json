@@ -6731,6 +6731,121 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (Founder choice 2026-09-26): 'Keep already-passing read-only screens unchanged; add one mobile walkthrough regression covering the plan map, PRD/WBS/ERD views, Korean labels, empty-state next action, 16px text, 44px targets, and hidden raw text.'",
           "title": "휴대폰에서 기획 화면 잘 보이는지 확인"
+        },
+        {
+          "taskId": "JUPLAN-V1-AI-PLAN-SCHEMA",
+          "scope": "`plan` without --offline fails: Claude output rejected with 'Agent response did not match GraphChangeProposal shape' (payload.scope not in mvp|v1|later, payload.validated missing). State the allowed enum values and required fields in the prompt (packages/agent-provider/src/prompt.ts), make runPlanningPasses (packages/runtime/src/index.ts ~226) repair-or-retry once with the validation errors, and on final failure print one plain Korean line ('AI가 만든 계획 형식이 맞지 않아요 — 다시 시도해 주세요') with raw Zod detail only behind --verbose. Tests with a fake provider returning the bad shape then a good one, and bad twice.",
+          "files": [
+            "packages/agent-provider/src/prompt.ts",
+            "packages/agent-provider/src/proposal.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/planning-repair.test.ts"
+          ],
+          "tests": [
+            "pnpm -r build",
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder '오케이 승인'. Founder 2026-09-26: 'JuPlan을 먼저 … 완성해서 진짜 내가 오케이 승인 하면'. CONTROL_TOWER V1 E2E target items 1-10.",
+          "title": "AI 계획 만들기가 실패하지 않게 (형식 맞추기·한 번 고쳐 다시)"
+        },
+        {
+          "taskId": "JUPLAN-V1-FREEZE-VISIBLE",
+          "scope": "freeze() (packages/runtime/src/index.ts ~381) writes a snapshot but the draft stays READY_FOR_FINAL_REVIEW and the Studio keeps saying '확정해 달라고 말해 주세요'. After freeze move the draft/lifecycle to FROZEN with revision+date, the Studio home banner (~1607) shows '확정됨 ✓ · 수정본 N · 날짜' and drops the ask line; a second freeze with no changes is refused with a Korean line. Tests: freeze → state FROZEN + banner text; double freeze refused.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/freeze-visible.test.ts"
+          ],
+          "tests": [
+            "pnpm -r build",
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder '오케이 승인'. Founder 2026-09-26: 'JuPlan을 먼저 … 완성해서 진짜 내가 오케이 승인 하면'. CONTROL_TOWER V1 E2E target items 1-10.",
+          "title": "확정하면 화면에도 '확정됨 ✓'이 보이게"
+        },
+        {
+          "taskId": "JUPLAN-V1-FOUNDER-GATE-REAL",
+          "scope": "packages/runtime/src/cli.ts:70 defaults approval to 'founder-review', so a freeze counts as approved without the Founder. Remove the default; freeze requires an explicit approval reference or a recorded Founder confirmation; add a Studio '최종 확인' screen with the validation summary and one [확정하기] button (records the confirmation, then freezes) and a CLI message in Korean when approval is missing. Tests: freeze without approval refused; Studio confirm records and freezes.",
+          "files": [
+            "packages/runtime/src/cli.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/founder-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm -r build",
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder '오케이 승인'. Founder 2026-09-26: 'JuPlan을 먼저 … 완성해서 진짜 내가 오케이 승인 하면'. CONTROL_TOWER V1 E2E target items 1-10.",
+          "dependsOn": [
+            "JUPLAN-V1-FREEZE-VISIBLE"
+          ],
+          "title": "대표님 최종 확인을 진짜로 거치게"
+        },
+        {
+          "taskId": "JUPLAN-V1-PLAN-MAP-READABLE",
+          "scope": "For scanned existing projects (e.g. 161 nodes) renderPlanMapSvg / planMap* (packages/runtime/src/index.ts ~1678-1810) draws hundreds of tangled edges and raw file-path labels. Above a threshold (e.g. 40 nodes) collapse into per-type group boxes with counts and show the top N with '더 보기'; labels use short names (file basename / Korean title), full path only in a tooltip/원문. Tests: 161-node fixture renders ≤40 visible boxes, no label contains '/'.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/plan-map-readable.test.ts"
+          ],
+          "tests": [
+            "pnpm -r build",
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder '오케이 승인'. Founder 2026-09-26: 'JuPlan을 먼저 … 완성해서 진짜 내가 오케이 승인 하면'. CONTROL_TOWER V1 E2E target items 1-10.",
+          "title": "기존 프로젝트 계획 지도를 읽을 수 있게"
+        },
+        {
+          "taskId": "JUPLAN-V1-OFFLINE-USES-IDEA",
+          "scope": "offlineProvider (packages/runtime/src/index.ts ~89-106) injects the fixed 'JuPlan 실행기' / '혼자서도 쓸 수 있는 계획 흐름' nodes for any idea and into scanned projects. Build the offline nodes from the idea text (title, goal, 3-5 features split from the sentence) and never inject template nodes into existing-project scans. Tests: household-ledger idea → no 'JuPlan' text; scan output has no template nodes.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/offline-idea.test.ts"
+          ],
+          "tests": [
+            "pnpm -r build",
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder '오케이 승인'. Founder 2026-09-26: 'JuPlan을 먼저 … 완성해서 진짜 내가 오케이 승인 하면'. CONTROL_TOWER V1 E2E target items 1-10.",
+          "title": "오프라인 계획도 내 아이디어로 만들어지게"
+        },
+        {
+          "taskId": "JUPLAN-V1-INTAKE-ERRORS-PLAIN",
+          "scope": "A Korean-only project name fails with 'BLOCKED: Cannot derive a StableId…' + regex (packages/plan-core/src/ideaDiscover.ts:172, partly wrapped at packages/runtime/src/cli.ts:18): auto-generate an ASCII id (romanize or 'project-<date>-<n>') so no --id is needed. `scan` on a missing path prints ENOENT lstat: show '폴더를 찾을 수 없어요 — 경로를 확인해 주세요' (createExistingProject, index.ts ~210). Tests for both.",
+          "files": [
+            "packages/plan-core/src/ideaDiscover.ts",
+            "packages/runtime/src/cli.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/intake-errors.test.ts"
+          ],
+          "tests": [
+            "pnpm -r build",
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder '오케이 승인'. Founder 2026-09-26: 'JuPlan을 먼저 … 완성해서 진짜 내가 오케이 승인 하면'. CONTROL_TOWER V1 E2E target items 1-10.",
+          "title": "새 프로젝트·폴더 읽기 오류를 쉬운 말로"
+        },
+        {
+          "taskId": "JUPLAN-V1-WINDOWS-LAUNCHER",
+          "scope": "Add scripts/juplan-studio.cmd (and a PowerShell twin) for Windows: picks the last project folder (or asks with a folder dialog), runs `serve`, and opens http://127.0.0.1:4317 in the default browser; plus README_KO '윈도우에서 여는 법' section. Test: a node test that the script files exist and reference serve + the port; keep existing CLI unchanged.",
+          "files": [
+            "scripts/juplan-studio.cmd",
+            "scripts/juplan-studio.ps1",
+            "README_KO.md",
+            "packages/runtime/test/windows-launcher.test.ts"
+          ],
+          "tests": [
+            "pnpm -r build",
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder '오케이 승인'. Founder 2026-09-26: 'JuPlan을 먼저 … 완성해서 진짜 내가 오케이 승인 하면'. CONTROL_TOWER V1 E2E target items 1-10.",
+          "title": "MainPC에서 두 번 클릭으로 JuPlan 열기"
         }
       ],
       "qaRuntime": [
