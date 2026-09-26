@@ -6,6 +6,7 @@ import type { ControlRoomModelUsage } from '../shared/types.js';
 import { controlRoomTaskId, controlRoomTaskTitle, founderTaskTitle, controlRoomHasDoneData, controlRoomTodayCount, controlRoomTodayDone, controlRoomVerifiedDoneTotal, controlRoomWorkingItems, controlRoomRoutingLine, laneAttention } from '../shared/types.js';
 import { PROJECT_LABELS, aiDisplayName, projectFromSearch, projectWindowKey, barPercent, envReasonText, envTone, normalizeEnvs, ramText, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
 import type { EnvRow, EnvTone, NormalizedHold } from '../shared/projectLabels.js';
+import { scopeBoard } from '../shared/projectScope.js';
 import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from '../shared/tokens.js';
 import type { TokenFinding, TokensView } from '../shared/tokens.js';
 
@@ -999,7 +1000,7 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
   const load = useCallback(async (): Promise<void> => {
     try {
       const next = await must<ControlRoomBoard>({ op: 'controlRoom:board' });
-      setBoard({
+      const normalized = {
         lanes: Array.isArray(next?.lanes) ? next.lanes : [],
         models: next?.models && typeof next.models === 'object' ? next.models : undefined,
         routing: (next as Record<string, unknown>)?.routing,
@@ -1008,7 +1009,8 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
           ?? (next as Record<string, unknown>)?.doneToday
           ?? (next as Record<string, unknown>)?.completedToday
           ?? (next as Record<string, unknown>)?.done,
-      });
+      };
+      setBoard(scopeBoard(normalized, projectFromSearch(window.location.search)));
       setError('');
       setErrorDetail('');
     } catch (e) {
