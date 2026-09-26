@@ -8523,6 +8523,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙(개발자 글자는 원문 보기 안) … 대상: 영수증 보기 화면 — 빠진 확인 항목의 쉬운 설명",
           "title": "빠진 확인 목록에서 개발 용어 빼기"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-REVIEW-ACTION-LINE",
+          "scope": "In koreanSummary in src/daily/index.ts, stop joining every human action onto the end of each '검토 필요 작업' item (today: '- <제목> — <판정> · <AI> · <시각>: <할 일1>, <할 일2>, …'). Show the item line alone, then one indented line under it: '  할 일: <첫 할 일>' plus ' 외 N건' when there are more, or '  할 일: 영수증을 열어 확인해 주세요' when there are none. This is the same pattern as the '빠진 확인' line in scan's SUMMARY.md (buildScanSummary in src/sources/summary.ts). Update the exact expectation in tests/daily.test.ts (currently '- 작업 내용 확인 — 확인 후 받기 · Codex · 끝난 시각 기록 없음: check it'). Add cases for zero, one and several actions. Keep tests/daily-corpus.test.ts and tests/daily-cli.test.ts passing.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/daily-corpus.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상 juceipt daily 출력, 빠진 확인 항목의 쉬운 설명; founder-ux rule 1/13 (한 눈에, 카드당 한 가지 행동)"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-NEXT-LINE-NAMES-TASK",
+          "scope": "In dailyCommand in src/cli/main.ts, the review-case last line is a vague '다음: 검토가 필요한 영수증을 먼저 열어 보세요.' Replace it with a line that names the first review item using the existing taskTitle from src/daily/index.ts: '다음: 「<제목>」 영수증부터 열어 보세요' plus ' (나머지 N개도 확인이 필요해요)' when there are more. When the receipts folder also has scan's SUMMARY.md, add ' — 요약 파일(SUMMARY.md)의 영수증 열기를 누르면 돼요'. Keep the ready-case line unchanged, print no paths unless --show-raw/--show-paths is given, and update the exact expectations in tests/daily-cli.test.ts (lines ~23 and ~61). Add one scan-shaped folder case that has SUMMARY.md.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 대상 juceipt daily 출력, 영어 작업 제목을 쉬운 한국어 요약으로; founder-ux rule 1 (맨 위/끝 한 문장: 지금 할 일)"
         }
       ],
       "skills": {
