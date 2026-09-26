@@ -22,7 +22,8 @@
     "test:v2": "npm run test:v2:runner && npm run test:v2:night && npm run test:v2:founder",
     "test:night-buttons": "node test/automation-toggle.test.mjs && node test/lane-pause.test.mjs && node test/night-schedule.test.mjs && node test/night-schedule-card.test.mjs && node test/hub-promote.test.mjs && node test/hub-promote-button.test.mjs",
     "test:plan-request": "node test/plan-request.test.mjs && node test/plan-request-result.test.mjs && node test/plan-save-shape.test.mjs && node test/plan-confirm-reset.test.mjs && node test/launch-project-pick.test.mjs",
-    "test": "npm run test:fs && npm run test:vnext && npm run test:v03 && npm run test:v2 && npm run test:night-buttons && npm run test:plan-request",
+    "test:night-reports": "node test/controlRoom.test.mjs && node test/tokens.test.mjs && node test/envs-panel.test.mjs",
+    "test": "npm run test:fs && npm run test:vnext && npm run test:v03 && npm run test:v2 && npm run test:night-buttons && npm run test:plan-request && npm run test:night-reports",
     "pretest": "npm run build:server",
     "build:win": "vite build && tsc -p tsconfig.server.json && electron-builder --config electron.builder.yml"
   },
