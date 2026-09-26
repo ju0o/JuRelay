@@ -15256,6 +15256,18 @@
           ],
           "ssotEvidence": "operator/public/app.js:110-119 founderVersion/founderGoal `if (!raw || raw === 'UNKNOWN') return raw || 'UNKNOWN';` rendered via projectSummary (app.js:420) esc(founderVersion(version))/esc(founderGoal(goal)) into the visible <span>/<dd>, not the details fold; founder-ux SKILL.md rule 2: 'No developer text on the surface ... enum words such as HOLD, QUEUED, VERIFIED_DONE, UNMAPPED, unknown'",
           "title": "없는 버전과 목표를 쉽게 안내하기"
+        },
+        {
+          "taskId": "JCAPP-NEEDS-YOU-ROLE-LABEL",
+          "scope": "확인이 필요한 카드에 프로젝트 이름과 함께 담당 역할을 평이한 한국어로 표시하고 원문 정보는 접힌 영역에 둔다.",
+          "files": [
+            "operator/public/app.js",
+            "test/approvals-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/approvals-module.test.mjs"
+          ],
+          "ssotEvidence": "founder/BACKLOG_POST_V1.md:23 quote, project/role label on the NEEDS YOU card itself"
         }
       ],
       "skills": {
