@@ -17852,6 +17852,17 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: README member-commands line must state the 5-keyword cap enforced by bot.mjs (SUB_MAX).",
           "title": "키워드 구독 최대 개수 안내"
+        },
+        {
+          "taskId": "JUAI-CHECK-SUMMARY-ACCESS",
+          "scope": "Add a check.mjs assertion that every SUMMARY_KEYS channel has access other than private or botsonly, so a future addition of a private/staff-only channel to the daily summary list is caught",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:55 SUMMARY_KEYS=[...] feeds the daily public summary; layout.mjs:46-47 staff/botlog have access:'private' and layout.mjs:41 playground has access:'botsonly'; check.mjs:26 only asserts each SUMMARY_KEYS entry exists in channelByKey, never that its access is public-safe"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
