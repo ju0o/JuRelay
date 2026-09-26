@@ -10233,6 +10233,34 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; src/adapters/agent-relay.mjs:46 \"if (!object(board)) throw new AgentRelayBoardError('not-object', 'expected an object');\" and src/project-status.mjs:127-128 \"} catch { return unknownEntry('invalid');\" have no CLI regression test for a non-object board"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-NON-OBJECT-BOARD-STEP",
+          "scope": "Add step run_non_object_board to scripts/e2e.sh right after run_invalid_lanes, with label '보드 모양 오류 안내' and next command board, and add it to the step loop, the labels map and the commands map. Model it on run_invalid_lanes, but the current.json is the JSON array `[]`. The step passes only when exit is 0, the single agent-relay row is UNKNOWN, stale true, reason invalid, and stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: agent-relay(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요'. Then sync the docs/getting-started.md example JSON line, the step list on line 30 and a new bullet, and add the step to the expected steps in tests/e2e-script.test.mjs.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md",
+            "tests/e2e-script.test.mjs"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: Make the existing offline E2E and Korean Quickstart the next bounded acceptance target; follows done JUCONTROLER-STATUS-CLI-NON-OBJECT-BOARD-LINE-TEST (tests/status-board-cli.test.mjs:279) and the adapter's not-object code (src/adapters/agent-relay.mjs:46)"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-RESERVED-LANE-ID-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names an Agent Relay board with duplicate lane ids with the plain-Korean invalid reason'. It writes an Agent Relay board whose only lane has id 'agent-relay' (state RUNNING), which the adapter rejects as a duplicate of the runner entry. It asserts exit 0, rows [['agent-relay','UNKNOWN',true,'invalid']], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: agent-relay(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요\\n'. No source changes.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:141 'A lane with id `agent-relay` is rejected as a duplicate of the runner entry.'; Founder direction 2026-09-26 offline E2E/Quickstart acceptance target"
         }
       ],
       "qaRuntime": [
