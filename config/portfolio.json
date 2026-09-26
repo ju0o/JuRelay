@@ -7992,6 +7992,34 @@
             "npm test"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25): 영수증 보기 화면 — '영어 작업 제목을 쉬운 한국어 요약으로'; base 86f1bb5 src/receipt/index.ts:73-75 copies g.human_action verbatim, and src/reconciler/index.ts:374/383/393/481 embed raw request text '「\" + it.text + \"」', which shows in src/render/index.ts:25 and src/daily/index.ts:130"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-NO-DEAD-AI-REPORT-POINTER",
+          "scope": "In src/render/index.ts, rewrite every empty-state line that ends with '— 원문 보기에서 AI 보고를 확인하세요' (Level 1: 받은 결과, 최종 결과, 남은 확인 when the verdict is not ready, 받기 전 내가 할 일; Level 2: 파일 변경, 실패, 외부 요청) so it gives a plain 해요체 reason plus a next step that actually exists, because the receipt never stores or shows the AI's final report and 원문 보기 has no 'AI 보고' to find (e.g. '기록에서 받은 결과를 찾지 못했어요 — AI에게 무엇을 끝냈는지 다시 물어보세요'). For ready, the empty 받기 전 내가 할 일 line should say plainly that there is nothing to do ('확인할 일이 없어요 — 바로 받아도 돼요') and not send the Founder anywhere. Keep every other string, colour and layout as it is. Update the matching expectations in tests/receipt-render-founder.test.ts and add one assertion that the rendered HTML no longer contains 'AI 보고'.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux 규칙 '빈 화면 이유+다음 행동', 대상 '영수증 보기 화면'; at 817f5df, src/render/index.ts:34,68,77,85,135,139,141 point to '원문 보기에서 AI 보고', but renderLevel2/renderLevel3 and the Receipt type (src/types.ts:273-356) carry no final report text"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-DELIVERED-EMPTY-NO-AI-REPORT",
+          "scope": "In koreanSummary in src/daily/index.ts, replace the empty '전달 결과:' text '기록에서 받은 결과를 찾지 못했어요 — 영수증을 열어 AI 보고를 확인하세요' with a plain 해요체 reason plus a next step that exists, because receipts do not contain the AI's final report (e.g. '기록에서 받은 결과를 찾지 못했어요 — AI에게 무엇을 끝냈는지 다시 물어보세요'). Change nothing else in the summary. Update the expectation in tests/daily.test.ts and assert that summary_ko no longer contains 'AI 보고'.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux 규칙 '빈 화면 이유+다음 행동', 대상 'juceipt 명령 출력(daily)'; at 817f5df, src/daily/index.ts:145 tells the Founder to find an 'AI 보고' in the receipt, and no receipt field or rendered section holds one"
         }
       ],
       "skills": {
