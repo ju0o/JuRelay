@@ -4676,6 +4676,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-26: 'Window -> wsl -> codex | claude | opencode … 그 매핑 된 것들은 전부 다 보이게.' ACTL-BOARD-ALL-ENVS → -R2 → -R2-R2 held 2026-09-27 02:4x; grouping works and tests pass, QA left two concrete findings (row state keyed by pane_id only; raw ids outside 원문 보기). New narrow task instead of another redo.",
           "title": "보드: 환경마다 창 묶어 보기 마무리 (같은 번호 창 섞임 고치기)"
+        },
+        {
+          "taskId": "ACTL-LOVABLE-ENV-COLUMN-R2",
+          "scope": "Add env_filter state (mirroring project_filter) built from load_environments() into a left-column list, so selecting an environment filters _render_cards' visible windows to it and selecting it again clears the filter, verified by a new test tests/test_lovable_env_column.py::test_select_environment_filters_visible_rows that fails on current gui.py (no env_filter) and passes once added, with empty-state wording explicitly out of scope.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/core/sources.py",
+            "tests/test_lovable_env_column.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-board.png."
         }
       ],
       "qaRuntime": [
