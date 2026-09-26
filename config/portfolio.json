@@ -7217,6 +7217,34 @@
             "npx tsc -p tsconfig.json --noEmit"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): founder-ux 규칙 '개발자 글자는 원문 보기 안', '오류 3줄' for juceipt scan output; src/sources/scan.ts:134 at 86dbfde prints '건너뜀: ${agent} 세션을 읽지 못했습니다 (${error.message})' with the raw English error on the surface"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-META-PLAIN",
+          "scope": "In renderLevel1 of src/render/index.ts, turn the terse Level 1 되돌리기/비용 meta values ('일부 복원 가능', '되돌리기 정보 없음', '되돌리기 불가', '추정치', '확인할 수 없음') into plain 해요체 sentences that say what they mean (e.g. 되돌릴 방법이 기록에 없어요 / 일부만 되돌릴 수 있어요 / 되돌릴 수 없어요 / 추정한 비용이라 정확하지 않을 수 있어요 / 비용 기록이 없어요 — 0원이라는 뜻은 아니에요), keep the known-amount text and the 원문 보기 Level 2 unchanged, and add a render test covering each rollback and cost status.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 영수증 보기 화면을 founder-ux 규칙(쉬운 한국어, 빈/모름 상태는 이유+다음 행동)으로 점검; src/render/index.ts:28-32 at 4e8161c still shows '일부 복원 가능' / '되돌리기 정보 없음' / '되돌리기 불가' / '추정치' / '확인할 수 없음'"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-COST-LINE-PLAIN",
+          "scope": "In koreanSummary in src/daily/index.ts, rewrite the jargon line '비용: 확인 N건, 추정 N건, 확인할 수 없음 N건' as one plain 해요체 sentence that keeps all three counts and says unknown cost is not 0원 (e.g. '비용: 비용 기록이 있는 작업 N개, 추정한 작업 N개, 기록이 없는 작업 N개예요 — 기록이 없다고 0원은 아니에요.'), and update the matching expectations in the three daily tests.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/daily-corpus.test.ts",
+            "tests/daily-m2-corpus.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — juceipt daily 출력을 founder-ux 규칙으로 점검; src/daily/index.ts:161 at 4e8161c still prints '비용: 확인 ${known}건, 추정 ${estimated}건, 확인할 수 없음 ${unknown}건'"
         }
       ],
       "skills": {
