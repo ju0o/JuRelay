@@ -5518,6 +5518,46 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '빈 화면 이유+다음 행동' — 대상: JuPlan Studio (PRD/WBS/ERD/SSOT 보기)",
           "title": "내보낸 파일이 없을 때 쉬운 안내 보여주기"
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-BLOCKER-NO-IDS",
+          "scope": "In evaluateProposal in packages/runtime/src/index.ts, change what the Founder sees when a proposal is blocked. Plan-core blocker messages that carry raw ids or hashes (DUPLICATE_NODE_ID, DANGLING_EDGE_FROM/TO, etc.) should use the plain Korean text in the existing ID_BEARING_FINDING_COPY map. founderMergeFailedMessage should say in Korean that an item being added is already in the plan and what to do next, without printing the ids, and any other merge error should get a general Korean message instead of the English text passed through. Blocker codes stay the same. Update the MERGE_FAILED expectation in proposal-korean-blockers.test.ts and add a regression test that blocker messages contain no raw ids.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/proposal-korean-blockers.test.ts",
+            "packages/runtime/test/proposal-blocker-no-ids.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기 → 적용, founder-ux rule 2 (개발자 글자는 원문 보기 안); index.ts founderMergeFailedMessage returns '이미 있는 항목 id와 겹칩니다: ${ids.join(\", \")}'"
+        },
+        {
+          "taskId": "JUPLAN-DRAFT-LOCK-KOREAN",
+          "scope": "When another change is being saved at the same moment, stop showing the English error 'DRAFT_LOCKED: concurrent mutation of .juplan/plan/draft.json is not allowed'. In withDraftLock in packages/runtime/src/index.ts, keep the DRAFT_LOCKED prefix but make the rest plain Korean (for example '다른 변경을 저장하는 중이에요. 잠시 뒤 다시 해 주세요') with no file path. In applyProposal, turn that lock conflict into a failedProposal blocker with code DRAFT_LOCKED instead of throwing. Existing /DRAFT_LOCKED/ tests must still pass, and add one regression test.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/draft-lock-korean.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기, founder-ux rule 10 (오류 3줄: 무슨 일·왜·할 일); index.ts:58 throws `${DRAFT_LOCKED_CODE}: concurrent mutation of .juplan/plan/draft.json is not allowed`"
+        },
+        {
+          "taskId": "JUPLAN-PROPOSAL-FILE-MISSING-KOREAN",
+          "scope": "In the apply-proposal branch of packages/runtime/src/cli.ts, when the --file proposal can't be read (ENOENT or a directory), print the same ok:false JSON result the command prints for other blockers, with code PROPOSAL_FILE_MISSING, a plain Korean message saying the proposal file wasn't found and what to do, and no path. This replaces the raw 'BLOCKED: ENOENT: no such file or directory, open …'. Add a CLI regression test using the existing CLI_ENTRY pattern from undo-json.test.ts.",
+          "files": [
+            "packages/runtime/src/cli.ts",
+            "packages/runtime/test/proposal-file-missing.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화 — 대화로 바꾸기 → 미리보기, founder-ux rules 2 and 10 (no English error text or file paths on the surface; errors say what happened and what to do); cli.ts die() prints `BLOCKED: ${message}` straight from readFile errors"
         }
       ],
       "qaRuntime": [
