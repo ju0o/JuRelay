@@ -9969,6 +9969,31 @@
             "bash scripts/e2e.sh"
           ],
           "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart acceptance target; no runtime integration or new product behavior"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-LANE-WITHOUT-ID-STEP",
+          "scope": "Add step run_lane_without_id to scripts/e2e.sh right after run_invalid_runner, with label '레인 ID 없음 안내' and next command board, and add it to the step loop, the labels map and the commands map; model it on run_duplicate_lane, writing an Agent Relay board whose only lane is {\"state\":\"RUNNING\"} for project noid and passing only when stdout is one UNKNOWN stale invalid row and stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: noid(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요'; then sync the docs/getting-started.md example JSON line and step list, and the ordered step list in tests/e2e-script.test.mjs.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md",
+            "tests/e2e-script.test.mjs"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/e2e-failure-output.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target with no runtime integration or new product behavior; tests/status-board-cli.test.mjs:235 already checks the lane-without-id case, but scripts/e2e.sh has no step for it at base"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-INVALID-LANES-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names an Agent Relay board with a non-object runner with the plain-Korean invalid reason', that writes an Agent Relay board whose lanes is an object ({}) for registry project 'agent-relay' and asserts exit 0, one row ['agent-relay','UNKNOWN',true,'invalid'], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: agent-relay(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요\\n'.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; src/adapters/agent-relay.mjs rejects non-array lanes ('invalid-lanes', covered only in tests/agent-relay-adapter.test.mjs:95), but no status-board CLI test checks the plain-Korean line for it"
         }
       ],
       "qaRuntime": [
