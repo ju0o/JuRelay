@@ -17222,6 +17222,18 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:292,294 (§6.6: 사용자가 작업 결과를 이해하는 데 필요한 용어 / 위험이나 검증 결과를 판단하는 데 필요한 용어) + Founder choice 2026-09-27",
           "title": "용어 설명 규칙 문서 일치 확인"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-P-NECESSITY-LIMIT",
+          "scope": "Add a scenario-p report fixture and offline node:test proving glossary explanations stay limited to terms necessary for understanding the result, risk, or verification (PRODUCT_SCOPE §6.6 / GLOSSARY_POLICY §2.3), including a decoy technical term left unexplained and no repeated explanation of the same term.",
+          "files": [
+            "tests/results/scenario-p/glossary-necessity.fixture.md",
+            "tests/results/scenario-p/glossary-necessity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-p/glossary-necessity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:292-294 (결과/위험/검증 필요 조건, 반복 설명 금지), docs/GLOSSARY_POLICY.md:27-33 §2.3; Founder choice 2026-09-27"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
