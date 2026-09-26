@@ -5618,6 +5618,46 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대상 JuPlan Studio 화면 — 대화로 바꾸기 → 미리보기 → 적용 → 되돌리기; founder-ux 누르면 1초 안에 결과 문장 + 다음 행동"
+        },
+        {
+          "taskId": "JUPLAN-DOMAIN-DOC-ITEM-KOREAN",
+          "scope": "In packages/runtime/src/index.ts, change nodeLines so each line in the 8 domain docs (/view/docs/product and the others) shows the item's Korean kind from NODE_TYPE_LABELS and its Korean knowledge status from KNOWLEDGE_STATUS_LABELS (for example '- **JuPlan** 프로젝트 요약 — 추정'), instead of the raw `ProjectBrief` code span and English enums like ASSUMED; update the runtime.test.ts domain-doc assertion that expects `ProjectBrief`, and add a regression test in domain-doc-heading.test.ts that checks the served product page has no raw type or enum words.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/domain-doc-heading.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙 — 개발자 글자는 원문 보기 안, 한국어 라벨; 대상 JuPlan Studio PRD/WBS/ERD/SSOT 보기"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-PORT-BUSY-KOREAN",
+          "scope": "In serve() in packages/runtime/src/index.ts, when listen fails with EADDRINUSE, reject with a three-line plain-Korean error (Studio가 이미 열려 있거나 다른 프로그램이 이 번호를 쓰고 있어요 · 열려 있는 Studio 창을 쓰거나 다른 번호로 다시 열어 주세요) instead of the English 'listen EADDRINUSE: address already in use 127.0.0.1:<port>'; other listen errors stay as they are; add an offline vitest that holds an ephemeral port with a second server and checks the Korean message.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-port-busy.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙 — 오류 3줄(무슨 일·왜·할 일), 개발자 글자는 표면에 두지 않기; 대상 JuPlan Studio 화면"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-EVENTS-REPLY-KOREAN",
+          "scope": "In serve() in packages/runtime/src/index.ts, replace the two English /events plain-text replies ('Method Not Allowed: /events is GET only' and 'Forbidden: /events is served on 127.0.0.1 only') with plain-Korean sentences that give a reason and a next step, keeping the 405/403 status codes and loopback-only behavior; add an offline vitest that sends a POST to /events and checks for status 405, a Korean body, and none of the English text.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-events-reply-korean.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙 — 개발자 글자는 원문 보기 안, 한국어 문장; 대상 JuPlan Studio 화면(실시간 새로 고침)"
         }
       ],
       "qaRuntime": [
