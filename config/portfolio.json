@@ -7663,6 +7663,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 원문·개발자 정보는 원문 보기로 숨긴다",
           "title": "영수증·하루 요약에서 파일 위치 숨기기"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-MEANING-ISSUE-LABEL",
+          "scope": "In koreanSummary in src/daily/index.ts, rewrite the formal '상태 뜻:' line ('…끝나지 않은 작업입니다.') as plain 해요체 in the exact wording scan's SUMMARY.md already uses. That wording adds the missing explanation of '문제 있음', a word the daily top sentence shows ('문제 있음 N개') but never explains. Update the expectations in tests/daily.test.ts and tests/daily-cli.test.ts to match.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 대상 juceipt 명령 출력(scan, daily, receipt) — 판정 '확인 후 받기' 같은 말의 뜻; base src/daily/index.ts koreanSummary top sentence shows '문제 있음 ${issueCount}개' while its '상태 뜻' line never defines 문제 있음, whereas src/sources/summary.ts already does ('문제 있음은 판단할 수 없음·일부 완료·실패·중단됨을 합친 수예요.')"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-PILL-COUNT-TITLE",
+          "scope": "In renderLevel1 and the CSS in src/render/index.ts, make two changes. First, the verdict pill shows a bare count ('확인 후 받기 · 3건'); spell out what it counts ('확인 후 받기 · 빠진 확인 3건'). Second, the task title is shown as a small grey 16px caption; make it the large dark main heading (22px or more, bold) and keep the existing dark-mode contrast rule. Add regression tests in tests/receipt-render-founder.test.ts.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:09): 영수증 보기 화면 — 빠진 확인 항목의 쉬운 설명, founder-ux 규칙 '글자 16px·핵심 숫자는 크게'; base src/render/index.ts:81 renders `p.acceptance_label + \" · \" + p.review_count + \"건\"` and :170 styles h2.request at font-size:16px color:#64748b"
         }
       ],
       "skills": {
