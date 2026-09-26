@@ -13651,6 +13651,21 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.",
           "title": "차례 기다리는 일의 다음 안내 바로잡기"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-SENT-BACK-TRUE",
+          "scope": "In operator/public/app.js liveCardModel, when lane.current.state is 'REQUEST_CHANGES' (night-board.py emits it at stage 2 after QA sends work back), 지금 하는 일 reads '<worker>가 검사에서 나온 점을 고치는 중' and 확인 상태 reads {word:'일부 확인', tone:'warn', evidence:'검사에서 고칠 점이 나왔어요'}, not the plain '만드는 중' with '아직 검사 전' or the previous task's '확인됨'; 대표님 할 일, 다음 단계 and railRowModel stay as they are; add a 'run-sent-back' lane to test/fixtures/live-status/board.json in the real producer shape (state RUNNING, current {taskId,title,state:'REQUEST_CHANGES',stage:2,attempts:2,worker:'codex',qa:'claude-pro'}, no startedAt) and pin it in the WANT table of live-status-sentences and in the warn check of live-status-colors",
+          "files": [
+            "operator/public/app.js",
+            "test/fixtures/live-status/board.json",
+            "test/live-status-sentences.test.mjs",
+            "test/live-status-colors.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-sentences.test.mjs test/live-status-colors.test.mjs test/live-status-projection.test.mjs test/live-status-card-html.test.mjs test/lovable-live-cards.test.mjs test/agent-relay-module.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' + founder-ux Live status card '확인 상태: exactly one of 확인됨 / 일부 확인 / 확인하지 못함, with the evidence in one short phrase'"
         }
       ],
       "skills": {
