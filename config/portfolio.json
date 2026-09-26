@@ -4384,7 +4384,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T). Founder rewrite choice: narrow — 환경별 묶음 화면과 연결 끊김 안내만 먼저, 보내기와 결과 확인은 지금처럼."
+          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T). Founder rewrite choice: narrow — 환경별 묶음 화면과 연결 끊김 안내만 먼저, 보내기와 결과 확인은 지금처럼.",
+          "title": "환경별 화면을 한눈에 확인"
         }
       ],
       "qaRuntime": [
@@ -8607,7 +8608,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: founder-ux rules (오류 3줄, 빈 화면 이유+다음 행동, 개발자 글자는 원문 보기 안) for the juceipt receipt command output; git show d182bc9:src/cli/main.ts receiptCommand still prints the unlabeled '영수증 화면을 만들지 못했어요. / 영수증 원본 파일이 없어서… / 실행 폴더를 확인한 뒤 다시 시도하세요.'"
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux rules (오류 3줄, 빈 화면 이유+다음 행동, 개발자 글자는 원문 보기 안) for the juceipt receipt command output; git show d182bc9:src/cli/main.ts receiptCommand still prints the unlabeled '영수증 화면을 만들지 못했어요. / 영수증 원본 파일이 없어서… / 실행 폴더를 확인한 뒤 다시 시도하세요.'",
+          "title": "영수증이 없을 때 안내해요"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-REVIEW-NOTICE-NO-DEAD-REF",
@@ -8620,7 +8622,8 @@
             "npm run build",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면 — 판정 '확인 후 받기' 같은 말의 뜻, 빠진 확인 항목의 쉬운 설명; git show d182bc9:src/render/index.ts noticeText.review_required refers to '아래 빠진 확인' unconditionally while remainingBlock can render '빠진 확인을 판단할 기록이 없어요'"
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면 — 판정 '확인 후 받기' 같은 말의 뜻, 빠진 확인 항목의 쉬운 설명; git show d182bc9:src/render/index.ts noticeText.review_required refers to '아래 빠진 확인' unconditionally while remainingBlock can render '빠진 확인을 판단할 기록이 없어요'",
+          "title": "확인할 내용이 있을 때 알려줘요"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-FAILED-NO-DEAD-REF",
@@ -8633,7 +8636,8 @@
             "npm test",
             "npm run build"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux 규칙으로 영수증 보기 화면 점검 — 빈 화면 이유+다음 행동; base 7af6453 src/render/index.ts:49 failed: \"작업이 끝나지 않았어요. 아래 빠진 확인과 받기 전 내가 할 일을 보고 다시 맡겨 주세요.\""
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux 규칙으로 영수증 보기 화면 점검 — 빈 화면 이유+다음 행동; base 7af6453 src/render/index.ts:49 failed: \"작업이 끝나지 않았어요. 아래 빠진 확인과 받기 전 내가 할 일을 보고 다시 맡겨 주세요.\"",
+          "title": "실패한 이유에 맞게 다시 안내해요"
         },
         {
           "taskId": "JUCEIPT-SCAN-SUMMARY-TITLE-HEADING",
@@ -8647,7 +8651,8 @@
             "npm test",
             "npm run build"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux rule 1 (맨 위 한 문장) applied to juceipt scan output; base 7af6453 src/sources/summary.ts:113-116 return [topSentence, \"# Juceipt 일일 스캔 요약\", \"\", \"작업 제목\", ...]"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux rule 1 (맨 위 한 문장) applied to juceipt scan output; base 7af6453 src/sources/summary.ts:113-116 return [topSentence, \"# Juceipt 일일 스캔 요약\", \"\", \"작업 제목\", ...]",
+          "title": "일일 스캔 요약을 보기 좋게 보여줘요"
         }
       ],
       "skills": {
@@ -10883,7 +10888,8 @@
             "node --test tests/status-board-cli.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior. src/adapters/juceipt.mjs and src/adapters/juplan.mjs at 2e38efa return reason 'stale' when age > freshnessMs, but status-board-cli.test.mjs only covers this for repository-status-file (line 75) and agent-relay-board (line 248)."
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior. src/adapters/juceipt.mjs and src/adapters/juplan.mjs at 2e38efa return reason 'stale' when age > freshnessMs, but status-board-cli.test.mjs only covers this for repository-status-file (line 75) and agent-relay-board (line 248).",
+          "title": "오래된 영수증을 알려줘"
         },
         {
           "taskId": "JUCONTROLER-E2E-RECEIPT-STALE-STEP",
@@ -10896,7 +10902,8 @@
             "bash scripts/e2e.sh",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior. At 2e38efa, scripts/e2e.sh checks a stale repository-status-file (run_stale) and a stale agent-relay-board (run_relay_stale), but has no step for a stale JuCeipt receipt, which src/adapters/juceipt.mjs marks with reason 'stale'."
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior. At 2e38efa, scripts/e2e.sh checks a stale repository-status-file (run_stale) and a stale agent-relay-board (run_relay_stale), but has no step for a stale JuCeipt receipt, which src/adapters/juceipt.mjs marks with reason 'stale'.",
+          "title": "영수증 최신 상태를 확인해요"
         },
         {
           "taskId": "JUCONTROLER-E2E-PLAN-STALE-STEP",
@@ -10911,7 +10918,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; tests/status-board-cli.test.mjs at 8b38105 'names a JuPlan status observed too long ago with the plain-Korean stale reason' has no matching E2E step (only run_relay_stale/run_receipt_stale exist)"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; tests/status-board-cli.test.mjs at 8b38105 'names a JuPlan status observed too long ago with the plain-Korean stale reason' has no matching E2E step (only run_relay_stale/run_receipt_stale exist)",
+          "title": "계획 상태가 오래됐는지 알려줘"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-MALFORMED-PLAN-LINE-TEST",
@@ -10924,7 +10932,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target, no new product behavior; src/adapters/juplan.mjs:23 at 8b38105 `if (!object(saved)) return { reason: 'malformed' };` has no CLI line test (only JuCeipt and repository-status-file malformed are covered)"
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target, no new product behavior; src/adapters/juplan.mjs:23 at 8b38105 `if (!object(saved)) return { reason: 'malformed' };` has no CLI line test (only JuCeipt and repository-status-file malformed are covered)",
+          "title": "잘못된 계획 상태를 쉽게 알려줘"
         }
       ],
       "qaRuntime": [
@@ -16338,7 +16347,8 @@
             "node --test tests/fixture-verify-result-labels.test.mjs tests/verify-result-labels-parity.test.mjs tests/results/scenario-d/tests-not-run-report.test.mjs tests/results/scenario-e/main-files-cap.test.mjs tests/results/scenario-o/conditional-items.test.mjs tests/fixture-term-no-repeat.test.mjs tests/forbidden-phrases-fixture-parity.test.mjs tests/fixture-report-state-labels.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:380 검증 결과는 다음 상태 중 하나를 사용한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:380 검증 결과는 다음 상태 중 하나를 사용한다.",
+          "title": "검증 결과를 일관되게 안내"
         },
         {
           "taskId": "JUTELL-FIXTURE-BROWSER-CHECK-LABELS",
@@ -16353,7 +16363,8 @@
             "node --test tests/fixture-browser-check-labels.test.mjs tests/browser-check-labels-parity.test.mjs tests/results/scenario-a/concise-report.test.mjs tests/results/scenario-a/failure-examples.test.mjs tests/results/scenario-b/general-report.test.mjs tests/results/scenario-b/failure-examples.test.mjs tests/results/scenario-i/no-tool-partial-report.test.mjs tests/fixture-term-no-repeat.test.mjs tests/forbidden-phrases-fixture-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:577 브라우저 확인 여부는 다음처럼 구분한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:577 브라우저 확인 여부는 다음처럼 구분한다.",
+          "title": "브라우저 확인 상태를 명확히 안내"
         },
         {
           "taskId": "JUTELL-FIXTURE-USER-ACTION-LABELS",
@@ -16366,7 +16377,8 @@
             "node --test tests/fixture-user-action-labels.test.mjs tests/user-action-labels-spec-parity.test.mjs tests/results/scenario-a/concise-report.test.mjs tests/results/scenario-a/failure-examples.test.mjs tests/fixture-term-no-repeat.test.mjs tests/forbidden-phrases-fixture-parity.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:325 사용자 행동은 다음 중 필요한 항목만 작성한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:325 사용자 행동은 다음 중 필요한 항목만 작성한다.",
+          "title": "사용자에게 필요한 조치를 안내"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
