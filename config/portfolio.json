@@ -10746,6 +10746,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs sets staleReason 'future-observedAt' when age < 0, but scripts/e2e.sh at base has no Agent Relay future-observedAt step",
           "title": "Agent Relay 보드 미래 시각 안내 점검"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-RELAY-TIME-LINES-TEST",
+          "scope": "Add two offline tests to tests/status-board-cli.test.mjs, modelled on 'names an Agent Relay board with no observedAt with the plain-Korean missing-observedAt reason'. The first uses an Agent Relay board whose observedAt is one hour ahead and one lane 'lane' in state RUNNING, and asserts the row ['lane','RUNNING',true,'future-observedAt','agent-relay/lanes/lane'] and the exact stderr line 'lane(future-observedAt: 관찰 시각이 미래예요)'. The second uses a board whose observedAt is one hour ago, with registry freshnessMs 1, and asserts the row ['lane','RUNNING',true,'stale','agent-relay/lanes/lane'] and the exact stderr line 'lane(stale: 관찰한 지 너무 오래됐어요)'. No source changes.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs:68-69 staleReason future-observedAt/stale has no CLI test at b1198ed"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-RELAY-STALE-STEP",
+          "scope": "Add step run_relay_stale to scripts/e2e.sh right after run_relay_future_observed, with label '보드 오래됨 안내' and next command board, modelled on run_relay_future_observed. Add it to the step loop, the labels map and the commands map. The step writes an Agent Relay board whose observedAt is one hour ago, with one lane 'lane' in state RUNNING, and a registry entry with freshnessMs 1. It passes only if the row is lane RUNNING stale=true reason 'stale' and the stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: lane(stale: 관찰한 지 너무 오래됐어요) — README 처음 쓰는 법의 reason 표를 보세요'. Then sync the ```json example line, the step bullet and the next bullet in docs/getting-started.md section '`bash scripts/e2e.sh` 결과 읽는 법'.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-docs-sync.test.mjs tests/e2e-script.test.mjs tests/e2e-failure-output.test.mjs tests/e2e-cleanup.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; scripts/e2e.sh:456 step loop at b1198ed covers the relay missing and future observedAt cases but not a relay board that has gone stale by freshnessMs"
         }
       ],
       "qaRuntime": [
