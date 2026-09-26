@@ -4703,6 +4703,19 @@
           ],
           "ssotEvidence": "Founder approved the actl Lovable design 2026-09-26 ('좋아, 이대로 이식') and asked that every mapped environment be visible ('매핑 된 것들은 전부 다 보이게'). MainPC capture 2026-09-27 03:2x after installing 7eb9365 shows the five mismatches above. Add tests in tests/test_gui_board_look.py for one shared needs-check count and one row per environment in the environment section.",
           "title": "보드: MainPC 실제 화면에서 본 어긋남 5가지"
+        },
+        {
+          "taskId": "ACTL-BOARD-WINDOW-LIST-VISIBLE",
+          "scope": "MainPC capture of JuActlBoard 59ba751 at 1456x939 (after ACTL-BOARD-MAINPC-LOOK-FIXES): counts, environment names, fonts and state sentence are fixed, but item (4) is still unmet — there is no visible list of AI windows; the left column is '프로젝트' then '환경', and the environment list is cut off at the bottom. In src/actl/gui.py: (a) show an 'AI 창' list (one row per AI window: name · 환경 · 한 줄 상태, grouped by environment, click selects it into '선택한 창') that is visible without scrolling at 1456x939 — e.g. make the two found-environment question cards collapse into one line '찾은 환경 2개 · 연결할지 고르기' and shrink the intro card to one line so the list fits; (b) the left column must scroll instead of clipping when it is taller than the window; (c) the header's '<name> 로딩...' must become a plain Korean state ('불러오는 중') or disappear once loaded. Keep the approved dark look.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_board_look.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: '그 매핑 된 것들은 전부 다 보이게'. Capture 2026-09-27 03:36 of 59ba751 shows no AI window list and a clipped environment list. Add a test in tests/test_gui_board_look.py that the board model yields one AI-window row per agent grouped by environment and that the found-environment prompts collapse to one summary line when there are 2 or more.",
+          "title": "보드: AI 창 목록이 스크롤 없이 보이게"
         }
       ],
       "qaRuntime": [
