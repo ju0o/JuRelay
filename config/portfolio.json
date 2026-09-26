@@ -15680,6 +15680,42 @@
           ],
           "ssotEvidence": "docs/GLOSSARY_POLICY.md:138 모든 항목을 모든 블록에 강제로 적용하지 않는다.",
           "title": "필요한 설명만 짧게 붙여요"
+        },
+        {
+          "taskId": "JUTELL-EVIDENCE-SOURCE-LABELS-SPEC-PARITY",
+          "scope": "Add a new test-only offline node:test, tests/evidence-source-labels-spec-parity.test.mjs. It takes the six evidence-source labels from the BEGINNER_REPORT_SPEC `### 7.1`–`### 7.6` headings (파일, Git, 명령, 브라우저 또는 실제 실행, 코드 예상, 사용자 제공 정보), strips the numbers, and checks that they match the comma-separated `근거 출처:` line in SKILL.md and the `* 근거 출처:` bullet in report-format.md §1 exactly and in the same order.",
+          "files": [
+            "tests/evidence-source-labels-spec-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/evidence-source-labels-spec-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:195 '근거 출처는 다음 중 하나 이상을 사용한다.' followed by ### 7.1 파일 … ### 7.6 사용자 제공 정보"
+        },
+        {
+          "taskId": "JUTELL-CONFIRM-STATE-LABELS-SPEC-PARITY",
+          "scope": "Add a new test-only offline node:test, tests/confirm-state-labels-spec-parity.test.mjs. It takes the three confirmation-state labels from the BEGINNER_REPORT_SPEC `### 8.1`–`### 8.3` headings (확인됨, 일부 확인, 확인하지 못함) and checks two things: the SPEC still says 확인 상태는 다음 세 가지로 단순화한다, and the labels match the `확인 상태:` line in SKILL.md and the `* 확인 상태:` bullet in report-format.md §1 exactly and in the same order.",
+          "files": [
+            "tests/confirm-state-labels-spec-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/confirm-state-labels-spec-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:275 '확인 상태는 다음 세 가지로 단순화한다.' followed by ### 8.1 확인됨, ### 8.2 일부 확인, ### 8.3 확인하지 못함"
+        },
+        {
+          "taskId": "JUTELL-INFO-SYSTEM-SPEC-HEADINGS-PARITY",
+          "scope": "Add a new test-only offline node:test, tests/info-system-spec-headings-parity.test.mjs. It takes the four category names from the BEGINNER_REPORT_SPEC `### 6.1`–`### 6.4` headings (근거 출처, 확인 상태, 사용자 행동, 보고서 상태) and checks three things: the SPEC still says 이 네 가지를 같은 표현으로 섞지 않는다; the same four names appear in the same order as the label-line keys in SKILL.md; and they appear in the same order as the `* <name>:` bullet keys in report-format.md §1.",
+          "files": [
+            "tests/info-system-spec-headings-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/info-system-spec-headings-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:171 '보고서에서는 다음 네 가지를 서로 다른 정보로 취급한다.' followed by ### 6.1 근거 출처 … ### 6.4 보고서 상태 and '이 네 가지를 같은 표현으로 섞지 않는다.'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
