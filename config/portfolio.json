@@ -14877,6 +14877,30 @@
           ],
           "ssotEvidence": "founder/BACKLOG_POST_V1.md:22-25 \"Persona polish ... project/role label on the NEEDS YOU card itself\"",
           "title": "확인할 프로젝트와 결정 한눈에"
+        },
+        {
+          "taskId": "JCAPP-RESULT-CHANGES-AMBER",
+          "scope": "Change operator/public/app.css .pill.state-changes (QA CHANGES/revision-requested pill) from --bg-bad/--tx-bad to --bg-warn/--tx-warn to match sibling state-verifying/state-received and the decision-blocks-amber rule (stuck is amber, not red); add a test asserting the selector carries no --*-bad token while truth-blocked/failure selectors stay red.",
+          "files": [
+            "operator/public/app.css",
+            "test/result-state-changes-amber.test.mjs"
+          ],
+          "tests": [
+            "node --test test/result-state-changes-amber.test.mjs"
+          ],
+          "ssotEvidence": "founder-ux skill '11. Colours: ... Being stuck is amber, not red.' + commit dfa7a32 JCAPP-DECISION-BLOCKS-AMBER precedent; app.css:297 .pill.state-changes still on --bg-bad/--tx-bad"
+        },
+        {
+          "taskId": "JCAPP-LIVE-STATUS-FIXTURE-GAPS",
+          "scope": "Add three untested lane-state combinations to test/fixtures/live-status/board.json (a RUNNING lane with a non-empty holds[] on an older stuck task, a paused lane whose current.state is REQUEST_CHANGES, and a HUMAN_GATE lane with a non-null current task) with matching expected-sentence entries in test/live-status-sentences.test.mjs, closing gaps in the shared liveCardModel/railRowModel projection tests.",
+          "files": [
+            "test/fixtures/live-status/board.json",
+            "test/live-status-sentences.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-sentences.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress ... add focused fixture tests.'"
         }
       ],
       "skills": {
