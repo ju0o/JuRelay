@@ -12939,6 +12939,54 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25): 'lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs:16-33 pruneState uses olderThan(date, now, 45) for kv and 60 for usage, but check.mjs only tests dates far from those limits"
+        },
+        {
+          "taskId": "JUAI-CHECK-PEEK-CLAMP",
+          "scope": "Add check.mjs assertions only (no lib.mjs change), using a fresh in-memory DB built from SCHEMA: when staff takeQuota calls push a member's used count past total, peekQuota reports left 0 (never negative) with used above total, and quotaMessage returns undefined for an unknown reason.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:40 \"`lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)\"; lib.mjs peekQuota uses left: Math.max(0, total - used), and no test covers that clamp"
+        },
+        {
+          "taskId": "JUAI-CHECK-CHUNK-LINES",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) for chunk branches no test covers yet: it splits at line breaks rather than mid-line (chunk('aaa\\nbbb\\nccc', 7) deepEquals ['aaa\\nbbb','ccc']), returns [] for an empty string, and a chunk that follows a fence which was closed early starts with '```\\n'.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:40 \"순수 로직 (`check.mjs`로 점검)\"; lib.mjs chunk doc says \"Split for Discord's 2000-char limit, preferring line breaks, never breaking a ``` block open\""
+        },
+        {
+          "taskId": "JUAI-CHECK-FAQ-RANK",
+          "scope": "Add check.mjs assertions only (no lib.mjs change): similarity ignores case, spaces and punctuation (similarity('Hello, World!','hello world') === 1), returns 0 for single-character input, and bestFaq returns the higher-scoring row when two rows both pass min, with the score on that row.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:40 \"`lib.mjs` 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (`check.mjs`로 점검)\""
+        },
+        {
+          "taskId": "JUAI-CHECK-HELP-KEYS",
+          "scope": "Add check.mjs assertions only (no layout.mjs change): calling HELP_TEXT with the existing key-validating mention helper throws no error, so every channel key it uses exists in channelByKey, and the result is at most 2000 characters and includes !익명, !봇수다 and 리뷰해줘.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:8 \"멤버 명령어: `!도움말` · `!남은횟수` · `!구독 단어` · `!구독목록` · `!구독취소 단어`\"; bot.mjs:120 sends HELP_TEXT((k) => `<#${ids[k]}>`) for !도움말"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
