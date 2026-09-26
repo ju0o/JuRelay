@@ -4621,6 +4621,19 @@
             "ACTL-LOVABLE-SEND-PANEL"
           ],
           "title": "actl 새 디자인 4: 왼쪽 '연결된 환경'과 연결 질문 카드"
+        },
+        {
+          "taskId": "ACTL-LOVABLE-THEME-LAYOUT-R2",
+          "scope": "Add theme constants in src/actl/gui_theme.py and rebuild only the static board layout in src/actl/gui.py (three resizable columns ~230px/flex/~370px, top bar titled 'actl 보드', a one-line status sentence from a pure helper fed by existing rows, a '새 환경 찾기' button wired to the existing scan action or disabled with '곧 지원', and a one-line first-run hint replacing the old intro paragraph) while leaving the existing running-status card and _motion_tick display completely untouched",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/gui_theme.py",
+            "tests/test_lovable_theme_layout.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-boar"
         }
       ],
       "qaRuntime": [
