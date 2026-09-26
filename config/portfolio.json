@@ -5425,6 +5425,46 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:08: target '대화로 바꾸기 → 미리보기 → 적용 → 되돌리기', founder-ux rule '누르면 1초 안에 결과 문장'; Founder 2026-09-24 A-24 'live refresh with gentle motion'"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-GATE-ID-FOLD",
+          "scope": "In renderGatesSection in packages/runtime/src/index.ts, stop putting the raw gate id (G0–G5) in each gate item's hover title attribute and move it into the existing renderTechInfo 원문 보기 fold, the same way validation findings fold their code; keep the Korean label, badge and count text unchanged, update the title=\"G0\"/title=\"${gate}\" assertions in runtime.test.ts, and add a regression test that the gates section has no title=\"G attribute and still shows each gate id only inside a 원문 보기 details.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/studio-gate-id-fold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08 비개발자 UX 고도화): founder-ux rule 2 — task IDs and enum words stay behind 원문 보기; index.ts:1190 `<li title=\"${escapeHtml(id)}\">`"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-PAGE-LINK-44PX",
+          "scope": "In the STUDIO_STYLE constant in packages/runtime/src/index.ts, add one CSS rule that gives the view-page back link (VIEW_BACK_LINK '← Studio 홈으로' in header) and the guide-page action link (renderStudioGuidePage 'Studio 홈으로 가기' / '다시 열어 보기') a click target of at least 44px (display:inline-flex;align-items:center;min-height:44px), without changing any markup, and add a regression test that the served style contains that rule for those links.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-page-link-size.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08): founder-ux rule 12 — click targets 44px or more; index.ts:514 `<p><a href=\"/\">← Studio 홈으로</a></p>` has no min-height (only .links a and summary do)"
+        },
+        {
+          "taskId": "JUPLAN-DIAGRAM-VIEW-SCROLL-HINT",
+          "scope": "In renderDiagramViewPage in packages/runtime/src/index.ts, show the same '◀ ▶ 옆으로 밀어서 더 보기' map-hint line that renderPlanMapSection uses when layoutPlanMap(subgraph.nodes).width > PLAN_MAP_VISIBLE_WIDTH, so a wide diagram page tells the Founder it scrolls sideways; leave narrow and empty diagrams unchanged, and add a regression test covering a wide diagram (hint shown) and a narrow one (no hint).",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/diagram-view-scroll-hint.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:08, 대상: 계획 그림/다이어그램 보기): founder-ux rule 12 — must work at phone width; index.ts:698 renderDiagramViewPage renders map-scroll with no overflow hint while renderPlanMapSection does"
         }
       ],
       "qaRuntime": [
