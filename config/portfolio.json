@@ -7677,6 +7677,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: \"Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior.\"",
           "title": "첫 실행 전에 준비할 것 안내"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-FAILURE-OUTPUT-TEST",
+          "scope": "Add one offline test, tests/e2e-failure-output.test.mjs, that copies scripts/e2e.sh into a temp folder's scripts/ directory next to a stand-in scripts/status-board.mjs that always exits 1, runs it with bash, and checks five things: exit code 1, empty stderr, and exactly one JSON line; message '상태판 실행 단계에서 멈췄어요 — next의 명령을 직접 실행해 보세요'; next 'node scripts/status-board.mjs registry.json'; steps with build-registry ok and run-status-board plus every later step not ok; and key order schema, ok, message, next, steps, ms with no projects or statuses. This checks the failure guidance that docs/getting-started.md promises, and no code outside tests changes.",
+          "files": [
+            "tests/e2e-failure-output.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-failure-output.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; docs/getting-started.md at 08d0d27 promises 'message — 실패하면 처음 멈춘 단계를 알려 줍니다(예: `상태판 실행 단계에서 멈췄어요 — next의 명령을 직접 실행해 보세요`)' and 'next — 실패했을 때만 나옵니다', but tests/e2e-script.test.mjs only covers the success path"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-DOCS-EXAMPLE-OUTPUT-SYNC",
+          "scope": "Add one offline test to tests/e2e-docs-sync.test.mjs that runs bash scripts/e2e.sh and checks that the ```json example line in docs/getting-started.md section '`bash scripts/e2e.sh` 결과 읽는 법' matches the real output once ms is removed: same keys in the same order, same projects count and statuses map, and same steps. If the check finds a difference, fix only the example line in docs/getting-started.md.",
+          "files": [
+            "tests/e2e-docs-sync.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; at 08d0d27, tests/e2e-docs-sync.test.mjs compares only the example's steps name/label (`JSON.parse(json).steps.map(({ name, label }) => ...)`), so the documented projects/statuses/key order are never checked against real output"
         }
       ],
       "qaRuntime": [
