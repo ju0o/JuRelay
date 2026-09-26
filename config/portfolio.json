@@ -6922,6 +6922,32 @@
             "npx tsc -p tsconfig.json --noEmit"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — juceipt daily 출력을 '진짜 비개발자도 보면 이해가 되게' (founder-ux rule 1: 한눈에); src/daily/index.ts koreanSummary joins every 작업 제목 and 검토 필요 작업 into single '; '-separated lines (tests/daily.test.ts:45,47)"
+        },
+        {
+          "taskId": "JUCEIPT-TASK-TITLE-WORD-BOUNDARY",
+          "scope": "In taskTitle in src/daily/index.ts, match the English keywords only as whole words (for example with \\b boundaries) and keep the Korean keywords as they are, so an English request is not given the wrong plain Korean title because a keyword sits inside a longer word: today 'fix the padding' becomes '기능 만들기' ('add' inside 'padding'), 'update the latest docs' becomes '작업 결과 확인' ('test' inside 'latest') and 'change the address' becomes '기능 만들기'. Add these cases to the existing taskTitle it.each in tests/daily.test.ts and leave every existing expectation unchanged.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '영어 작업 제목을 쉬운 한국어 요약으로' — taskTitle (src/daily/index.ts:20) is used for every receipt view title (src/render/index.ts renderHtml/renderLevel1) and the daily list, and its unanchored regex /install|setup|readme/, /implement|add|build|create|feature/ … gives English titles the wrong meaning"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-CLI-VERDICT-MEANING",
+          "scope": "In scanCommand in src/cli/main.ts, when at least one session was found, add one plain Korean '판정 뜻:' line right after the count sentence. It explains only the verdicts whose count is above 0, using the same meanings as the SUMMARY.md '상태 뜻' line in src/sources/summary.ts (받아도 됨 = 확인된 작업이라 바로 받아도 돼요; 확인 후 받기 = 사람이 한 번 더 보고 받을 작업이에요; 문제 있음 = 판단할 수 없거나 일부만·실패·중단돼 받기 전에 확인해야 해요). The found-nothing output and the next-action lines stay as they are. Extend tests/sources-scan-cli.test.ts: the review_required case must show the 확인 후 받기 meaning, the all-ready case must show only the 받아도 됨 meaning, and neither may show a raw enum word (review_required/ready/unknown).",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 'juceipt 명령 출력(scan, daily, receipt)… 판정 '확인 후 받기' 같은 말의 뜻' — at base, receiptCommand prints '판정 뜻:' and runCommand prints advice, but scanCommand (src/cli/main.ts:254-277) prints only '작업 N개를 봤어요 — 받아도 됨 …, 확인 후 받기 …, 문제 있음 …' and never says what the words mean"
         }
       ],
       "skills": {
