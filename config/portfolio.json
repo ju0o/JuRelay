@@ -16931,6 +16931,17 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:325 사용자 행동은 다음 중 필요한 항목만 작성한다.",
           "title": "사용자에게 필요한 조치를 안내"
+        },
+        {
+          "taskId": "JUTELL-TARGET-USER-EXCLUSION-PARITY",
+          "scope": "Add an offline node:test asserting none of the PRODUCT_SCOPE §4.3 excluded-user-type phrases appear anywhere in the beginner-bridge SKILL.md or its references, so the skill never implies support for out-of-scope V0.1 audiences.",
+          "files": [
+            "tests/target-user-exclusion-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/target-user-exclusion-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:139-145 '### 4.3 초기 범위에서 제외되는 사용자 ... 대규모 기업 개발 조직 / 전문 보안 감사 담당자 / 전문 코드 리뷰어 / 복잡한 모노레포 운영팀 / 규제 산업의 공식 검증 담당자 / 현재 지원 Provider가 아닌 코딩 에이전트만 사용하는 사람'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
