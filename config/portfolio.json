@@ -4633,7 +4633,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-boar"
+          "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-boar",
+          "title": "보드 화면 새 디자인 정리"
         }
       ],
       "qaRuntime": [
@@ -7082,7 +7083,8 @@
             "pnpm -r test",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder"
+          "ssotEvidence": "JuPlan V1 acceptance walk 2026-09-26 (integration 379947d, report F:\\MainPC_Archive\\AI_Reports\\Reports\\STATUS_0926_juplan_acceptance.md): 295 tests pass but the real walk found blockers before Founder",
+          "title": "프로젝트 이름 자동 인식 확인 검사"
         }
       ],
       "qaRuntime": [
@@ -15694,7 +15696,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:71 'These identifiers do not form a committed seven-row join, so no row is retained or mapped by inference.'; Founder direction 2026-09-27"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:71 'These identifiers do not form a committed seven-row join, so no row is retained or mapped by inference.'; Founder direction 2026-09-27",
+          "title": "출시 보류 결정 기록"
         }
       ]
     },
@@ -17696,7 +17699,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:137 need = { release: [], answer: [\"text\"], set_topic: [...], post_notice: [\"text\"], add_rule: [\"text\"], ... } — post_notice/add_rule have no check.mjs coverage yet"
+          "ssotEvidence": "lib.mjs:137 need = { release: [], answer: [\"text\"], set_topic: [...], post_notice: [\"text\"], add_rule: [\"text\"], ... } — post_notice/add_rule have no check.mjs coverage yet",
+          "title": "공지·규칙 등록 요청 정확성 점검"
         },
         {
           "taskId": "JUAI-CHECK-ADMIN-PLAN-CHANNEL-CRUD",
@@ -17707,7 +17711,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:137 need = { ..., create_channel: [\"name\"], delete_channel: [\"channel\"], ... } — neither action has check.mjs coverage yet"
+          "ssotEvidence": "lib.mjs:137 need = { ..., create_channel: [\"name\"], delete_channel: [\"channel\"], ... } — neither action has check.mjs coverage yet",
+          "title": "채널 생성·삭제 요청 정확성 점검"
         },
         {
           "taskId": "JUAI-CHECK-ADMIN-PLAN-FEATURE",
@@ -17718,7 +17723,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:137 need = { ..., implement_feature: [\"description\"] } — untested action; lib.mjs str(v,1800) truncation already tested for other actions but not this one"
+          "ssotEvidence": "lib.mjs:137 need = { ..., implement_feature: [\"description\"] } — untested action; lib.mjs str(v,1800) truncation already tested for other actions but not this one",
+          "title": "기능 추가 요청 처리 정확성 점검"
         },
         {
           "taskId": "JUAI-CHECK-SCHEMA-TABLES",
@@ -17729,7 +17735,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "db.mjs:5-14 ten CREATE TABLE IF NOT EXISTS statements in SCHEMA — no check.mjs assertion currently confirms the full table list exists after db.exec(SCHEMA)"
+          "ssotEvidence": "db.mjs:5-14 ten CREATE TABLE IF NOT EXISTS statements in SCHEMA — no check.mjs assertion currently confirms the full table list exists after db.exec(SCHEMA)",
+          "title": "필수 데이터 저장소 생성 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
