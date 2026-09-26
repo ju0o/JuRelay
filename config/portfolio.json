@@ -4688,7 +4688,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-board.png."
+          "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-board.png.",
+          "title": "환경을 골라 창을 빠르게 보기"
         }
       ],
       "qaRuntime": [
@@ -9203,7 +9204,8 @@
           "tests": [
             "node -e \"const fs=require('fs');const fields=['receipt_vs_claude_final','false_factual_claim','missed_material_gap','level1_understandable_10s','human_next_action_useful','review_or_evidence_needed','acceptance_state_feels_correct'];for(const t of ['m2-001','m2-002','m2-003','m2-004','m2-005','m2-006']){const e=JSON.parse(fs.readFileSync('m2/tasks/'+t+'/evaluation.json','utf8'));for(const f of fields){if(e[f]===undefined||e[f]==='UNSCORED')throw new Error(t+' '+f+' still UNSCORED')}if(!e.pm_note||!e.pm_note.trim())throw new Error(t+' pm_note empty')}console.log('ok')\""
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:226 'Finish PR #4 14-task Receipt-vs-final scoring | M2 NOW'; m2/README.md:39-41 'evaluation.json is generated with every field set to UNSCORED... PM fills the scorecard'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:226 'Finish PR #4 14-task Receipt-vs-final scoring | M2 NOW'; m2/README.md:39-41 'evaluation.json is generated with every field set to UNSCORED... PM fills the scorecard'",
+          "title": "첫 여섯 결과를 믿을지 확인해요"
         },
         {
           "taskId": "JUCEIPT-M2-SCORE-BATCH-B",
@@ -9219,7 +9221,8 @@
           "tests": [
             "node -e \"const fs=require('fs');const fields=['receipt_vs_claude_final','false_factual_claim','missed_material_gap','level1_understandable_10s','human_next_action_useful','review_or_evidence_needed','acceptance_state_feels_correct'];for(const t of ['m2-007','m2-008','m2-009','m2-010','m2-011','m2-012']){const e=JSON.parse(fs.readFileSync('m2/tasks/'+t+'/evaluation.json','utf8'));for(const f of fields){if(e[f]===undefined||e[f]==='UNSCORED')throw new Error(t+' '+f+' still UNSCORED')}if(!e.pm_note||!e.pm_note.trim())throw new Error(t+' pm_note empty')}console.log('ok')\""
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:226 'Finish PR #4 14-task Receipt-vs-final scoring | M2 NOW'; m2/README.md:39-41 'evaluation.json is generated with every field set to UNSCORED... PM fills the scorecard'"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:226 'Finish PR #4 14-task Receipt-vs-final scoring | M2 NOW'; m2/README.md:39-41 'evaluation.json is generated with every field set to UNSCORED... PM fills the scorecard'",
+          "title": "다음 여섯 결과를 믿을지 확인해요"
         },
         {
           "taskId": "JUCEIPT-M2-SCORE-013",
@@ -9230,7 +9233,8 @@
           "tests": [
             "node -e \"const e=require('./m2/tasks/m2-013/evaluation.json');const bad=Object.entries(e).filter(([k,v])=>v==='UNSCORED');if(bad.length)throw new Error('still UNSCORED: '+bad.map(x=>x[0]));if(!e.pm_note)throw new Error('pm_note empty');console.log('ok')\""
           ],
-          "ssotEvidence": "JuCeipt-Private/docs/operations/PM_STATUS_BOARD.md:156 'Is no-op investigation READY (m2-013) correct?' and :226 'Finish PR #4 14-task Receipt-vs-final scoring — M2 NOW'"
+          "ssotEvidence": "JuCeipt-Private/docs/operations/PM_STATUS_BOARD.md:156 'Is no-op investigation READY (m2-013) correct?' and :226 'Finish PR #4 14-task Receipt-vs-final scoring — M2 NOW'",
+          "title": "변경 없는 조사 결과를 확인해요"
         },
         {
           "taskId": "JUCEIPT-M2-SCORE-014",
@@ -9241,7 +9245,8 @@
           "tests": [
             "node -e \"const e=require('./m2/tasks/m2-014/evaluation.json');const bad=Object.entries(e).filter(([k,v])=>v==='UNSCORED');if(bad.length)throw new Error('still UNSCORED: '+bad.map(x=>x[0]));if(!e.pm_note)throw new Error('pm_note empty');console.log('ok')\""
           ],
-          "ssotEvidence": "JuCeipt-Private/docs/operations/PM_STATUS_BOARD.md:157 'Can human-review-required draft be READY (m2-014) correct?' and :226 'Finish PR #4 14-task Receipt-vs-final scoring — M2 NOW'"
+          "ssotEvidence": "JuCeipt-Private/docs/operations/PM_STATUS_BOARD.md:157 'Can human-review-required draft be READY (m2-014) correct?' and :226 'Finish PR #4 14-task Receipt-vs-final scoring — M2 NOW'",
+          "title": "사람 검토가 필요한 초안을 확인해요"
         }
       ],
       "skills": {
@@ -11727,7 +11732,8 @@
           "tests": [
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:224 quotes 역할(PM·Worker·QA·Tester); docs/integration/ai-assignment.schema.json:28 enum is [pm,worker,qa,tester]; no existing test cross-checks them (git grep '역할(' over tests/ at 1ad0ff8 returns nothing)"
+          "ssotEvidence": "docs/getting-started.md:224 quotes 역할(PM·Worker·QA·Tester); docs/integration/ai-assignment.schema.json:28 enum is [pm,worker,qa,tester]; no existing test cross-checks them (git grep '역할(' over tests/ at 1ad0ff8 returns nothing)",
+          "title": "역할 순서를 문서와 맞춥니다"
         }
       ],
       "qaRuntime": [
@@ -14948,7 +14954,8 @@
           "tests": [
             "node --test test/result-state-changes-amber.test.mjs"
           ],
-          "ssotEvidence": "founder-ux skill '11. Colours: ... Being stuck is amber, not red.' + commit dfa7a32 JCAPP-DECISION-BLOCKS-AMBER precedent; app.css:297 .pill.state-changes still on --bg-bad/--tx-bad"
+          "ssotEvidence": "founder-ux skill '11. Colours: ... Being stuck is amber, not red.' + commit dfa7a32 JCAPP-DECISION-BLOCKS-AMBER precedent; app.css:297 .pill.state-changes still on --bg-bad/--tx-bad",
+          "title": "수정 요청을 주황색으로 표시"
         },
         {
           "taskId": "JCAPP-LIVE-STATUS-FIXTURE-GAPS",
@@ -14960,7 +14967,8 @@
           "tests": [
             "node --test test/live-status-sentences.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress ... add focused fixture tests.'"
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress ... add focused fixture tests.'",
+          "title": "놓친 진행 상태도 정확히 안내"
         }
       ],
       "skills": {
@@ -18019,7 +18027,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:38 \"lib.mjs 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (check.mjs로 점검)\""
+          "ssotEvidence": "README.md:38 \"lib.mjs 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (check.mjs로 점검)\"",
+          "title": "주제 설정을 안전하게 적용"
         },
         {
           "taskId": "JUAI-CHECK-ADMIN-PLAN-NUMERIC-FALLBACK",
@@ -18030,7 +18039,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:45 \"삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다.\""
+          "ssotEvidence": "README.md:45 \"삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다.\"",
+          "title": "잘못된 설정도 안전한 값으로 처리"
         },
         {
           "taskId": "JUAI-CHECK-LAYOUT-NAMES",
@@ -18041,7 +18051,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:34-35 \"layout.mjs 서버 구조(역할·채널·포럼 태그·입장 질문·안내문)를 데이터로\"; \"setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)\""
+          "ssotEvidence": "README.md:34-35 \"layout.mjs 서버 구조(역할·채널·포럼 태그·입장 질문·안내문)를 데이터로\"; \"setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)\"",
+          "title": "서버 구성을 빠짐없이 연결"
         },
         {
           "taskId": "JUAI-CHECK-REDACT-SECRETS",
@@ -18052,7 +18063,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:83-86 defines JWT/gh_*/AKIA*/PRIVATE KEY regexes in SECRETS, but check.mjs:185-186 only exercises the sk- and Discord-bot-token patterns"
+          "ssotEvidence": "lib.mjs:83-86 defines JWT/gh_*/AKIA*/PRIVATE KEY regexes in SECRETS, but check.mjs:185-186 only exercises the sk- and Discord-bot-token patterns",
+          "title": "민감한 인증정보를 안전하게 숨김"
         },
         {
           "taskId": "JUAI-CHECK-PRUNE-CALENDAR-INVALID",
@@ -18063,7 +18075,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "check.mjs:300 inserts usage row ('invalid-day','2026-02-30',1,0) and calls pruneState on line 301, but no assertion checks its usage-table count afterward; lib.mjs:16-19 olderThan() relies on Number.isFinite(Date.parse(date))"
+          "ssotEvidence": "check.mjs:300 inserts usage row ('invalid-day','2026-02-30',1,0) and calls pruneState on line 301, but no assertion checks its usage-table count afterward; lib.mjs:16-19 olderThan() relies on Number.isFinite(Date.parse(date))",
+          "title": "잘못된 날짜의 기록도 보존"
         },
         {
           "taskId": "JUAI-README-HELP-COMMANDS",
@@ -18074,7 +18087,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 lists only !도움말·!남은횟수·!구독 family; layout.mjs:162-176 HELP_TEXT documents !익명 (bot.mjs:221-243), 리뷰해줘 (bot.mjs), !봇수다 (bot.mjs:356-360), and @멘션 answers as real member commands absent from README's overview line"
+          "ssotEvidence": "README.md:8 lists only !도움말·!남은횟수·!구독 family; layout.mjs:162-176 HELP_TEXT documents !익명 (bot.mjs:221-243), 리뷰해줘 (bot.mjs), !봇수다 (bot.mjs:356-360), and @멘션 answers as real member commands absent from README's overview line",
+          "title": "사용 가능한 대화 명령을 안내"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
