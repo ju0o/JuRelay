@@ -11259,6 +11259,18 @@
             "node --test tests/e2e-failure-output.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCONTROLER-OFFLINE-ACCEPTANCE-CHECKLIST",
+          "scope": "기존 오프라인 E2E와 한국어 빠른 시작을 한 번에 확인하는 평면 한국어 수락 체크리스트를 추가하고 README에서 연결한다. 새 런타임 동작은 만들지 않는다.",
+          "files": [
+            "README.md",
+            "docs/offline-acceptance.md"
+          ],
+          "tests": [
+            "node --test tests/docs-links.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: existing offline E2E and Korean Quickstart are the next bounded acceptance target"
         }
       ],
       "qaRuntime": [
