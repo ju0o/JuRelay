@@ -8595,6 +8595,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux Skill 규칙(… 오류 3줄 …)으로 juceipt 명령 출력(scan, daily, receipt) 점검",
           "title": "실행 실패 때 진짜 이유와 할 일 안내"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-CMD-MISSING-THREE-LINES",
+          "scope": "In receiptCommand in src/cli/main.ts, change the no-receipt error to the same three labeled lines the other commands use: '무슨 일: 영수증 화면을 만들지 못했어요.' / '왜: …' / '할 일: …'. When no --run-dir was given and the default .juceipt/runs folder is missing or has no run, say this is the first run: '왜: 아직 만든 영수증이 없어요.' / '할 일: juceipt scan 을 먼저 실행하세요.'. When a --run-dir was given, keep a 'check the folder' cause. Show the raw receiptFile path only with --show-raw/--show-paths as '원문 보기 (개발용): <path>'. Keep exit code 1, and add tests for both cases plus the hidden-path default in tests/receipt-cli.test.ts.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux rules (오류 3줄, 빈 화면 이유+다음 행동, 개발자 글자는 원문 보기 안) for the juceipt receipt command output; git show d182bc9:src/cli/main.ts receiptCommand still prints the unlabeled '영수증 화면을 만들지 못했어요. / 영수증 원본 파일이 없어서… / 실행 폴더를 확인한 뒤 다시 시도하세요.'"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-REVIEW-NOTICE-NO-DEAD-REF",
+          "scope": "In renderLevel1 of src/render/index.ts, the review_required notice always says '아래 빠진 확인은 AI가 끝냈다고 말했지만 확인 근거가 부족한 내용이에요' even when p.remaining_items is empty and the screen shows no 빠진 확인 list. In that case, use a plain 해요체 notice that does not point at a missing list, e.g. '…사람이 한 번 더 살펴본 뒤 받는 상태예요. 아래 받은 결과와 받기 전 내가 할 일을 한 번 보고 받아 주세요.'. Keep the current text when there are remaining items, and add a render test for both cases in tests/receipt-render-founder.test.ts.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면 — 판정 '확인 후 받기' 같은 말의 뜻, 빠진 확인 항목의 쉬운 설명; git show d182bc9:src/render/index.ts noticeText.review_required refers to '아래 빠진 확인' unconditionally while remainingBlock can render '빠진 확인을 판단할 기록이 없어요'"
         }
       ],
       "skills": {
