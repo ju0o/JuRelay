@@ -9089,7 +9089,8 @@
           "tests": [
             "npm test -- tests/receipt-render-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 글자 16px·버튼 44px"
+          "ssotEvidence": "Founder direction 2026-09-23: 글자 16px·버튼 44px",
+          "title": "영수증 원문 글씨 키워 가독성 개선"
         }
       ],
       "skills": {
@@ -11563,7 +11564,8 @@
           "tests": [
             "node --test tests/offline-acceptance-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 기존 오프라인 E2E와 한국어 Quickstart를 다음 bounded acceptance target으로 삼고 runtime integration과 새 product behavior는 만들지 않는다."
+          "ssotEvidence": "Founder direction 2026-09-23: 기존 오프라인 E2E와 한국어 Quickstart를 다음 bounded acceptance target으로 삼고 runtime integration과 새 product behavior는 만들지 않는다.",
+          "title": "오프라인 설치 검증 실전 테스트"
         }
       ],
       "qaRuntime": [
@@ -17089,7 +17091,8 @@
           "tests": [
             "node --test tests/feature-config-scenarios-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:963-969 '공식 Feature ID가 ... 일치한다 ... 설정 오류가 안전한 기본값으로 처리된다.'"
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:963-969 '공식 Feature ID가 ... 일치한다 ... 설정 오류가 안전한 기본값으로 처리된다.'",
+          "title": "기능 설정 오류 사전 점검"
         },
         {
           "taskId": "JUTELL-USER-ACTION-GUIDANCE-PARITY",
@@ -17100,7 +17103,8 @@
           "tests": [
             "node --test tests/user-action-guidance-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:327-357 '사용자 행동은 다음 중 필요한 항목만 작성한다.'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:327-357 '사용자 행동은 다음 중 필요한 항목만 작성한다.'",
+          "title": "사용자 안내 문구 일치 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -17630,7 +17634,8 @@
             "npm run check",
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:7-9,13 kstDate/kstHour/kstDay/quotaDay all default now to Date.now(), but every existing check.mjs assertion passes an explicit now, leaving the default branch bot.mjs relies on in normal operation untested"
+          "ssotEvidence": "lib.mjs:7-9,13 kstDate/kstHour/kstDay/quotaDay all default now to Date.now(), but every existing check.mjs assertion passes an explicit now, leaving the default branch bot.mjs relies on in normal operation untested",
+          "title": "시간대 자동계산 검증 테스트"
         },
         {
           "taskId": "JUAI-CHECK-PRUNE-BONUS-ROWS",
@@ -17642,7 +17647,8 @@
             "npm run check",
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:40-43 grantBonus stores usage rows under user_id 'bonus:<id>'; lib.mjs:29-32 pruneState's usage-table prune is a generic day>60 rule with no user_id filter, but no check.mjs assertion proves bonus rows are actually caught by it"
+          "ssotEvidence": "lib.mjs:40-43 grantBonus stores usage rows under user_id 'bonus:<id>'; lib.mjs:29-32 pruneState's usage-table prune is a generic day>60 rule with no user_id filter, but no check.mjs assertion proves bonus rows are actually caught by it",
+          "title": "오래된 보너스 기록 정리 검증"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
