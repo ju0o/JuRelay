@@ -11541,6 +11541,17 @@
           ],
           "ssotEvidence": "docs/getting-started.md:225-231 lists 6 backticked docs/integration/*.json paths in the 약속(계약) 파일 table; no existing sync test (docs-links.test.mjs only parses markdown [text](path) links) checks these paths resolve to real files, so a renamed/removed contract file would silently break the doc",
           "title": "시작 안내 자료 누락 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-OFFLINE-ACCEPTANCE-EXECUTION",
+          "scope": "오프라인 수락 체크리스트의 다섯 명령을 임시 fixture에서 실제 실행해 README와 체크리스트의 복사 실행 가능성을 검증한다.",
+          "files": [
+            "tests/offline-acceptance-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/offline-acceptance-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 기존 오프라인 E2E와 한국어 Quickstart를 다음 bounded acceptance target으로 삼고 runtime integration과 새 product behavior는 만들지 않는다."
         }
       ],
       "qaRuntime": [
