@@ -7825,6 +7825,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux 규칙 '맨 위 한 문장 … 지금 할 일' 로 juceipt scan 출력 점검, '확인 후 받기' 같은 판정의 뜻을 알 수 있게",
           "title": "확인할 작업이 요약에 꼭 보이게"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-RESULT-FILE-IN-RAW",
+          "scope": "In src/render/index.ts, the Level 1 최종 결과 box says '결과 파일이 있어요 — 파일 이름은 원문 보기에 있어요', but no part of 원문 보기 (renderLevel2/renderLevel3) shows presentation.result_summary.primary_artifact_display, so the promise is broken. Add one small '최종 결과 파일' section inside 원문 보기 (for example at the end of renderLevel2) that shows the escaped primary_artifact_display when it is set and a plain 해요체 empty line when it is null. Keep the Level 1 text as it is and never show the file name in Level 1. Add a test in tests/receipt-render-founder.test.ts proving the file name appears only after the 원문 보기 summary and not in the Level 1 part.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts",
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 (founder-ux: 개발자 글자는 원문 보기 안; 영수증 보기 화면 점검) — src/render/index.ts:33-34 at ecda902 promises '파일 이름은 원문 보기에 있어요' while git grep primary_artifact_display finds no renderer inside 원문 보기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-AGENT-PARTICLE",
+          "scope": "In renderLevel1 of src/render/index.ts, the who/when line always adds '가' after the AI name (`${r.actor.agent_name}가 한 작업`), which gives wrong Korean such as 'Claude Team가', 'Cline가' and 'Grok가' for the scan agent names from src/sources/discover.ts/others.ts. Add a small local subject-particle choice (이 for names read with a final consonant: Claude Team, Cline, Grok; 가 otherwise: Claude Code, Claude Pro, Codex, OpenCode, Cursor, Agent Relay; 가 as the default for unknown names) and keep the rest of the line unchanged. Add tests in tests/receipt-render-founder.test.ts covering 'Claude Team이 한 작업', 'Grok이 한 작업' and the existing 'Claude Code가 한 작업'.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts",
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 ('진짜 비개발자도 보면 이해가 되게', 영수증 보기 화면 점검) — src/render/index.ts:42 at ecda902 `${r.actor.agent_name}가 한 작업`; agent names 'Claude Team'/'Cline'/'Grok' at src/sources/discover.ts:50,95,97"
         }
       ],
       "skills": {
