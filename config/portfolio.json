@@ -13505,6 +13505,42 @@
             "git diff --check"
           ],
           "ssotEvidence": "README.md:40 '`lib.mjs` ... 순수 로직 (`check.mjs`로 점검)'; Founder direction 2026-09-23 (small low-risk changes, main/service untouched)"
+        },
+        {
+          "taskId": "JUAI-CHECK-ONBOARDING-ROLES",
+          "scope": "Import ONBOARDING into check.mjs and add assertions only (layout.mjs stays as is): every ONBOARDING option's roles entry is an existing ROLES key, so the roles[k].id lookup in setup.mjs putOnboarding cannot crash; every question has a non-empty title and at least one option; the 'chat' channel key that setup.mjs uses for options with no roles exists in channelByKey.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)… 작은 변경만'; setup.mjs:158 'role_ids: o.roles.map((k) => roles[k].id), channel_ids: o.roles.length ? [] : [ids.chat]'"
+        },
+        {
+          "taskId": "JUAI-CHECK-STAFF-SOURCE-GUIDE",
+          "scope": "Import STAFF_GUIDE and SOURCE_GUIDE into check.mjs and add assertions only (layout.mjs stays as is): STAFF_GUIDE called with the existing key-validating mention helper throws nothing and is at most 2000 chars; SOURCE_GUIDE is at most 2000 chars and still contains the '<#QA>' and '<#SUGGEST>' placeholders that setup.mjs replaces, and the 'qa' and 'suggest' channel keys exist in channelByKey.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 'check.mjs (순수 로직 + 자체 점검)… 작은 변경만'; setup.mjs:129 'SOURCE_GUIDE.replace(\"<#QA>\", …).replace(\"<#SUGGEST>\", …)' and setup.mjs:134 'STAFF_GUIDE((k) => `<#${ids[k]}>`)'"
+        },
+        {
+          "taskId": "JUAI-CHECK-KST-ROUNDTRIP",
+          "scope": "Add assertions to check.mjs only (lib.mjs stays as is): kstDate(kstMidnight(d)) === d and kstHour(kstMidnight(d)) === 0 for a normal date, a month end (2026-09-30) and a year end (2026-12-31); kstDate(kstMidnight(d) - 1) is the previous day; quotaDay(kstMidnight(d) + 9 * 3_600_000) === d, which matches the 09:00 KST rollover comment.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 'check.mjs (순수 로직 + 자체 점검)'; lib.mjs:12 '/** Quota day rolls over at 09:00 KST, which is exactly 00:00 UTC. */'"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
