@@ -13288,6 +13288,38 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' At base, relayView (app.js:2158,2166) calls relayTopLine(board) and relayLaneView(...) with no now, and otherView (app.js:1928) and updateHomeView (app.js:1672) call laneRails without now, so each part reads Date.now() on its own."
+        },
+        {
+          "taskId": "JCAPP-RELAY-FLOW-WHO-MATCHES-CARD",
+          "scope": "In operator/public/app.js relayFlowRow (진행, shown right under the live card), name '담당:' with the same rule as liveCardModel's 지금 하는 일: current.worker only at stage 2 (만들기), current.qa only at stage 3 (검사), nobody when current.state is 'QUEUED' or at any other stage, and nobody at stage 3 without a qa (today it falls back to the worker, so the row says '지금 검사 단계예요. 담당: Codex' while the card says 'Codex가 만든 것을 검사하는 중'); aiName and the tries sentence stay as they are; test/idle-lane-meaning.test.mjs keeps its current pins and adds: stage 0/1/4 with a worker and a queued stage-2 task show no '담당:', stage 3 with only a worker shows no '담당:'.",
+          "files": [
+            "operator/public/app.js",
+            "test/idle-lane-meaning.test.mjs"
+          ],
+          "tests": [
+            "node --test test/idle-lane-meaning.test.mjs",
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/live-status-projection.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence…'; operator/public/app.js@a1583d4:502 liveCardModel names only the worker at stage 2 and the qa at stage 3 ('Only the AI that does the step is named… a queued task names nobody'), while relayFlowRow:1972 uses 'stage === 3 ? current?.qa || current?.worker : current?.worker || current?.qa'"
+        },
+        {
+          "taskId": "JCAPP-TOP-LINES-PAUSED-NOT-CALM",
+          "scope": "In operator/public/app.js, home() banner and relayTopLine stop saying HOME_CALM '지금 하실 일은 없어요' while a live card says 설정 필요: after holds and gated, they filter lanes by railRowModel(lane, now).paused, and when any are paused the line reads '쉬게 해 둔 프로젝트 N개가 있어요' with a '보러 가기' button (data-hub-lane = first paused lane id), and the home top-status class is 'attention' (amber) instead of 'stable'; holds and gated keep priority and their current wording; tests add one paused-lane board to test/relay-top-line.test.mjs and test/lovable-home-order.test.mjs asserting no HOME_CALM, the new line and the lane button, and a board with no paused lane still reads HOME_CALM.",
+          "files": [
+            "operator/public/app.js",
+            "test/relay-top-line.test.mjs",
+            "test/lovable-home-order.test.mjs"
+          ],
+          "tests": [
+            "node --test test/relay-top-line.test.mjs",
+            "node --test test/lovable-home-order.test.mjs",
+            "node --test test/home-all-ok.test.mjs",
+            "node --test test/live-status-projection.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: one shared live-status projection for Home and Progress including founder action; operator/public/app.js@a1583d4:529 liveCardModel todo 'paused ? { word: '설정 필요' … button: '다시 켜기' }' while home() calm (line ~838) and relayTopLine (line ~2155) fall through to HOME_CALM for paused lanes; founder-ux Skill: '대표님 할 일: exactly one of 없음 / 확인 필요 / 결정 필요 / 설정 필요'"
         }
       ],
       "skills": {
