@@ -8166,6 +8166,21 @@
             "node --test tests/*.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target with no runtime integration; scripts/status-board.mjs (b4f99c3) registryHint: \"if (rule === 'is not a known field') return `${at}의 ${field}는 쓸 수 없는 이름이에요 — 지우거나 철자를 확인하세요`\""
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-BAD-SOURCE-KIND-STEP",
+          "scope": "Add a twenty-first step run_bad_source_kind to scripts/e2e.sh after run_field_typo (label '원본 종류 오류 안내', next command board). It writes a temp registry with one entry whose fields are all valid except sourceKind 'github', and passes only when status-board exits 1 with empty stdout and a first stderr line of exactly '프로젝트 목록 파일 내용이 올바르지 않아요 — 1번째 항목의 sourceKind는 repository-status-file, juplan-status, juceipt-receipt, agent-relay-board 중 하나여야 해요'. The same change syncs the docs/getting-started.md '`bash scripts/e2e.sh` 결과 읽는 법' json example, step bullet and next bullet, with no change to status-board behavior.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-docs-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, no runtime integration or new product behavior; scripts/status-board.mjs registryHint 'must be one of' branch (… 중 하나여야 해요) is the only sourceKind error line and no E2E step covers it (tests/status-board-cli.test.mjs:295 covers it only at unit level)"
         }
       ],
       "qaRuntime": [
