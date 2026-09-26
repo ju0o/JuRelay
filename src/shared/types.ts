@@ -147,6 +147,7 @@ export type RelayRequest =
   | { op: 'gates:list' }
   | { op: 'gates:answer'; gateId: string; optionIndex: number }
   | { op: 'controlRoom:laneSet'; project: string; role: string; runtimes: string[] }
+  | { op: 'controlRoom:laneAdd'; id: string; path: string; name: string }
   | { op: 'controlRoom:resume'; project: string }
   | { op: 'controlRoom:pause'; project: string }
   | { op: 'controlRoom:scheduleSet'; time: string }

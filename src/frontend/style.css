@@ -1194,3 +1194,24 @@ h1 { font-size: 22px; }
 .plan-gate legend { font-weight: 700; padding: 0 6px; }
 @media (max-width: 1100px) { .plan-studio-grid { grid-template-columns: 1fr; } }
 @media (max-width: 700px) { .control-room { padding: 16px; }.control-flow { gap: 2px; }.control-step { font-size: 10px; }.control-step-dot { width: 24px; height: 24px; } }
+
+/* ── 설정 → 프로젝트 관리 ── */
+.pm-lead { margin: 4px 0 10px; font-size: 16px; }
+.pm-row { padding: 10px 0; border-top: 1px solid var(--border); }
+.pm-row-main { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pm-row-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 16px; }
+.pm-state { color: var(--warn); }
+.pm-state.on { color: var(--accent); }
+.pm-switch { min-width: 88px; min-height: 44px; padding: 0 16px; border-radius: 22px; border: 2px solid var(--border); background: var(--bg3); color: var(--fg); font-size: 16px; font-weight: 700; cursor: pointer; }
+.pm-switch.on { border-color: var(--accent); background: var(--accent); color: var(--bg); }
+.pm-switch:disabled { opacity: .6; cursor: default; }
+.pm-note { margin: 8px 0 0; font-size: 16px; }
+.pm-note p { margin: 2px 0; }
+.pm-note.ok { color: var(--accent); }
+.pm-note.err { color: var(--warn); }
+.pm-note pre { white-space: pre-wrap; word-break: break-all; font-size: 12px; color: var(--muted, inherit); }
+.pm-add { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+.pm-add h4 { margin: 0; font-size: 16px; }
+.pm-add input { min-height: 44px; font-size: 16px; }
+.pm-add .btn { min-height: 44px; font-size: 16px; align-self: flex-start; }
+@media (max-width: 520px) { .pm-row-main { flex-wrap: wrap; } }

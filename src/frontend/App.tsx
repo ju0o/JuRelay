@@ -9,6 +9,7 @@ import { DogfoodPanel } from './dogfooding.js';
 import { QuickDogfood } from './quickdf.js';
 import { ControlRoom } from './controlRoom.js';
 import { projectFromSearch } from '../shared/projectLabels.js';
+import { isLaneOn, laneErrorLines, laneRowLabel, laneRowName, newLaneProblem, suggestLaneId } from '../shared/projectManager.js';
 import { approvalCategoryLabel, approvalUsedCount, dedupeApprovalRules, groupRulesByCategory, partitionSupersededApprovalRules, ApprovalRuleCard, SupersededApprovals, UnusedApprovalRules } from './approvals.js';
 import type { ApprovalRuleJson } from '../shared/types.js';
 import { PlanStudio } from './planStudio.js';
@@ -1858,6 +1859,8 @@ function AppInner(): React.ReactElement {
               />
             </div>
 
+            <ProjectManager />
+
             <div className="modalbtns">
               <button className="btn subtle" onClick={() => setShowSettings(false)}>닫기</button>
             </div>
@@ -2140,6 +2143,150 @@ function FileTree({
 
 // ── 업데이트 섹션 (설정 → 앱 정보) ───────────────────────────────────────────────
 // 정책: 확인/다운로드/설치 모두 사용자 클릭 기반. 자동 종료·자동 설치 없음.
+type PmLane = { id: string; on: boolean };
+type PmNote = { kind: 'ok' | 'err'; lines: string[]; raw?: string };
+
+function pmLanes(board: unknown): PmLane[] {
+  const lanes = board && typeof board === 'object' ? (board as { lanes?: unknown }).lanes : null;
+  if (!Array.isArray(lanes)) return [];
+  const out: PmLane[] = [];
+  for (const lane of lanes) {
+    const r = (lane && typeof lane === 'object' ? lane : {}) as Record<string, unknown>;
+    const id = String(r.project ?? r.id ?? r.lane ?? '').trim();
+    if (id) out.push({ id, on: isLaneOn(lane) });
+  }
+  return out;
+}
+
+const pmRaw = (value: unknown): string => { try { return JSON.stringify(value, null, 2); } catch { return String(value); } };
+const pmMessage = (e: unknown): string => (e instanceof Error ? e.message : String(e));
+
+/** 설정 → 프로젝트 관리: 프로젝트별 자동 진행 켜기/쉬기, 새 프로젝트 추가. */
+function ProjectManager(): React.ReactElement {
+  const [lanes, setLanes] = useState<PmLane[] | null>(null);
+  const [loadError, setLoadError] = useState('');
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [notes, setNotes] = useState<Record<string, PmNote>>({});
+  const [name, setName] = useState('');
+  const [path, setPath] = useState('');
+  const [id, setId] = useState('');
+  const [idTouched, setIdTouched] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [addNote, setAddNote] = useState<PmNote | null>(null);
+
+  async function load(): Promise<void> {
+    try {
+      setLanes(pmLanes(await must({ op: 'controlRoom:board' })));
+      setLoadError('');
+    } catch (e) {
+      setLoadError(pmMessage(e));
+    }
+  }
+  useEffect(() => { void load(); }, []);
+
+  async function setOn(lane: PmLane, on: boolean): Promise<void> {
+    if (busyId) return;
+    setBusyId(lane.id);
+    setConfirmId(null);
+    try {
+      const raw = await must({ op: on ? 'controlRoom:resume' : 'controlRoom:pause', project: lane.id });
+      setNotes(prev => ({ ...prev, [lane.id]: { kind: 'ok', lines: [on ? '켰어요 ✓' : '쉬게 했어요 ✓'], raw: pmRaw(raw) } }));
+      await load();
+    } catch (e) {
+      const detail = (e as { detail?: string })?.detail;
+      setNotes(prev => ({ ...prev, [lane.id]: { kind: 'err', lines: laneErrorLines(on ? '켜지' : '쉬게 하지', pmMessage(e)), raw: detail } }));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  async function addLane(e: React.FormEvent): Promise<void> {
+    e.preventDefault();
+    if (adding) return;
+    const problem = newLaneProblem({ id, path, name }, (lanes ?? []).map(l => l.id));
+    if (problem) { setAddNote({ kind: 'err', lines: [problem] }); return; }
+    setAdding(true);
+    setAddNote(null);
+    try {
+      const raw = await must({ op: 'controlRoom:laneAdd', id, path: path.trim(), name: name.trim() });
+      setAddNote({ kind: 'ok', lines: ['추가했어요 ✓ · 곧 첫 계획을 세워요'], raw: pmRaw(raw) });
+      setName(''); setPath(''); setId(''); setIdTouched(false);
+      await load();
+    } catch (err) {
+      setAddNote({ kind: 'err', lines: laneErrorLines('추가하지', pmMessage(err)), raw: (err as { detail?: string })?.detail });
+    } finally {
+      setAdding(false);
+    }
+  }
+
+  const noteView = (n: PmNote | undefined): React.ReactNode => n && (
+    <div className={`pm-note ${n.kind}`} role="status">
+      {n.lines.map((line, i) => <p key={i}>{line}</p>)}
+      {n.raw && <details><summary>원문 보기</summary><pre className="mono">{n.raw}</pre></details>}
+    </div>
+  );
+
+  return (
+    <div className="settings-section project-manager">
+      <span className="flabel">프로젝트 관리</span>
+      <p className="pm-lead">프로젝트마다 자동 진행을 켜고 쉬게 할 수 있어요. 새 프로젝트도 여기서 추가해요.</p>
+      {loadError && (
+        <div className="pm-note err" role="status">
+          {laneErrorLines('프로젝트 목록을 불러오지', loadError).map((line, i) => <p key={i}>{line}</p>)}
+          <button className="btn" type="button" onClick={() => void load()}>다시 시도</button>
+        </div>
+      )}
+      {!loadError && lanes === null && <p className="muted">불러오는 중…</p>}
+      {!loadError && lanes?.length === 0 && <p className="muted">아직 프로젝트가 없어요 — 아래에서 추가해 주세요.</p>}
+      {lanes?.map(lane => (
+        <div key={lane.id} className="pm-row">
+          <div className="pm-row-main">
+            <div className="pm-row-text">
+              <strong>{laneRowName(lane.id)}</strong>
+              <span className={`pm-state${lane.on ? ' on' : ''}`}>{laneRowLabel(lane.on)}</span>
+            </div>
+            <button
+              className={`pm-switch${lane.on ? ' on' : ''}`}
+              type="button"
+              role="switch"
+              aria-checked={lane.on}
+              aria-label={`${laneRowName(lane.id)} 자동 진행`}
+              disabled={busyId !== null}
+              onClick={() => (lane.on ? setConfirmId(lane.id) : void setOn(lane, true))}
+            >{busyId === lane.id ? '…' : lane.on ? '켜짐' : '꺼짐'}</button>
+          </div>
+          {confirmId === lane.id && (
+            <div className="inline-confirm" role="group" aria-label="쉬게 할까요?">
+              <p>{laneRowName(lane.id)}을(를) 쉬게 할까요? 다시 켤 때까지 새 작업을 시작하지 않아요.</p>
+              <div className="inline-confirm-actions">
+                <button className="btn primary" type="button" onClick={() => setConfirmId(null)}>계속 돌리기</button>
+                <button className="btn subtle" type="button" onClick={() => void setOn(lane, false)}>쉬게 하기</button>
+              </div>
+            </div>
+          )}
+          {noteView(notes[lane.id])}
+        </div>
+      ))}
+
+      <form className="pm-add" onSubmit={e => void addLane(e)} aria-label="프로젝트 추가">
+        <h4>프로젝트 추가</h4>
+        <label className="flabel" htmlFor="pm-name">이름</label>
+        <input
+          id="pm-name" type="text" value={name} placeholder="예: 영수증 앱"
+          onChange={e => { setName(e.target.value); if (!idTouched) setId(suggestLaneId(e.target.value)); }}
+        />
+        <label className="flabel" htmlFor="pm-path">프로젝트 폴더 (ASUS 경로)</label>
+        <input id="pm-path" type="text" value={path} placeholder="/home/…/프로젝트폴더" onChange={e => setPath(e.target.value)} />
+        <label className="flabel" htmlFor="pm-id">짧은 이름 (영문)</label>
+        <input id="pm-id" type="text" value={id} placeholder="예: receipt-app" onChange={e => { setId(e.target.value); setIdTouched(true); }} />
+        <button className="btn primary" type="submit" disabled={adding}>{adding ? '추가하는 중…' : '프로젝트 추가'}</button>
+        {noteView(addNote ?? undefined)}
+      </form>
+    </div>
+  );
+}
+
 function UpdateSection({ status, notify }: { status: UpdateStatus; notify: (kind: 'ok' | 'err' | 'info', text: string) => void; onOpen?: () => void }): React.ReactElement {
   async function run(op: 'update:check' | 'update:download' | 'update:install', okMsg?: string): Promise<void> {
     try {

@@ -1,5 +1,6 @@
 import { execFile as nodeExecFile, ExecFileOptions } from 'node:child_process';
 import { promisify } from 'node:util';
+import { newLaneProblem } from '../shared/projectManager';
 
 const execFile = promisify(nodeExecFile);
 const NIGHT_SCRIPT = '~/.agents/skills/auto-night-orchestrator/scripts/night';
@@ -23,6 +24,7 @@ export type ControlRoomOperation =
   | 'gates:list'
   | 'gates:answer'
   | 'controlRoom:laneSet'
+  | 'controlRoom:laneAdd'
   | 'controlRoom:resume'
   | 'controlRoom:pause'
   | 'controlRoom:scheduleSet'
@@ -397,6 +399,25 @@ export async function runControlRoomLaneSet(
       '--json',
     ],
     execFileImpl,
+  );
+}
+
+/** 프로젝트 추가 — `night lane add <id> <path> <name>`. 원격에서 폴더를 확인해 30초까지 기다린다. */
+export const LANE_ADD_TIMEOUT = 30_000;
+export async function runControlRoomLaneAdd(
+  id: string,
+  path: string,
+  name: string,
+  execFileImpl: ControlRoomExec = execFile,
+): Promise<unknown> {
+  const operation: ControlRoomOperation = 'controlRoom:laneAdd';
+  const problem = newLaneProblem({ id, path, name });
+  if (problem) throw invalidInput(operation, problem);
+  return runSshJson(
+    operation,
+    [...SSH_BASE_ARGS, 'lane', 'add', shQuote(id), shQuote(path.trim()), shQuote(name.trim()), '--json'],
+    execFileImpl,
+    { timeout: LANE_ADD_TIMEOUT },
   );
 }
 
