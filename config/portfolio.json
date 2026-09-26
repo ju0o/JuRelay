@@ -7098,7 +7098,8 @@
             "pnpm --filter @juplan/runtime test -- packages/runtime/test/agent-relay-project-identity.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-27 (AR-JUPLAN-001 deliverable 1); docs/roadmap/MASTER_WBS.md:207-216; docs/agent-relay/AR-JUPLAN-001.md:17-23 Identity section"
+          "ssotEvidence": "Founder direction 2026-09-27 (AR-JUPLAN-001 deliverable 1); docs/roadmap/MASTER_WBS.md:207-216; docs/agent-relay/AR-JUPLAN-001.md:17-23 Identity section",
+          "title": "Agent Relay 신분증 만들기"
         }
       ],
       "qaRuntime": [
@@ -14788,7 +14789,8 @@
           "tests": [
             "node -e \"const fs=require('fs');['docs/media/jucontroler-30s.mp4','docs/media/jucontroler-30s.jpg'].forEach(p=>{if(!fs.existsSync(p)||fs.statSync(p).size===0)throw new Error(p)})\""
           ],
-          "ssotEvidence": "README.md:7 links docs/media/jucontroler-30s.mp4 and .jpg, absent from the repo at 5d72cd0fc7a6aa7eb77180e8e37f4875170d111a; backlog JCAPP-README-VIDEO (planned)"
+          "ssotEvidence": "README.md:7 links docs/media/jucontroler-30s.mp4 and .jpg, absent from the repo at 5d72cd0fc7a6aa7eb77180e8e37f4875170d111a; backlog JCAPP-README-VIDEO (planned)",
+          "title": "README 소개 영상 등록"
         },
         {
           "taskId": "JCAPP-TOPLINE-GATE-PRIORITY",
@@ -14800,7 +14802,8 @@
           "tests": [
             "node --test test/relay-top-line.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: one shared live-status projection for Home and Progress incl. founder action; operator/public/app.js:526-529 (liveCardModel: gated > open hold > paused) vs app.js:2165-2173 (relayTopLine: open hold > gated > paused)"
+          "ssotEvidence": "Founder direction 2026-09-26: one shared live-status projection for Home and Progress incl. founder action; operator/public/app.js:526-529 (liveCardModel: gated > open hold > paused) vs app.js:2165-2173 (relayTopLine: open hold > gated > paused)",
+          "title": "상단 알림과 카드 이유 일치"
         }
       ],
       "skills": {
@@ -17193,7 +17196,8 @@
           "tests": [
             "node --test tests/fixture-glossary-necessity-parity.test.mjs"
           ],
-          "ssotEvidence": "Founder choice 2026-09-27: Add one offline test for §6.6 that keeps explanations limited to terms necessary for understanding the result, risk, or verification; docs/PRODUCT_SCOPE.md:288-294 §6.6 개발 용어 설명: 다음 조건에 해당하는 용어만 쉬운 설명을 제공한다"
+          "ssotEvidence": "Founder choice 2026-09-27: Add one offline test for §6.6 that keeps explanations limited to terms necessary for understanding the result, risk, or verification; docs/PRODUCT_SCOPE.md:288-294 §6.6 개발 용어 설명: 다음 조건에 해당하는 용어만 쉬운 설명을 제공한다",
+          "title": "예시 보고서 용어 설명 검증"
         },
         {
           "taskId": "JUTELL-SCOPE-6-6-NECESSITY-PARITY",
@@ -17204,7 +17208,8 @@
           "tests": [
             "node --test tests/scope-6-6-glossary-necessity-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:292,294 (§6.6: 사용자가 작업 결과를 이해하는 데 필요한 용어 / 위험이나 검증 결과를 판단하는 데 필요한 용어) + Founder choice 2026-09-27"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:292,294 (§6.6: 사용자가 작업 결과를 이해하는 데 필요한 용어 / 위험이나 검증 결과를 판단하는 데 필요한 용어) + Founder choice 2026-09-27",
+          "title": "용어 설명 규칙 문서 일치 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -17807,7 +17812,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: README member-commands line must state the 5-keyword cap enforced by bot.mjs (SUB_MAX)."
+          "ssotEvidence": "Founder direction 2026-09-23: README member-commands line must state the 5-keyword cap enforced by bot.mjs (SUB_MAX).",
+          "title": "키워드 구독 최대 개수 안내"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
