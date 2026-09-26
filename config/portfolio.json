@@ -4538,6 +4538,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T). Founder rewrite choice: narrow — 환경별 묶음 화면과 연결 끊김 안내만 먼저, 보내기와 결과 확인은 지금처럼.",
           "title": "환경별 화면을 한눈에 확인"
+        },
+        {
+          "taskId": "ACTL-ENV-SSH-WSL-R2",
+          "scope": "화면 목록 연동만 구현: Windows SSH 호스트에서 WSL Ubuntu를 ssh-wsl 환경으로 탐색·표시하고 tmux argv를 생성하며 self-alias는 제외한다; 잠금·send 안전장치는 범위에서 제외하고 tests/test_env_ssh_wsl.py의 Windows host candidate, self alias skip, argv quoting 테스트가 기존 코드에서 실패하고 새 코드에서 통과해야 한다.",
+          "files": [
+            "src/actl/core/sources.py",
+            "src/actl/core/tmux.py",
+            "src/actl/cli.py",
+            "tests/test_env_ssh_wsl.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Supervisor probe from ASUS 2026-09-26 23:0x: ssh main ok; wsl -l → Ubuntu, docker-desktop; wsl -d Ubuntu -- tmux ls → 2 sessions"
         }
       ],
       "qaRuntime": [
