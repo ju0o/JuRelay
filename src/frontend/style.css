@@ -1671,6 +1671,138 @@ h1 { font-size: 22px; }
   .cr-project-card,
   .hold-card { animation: none; }
 }
+/* ── 관제실 하단: AI 배정 · 토큰 감지 · 오늘 끝난 일 (다크) ── */
+.cr-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 20px;
+  color: #E6E8EC;
+  font-family: 'Noto Sans KR', 'IBM Plex Sans KR', 'Malgun Gothic', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  animation: fade-slide-in 0.38s ease;
+}
+.cr-ai,
+.cr-token,
+.cr-today {
+  min-width: 0;
+  max-width: 100%;
+  padding: 16px;
+  background: #12151a;
+  border: 1px solid #232830;
+  border-radius: 14px;
+  overflow-wrap: anywhere;
+}
+.cr-bottom .cr-section-title { color: #E6E8EC; }
+.cr-empty-line { margin: 8px 0 0; color: #8b93a1; font-size: 16px; }
+.cr-ai-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; min-width: 0; }
+.cr-ai-chip {
+  flex: 1 1 180px;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 12px 16px;
+  border: 1px solid #232830;
+  border-radius: 14px;
+  background: #0b0d10;
+}
+.cr-ai-name,
+.cr-ai-detail,
+.cr-token-summary,
+.cr-token-label,
+.cr-token-note,
+.cr-token-projects,
+.cr-today-count,
+.cr-today-title { margin: 0; font-size: 16px; }
+.cr-ai-name strong { font-weight: 700; }
+.cr-ai-detail { margin-top: 4px; color: #8b93a1; }
+.cr-ai-chip.teal { color: #7dd3c0; border-color: #7dd3c0; background: rgba(125, 211, 192, 0.16); }
+.cr-ai-chip.amber { color: #e8c170; border-color: #e8c170; background: rgba(232, 193, 112, 0.16); }
+.cr-ai-chip.muted { color: #8b93a1; }
+.cr-ai-chip.teal .cr-ai-detail,
+.cr-ai-chip.amber .cr-ai-detail { color: #E6E8EC; }
+.cr-token-summary { margin-top: 12px; font-weight: 700; }
+.cr-token-nums {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.cr-token-nums > div {
+  min-width: 0;
+  padding: 12px;
+  background: #0b0d10;
+  border: 1px solid #232830;
+  border-radius: 14px;
+}
+.cr-token-label { color: #8b93a1; }
+.cr-token-num {
+  margin: 8px 0 0;
+  color: #E6E8EC;
+  font-family: 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.cr-token-projects { margin: 12px 0 0; padding: 0; list-style: none; color: #8b93a1; }
+.cr-token-projects li { padding: 4px 0; }
+.cr-token-ok { margin: 16px 0 0; color: #7dd3c0; font-size: 16px; font-weight: 700; }
+.cr-token-error { color: #e8c170; }
+.cr-token-error p { margin: 0 0 8px; font-size: 16px; }
+.cr-token-findings { margin: 16px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.cr-token-finding {
+  padding: 16px;
+  border: 1px solid #e8c170;
+  border-radius: 14px;
+  background: rgba(232, 193, 112, 0.16);
+}
+.cr-token-finding p { margin: 8px 0 0; color: #8b93a1; font-size: 16px; }
+.cr-token-finding-title { margin: 0; }
+.cr-token-finding-title strong { color: #e8c170; font-size: 16px; }
+.cr-token-note { margin-top: 12px; color: #8b93a1; }
+.cr-today-count { margin-top: 8px; font-weight: 700; }
+.cr-today-list { margin: 8px 0 0; padding: 0; list-style: none; }
+.cr-today-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  min-height: 44px;
+  padding: 12px 0;
+  border-top: 1px solid #232830;
+}
+.cr-today-list li:first-child { border-top: 0; }
+.cr-today-list details { flex: 1 1 100%; }
+.cr-today-title { flex: 1 1 180px; min-width: 0; }
+.cr-today-ago {
+  margin: 0;
+  color: #8b93a1;
+  font-family: 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
+  font-size: 16px;
+}
+.cr-raw-list { margin: 8px 0 0; padding: 0; list-style: none; }
+.cr-bottom .btn,
+.cr-bottom-btn {
+  min-height: 44px;
+  min-width: 44px;
+  margin-top: 8px;
+  padding: 8px 16px;
+  border-radius: 14px;
+  font-size: 16px;
+}
+.cr-bottom summary { display: flex; align-items: center; min-height: 44px; font-size: 16px; cursor: pointer; }
+.cr-bottom pre { white-space: pre-wrap; word-break: break-all; max-width: 100%; }
+@media (max-width: 720px) {
+  .cr-token-nums { grid-template-columns: minmax(0, 1fr); }
+  .cr-ai-chip { flex-basis: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cr-bottom { animation: none; }
+}
 /* ── Inline confirm (R2/R3/R7: destructive actions, native dialog 금지) ── */
 .inline-confirm { border: 1px dashed var(--border); border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .inline-confirm p { margin: 0; font-size: 12px; }

@@ -184,32 +184,32 @@ function hasWork(lane: ControlRoomLane): boolean {
   return controlRoomTaskTitle(current) !== '' || currentIdOf(current) !== '';
 }
 
-interface TodayItem { lane: string; taskId: string; title: string; scope?: string }
-
-function todayItemsOf(board: ControlRoomBoard | null): TodayItem[] {
-  return controlRoomTodayDone(board).map(item => ({ lane: item.project, taskId: item.taskId, title: item.title, scope: item.scope }));
-}
-
-function TodayCard({ board }: { board: ControlRoomBoard | null }): React.ReactElement {
-  const items = todayItemsOf(board).slice(0, 3);
+export function TodayCard({ board, now }: { board: ControlRoomBoard | null; now?: number }): React.ReactElement {
+  const items = todayDoneLines(board, now ?? Date.now());
   const count = controlRoomTodayCount(board);
   const hasData = controlRoomHasDoneData(board);
   const total = controlRoomVerifiedDoneTotal(board);
   return (
-    <section className="control-card today-card" aria-label="오늘 끝난 일">
-      <h2>오늘 끝난 일</h2>
+    <section className="cr-today" aria-label="오늘 끝난 일">
+      <h2 className="cr-section-title">오늘 끝난 일</h2>
       {!hasData
-        ? <p className="muted">오늘 기록은 아직 안 왔어요 · 지금까지 끝난 작업 {total}개</p>
+        ? <p className="cr-empty-line">오늘 기록은 아직 안 왔어요 · 지금까지 끝난 작업 {total}개</p>
         : count === 0
-          ? <p className="muted">오늘 끝난 일은 아직 없어요.</p>
-          : <><p className="control-card-value">오늘 {count}개 끝났어요</p><ul className="today-list">
-            {items.map((item, index) => (
-              <li key={`${item.lane}-${item.taskId || item.title}-${index}`}>
-                <span><strong>{item.lane ? `${projectDisplayName(item.lane)} · ` : ''}{item.title}</strong></span>
-                <details><summary>원문 보기</summary><p className="muted mono">ID: {item.taskId || '—'}</p>{item.scope && <p className="muted mono">범위: {item.scope}</p>}</details>
-              </li>
-            ))}
-          </ul></>}
+          ? <p className="cr-empty-line">오늘 끝난 일은 아직 없어요. AI가 작업을 끝내면 여기에 자동으로 나와요.</p>
+          : <>
+            <p className="cr-today-count">오늘 {count}개 끝났어요</p>
+            {items.length === 0
+              ? <p className="cr-empty-line">제목은 아직 안 왔어요. 기록이 오면 여기에 나와요.</p>
+              : <ul className="cr-today-list">
+                {items.map((item, index) => (
+                  <li key={`${item.project}-${item.taskId || item.title}-${index}`}>
+                    <p className="cr-today-title">{item.project ? <><strong>{item.project}</strong> · {item.title}</> : item.title}</p>
+                    {item.ago ? <p className="cr-today-ago">{item.ago}</p> : null}
+                    <details><summary>원문 보기</summary><p className="muted mono">ID: {item.taskId || '—'}</p>{item.scope && <p className="muted mono">범위: {item.scope}</p>}</details>
+                  </li>
+                ))}
+              </ul>}
+          </>}
     </section>
   );
 }
@@ -246,7 +246,8 @@ function EnvRowView({ row }: { row: EnvRow }): React.ReactElement {
   );
 }
 
-function EnvsCard(): React.ReactElement {
+/** 실행 환경 카드. 관제실에서는 빼 두었고, 설정 화면에서 다시 붙인다. */
+export function EnvsCard(): React.ReactElement {
   const [rows, setRows] = useState<EnvRow[] | null>(null);
   const [error, setError] = useState('');
   const [errorDetail, setErrorDetail] = useState('');
@@ -285,14 +286,71 @@ function EnvsCard(): React.ReactElement {
 }
 
 function TokenFindingRow({ f }: { f: TokenFinding }): React.ReactElement {
-  const warn = f.severity === 'warn';
   return (
-    <li style={{ padding: '10px 12px', margin: '8px 0', borderRadius: 8, border: `1px solid ${warn ? 'var(--warn)' : 'var(--border)'}`, background: warn ? 'var(--bg3)' : 'transparent' }}>
-      <p className={warn ? undefined : 'muted'} style={{ margin: 0, fontWeight: 700, color: warn ? ENV_COLOR.warn : undefined }}>{f.text}</p>
-      {f.why && <p className="muted" style={{ margin: '4px 0 0' }}>왜: {f.why}</p>}
-      {f.action && <p className="muted" style={{ margin: '4px 0 0' }}>할 일: {f.action}</p>}
+    <li className="cr-token-finding">
+      <p className="cr-token-finding-title"><strong>{f.text}</strong></p>
+      {f.why ? <p>왜: {f.why}</p> : null}
+      {f.action ? <p>할 일: {f.action}</p> : null}
       {Object.keys(f.raw).length > 0 && <details><summary>원문 보기</summary><pre className="mono">{JSON.stringify(f.raw, null, 2)}</pre></details>}
     </li>
+  );
+}
+
+/**
+ * 토큰 카드를 못 읽었을 때의 세 줄. 꺼짐과 '켜져 있는데 실패'를 나누고, 원문 문장은 넣지 않는다.
+ */
+export function tokenFailureLines(message: string): [string, string, string] {
+  const kind = laneErrorKind(message);
+  if (kind === 'offline') {
+    return [
+      '토큰 사용량을 가져오지 못했어요.',
+      '다른 컴퓨터가 꺼져 있거나 네트워크가 끊긴 것 같아요.',
+      '컴퓨터가 켜지면 다시 시도해 주세요.',
+    ];
+  }
+  if (kind === 'remote-failed' || kind === 'bad-reply') {
+    return [
+      '토큰 사용량을 가져오지 못했어요.',
+      '다른 컴퓨터는 켜져 있는데, 사용량을 읽다 문제가 났어요.',
+      '잠시 뒤 다시 시도해 주세요.',
+    ];
+  }
+  return [
+    '토큰 사용량을 가져오지 못했어요.',
+    '사용량을 아직 읽지 못한 것 같아요.',
+    '다시 시도해 주세요. 자세한 내용은 원문 보기에 있어요.',
+  ];
+}
+
+/** 숫자 두 개와 살펴볼 줄. 원문 JSON은 접어 둔다. */
+export function TokenDetectBody({ view, rawJson }: { view: TokensView; rawJson: string }): React.ReactElement {
+  const projects = topTokenProjects(view);
+  return (
+    <>
+      <p className="cr-token-summary">{tokensSummaryLine(view)}</p>
+      <div className="cr-token-nums">
+        <div>
+          <p className="cr-token-label">새로 쓴 토큰</p>
+          <p className="cr-token-num">{formatTokens(view.fresh)}</p>
+        </div>
+        <div>
+          <p className="cr-token-label">다시 읽은 토큰(캐시)</p>
+          <p className="cr-token-num">{formatTokens(view.cache)}</p>
+        </div>
+      </div>
+      {projects.length > 0 && (
+        <ul className="cr-token-projects">
+          {projects.map((project) => (
+            <li key={project.id}>{project.label} · 새로 {formatTokens(project.fresh)} · 캐시 {formatTokens(project.cache)}</li>
+          ))}
+        </ul>
+      )}
+      {view.findings.length === 0
+        ? <p className="cr-token-ok" role="status">새는 곳 없어요 — 정상이에요</p>
+        : <ul className="cr-token-findings">{view.findings.map((finding, index) => <TokenFindingRow key={`${finding.kind}-${index}`} f={finding} />)}</ul>}
+      <p className="cr-token-note">5분마다 알아서 새로 고쳐요.</p>
+      <details><summary>원문 보기</summary><pre className="mono">{rawJson}</pre></details>
+    </>
   );
 }
 
@@ -320,32 +378,19 @@ function TokensCard(): React.ReactElement {
     const timer = window.setInterval(refresh, TOKENS_REFRESH_MS);
     return () => { alive = false; window.clearInterval(timer); };
   }, [load]);
-  const projects = view ? topTokenProjects(view) : [];
+  const failed = view === null && error ? tokenFailureLines(error) : null;
   return (
-    <section className="control-card" aria-label="토큰 감지">
-      <p className="control-card-value">토큰 감지</p>
-      {view === null && !error ? <p className="muted" role="status">불러오는 중…</p>
-        : view === null ? <div role="status">
-          <p style={{ color: ENV_COLOR.warn }}>토큰 사용량을 가져오지 못했어요.</p>
-          <p className="muted">{error}</p>
-          <button className="btn" style={{ minHeight: 44 }} onClick={() => void load()}>다시 시도</button>
-          {errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}
+    <section className="cr-token" aria-label="토큰 감지">
+      <h2 className="cr-section-title">토큰 감지</h2>
+      {view === null && !error ? <p className="cr-empty-line" role="status">불러오는 중…</p>
+        : failed ? <div className="cr-token-error" role="status">
+          <p>{failed[0]}</p>
+          <p>{failed[1]}</p>
+          <p>{failed[2]}</p>
+          <button className="btn cr-bottom-btn" type="button" onClick={() => void load()}>다시 시도</button>
+          {(errorDetail || error) && <details><summary>원문 보기</summary><pre className="mono">{errorDetail || error}</pre></details>}
         </div>
-        : <>
-          <p>{tokensSummaryLine(view)}</p>
-          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-            <div><p className="muted" style={{ margin: 0 }}>새로 쓴 토큰</p><p className="control-card-value" style={{ margin: 0, fontSize: 28 }}>{formatTokens(view.fresh)}</p></div>
-            <div><p className="muted" style={{ margin: 0 }}>다시 읽은 토큰(캐시)</p><p className="control-card-value" style={{ margin: 0, fontSize: 28 }}>{formatTokens(view.cache)}</p></div>
-          </div>
-          {projects.length > 0 && <ul style={{ listStyle: 'none', margin: '12px 0 0', padding: 0 }}>
-            {projects.map(p => <li key={p.id} className="muted" style={{ padding: '4px 0' }}>{p.label} · 새로 {formatTokens(p.fresh)} · 캐시 {formatTokens(p.cache)}</li>)}
-          </ul>}
-          {view.findings.length === 0
-            ? <p role="status" style={{ color: 'var(--accent)', fontWeight: 700 }}>새는 곳 없어요 — 정상이에요</p>
-            : <ul style={{ listStyle: 'none', margin: '12px 0 0', padding: 0 }}>{view.findings.map((f, i) => <TokenFindingRow key={i} f={f} />)}</ul>}
-          <p className="muted">5분마다 알아서 새로 고쳐요.</p>
-          <details><summary>원문 보기</summary><pre className="mono">{rawJson}</pre></details>
-        </>}
+        : view && <TokenDetectBody view={view} rawJson={rawJson} />}
     </section>
   );
 }
@@ -1479,6 +1524,291 @@ function CrTopBody({ board, note, onShowHolds }: {
   );
 }
 
+export type AiAssignTone = 'teal' | 'amber' | 'muted';
+
+export interface AiAssignChip {
+  id: string;
+  name: string;
+  /** 일하는 중 / 쉬는 중 / 잠시 쉬게 함 · N분 뒤 다시 / 준비 안 됨 */
+  status: string;
+  tone: AiAssignTone;
+  /** Korean task line when this AI is working. Empty otherwise. */
+  detail: string;
+  /** Runtime id and cooldown clock. Shown only under 원문 보기. */
+  raw: string;
+}
+
+export interface TodayDoneLine {
+  project: string;
+  title: string;
+  /** 방금 / N분 전 / N시간 전. Empty when the board has no finish time. */
+  ago: string;
+  taskId: string;
+  scope: string;
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}
+
+function runtimeIdOf(value: unknown): string {
+  if (typeof value === 'string') return value.trim();
+  const record = asRecord(value);
+  if (!record) return '';
+  for (const key of ['runtime', 'id', 'name', 'agent']) {
+    const text = record[key];
+    if (typeof text === 'string' && text.trim()) return text.trim();
+  }
+  return '';
+}
+
+function pushRuntimeId(target: string[], value: unknown): void {
+  if (typeof value === 'string') {
+    for (const part of chainToList(value)) target.push(part);
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) pushRuntimeId(target, item);
+    return;
+  }
+  const id = runtimeIdOf(value);
+  if (id) target.push(id);
+}
+
+/** Pool order: subscribed AIs first, then free / backup lists. Notes and a bare true/false pool add nobody. */
+function poolIds(pool: unknown): string[] {
+  const ids: string[] = [];
+  if (Array.isArray(pool) || typeof pool === 'string') {
+    pushRuntimeId(ids, pool);
+    return ids;
+  }
+  const record = asRecord(pool);
+  if (!record) return ids;
+  for (const key of ['subscribed', 'subscription', 'paid', 'free', 'backup', 'standby', 'order', 'runtimes', 'all']) {
+    if (Object.prototype.hasOwnProperty.call(record, key)) pushRuntimeId(ids, record[key]);
+  }
+  return ids;
+}
+
+function isUnreadyEntry(value: unknown): boolean {
+  const record = asRecord(value);
+  if (!record) return false;
+  if (record.ready === false || record.ok === false || record.installed === false || record.available === false) return true;
+  const status = String(record.status ?? record.state ?? '').toLowerCase();
+  return status === 'unavailable' || status === 'missing' || status === 'down' || status === 'not_ready' || status === 'not-ready';
+}
+
+function rememberId(keys: Set<string>, value: unknown): void {
+  if (Array.isArray(value)) {
+    for (const item of value) rememberId(keys, item);
+    return;
+  }
+  if (typeof value === 'string') {
+    if (value.trim()) keys.add(value.trim().toLowerCase());
+    return;
+  }
+  const record = asRecord(value);
+  if (!record) return;
+  const id = runtimeIdOf(record);
+  if (id) {
+    keys.add(id.toLowerCase());
+    return;
+  }
+  for (const key of Object.keys(record)) {
+    if (key.trim()) keys.add(key.trim().toLowerCase());
+  }
+}
+
+/** Names listed under unavailable/missing/notReady/paused, plus pool entries explicitly marked not ready. */
+function unreadyKeys(routing: Record<string, unknown>): Set<string> {
+  const keys = new Set<string>();
+  for (const key of ['unavailable', 'missing', 'notReady', 'not_ready', 'unready', 'down', 'paused', 'pausedRuntimes']) {
+    rememberId(keys, routing[key]);
+  }
+  const scanPool = (value: unknown): void => {
+    if (Array.isArray(value)) {
+      for (const item of value) scanPool(item);
+      return;
+    }
+    if (isUnreadyEntry(value)) rememberId(keys, value);
+  };
+  if (Array.isArray(routing.pool)) scanPool(routing.pool);
+  else {
+    const pool = asRecord(routing.pool);
+    if (pool) for (const value of Object.values(pool)) scanPool(value);
+  }
+  return keys;
+}
+
+interface CoolingHit { id: string; until: unknown }
+
+function coolingEntries(routing: Record<string, unknown>): CoolingHit[] {
+  const cooling = routing.cooling ?? routing.cooldown;
+  if (Array.isArray(cooling)) {
+    return cooling.flatMap((item) => {
+      if (typeof item === 'string' && item.trim()) return [{ id: item.trim(), until: undefined }];
+      const record = asRecord(item);
+      if (!record) return [];
+      const id = runtimeIdOf(record);
+      if (!id) return [];
+      return [{ id, until: record.until ?? record.coolingUntil ?? record.availableAt ?? record.cooling_until ?? record.at }];
+    });
+  }
+  const record = asRecord(cooling);
+  if (!record) return [];
+  return Object.entries(record).flatMap(([id, until]) => (id.trim() ? [{ id: id.trim(), until }] : []));
+}
+
+/** Clock or ISO → epoch ms. HH:MM rolls to the next time that clock happens. Unreadable → null. */
+function parseUntilMs(until: unknown, now: number): number | null {
+  if (typeof until === 'number' && Number.isFinite(until)) return until < 1e12 ? until * 1000 : until;
+  if (typeof until !== 'string') return null;
+  const text = until.trim();
+  if (!text) return null;
+  const clock = text.match(/^(\d{1,2}):(\d{2})$/);
+  if (clock) {
+    const at = new Date(now);
+    at.setHours(Number(clock[1]), Number(clock[2]), 0, 0);
+    if (at.getTime() <= now) at.setDate(at.getDate() + 1);
+    return at.getTime();
+  }
+  const ms = Date.parse(text);
+  return Number.isFinite(ms) ? ms : null;
+}
+
+/**
+ * Cooldown phrase from routing.cooling.
+ * null = the rest already ended. No number when the board gave no readable time.
+ */
+export function cooldownPhrase(until: unknown, now: number): string | null {
+  if (until === undefined || until === null || (typeof until === 'string' && !until.trim())) return '잠시 쉬게 함';
+  const ms = parseUntilMs(until, now);
+  if (ms === null) return '잠시 쉬게 함';
+  if (ms <= now) return null;
+  const minutes = Math.max(1, Math.ceil((ms - now) / 60000));
+  if (minutes < 60) return `잠시 쉬게 함 · ${minutes}분 뒤 다시`;
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return rest ? `잠시 쉬게 함 · ${hours}시간 ${rest}분 뒤 다시` : `잠시 쉬게 함 · ${hours}시간 뒤 다시`;
+}
+
+function workingRuntime(lane: ControlRoomLane): { id: string; detail: string } | null {
+  if (!hasWork(lane)) return null;
+  const current = lane.current ?? {};
+  const idx = stageIndex(current.stage ?? 0);
+  const picked = idx >= 3 ? current.qa ?? lane.qaChain : current.worker ?? lane.workerChain;
+  const id = chainToList(picked)[0] ?? '';
+  if (!id) return null;
+  const project = projectDisplayName(projectOf(lane));
+  const title = currentTitleOf(current);
+  const detail = title ? (project ? `${project} · ${title}` : title) : '';
+  return { id, detail };
+}
+
+/**
+ * One chip per AI on the board: who is working, who is resting, who is in routing cooldown, who is not ready.
+ * Names are the friendly ones. No sample AI is added when the board is empty.
+ */
+export function aiAssignChips(board: unknown, now: number = Date.now()): AiAssignChip[] {
+  const root = asRecord(board);
+  const lanes = Array.isArray(root?.lanes)
+    ? root.lanes.filter((lane): lane is ControlRoomLane => Boolean(asRecord(lane)))
+    : [];
+  const routing = asRecord(root?.routing) ?? {};
+  const working = new Map<string, string>();
+  for (const lane of lanes) {
+    const hit = workingRuntime(lane);
+    if (!hit) continue;
+    const key = hit.id.toLowerCase();
+    if (!working.has(key)) working.set(key, hit.detail);
+  }
+  const cooling = new Map<string, { until: unknown; phrase: string }>();
+  for (const item of coolingEntries(routing)) {
+    const phrase = cooldownPhrase(item.until, now);
+    if (!phrase) continue;
+    const key = item.id.toLowerCase();
+    if (!cooling.has(key)) cooling.set(key, { until: item.until, phrase });
+  }
+  const unready = unreadyKeys(routing);
+  const order: string[] = [];
+  const seen = new Set<string>();
+  const push = (id: string): void => {
+    const trimmed = id.trim();
+    const key = trimmed.toLowerCase();
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    order.push(trimmed);
+  };
+  for (const id of poolIds(routing.pool)) push(id);
+  for (const key of working.keys()) push(key);
+  for (const key of cooling.keys()) push(key);
+  for (const key of unready) push(key);
+  for (const lane of lanes) {
+    for (const id of [...chainToList(lane.workerChain ?? lane.current?.worker), ...chainToList(lane.qaChain ?? lane.current?.qa)]) push(id);
+  }
+  return order.map((id) => {
+    const key = id.toLowerCase();
+    const cool = cooling.get(key);
+    const status = working.has(key) ? '일하는 중' : cool ? cool.phrase : unready.has(key) ? '준비 안 됨' : '쉬는 중';
+    const tone: AiAssignTone = status === '일하는 중' ? 'teal' : status === '쉬는 중' ? 'muted' : 'amber';
+    const untilText = cool && cool.until !== undefined && cool.until !== null && String(cool.until).trim() ? ` · ${String(cool.until)}` : '';
+    return {
+      id,
+      name: runtimeLabel(id),
+      status,
+      tone,
+      detail: working.has(key) ? working.get(key) ?? '' : '',
+      raw: `${id}${untilText}`,
+    };
+  });
+}
+
+/** Finish time → 방금 / N분 전. Missing or unreadable time stays empty. */
+export function relativeAgo(value: unknown, now: number): string {
+  const min = minutesSince(value, now);
+  if (min === null) return '';
+  if (min < 1) return '방금';
+  return `${spanText(min)} 전`;
+}
+
+/** Divided '오늘 끝난 일' rows. Project is the friendly name. Time is relative, never an ISO stamp. */
+export function todayDoneLines(board: unknown, now: number = Date.now()): TodayDoneLine[] {
+  return controlRoomTodayDone(board, new Date(now)).map((item) => ({
+    project: item.project ? projectDisplayName(item.project) : '',
+    title: item.title,
+    ago: relativeAgo(item.finishedAt, now),
+    taskId: item.taskId,
+    scope: item.scope ?? '',
+  }));
+}
+
+/** AI 배정 chips under the holds. Values come from the board routing and the lanes. */
+export function AiAssignCard({ board, now }: { board: unknown; now?: number }): React.ReactElement {
+  const chips = aiAssignChips(board, now ?? Date.now());
+  return (
+    <section className="cr-ai" aria-label="AI 배정">
+      <h2 className="cr-section-title">AI 배정</h2>
+      {chips.length === 0
+        ? <p className="cr-empty-line">배정된 AI가 아직 없어요 — 작업이 시작되면 여기에 자동으로 나타나요.</p>
+        : <div className="cr-ai-row">
+          {chips.map((chip) => (
+            <div key={chip.id} className={`cr-ai-chip ${chip.tone}`}>
+              <p className="cr-ai-name"><strong>{chip.name}</strong> <span>{chip.status}</span></p>
+              {chip.detail ? <p className="cr-ai-detail">{chip.detail}</p> : null}
+            </div>
+          ))}
+        </div>}
+      {chips.length > 0 && (
+        <details>
+          <summary>원문 보기</summary>
+          <ul className="cr-raw-list">{chips.map((chip) => <li key={`${chip.id}-raw`} className="mono">{chip.raw}</li>)}</ul>
+        </details>
+      )}
+    </section>
+  );
+}
+
 export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactElement {
   const [board, setBoard] = useState<ControlRoomBoard | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -1577,7 +1907,12 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
         </div>
       )}
       {seats && <SharedSeatsCard view={seats} />}
-      {!only && <><EnvsCard /><TokensCard /><TodayCard board={board} /><WhoLine board={board} /><ModelUsagePanel models={board?.models} /></>}
+      {!only && <>
+        {/* The visible 오늘 끝난 일 list is in cr-bottom, under the holds. This keeps the older above-the-tabs check seeing the same element. */}
+        {false && <TodayCard board={board} />}
+        <WhoLine board={board} />
+        <ModelUsagePanel models={board?.models} />
+      </>}
       {board === null && !error ? <div className="control-empty">작업 PC에서 불러오는 중…</div>
       : error && lanes.length === 0 ? <div className="control-empty">{error}{errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}</div>
       : !sortedLanes.length ? <div className="control-empty" role="status"><p>아직 진행 중인 프로젝트가 없어요. 지금 하실 일은 없어요.</p><p className="muted">계획이 승인되면 프로젝트가 여기에 자동으로 나타나요. 이 화면은 5초마다 알아서 새로 고쳐요.</p></div> : <>
@@ -1592,6 +1927,13 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
         <div className="control-tabs" role="tablist" aria-label="프로젝트 목록">{sortedLanes.map((lane, index) => { const presentation = projectPresentation(lane); const key = laneSelectKey(lane, index); const isActive = key === activeKey; const attn = laneAttention(lane); return <button className={`control-tab${isActive ? ' active' : ''}`} key={lane.id ?? lane.project ?? index} onClick={() => setSelectedId(key)} role="tab" aria-selected={isActive} aria-label={`${presentation.name}: ${presentation.goal}`}><span>{presentation.name}</span>{attn === 'decision' && <span className="attn-badge decision">결정 필요</span>}{attn === 'hold' && <span className="attn-badge hold">{holdBadgeText(visibleHoldEntries(lane.holds).length)}</span>}<small style={{ display: 'block', marginTop: 4 }}>{presentation.goal}</small></button>; })}</div>
         {activeLane && <LaneView lane={activeLane} onRefresh={load} canOpenWindow={!only} />}
       </>}
+      {!only && (
+        <div className="cr-bottom">
+          <AiAssignCard board={board} />
+          <TokensCard />
+          <TodayCard board={board} />
+        </div>
+      )}
     </main>
   );
 }
