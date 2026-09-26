@@ -17893,6 +17893,39 @@
           ],
           "ssotEvidence": "layout.mjs:55 SUMMARY_KEYS=[...] feeds the daily public summary; layout.mjs:46-47 staff/botlog have access:'private' and layout.mjs:41 playground has access:'botsonly'; check.mjs:26 only asserts each SUMMARY_KEYS entry exists in channelByKey, never that its access is public-safe",
           "title": "매일 요약을 누구나 확인"
+        },
+        {
+          "taskId": "JUAI-CHECK-ADMIN-PLAN-TOPIC",
+          "scope": "Add check.mjs assertions that validateAdminPlan accepts and trims a valid set_topic plan while preserving its required channel and topic fields.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:38 \"lib.mjs 사용량 제한, 비슷한 질문 찾기 같은 순수 로직 (check.mjs로 점검)\""
+        },
+        {
+          "taskId": "JUAI-CHECK-ADMIN-PLAN-NUMERIC-FALLBACK",
+          "scope": "Add check.mjs assertions for invalid numeric timeout and delete_messages limits falling back to their safe bounded defaults.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:45 \"삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다.\""
+        },
+        {
+          "taskId": "JUAI-CHECK-LAYOUT-NAMES",
+          "scope": "Add check.mjs assertions that layout category names and channel names are non-empty and unique because setup matches the server structure by name.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:34-35 \"layout.mjs 서버 구조(역할·채널·포럼 태그·입장 질문·안내문)를 데이터로\"; \"setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
