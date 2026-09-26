@@ -17773,6 +17773,17 @@
           ],
           "ssotEvidence": "db.mjs:5-14 ten CREATE TABLE IF NOT EXISTS statements in SCHEMA — no check.mjs assertion currently confirms the full table list exists after db.exec(SCHEMA)",
           "title": "필수 데이터 저장소 생성 점검"
+        },
+        {
+          "taskId": "JUAI-README-SUB-CAP",
+          "scope": "README의 멤버 명령어 안내에 키워드 구독은 최대 5개라는 제한을 한 짧은 절로 추가한다.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: README member-commands line must state the 5-keyword cap enforced by bot.mjs (SUB_MAX)."
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
