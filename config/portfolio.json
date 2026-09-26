@@ -11395,6 +11395,28 @@
             "node --test tests/offline-acceptance-sync.test.mjs"
           ],
           "ssotEvidence": "docs/offline-acceptance.md quotes bash scripts/e2e.sh, node --test tests/*.test.mjs, node scripts/status-board.mjs registry.json [--project-id my-project], --help/-h with no test verifying them against scripts/e2e.sh's const tests/const board or status-board.mjs:33 usage string; Founder direction 2026-09-26 (offline E2E + Korean Quickstart bounded acceptance target)"
+        },
+        {
+          "taskId": "JUCONTROLER-README-SOURCE-KIND-COUNT-SYNC",
+          "scope": "Extend tests/docs-source-kinds-sync.test.mjs to also check README.md's two 'sourceKind 네 종류/네 가지' mentions against src/project-registry.mjs's sourceKinds list, the same way it already checks docs/getting-started.md",
+          "files": [
+            "tests/docs-source-kinds-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/docs-source-kinds-sync.test.mjs"
+          ],
+          "ssotEvidence": "README.md:15,91 claim 'sourceKind 네 종류/네 가지' but tests/docs-source-kinds-sync.test.mjs only checks docs/getting-started.md against src/project-registry.mjs:6 sourceKinds; Founder direction 2026-09-26"
+        },
+        {
+          "taskId": "JUCONTROLER-KOREAN-ERROR-COUNT-SYNC",
+          "scope": "Add tests/korean-error-count-sync.test.mjs asserting the number of if-branches plus fallback in scripts/status-board.mjs's korean() function equals the '다섯 가지 오류' claim in docs/getting-started.md",
+          "files": [
+            "tests/korean-error-count-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/korean-error-count-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:249 claims '다섯 가지 오류' (five error kinds) but scripts/status-board.mjs:70-76 korean() branch count is unguarded by any test; Founder direction 2026-09-26"
         }
       ],
       "qaRuntime": [
