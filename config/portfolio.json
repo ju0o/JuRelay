@@ -11907,6 +11907,17 @@
           ],
           "ssotEvidence": "docs/getting-started.md:224 quotes 역할(PM·Worker·QA·Tester); docs/integration/ai-assignment.schema.json:28 enum is [pm,worker,qa,tester]; no existing test cross-checks them (git grep '역할(' over tests/ at 1ad0ff8 returns nothing)",
           "title": "역할 순서를 문서와 맞춥니다"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-DOCS-VALUE-SYNC",
+          "scope": "Extend the existing real-run comparison test in tests/e2e-docs-sync.test.mjs to also assert the doc JSON example's message, ok, and schema values equal a real bash scripts/e2e.sh run, not just steps/projects/statuses/key-names",
+          "files": [
+            "tests/e2e-docs-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-docs-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-27: docs/getting-started.md's giant sample JSON block 'is still a hand-transcribed doc quote, not run for real'; tests/e2e-docs-sync.test.mjs's real-run test asserts only Object.keys/projects/statuses/steps, never message/ok/schema values"
         }
       ],
       "qaRuntime": [
