@@ -7,7 +7,7 @@ import { controlRoomTaskId, controlRoomTaskTitle, founderTaskTitle, controlRoomH
 import { PROJECT_LABELS, aiDisplayName, projectFromSearch, projectWindowKey, barPercent, envReasonText, envTone, normalizeEnvs, ramText, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
 import type { EnvRow, EnvTone, NormalizedHold } from '../shared/projectLabels.js';
 import { laneErrorKind, laneErrorRaw } from '../shared/projectManager.js';
-import { scopeBoard, sharedSeatsView } from '../shared/projectScope.js';
+import { countWorkingTasks, scopeBoard, sharedSeatsView } from '../shared/projectScope.js';
 import type { SharedSeatsView } from '../shared/projectScope.js';
 import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from '../shared/tokens.js';
 import type { TokenFinding, TokensView } from '../shared/tokens.js';
@@ -1462,14 +1462,15 @@ export function crTopBanner(board: unknown): CrTopBanner {
 }
 
 /**
- * Four tiles. Today and working AI reuse the board helpers.
+ * Four tiles. Today reuses the board helper. Working AI is the same
+ * RUNNING/QA count as the seat bar (`countWorkingTasks`).
  * Stuck is amber. Waiting is queued work only — never a sample number.
  */
 export function crTopStats(board: unknown): CrTopStat[] {
   const waiting = crTopLanes(board).reduce((sum, lane) => sum + crTopQueued(lane), 0);
   return [
     { label: '오늘 끝난 작업', value: controlRoomTodayCount(board), tone: 'teal' },
-    { label: '지금 일하는 AI', value: controlRoomWorkingItems(board).length, tone: 'muted' },
+    { label: '지금 일하는 AI', value: countWorkingTasks(board), tone: 'muted' },
     { label: '멈춘 작업', value: crTopStuck(board).count, tone: 'amber' },
     { label: '대기', value: waiting, tone: 'muted' },
   ];

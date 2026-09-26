@@ -47,7 +47,7 @@ const FIXTURE = {
     {
       id: 'agent-relay',
       project: 'agent-relay',
-      current: { title: '영수증 화면 쉽게', stage: 2, worker: 'codex' },
+      current: { title: '영수증 화면 쉽게', stage: 2, state: 'RUNNING', worker: 'codex' },
       holds: [
         { taskId: 'hold-a', reason: '문장이 어려워요', waitMin: 8, explain: { sentence: '쉬운 말로 다시 써요' } },
         { taskId: 'hold-b', reason: '잠깐 느려요', waitMin: 5, explain: { sentence: '한 명만 쉬게 해요' } },
@@ -57,7 +57,7 @@ const FIXTURE = {
     },
     {
       id: 'actl',
-      current: { title: '명령 결과를 한 줄로', stage: 'QA', qa: 'claude-team' },
+      current: { title: '명령 결과를 한 줄로', stage: 'QA', state: 'QA', qa: 'claude-team' },
     },
     {
       id: 'juplan',
@@ -118,7 +118,7 @@ test('banner and tiles come from the board fixture, not sample numbers', () => {
   assert.equal(blocked.actionLabel, '멈춘 작업 보기');
 
   const other = {
-    lanes: [{ current: { title: '하나만 하는 중' }, counts: { QUEUED: 4 }, todayDone: [{ title: '가' }, { title: '나' }] }],
+    lanes: [{ current: { title: '하나만 하는 중', state: 'RUNNING' }, counts: { QUEUED: 4 }, todayDone: [{ title: '가' }, { title: '나' }] }],
   };
   assert.equal(crTopBanner(other).tone, 'teal');
   assert.deepEqual(crTopStats(other).map((stat) => stat.value), [2, 1, 0, 4]);

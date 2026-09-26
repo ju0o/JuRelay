@@ -10,9 +10,9 @@ const SURFACE = /QUEUED|HOLD|maxBuilders|lowMemory|freeMb|taskId|[0-9]{4}-[0-9]{
 
 function board() {
   return {
-    capacity: { maxBuilders: 2, busy: 2, lowMemory: false, freeMb: 4096 },
+    capacity: { maxBuilders: 2, busy: 0, lowMemory: false, freeMb: 4096 },
     lanes: [
-      { id: "juplan", project: "JuPlan", state: "QUEUED", tasks: [{ taskId: "P-1", state: "QUEUED" }] },
+      { id: "juplan", project: "JuPlan", state: "QUEUED", tasks: [{ taskId: "P-1", state: "QUEUED" }, { state: "RUNNING" }, { state: "QA" }] },
       { id: "jutell", project: "jutell", state: "RUNNING" },
       { id: "juai", project: "juai", holds: [] },
       { id: "ai-agent-marketplace", project: "ai-agent-marketplace" },
@@ -21,8 +21,10 @@ function board() {
   };
 }
 
-test("shared seats line and bar come only from board.capacity", () => {
-  const view = sharedSeatsView(board(), "");
+test("shared seats used count is RUNNING or QA tasks, and the total is maxBuilders", () => {
+  const source = board();
+  const view = sharedSeatsView(source, "");
+  assert.equal(source.capacity.busy, 0);
   assert.equal(view.line, "전체 AI 자리 2개 중 2개 사용 중");
   assert.equal(view.max, 2);
   assert.equal(view.busy, 2);
@@ -42,8 +44,9 @@ test("project window says it is next when its lane is QUEUED and no seat is free
 
 test("a free seat or another session's queue does not say this project is next", () => {
   const open = board();
-  open.capacity = { maxBuilders: 2, busy: 1, lowMemory: false, freeMb: 4096 };
+  open.lanes[0].tasks = [{ taskId: "P-1", state: "QUEUED" }, { state: "RUNNING" }];
   assert.equal(sharedSeatsView(open, "juplan").waiting, null);
+  assert.equal(sharedSeatsView(open, "juplan").busy, 1);
   assert.equal(sharedSeatsView(open, "juplan").percent, 50);
   const full = board();
   assert.equal(sharedSeatsView(full, "jutell").waiting, null);
@@ -57,8 +60,10 @@ test("low memory is an amber sentence with remaining GB, and is omitted without 
   assert.equal(view.memory, "RAM이 부족해서 새 작업을 잠시 멈췄어요 (남은 1.5 GB)");
   assert.doesNotMatch(view.memory, SURFACE);
   const whole = board();
-  whole.capacity = { maxBuilders: 2, busy: 1, lowMemory: true, freeMb: 2048 };
+  whole.lanes[0].tasks = [{ state: "QUEUED" }, { state: "RUNNING" }];
+  whole.capacity = { maxBuilders: 2, busy: 0, lowMemory: true, freeMb: 2048 };
   assert.equal(sharedSeatsView(whole, "").memory, "RAM이 부족해서 새 작업을 잠시 멈췄어요 (남은 2 GB)");
+  assert.equal(sharedSeatsView(whole, "").line, "전체 AI 자리 2개 중 1개 사용 중");
   const missing = board();
   missing.capacity = { maxBuilders: 2, busy: 2, lowMemory: true };
   assert.equal(sharedSeatsView(missing, "juplan").memory, null);
@@ -69,7 +74,9 @@ test("missing or unusable capacity shows nothing and never guesses", () => {
   assert.equal(sharedSeatsView({ lanes: [], maxBuilders: 2, busy: 1 }, "juplan"), null);
   assert.equal(sharedSeatsView({ capacity: null, lanes: [{ id: "juplan", state: "QUEUED" }] }, "juplan"), null);
   assert.equal(sharedSeatsView({ capacity: { maxBuilders: "2", busy: 1 } }, "juplan"), null);
-  assert.equal(sharedSeatsView({ capacity: { maxBuilders: 2, busy: -1 } }, ""), null);
+  const staleBusy = sharedSeatsView({ capacity: { maxBuilders: 2, busy: -1 }, lanes: [] }, "");
+  assert.equal(staleBusy.busy, 0);
+  assert.equal(staleBusy.line, "전체 AI 자리 2개 중 0개 사용 중");
   assert.equal(sharedSeatsView(null, "juplan"), null);
   assert.equal(sharedSeatsView({}, ""), null);
 });
@@ -83,8 +90,8 @@ test("queued work is read from the lane, not invented, and other lanes stay unto
   assert.deepEqual(source.lanes.map(lane => lane.id), ["juplan", "jutell", "juai", "ai-agent-marketplace", "juradar"]);
 
   const byTask = {
-    capacity: { maxBuilders: 1, busy: 1, lowMemory: false, freeMb: 1024 },
-    lanes: [{ id: "juplan", tasks: [{ state: "QUEUED", taskId: "SECRET" }] }, { id: "juradar", state: "QUEUED" }],
+    capacity: { maxBuilders: 1, busy: 0, lowMemory: false, freeMb: 1024 },
+    lanes: [{ id: "juplan", tasks: [{ state: "QUEUED", taskId: "SECRET" }, { state: "RUNNING" }] }, { id: "juradar", state: "QUEUED" }],
   };
   const queued = sharedSeatsView(byTask, "juplan");
   assert.equal(queued.waiting, "이 프로젝트는 다음 차례예요");

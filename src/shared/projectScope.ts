@@ -135,6 +135,9 @@ export interface SharedSeatsView {
 
 const QUEUED_STATE = 'QUEUED';
 
+/** Seat use and the "지금 일하는 AI" tile. REQUEST_CHANGES and QUEUED stay out. */
+const WORKING_STATES = new Set(['RUNNING', 'QA']);
+
 function isSafeCount(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
 }
@@ -180,9 +183,72 @@ function laneHasQueuedWork(lane: unknown): boolean {
   });
 }
 
+function taskWorkState(task: unknown): string {
+  if (typeof task === 'string') return task.trim();
+  const record = asRecord(task);
+  if (!record) return '';
+  const state = record.state ?? record.status;
+  return typeof state === 'string' ? state.trim() : '';
+}
+
+function countWorkingInList(list: unknown): number | null {
+  if (!Array.isArray(list)) return null;
+  return list.filter(item => WORKING_STATES.has(taskWorkState(item))).length;
+}
+
+/** Lane `counts.RUNNING` + `counts.QA` when either key is present. Otherwise null. */
+function countWorkingInCounts(counts: unknown): number | null {
+  const record = asRecord(counts);
+  if (!record) return null;
+  if (!Object.prototype.hasOwnProperty.call(record, 'RUNNING')
+    && !Object.prototype.hasOwnProperty.call(record, 'QA')) {
+    return null;
+  }
+  let total = 0;
+  for (const key of ['RUNNING', 'QA'] as const) {
+    if (!Object.prototype.hasOwnProperty.call(record, key)) continue;
+    const value = record[key];
+    if (isSafeCount(value)) total += value;
+  }
+  return total;
+}
+
 /**
- * Shared seat line from `board.capacity` `{ maxBuilders, busy, lowMemory, freeMb }`.
- * Returns null when capacity is missing or the two counts are not real numbers.
+ * Tasks in RUNNING or QA. This is the only used-seat number.
+ * A top-level `tasks` list wins so the same work is not counted again on lanes.
+ * Otherwise each lane uses its `tasks` list, then `counts`, then `current`.
+ * A lane's own `state: "RUNNING"` is not a task and is not counted.
+ * Does not change `board`.
+ */
+export function countWorkingTasks(board: unknown): number {
+  const source = asRecord(board);
+  if (!source) return 0;
+  const listed = countWorkingInList(source.tasks);
+  if (listed !== null) return listed;
+  if (!Array.isArray(source.lanes)) return 0;
+  let total = 0;
+  for (const lane of source.lanes) {
+    const record = asRecord(lane);
+    if (!record) continue;
+    const laneTasks = countWorkingInList(record.tasks);
+    if (laneTasks !== null) {
+      total += laneTasks;
+      continue;
+    }
+    const fromCounts = countWorkingInCounts(record.counts);
+    if (fromCounts !== null) {
+      total += fromCounts;
+      continue;
+    }
+    if (WORKING_STATES.has(taskWorkState(record.current))) total += 1;
+  }
+  return total;
+}
+
+/**
+ * Shared seat line. Total is `capacity.maxBuilders`. Used count is
+ * `countWorkingTasks` (RUNNING or QA), never `capacity.busy`.
+ * Returns null when capacity or maxBuilders is missing — the tile still shows.
  * `projectId` is the open project window; a blank id never adds the waiting line.
  * Does not change `board`.
  */
@@ -191,10 +257,10 @@ export function sharedSeatsView(board: unknown, projectId = ''): SharedSeatsView
   if (!source || !Object.prototype.hasOwnProperty.call(source, 'capacity')) return null;
   const capacity = asRecord(source.capacity);
   if (!capacity) return null;
-  if (!isSafeCount(capacity.maxBuilders) || !isSafeCount(capacity.busy)) return null;
+  if (!isSafeCount(capacity.maxBuilders)) return null;
 
   const max = capacity.maxBuilders;
-  const busy = capacity.busy;
+  const busy = countWorkingTasks(source);
   const waiting = projectKey(projectId) !== ''
     && busy >= max
     && Array.isArray(source.lanes)
