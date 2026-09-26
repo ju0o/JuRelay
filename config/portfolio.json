@@ -9388,6 +9388,35 @@
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-AGENT-RELAY-LANE-FIELDS",
+          "scope": "Add steps run_missing_state (label '레인 상태 없음 안내') and run_invalid_holds (label '레인 보류 목록 오류 안내') to scripts/e2e.sh right after run_missing_runner_mode, with next command board. Model them on run_missing_runner: write a fresh Agent Relay board whose runner is valid and which has one lane 'bare' with no state, or one lane 'odd' (state RUNNING) whose holds is a string. Each step passes only when the board prints that single lane as UNKNOWN with reason missing-state or invalid-holds, and stderr is exactly the one Korean line using the reasonWords text. Then list both steps in docs/getting-started.md (step list, example JSON line, step descriptions) and extend tests/e2e-script.test.mjs the way the missing-runner commit did.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md",
+            "tests/e2e-script.test.mjs"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/e2e-failure-output.test.mjs tests/e2e-cleanup.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior'; README.md:105-106 documents missing-state/invalid-holds, and src/adapters/agent-relay.mjs laneStatus returns them, but scripts/e2e.sh has no step for either"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-MISSING-LANE-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names a source without status with the plain-Korean missing-status reason'. It writes a temp Agent Relay board snapshot with a valid runner and no lane 'absent', plus a registry entry for projectId 'absent' with sourceKind agent-relay-board. It runs scripts/status-board.mjs and asserts exit 0, a single UNKNOWN stale row with reason missing-lane and source id agent-relay/lanes/absent, and a stderr that is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: absent(missing-lane: 그 레인이 보드에 없어요) — README 처음 쓰는 법의 reason 표를 보세요'.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart are the bounded acceptance target; README.md:104 '| `missing-lane` | 보드 스냅샷에 그 id의 레인이 없어요. |' and scripts/status-board.mjs reasonWords 'missing-lane': '그 레인이 보드에 없어요', but the Korean CLI line for this reason has no test"
         }
       ],
       "qaRuntime": [
