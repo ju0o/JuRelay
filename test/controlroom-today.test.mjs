@@ -99,11 +99,12 @@ test("controlRoom.tsx — 오늘 카드 + 지금 일하는 AI 한 줄이 맨 위
   assert.match(source, /지금 일하는 AI/);
   assert.match(source, /aria-label="지금 일하는 AI"/);
   assert.match(source, /쉬는 중/);
-  const head = source.indexOf("<h1>관제실</h1>");
+  // The shell already shows the page title, so the room has no second <h1>관제실</h1>.
+  const head = source.indexOf('<main className="control-room">');
   const todayUse = source.indexOf("<TodayCard", head);
   const whoUse = source.indexOf("<WhoLine", head);
   const tabs = source.indexOf("control-tabs", head);
-  assert.ok(head >= 0 && todayUse > head && whoUse > head, "today/who must render below header");
+  assert.ok(head >= 0 && todayUse > head && whoUse > head, "today/who must render in the control room");
   assert.ok(todayUse < tabs && whoUse < tabs, "today/who must render above lane tabs");
 });
 
