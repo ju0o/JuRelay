@@ -9803,6 +9803,31 @@
             "node --test tests/*.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target; src/adapters/agent-relay.mjs at 9badd0f throws AgentRelayBoardError('duplicate-lane', ...) but no status-board CLI test covers it yet"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-DUPLICATE-LANE-STEP",
+          "scope": "Add step run_duplicate_lane to scripts/e2e.sh right after run_source_field_typo, with label '중복 레인 안내' and next command board, and add it to the step loop, labels and commands maps; model it on run_bad_board_kind with a temp agent-relay-board whose lanes are two {id:'twin'} entries, and expect one UNKNOWN row (stale true, reason invalid) plus exactly the stderr line '프로젝트 1개 중 1개는 상태를 알 수 없어요: twin(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요'; add ['run-duplicate-lane','중복 레인 안내'] to tests/e2e-script.test.mjs and sync the docs/getting-started.md step list/example the same way commit d0c6204 did.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/e2e-output-contract.test.mjs tests/status-board-cli.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; tests/status-board-cli.test.mjs:219 already pins the duplicate-lane CLI line that the E2E doesn't check yet"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-LANE-WITHOUT-ID-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names an Agent Relay board with duplicate lane ids with the plain-Korean invalid reason': it writes an agent-relay-board current.json for registry project 'noid' whose lanes are [{state:'RUNNING'}] (a lane with no id, which src/adapters/agent-relay.mjs:57 rejects as invalid-lane), and asserts exit 0, one row ['noid','UNKNOWN',true,'invalid'], and the stderr line '프로젝트 1개 중 1개는 상태를 알 수 없어요: noid(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요'.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; src/adapters/agent-relay.mjs:57 'every lane needs a text id' has no CLI line test"
         }
       ],
       "qaRuntime": [
