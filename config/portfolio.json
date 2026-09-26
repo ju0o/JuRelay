@@ -14830,6 +14830,19 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: one shared live-status projection for Home and Progress incl. founder action; operator/public/app.js:526-529 (liveCardModel: gated > open hold > paused) vs app.js:2165-2173 (relayTopLine: open hold > gated > paused)",
           "title": "상단 알림과 카드 이유 일치"
+        },
+        {
+          "taskId": "JCAPP-NEEDS-YOU-PROJECT-LABEL",
+          "scope": "홈의 확인 필요 카드에 프로젝트 이름과 결정 내용을 함께 표시해 대표님이 어느 프로젝트를 확인해야 하는지 한눈에 알 수 있게 한다.",
+          "files": [
+            "operator/public/app.js",
+            "test/home-hub.test.mjs"
+          ],
+          "tests": [
+            "node --test test/home-hub.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "founder/BACKLOG_POST_V1.md:22-25 \"Persona polish ... project/role label on the NEEDS YOU card itself\""
         }
       ],
       "skills": {
