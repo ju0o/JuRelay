@@ -6,6 +6,7 @@ import type { ControlRoomModelUsage } from '../shared/types.js';
 import { controlRoomTaskId, controlRoomTaskTitle, founderTaskTitle, controlRoomHasDoneData, controlRoomTodayCount, controlRoomTodayDone, controlRoomVerifiedDoneTotal, controlRoomWorkingItems, controlRoomRoutingLine, laneAttention } from '../shared/types.js';
 import { PROJECT_LABELS, aiDisplayName, projectFromSearch, projectWindowKey, barPercent, envReasonText, envTone, normalizeEnvs, ramText, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
 import type { EnvRow, EnvTone, NormalizedHold } from '../shared/projectLabels.js';
+import { laneErrorKind, laneErrorRaw } from '../shared/projectManager.js';
 import { scopeBoard, sharedSeatsView } from '../shared/projectScope.js';
 import type { SharedSeatsView } from '../shared/projectScope.js';
 import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from '../shared/tokens.js';
@@ -638,22 +639,22 @@ function HoldOptionButtons({ hold, gateId, taskTitle, onRefresh }: {
   }
 
   const savedLabel = doneLabel || hold.choiceLabel;
-  if (savedLabel) return <p className="hold-saved" role="status">선택했어요: {savedLabel} · 곧 다시 설계해요</p>;
+  if (savedLabel) return <p className="hold-saved" role="status"><span aria-hidden="true">✓ </span>선택했어요: {savedLabel} · 곧 다시 설계해요</p>;
 
   const recommendedLabel = hold.options[hold.recommendedIndex] ?? hold.options[0] ?? '';
   const option = hold.options[selected] ?? recommendedLabel;
+  const ordered = holdOptionsRecommendedFirst(hold.options, hold.recommendedIndex);
   return (
     <div className="hold-options" role="group" aria-label="선택지">
       <p className="hold-so">
         그래서{' '}
-        <button type="button" className="hold-recommend-link" aria-expanded={open} disabled={busy} onClick={() => setOpen(!open)}>{recommendedLabel}</button>
+        <button type="button" className="hold-recommend-link" aria-expanded={open} disabled={busy} onClick={() => setOpen(!open)}>{recommendedLabel} ▾</button>
         {' '}할게요.
       </p>
       {open && (
         <div className="hold-confirm">
           <div role="radiogroup" aria-label="어떻게 할까요">
-            {hold.options.map((label, optionIndex) => {
-              const recommended = optionIndex === hold.recommendedIndex;
+            {ordered.map(({ option: label, index: optionIndex, recommended }) => {
               const detail = hold.optionDetails[optionIndex];
               return (
                 <label key={`${hold.taskId ?? 'hold'}-${optionIndex}`} className={`hold-option hold-option-row${recommended ? ' recommended' : ''}${selected === optionIndex ? ' selected' : ''}`}>
@@ -668,7 +669,7 @@ function HoldOptionButtons({ hold, gateId, taskTitle, onRefresh }: {
           </div>
           <p>‘{taskTitle}’을 ‘{option}’로 진행할게요</p>
           <div className="hold-confirm-actions">
-            <button className="btn primary" type="button" disabled={busy} onClick={() => void confirm(selected, option)}>
+            <button className="btn primary cr-hold-go" type="button" disabled={busy} onClick={() => void confirm(selected, option)}>
               {busy ? '실행 중…' : '이대로 진행'}
             </button>
             <button className="btn subtle" type="button" disabled={busy} onClick={() => setOpen(false)}>
@@ -699,22 +700,23 @@ function HoldCards({ holds, titleOf, gateId, qaFinding, hasBlocker, onRefresh }:
   return (
     <article className="control-card hold-warn wide" id="lane-hold">
       <h3><span aria-hidden="true">⚠ </span>{holdHeadingText(count)}</h3>
+      <div className="cr-hold-grid">
       {shown.map((hold, index) => {
-        const autoText = holdAutoProceedText(hold.heldSeen, hold.waitMin);
+        const autoText = holdFounderAutoLine(hold.heldSeen, hold.waitMin);
         return (
           <section key={hold.taskId || hold.sentence || index} className="hold-card">
-            <p className="hold-card-title">{titleOf(hold)}</p>
             <ol className="hold-flow" aria-label="진행 단계">
-              {holdFlowStates(hold.step).map(({ name, state }) => (
-                <li key={name} className={`hold-flow-step ${state}`}>
-                  <span className="hold-flow-mark" aria-hidden="true">{state === 'done' ? '✓' : state === 'hold' ? '⚠' : '○'}</span>
-                  <span>{name}</span>
+              {holdStepPills(hold.step).map((pill) => (
+                <li key={pill.name} className={`hold-flow-step ${pill.state === 'stuck' ? 'hold' : pill.state === 'done' ? 'done' : 'pending'}`}>
+                  <span className="hold-flow-mark" aria-hidden="true">{pill.mark}</span>
+                  <span>{pill.name}</span>
                 </li>
               ))}
             </ol>
+            <p className="hold-card-title">{titleOf(hold)}</p>
             <p className="hold-sentence">{hold.sentence || '쉬운 말로 바꾸는 중이에요…'}</p>
             {hold.sentence && <HoldOptionButtons hold={hold} gateId={gateId} taskTitle={titleOf(hold)} onRefresh={onRefresh} />}
-            {hold.sentence && !hold.choice && autoText && <p className="muted hold-auto">{autoText}</p>}
+            {autoText && <p className="hold-auto">{autoText}</p>}
             <details>
               <summary>원문 보기</summary>
               <p className="muted mono">ID: {hold.taskId || '—'}</p>
@@ -728,6 +730,7 @@ function HoldCards({ holds, titleOf, gateId, qaFinding, hasBlocker, onRefresh }:
           <p className="hold-sentence">쉬운 말로 바꾸는 중이에요…</p>
         </section>
       )}
+      </div>
       {qaFinding !== undefined && <details><summary>원문 검수 의견</summary><pre className="mono">{rawText(qaFinding)}</pre></details>}
       {!showAll && holds.length > HOLD_PAGE && (
         <button className="btn subtle" type="button" onClick={() => setShowAll(true)}>더 보기 ({holds.length - HOLD_PAGE}개)</button>
@@ -739,23 +742,127 @@ function HoldCards({ holds, titleOf, gateId, qaFinding, hasBlocker, onRefresh }:
 // ── 라이브 상태 카드: 지금 하는 일 · 여기까지 끝남 · 확인 상태 · 대표님 할 일 · 다음 단계 ──
 // 개발자 원문(작업 ID)은 접힌 '원문 보기'에만 둔다. Pure helper + 카드 하나.
 
-const STEPS = ['계획', '만들기', '검사', '시험', '반영'] as const;
+export const STEPS = ['계획', '만들기', '검사', '시험', '반영'] as const;
 /** FLOW(7단계) 인덱스 → STEPS(5단계) 인덱스. 사람 확인은 시험에 붙는다. */
 const STEP_OF_FLOW = [0, 0, 1, 2, 3, 3, 4];
 const STAGE_VERB = ['계획하는', '확인하는', '만드는', '검사하는', '시험하는', '대표님 확인을 기다리는', '반영하는'];
 const START_KEYS = ['startedAt', 'started_at', 'startAt', 'since'];
+
+export type VerifyLabel = '확인됨' | '일부 확인' | '확인하지 못함';
+export type ChipTone = 'teal' | 'amber' | 'muted';
+export type PillState = 'done' | 'now' | 'wait' | 'stuck';
+
+export interface StatusPill {
+  name: string;
+  state: PillState;
+  mark: '✓' | '●' | '○' | '!';
+}
+
+export interface ProjectPauseView {
+  paused: boolean;
+  /** Empty unless this project was paused on purpose. Holds are not this state. */
+  stateLabel: '' | '잠시 멈춤';
+  buttonLabel: '이 프로젝트 잠시 멈춤' | '다시 시작';
+  safeLabel: '계속 진행';
+  confirmLabel: '잠시 멈춤';
+}
 
 interface LiveStatus {
   headline: string;
   doing: string;
   progress: string;
   lastDone: string;
-  verify: '확인됨' | '일부 확인' | '확인하지 못함';
+  verify: VerifyLabel;
   verifyEvidence: string;
   todo: '없음' | '확인 필요' | '결정 필요' | '설정 필요';
   todoButton: { label: string; target: string } | null;
   next: string;
   taskId: string;
+  doneCount: number;
+  working: boolean;
+}
+
+/**
+ * Lane pause is an explicit stop (paused / enabled false / a pause stage).
+ * A hold or a blocker is "needs a look", not this button's paused state.
+ */
+export function projectPauseView(lane: ControlRoomLane): ProjectPauseView {
+  const current = lane.current ?? {};
+  const stage = `${current.stage ?? ''} ${lane.state ?? ''} ${lane.status ?? ''}`;
+  const paused = lane.paused === true || current.paused === true || lane.enabled === false || /pause/i.test(stage);
+  return paused
+    ? { paused: true, stateLabel: '잠시 멈춤', buttonLabel: '다시 시작', safeLabel: '계속 진행', confirmLabel: '잠시 멈춤' }
+    : { paused: false, stateLabel: '', buttonLabel: '이 프로젝트 잠시 멈춤', safeLabel: '계속 진행', confirmLabel: '잠시 멈춤' };
+}
+
+/** Five pills. Idle work shows every step waiting. The current step is the first one not done. */
+export function liveStepPills(doneCount: number, working: boolean): StatusPill[] {
+  const done = working ? Math.max(0, Math.min(STEPS.length, Math.trunc(doneCount))) : 0;
+  return STEPS.map((name, index) => {
+    if (!working) return { name, state: 'wait', mark: '○' };
+    if (index < done) return { name, state: 'done', mark: '✓' };
+    if (index === done) return { name, state: 'now', mark: '●' };
+    return { name, state: 'wait', mark: '○' };
+  });
+}
+
+/** 확인됨 is teal. 일부 확인 needs a look (amber). 확인하지 못함 stays muted. */
+export function verifyChipTone(verify: VerifyLabel): ChipTone {
+  if (verify === '확인됨') return 'teal';
+  if (verify === '일부 확인') return 'amber';
+  return 'muted';
+}
+
+/** Korean step names. The stuck step is amber '!' — never a red mark. */
+export function holdStepPills(step: unknown): StatusPill[] {
+  return holdFlowStates(step).map((item, index) => ({
+    name: STEPS[index] ?? item.name,
+    state: item.state === 'hold' ? 'stuck' : item.state === 'done' ? 'done' : 'wait',
+    mark: item.state === 'hold' ? '!' : item.state === 'done' ? '✓' : '○',
+  }));
+}
+
+/** Recommended choice first. The original index stays so the hold-choose call is unchanged. */
+export function holdOptionsRecommendedFirst<T>(options: readonly T[], recommendedIndex: number): Array<{ option: T; index: number; recommended: boolean }> {
+  const rows = options.map((option, index) => ({
+    option,
+    index,
+    recommended: recommendedIndex >= 0 && index === recommendedIndex,
+  }));
+  return [...rows.filter((row) => row.recommended), ...rows.filter((row) => !row.recommended)];
+}
+
+/** '안 고르면 HH:MM에 추천대로 진행해요'. Missing heldSeen or waitMin stays empty — no invented clock. */
+export function holdFounderAutoLine(heldSeen: unknown, waitMin: unknown): string {
+  return holdAutoProceedText(heldSeen, waitMin).replace(/^아무것도 안 고르면/, '안 고르면');
+}
+
+/**
+ * Three Korean lines for a failed pause: what happened, why, what to do.
+ * Offline (the other PC / the network) is separate from "it is on but the pause failed".
+ * The backend sentence stays out of these lines.
+ */
+export function pauseFailureLines(message: string): [string, string, string] {
+  const kind = laneErrorKind(message);
+  if (kind === 'offline') {
+    return [
+      '잠시 멈추지 못했어요.',
+      '다른 컴퓨터가 꺼져 있거나 네트워크가 끊긴 것 같아요.',
+      '컴퓨터가 켜지면 다시 시도해 주세요.',
+    ];
+  }
+  if (kind === 'remote-failed' || kind === 'bad-reply') {
+    return [
+      '잠시 멈추지 못했어요.',
+      '다른 컴퓨터는 켜져 있는데, 멈추는 중에 문제가 났어요.',
+      '잠시 뒤 다시 시도해 주세요.',
+    ];
+  }
+  return [
+    '잠시 멈추지 못했어요.',
+    '요청이 끝나지 않은 것 같아요.',
+    '다시 시도해 주세요. 자세한 내용은 원문 보기에 있어요.',
+  ];
 }
 
 function minutesSince(value: unknown, now: number): number | null {
@@ -824,13 +931,13 @@ export function liveStatusOf(lane: ControlRoomLane, now: number = Date.now()): L
     : ['없음', null, working ? '지금 하실 일은 없어요. 알아서 진행 중이에요.' : '지금 하실 일은 없어요. 쉬는 중이에요.'];
 
   const next = gate ? '대표님이 답하시면 바로 이어서 진행해요.'
-    : holds.length > 0 ? holdAutoProceedText(holds[0]?.heldSeen, holds[0]?.waitMin) || '고르시면 곧 다시 설계해요.'
+    : holds.length > 0 ? holdFounderAutoLine(holds[0]?.heldSeen, holds[0]?.waitMin) || '고르시면 곧 다시 설계해요.'
     : paused ? '다시 시작하시면 이어서 진행해요.'
     : !working ? '새 작업이 정해지면 알아서 시작해요.'
     : doneSteps >= STEPS.length ? '모두 끝났어요. 새 작업을 기다려요.'
     : STEPS[doneSteps + 1] ? `이 단계가 끝나면 알아서 '${STEPS[doneSteps + 1]}' 단계로 넘어가요.`
     : '반영이 끝나면 이 작업은 마무리돼요.';
-  return { headline, doing, progress, lastDone, verify, verifyEvidence, todo, todoButton, next, taskId: working ? controlRoomTaskId(task) : '' };
+  return { headline, doing, progress, lastDone, verify, verifyEvidence, todo, todoButton, next, taskId: working ? controlRoomTaskId(task) : '', doneCount: doneSteps, working };
 }
 
 /**
@@ -865,23 +972,178 @@ function OpenProjectWindowButton({ project }: { project: string }): React.ReactE
 
 export function LiveStatusCard({ lane, now }: { lane: ControlRoomLane; now?: number }): React.ReactElement {
   const s = liveStatusOf(lane, now);
-  const tone = (ok: boolean): React.CSSProperties => ({ color: ok ? 'var(--accent)' : 'var(--warn)' });
+  const pause = projectPauseView(lane);
+  const pills = liveStepPills(s.doneCount, s.working);
+  const chip = verifyChipTone(s.verify);
   return (
-    <section className="control-card wide live-status" aria-label="지금 상태" style={{ fontSize: 16 }}>
-      <p className="control-card-value">{s.headline}</p>
-      <p><strong>지금 하는 일</strong><br />{s.doing}</p>
-      <p><strong>여기까지 끝남</strong><br />{s.progress}<br />{s.lastDone}</p>
-      <p><strong>확인 상태</strong><br /><span style={tone(s.verify === '확인됨')}>{s.verify}</span> · {s.verifyEvidence}</p>
-      <p><strong>대표님 할 일</strong><br /><span style={tone(s.todo === '없음')}>{s.todo}</span></p>
-      {s.todoButton && (
-        <button className="btn primary" type="button" style={{ minHeight: 44 }}
-          onClick={() => document.getElementById(s.todoButton!.target)?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
-          {s.todoButton.label}
-        </button>
-      )}
-      <p><strong>다음 단계</strong><br />{s.next}</p>
-      {s.taskId && <details><summary>원문 보기</summary><p className="muted mono">ID: {s.taskId}</p></details>}
+    <section className="control-card wide live-status" aria-label="지금 상태">
+      <div className="cr-project-top">
+        <h3 className="cr-project-name">{projectPresentation(lane).name}</h3>
+        {pause.stateLabel ? <p className="cr-paused-label">{pause.stateLabel}</p> : null}
+        <p className="control-card-value cr-live-lead">{s.headline}</p>
+      </div>
+      <div className="cr-rows">
+        <div className="cr-row">
+          <p className="cr-row-label">지금 하는 일</p>
+          <p className="cr-row-value">{s.doing}</p>
+        </div>
+        <div className="cr-row">
+          <p className="cr-row-label">여기까지 끝남</p>
+          <div>
+            <ol className="cr-pills" aria-label="계획부터 반영까지">
+              {pills.map((pill) => (
+                <li key={pill.name} className={`cr-pill ${pill.state}`}>
+                  <span className="cr-pill-mark" aria-hidden="true">{pill.mark}</span>
+                  <span>{pill.name}</span>
+                </li>
+              ))}
+            </ol>
+            <p>{s.progress}</p>
+            <p>{s.lastDone}</p>
+          </div>
+        </div>
+        <div className="cr-row">
+          <p className="cr-row-label">확인 상태</p>
+          <p><span className={`cr-chip ${chip}`}>{s.verify}</span>{` · ${s.verifyEvidence}`}</p>
+        </div>
+        <div className="cr-row">
+          <p className="cr-row-label">대표님 할 일</p>
+          <div className="cr-todo">
+            <span>{s.todo}</span>
+            {s.todoButton && (
+              <button className="btn cr-outline-btn" type="button"
+                onClick={() => document.getElementById(s.todoButton!.target)?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+                {s.todoButton.label}
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="cr-row">
+          <p className="cr-row-label">다음 단계</p>
+          <div>
+            <p>{s.next}</p>
+            {s.taskId && <details><summary>원문 보기</summary><p className="muted mono">ID: {s.taskId}</p></details>}
+          </div>
+        </div>
+      </div>
     </section>
+  );
+}
+
+type PauseNote =
+  | { kind: 'ok'; text: string }
+  | { kind: 'err'; lines: [string, string, string]; raw?: string };
+
+/**
+ * Ghost pause on the project card. Safe choice [계속 진행] is first.
+ * When the lane is already paused, the same spot says [다시 시작].
+ */
+function ProjectPauseControl({ project, paused, onRefresh }: {
+  project: string;
+  paused: boolean;
+  onRefresh: () => Promise<void>;
+}): React.ReactElement | null {
+  const [mode, setMode] = useState<'idle' | 'confirm' | 'resume'>('idle');
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<PauseNote | null>(null);
+  if (!project) return null;
+
+  async function pause(): Promise<void> {
+    if (busy) return;
+    setBusy(true);
+    setNote(null);
+    try {
+      await must({ op: 'controlRoom:pause', project });
+      setMode('idle');
+      setNote({ kind: 'ok', text: '잠시 멈췄어요 ✓' });
+      await onRefresh();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setNote({ kind: 'err', lines: pauseFailureLines(message), raw: laneErrorRaw(message, (err as { detail?: string }).detail) });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function resume(): Promise<void> {
+    if (busy) return;
+    setBusy(true);
+    setNote(null);
+    try {
+      await must({ op: 'controlRoom:resume', project });
+      setMode('idle');
+      setNote({ kind: 'ok', text: '다시 시작했어요 ✓' });
+      await onRefresh();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const kind = laneErrorKind(message);
+      setNote({
+        kind: 'err',
+        lines: kind === 'offline'
+          ? ['다시 시작하지 못했어요.', '다른 컴퓨터가 꺼져 있거나 네트워크가 끊긴 것 같아요.', '컴퓨터가 켜지면 다시 시도해 주세요.']
+          : kind === 'remote-failed' || kind === 'bad-reply'
+            ? ['다시 시작하지 못했어요.', '다른 컴퓨터는 켜져 있는데, 다시 시작하는 중에 문제가 났어요.', '잠시 뒤 다시 시도해 주세요.']
+            : ['다시 시작하지 못했어요.', '요청이 끝나지 않은 것 같아요.', '다시 시도해 주세요. 자세한 내용은 원문 보기에 있어요.'],
+        raw: laneErrorRaw(message, (err as { detail?: string }).detail),
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="cr-pause">
+      {paused ? (
+        mode === 'resume' ? (
+          <InlineConfirm
+            message="다시 시작하시겠어요?"
+            confirmLabel="다시 시작"
+            busy={busy}
+            busyLabel="다시 시작 중…"
+            onConfirm={() => void resume()}
+            onCancel={() => setMode('idle')}
+          />
+        ) : (
+          <button className="btn cr-ghost-btn" type="button" onClick={() => { setNote(null); setMode('resume'); }}>다시 시작</button>
+        )
+      ) : mode === 'confirm' ? (
+        <div className="cr-pause-confirm" role="group" aria-label="이 프로젝트를 잠시 멈출까요?">
+          <p>이 프로젝트를 잠시 멈출까요?</p>
+          <div className="cr-pause-actions">
+            <button className="btn cr-outline-btn" type="button" disabled={busy} onClick={() => setMode('idle')}>계속 진행</button>
+            <button className="btn cr-ghost-btn" type="button" disabled={busy} onClick={() => void pause()}>{busy ? '잠시 멈추는 중…' : '잠시 멈춤'}</button>
+          </div>
+        </div>
+      ) : (
+        <button className="btn cr-ghost-btn" type="button" onClick={() => { setNote(null); setMode('confirm'); }}>이 프로젝트 잠시 멈춤</button>
+      )}
+      {note?.kind === 'ok' && <p className="cr-pause-ok" role="status">{note.text}</p>}
+      {note?.kind === 'err' && (
+        <div className="cr-pause-err" role="status">
+          <p>{note.lines[0]}</p>
+          <p>{note.lines[1]}</p>
+          <p>{note.lines[2]}</p>
+          <button className="btn cr-outline-btn" type="button" onClick={() => void (paused ? resume() : pause())}>다시 시도</button>
+          {note.raw && <details><summary>원문 보기</summary><pre className="mono">{note.raw}</pre></details>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** One project card: name, pause, and the live status rows. Values come from the lane. */
+export function ProjectCard({ lane, onRefresh }: {
+  lane: ControlRoomLane;
+  onRefresh: () => Promise<void>;
+}): React.ReactElement {
+  const pause = projectPauseView(lane);
+  return (
+    <article className="cr-project-card">
+      <div className="cr-project-tools">
+        <ProjectPauseControl project={projectOf(lane)} paused={pause.paused} onRefresh={onRefresh} />
+      </div>
+      <LiveStatusCard lane={lane} />
+    </article>
   );
 }
 
@@ -937,7 +1199,6 @@ function LaneView({ lane, onRefresh, canOpenWindow = true }: {
           <pre className="mono">{rawText(lane)}</pre>
         </details>
       </header>
-      <LiveStatusCard lane={lane} />
       {canOpenWindow && project && <OpenProjectWindowButton project={project} />}
       <div className="control-flow" aria-label="진행 단계">
         {FLOW.map((name, index) => {
@@ -1320,6 +1581,14 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
       {board === null && !error ? <div className="control-empty">작업 PC에서 불러오는 중…</div>
       : error && lanes.length === 0 ? <div className="control-empty">{error}{errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}</div>
       : !sortedLanes.length ? <div className="control-empty" role="status"><p>아직 진행 중인 프로젝트가 없어요. 지금 하실 일은 없어요.</p><p className="muted">계획이 승인되면 프로젝트가 여기에 자동으로 나타나요. 이 화면은 5초마다 알아서 새로 고쳐요.</p></div> : <>
+        <section className="cr-projects" aria-label="프로젝트">
+          <h2 className="cr-section-title">프로젝트</h2>
+          <div className="cr-project-grid">
+            {sortedLanes.map((lane, index) => (
+              <ProjectCard key={laneSelectKey(lane, index)} lane={lane} onRefresh={load} />
+            ))}
+          </div>
+        </section>
         <div className="control-tabs" role="tablist" aria-label="프로젝트 목록">{sortedLanes.map((lane, index) => { const presentation = projectPresentation(lane); const key = laneSelectKey(lane, index); const isActive = key === activeKey; const attn = laneAttention(lane); return <button className={`control-tab${isActive ? ' active' : ''}`} key={lane.id ?? lane.project ?? index} onClick={() => setSelectedId(key)} role="tab" aria-selected={isActive} aria-label={`${presentation.name}: ${presentation.goal}`}><span>{presentation.name}</span>{attn === 'decision' && <span className="attn-badge decision">결정 필요</span>}{attn === 'hold' && <span className="attn-badge hold">{holdBadgeText(visibleHoldEntries(lane.holds).length)}</span>}<small style={{ display: 'block', marginTop: 4 }}>{presentation.goal}</small></button>; })}</div>
         {activeLane && <LaneView lane={activeLane} onRefresh={load} canOpenWindow={!only} />}
       </>}
