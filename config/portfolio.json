@@ -5485,7 +5485,8 @@
             "pnpm typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙(개발자 글자는 원문 보기 안, 오류 3줄) — 대상: JuPlan Studio 검증 문제 표시"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙(개발자 글자는 원문 보기 안, 오류 3줄) — 대상: JuPlan Studio 검증 문제 표시",
+          "title": "검증 결과를 알기 쉬운 말로만 보여주기"
         },
         {
           "taskId": "JUPLAN-STUDIO-NODES-EMPTY-STATE",
@@ -5500,7 +5501,8 @@
             "pnpm typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '빈 화면 이유+다음 행동' — 대상: JuPlan Studio 화면"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '빈 화면 이유+다음 행동' — 대상: JuPlan Studio 화면",
+          "title": "계획 항목이 비었을 때 이유와 다음 할 일 안내"
         },
         {
           "taskId": "JUPLAN-STUDIO-EXPORTS-EMPTY-GUIDE",
@@ -5514,7 +5516,8 @@
             "pnpm typecheck",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '빈 화면 이유+다음 행동' — 대상: JuPlan Studio (PRD/WBS/ERD/SSOT 보기)"
+          "ssotEvidence": "Founder direction 2026-09-25 13:08: founder-ux 규칙 '빈 화면 이유+다음 행동' — 대상: JuPlan Studio (PRD/WBS/ERD/SSOT 보기)",
+          "title": "내보낸 파일이 없을 때 쉬운 안내 보여주기"
         }
       ],
       "qaRuntime": [
@@ -6673,7 +6676,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09 request): founder-ux 규칙 '개발자 글자는 원문 보기 안' 으로 영수증 보기 화면 점검; src/reconciler/index.ts:183-188 at e6c8ba8 builds validation titles as '테스트 실행: '+command, which src/receipt/index.ts:69 copies verbatim into Level 1 delivered_items"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09 request): founder-ux 규칙 '개발자 글자는 원문 보기 안' 으로 영수증 보기 화면 점검; src/reconciler/index.ts:183-188 at e6c8ba8 builds validation titles as '테스트 실행: '+command, which src/receipt/index.ts:69 copies verbatim into Level 1 delivered_items",
+          "title": "받은 결과를 쉬운 말로 보여주기"
         },
         {
           "taskId": "JUCEIPT-SCAN-NEXT-LINE-MATCHES-STATE",
@@ -6686,7 +6690,8 @@
             "npx tsc -p tsconfig.json --noEmit",
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09 request): founder-ux 규칙 '빈 화면 이유+다음 행동' 으로 juceipt scan 출력 점검; src/cli/main.ts scanCommand at e6c8ba8 prints '다음: '+SUMMARY.md+'를 열어 검토하세요.' in every case, including when there are 0 sessions"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09 request): founder-ux 규칙 '빈 화면 이유+다음 행동' 으로 juceipt scan 출력 점검; src/cli/main.ts scanCommand at e6c8ba8 prints '다음: '+SUMMARY.md+'를 열어 검토하세요.' in every case, including when there are 0 sessions",
+          "title": "상황에 맞는 다음 할 일 안내하기"
         }
       ],
       "skills": {
@@ -8127,7 +8132,8 @@
             "bash scripts/e2e.sh",
             "node --test tests/e2e-docs-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "프로젝트 번호 빠졌을 때 안내 확인"
         },
         {
           "taskId": "JUCONTROLER-E2E-TEMP-CLEANUP-CHECK",
@@ -8138,7 +8144,8 @@
           "tests": [
             "node --test tests/e2e-cleanup.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "점검 뒤 임시 파일이 안 남는지 확인"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-STALE-EXAMPLE-TEST",
@@ -8150,7 +8157,8 @@
             "node --test tests/quickstart-registry-example.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; README.md (b4f99c3) 빠른 시작 2단계: '`observedAt`은 지금 UTC 시각(끝에 `Z`)으로 바꾸세요. 그대로 두면 5분이 지난 오래된 상태로 보입니다.'"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; README.md (b4f99c3) 빠른 시작 2단계: '`observedAt`은 지금 UTC 시각(끝에 `Z`)으로 바꾸세요. 그대로 두면 5분이 지난 오래된 상태로 보입니다.'",
+          "title": "시작 안내 예시의 오래됨 표시 확인"
         },
         {
           "taskId": "JUCONTROLER-E2E-FIELD-TYPO-STEP",
@@ -8165,7 +8173,8 @@
             "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs",
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target with no runtime integration; scripts/status-board.mjs (b4f99c3) registryHint: \"if (rule === 'is not a known field') return `${at}의 ${field}는 쓸 수 없는 이름이에요 — 지우거나 철자를 확인하세요`\""
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target with no runtime integration; scripts/status-board.mjs (b4f99c3) registryHint: \"if (rule === 'is not a known field') return `${at}의 ${field}는 쓸 수 없는 이름이에요 — 지우거나 철자를 확인하세요`\"",
+          "title": "칸 이름 오타 안내 점검 추가"
         },
         {
           "taskId": "JUCONTROLER-E2E-BAD-SOURCE-KIND-STEP",
@@ -8180,7 +8189,8 @@
             "node --test tests/*.test.mjs",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, no runtime integration or new product behavior; scripts/status-board.mjs registryHint 'must be one of' branch (… 중 하나여야 해요) is the only sourceKind error line and no E2E step covers it (tests/status-board-cli.test.mjs:295 covers it only at unit level)"
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, no runtime integration or new product behavior; scripts/status-board.mjs registryHint 'must be one of' branch (… 중 하나여야 해요) is the only sourceKind error line and no E2E step covers it (tests/status-board-cli.test.mjs:295 covers it only at unit level)",
+          "title": "잘못된 원본 종류 안내 점검 추가"
         }
       ],
       "qaRuntime": [
@@ -10591,7 +10601,8 @@
             "git diff --check",
             "node --test test/lovable-live-cards.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: \"Live status card\"의 계획 → 만들기 → 검사 → 시험 → 반영 및 5분 자동 진행"
+          "ssotEvidence": "Founder direction 2026-09-23: \"Live status card\"의 계획 → 만들기 → 검사 → 시험 → 반영 및 5분 자동 진행",
+          "title": "설명서를 지금 화면과 똑같이 맞추기"
         },
         {
           "taskId": "JCAPP-SKILL-NAMES-PLAIN",
@@ -10603,7 +10614,8 @@
           "tests": [
             "node --test test/skill-categories.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 개발자 글자는 원문 보기 안"
+          "ssotEvidence": "Founder direction 2026-09-23: 개발자 글자는 원문 보기 안",
+          "title": "기능 만들기 목록을 쉬운 이름으로"
         },
         {
           "taskId": "JCAPP-ADVANCED-DIAGNOSTICS-PLAIN",
@@ -10615,7 +10627,8 @@
           "tests": [
             "node --test test/more-advanced.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 더보기 안 화면도 비개발자 UX 규칙으로 점검"
+          "ssotEvidence": "Founder direction 2026-09-23: 더보기 안 화면도 비개발자 UX 규칙으로 점검",
+          "title": "고급 화면을 쉬운 한국어로 바꾸기"
         },
         {
           "taskId": "JCAPP-RAIL-ROW-MATCHES-CARD",
@@ -10629,7 +10642,8 @@
             "node --test test/v2-project-supervisor.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): 허브 홈과 진행 탭에 ... 같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만); operator/public/app.js:516 liveCardModel `const gated = hubGateCount(lane) > 0 || lane.state === 'HUMAN_GATE' || s === 5;` vs app.js:561 railRowModel `const gated = hubGateCount(lane) > 0 || lane.state === 'HUMAN_GATE';`"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): 허브 홈과 진행 탭에 ... 같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만); operator/public/app.js:516 liveCardModel `const gated = hubGateCount(lane) > 0 || lane.state === 'HUMAN_GATE' || s === 5;` vs app.js:561 railRowModel `const gated = hubGateCount(lane) > 0 || lane.state === 'HUMAN_GATE';`",
+          "title": "옆 목록 상태를 큰 카드와 맞추기"
         },
         {
           "taskId": "JCAPP-RELAY-LANE-PILL-WORDS",
@@ -10644,7 +10658,8 @@
             "node --test test/lovable-live-cards.test.mjs",
             "node --test test/"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): 같은 용어·같은 색 ... Agent Relay 앱·actl 보드와 문구가 같아야 함; operator/public/app.js:2021 pill `lane.state === 'RUNNING' ? '진행 중' : lane.state === 'IDLE' ? '쉬는 중'` vs app.js:563 railRowModel `'차례 기다림' : '일하는 중'`"
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): 같은 용어·같은 색 ... Agent Relay 앱·actl 보드와 문구가 같아야 함; operator/public/app.js:2021 pill `lane.state === 'RUNNING' ? '진행 중' : lane.state === 'IDLE' ? '쉬는 중'` vs app.js:563 railRowModel `'차례 기다림' : '일하는 중'`",
+          "title": "진행 줄 상태 표시 말을 통일하기"
         }
       ],
       "skills": {
@@ -12534,7 +12549,8 @@
             "npm run check",
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검) … 작은 변경만'; lib.mjs:162 'Returns Map keyword -> [user ids]' (check.mjs only asserts the keys), lib.mjs:57 'reject:*' insert and lib.mjs:65 'left: staff ? Infinity' are not asserted"
+          "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검) … 작은 변경만'; lib.mjs:162 'Returns Map keyword -> [user ids]' (check.mjs only asserts the keys), lib.mjs:57 'reject:*' insert and lib.mjs:65 'left: staff ? Infinity' are not asserted",
+          "title": "키워드 알림·사용 한도 검사 보강"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
