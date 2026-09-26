@@ -2518,7 +2518,8 @@
             "node test/automation-toggle.test.mjs && node test/lane-pause.test.mjs && node test/night-schedule.test.mjs && node test/night-schedule-card.test.mjs && node test/hub-promote.test.mjs && node test/hub-promote-button.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "package.json:23 test script omits these files; Founder direction 2026-09-25 09:09 (자동화 켜기/끄기, 레인 멈추기/다시켜기, 밤 작업 예약, 허브 반영하기 buttons)"
+          "ssotEvidence": "package.json:23 test script omits these files; Founder direction 2026-09-25 09:09 (자동화 켜기/끄기, 레인 멈추기/다시켜기, 밤 작업 예약, 허브 반영하기 buttons)",
+          "title": "밤 작업을 예약하고 멈춰요"
         },
         {
           "taskId": "AGENTRELAY-TEST-WIRE-PLAN-REQUEST",
@@ -2530,7 +2531,8 @@
             "node test/plan-request.test.mjs && node test/plan-request-result.test.mjs && node test/plan-save-shape.test.mjs && node test/plan-confirm-reset.test.mjs && node test/launch-project-pick.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "package.json:23 test script omits these files; Founder direction 2026-09-25 09:09 ([새 작업 부탁] project + one sentence -> night plan request)"
+          "ssotEvidence": "package.json:23 test script omits these files; Founder direction 2026-09-25 09:09 ([새 작업 부탁] project + one sentence -> night plan request)",
+          "title": "새 작업을 쉽게 부탁해요"
         },
         {
           "taskId": "AGENTRELAY-TEST-WIRE-NIGHT-REPORTS",
@@ -2542,7 +2544,8 @@
             "node test/controlRoom.test.mjs && node test/tokens.test.mjs && node test/envs-panel.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "package.json:23 test script omits these files; Founder direction 2026-09-26 item 6 (NIGHT_REPORT/LAST_NIGHT_RUN read-only list via controlRoom.ts ssh JSON path, tested with a fake command runner)"
+          "ssotEvidence": "package.json:23 test script omits these files; Founder direction 2026-09-26 item 6 (NIGHT_REPORT/LAST_NIGHT_RUN read-only list via controlRoom.ts ssh JSON path, tested with a fake command runner)",
+          "title": "밤 작업 결과를 한눈에 봐요"
         },
         {
           "taskId": "AGENTRELAY-TEST-WIRE-CONTROLROOM-COPY",
@@ -2554,7 +2557,8 @@
             "node test/controlroom-today.test.mjs && node test/controlroom-no-raw-ids.test.mjs && node test/controlroom-titles-today.test.mjs && node test/today-done-honest.test.mjs && node test/who-works-routing.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "package.json:23 test script omits these files; precedent AGENTRELAY-V1-COVER-CORE-TESTS (done) extended here from core-v1 to Control Room display tests"
+          "ssotEvidence": "package.json:23 test script omits these files; precedent AGENTRELAY-V1-COVER-CORE-TESTS (done) extended here from core-v1 to Control Room display tests",
+          "title": "오늘 작업 흐름을 쉽게 봐요"
         }
       ],
       "qaRuntime": [
@@ -4551,7 +4555,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Supervisor probe from ASUS 2026-09-26 23:0x: ssh main ok; wsl -l → Ubuntu, docker-desktop; wsl -d Ubuntu -- tmux ls → 2 sessions"
+          "ssotEvidence": "Supervisor probe from ASUS 2026-09-26 23:0x: ssh main ok; wsl -l → Ubuntu, docker-desktop; wsl -d Ubuntu -- tmux ls → 2 sessions",
+          "title": "윈도우에서 리눅스 화면 목록 보기"
         }
       ],
       "qaRuntime": [
@@ -11397,7 +11402,8 @@
           "tests": [
             "node --test tests/docs-links.test.mjs"
           ],
-          "ssotEvidence": "tests/docs-links.test.mjs:5 const DOCS = ['README.md', 'docs/getting-started.md'] omits docs/offline-acceptance.md, which has 4 relative/anchor links not checked by any test; Founder direction 2026-09-26 (offline E2E + Korean Quickstart bounded acceptance target)"
+          "ssotEvidence": "tests/docs-links.test.mjs:5 const DOCS = ['README.md', 'docs/getting-started.md'] omits docs/offline-acceptance.md, which has 4 relative/anchor links not checked by any test; Founder direction 2026-09-26 (offline E2E + Korean Quickstart bounded acceptance target)",
+          "title": "오프라인 점검 문서도 함께 확인"
         },
         {
           "taskId": "JUCONTROLER-OFFLINE-ACCEPTANCE-COMMANDS-SYNC",
@@ -11408,7 +11414,8 @@
           "tests": [
             "node --test tests/offline-acceptance-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/offline-acceptance.md quotes bash scripts/e2e.sh, node --test tests/*.test.mjs, node scripts/status-board.mjs registry.json [--project-id my-project], --help/-h with no test verifying them against scripts/e2e.sh's const tests/const board or status-board.mjs:33 usage string; Founder direction 2026-09-26 (offline E2E + Korean Quickstart bounded acceptance target)"
+          "ssotEvidence": "docs/offline-acceptance.md quotes bash scripts/e2e.sh, node --test tests/*.test.mjs, node scripts/status-board.mjs registry.json [--project-id my-project], --help/-h with no test verifying them against scripts/e2e.sh's const tests/const board or status-board.mjs:33 usage string; Founder direction 2026-09-26 (offline E2E + Korean Quickstart bounded acceptance target)",
+          "title": "오프라인 점검 방법이 실제와 맞는지 확인"
         },
         {
           "taskId": "JUCONTROLER-README-SOURCE-KIND-COUNT-SYNC",
@@ -11419,7 +11426,8 @@
           "tests": [
             "node --test tests/docs-source-kinds-sync.test.mjs"
           ],
-          "ssotEvidence": "README.md:15,91 claim 'sourceKind 네 종류/네 가지' but tests/docs-source-kinds-sync.test.mjs only checks docs/getting-started.md against src/project-registry.mjs:6 sourceKinds; Founder direction 2026-09-26"
+          "ssotEvidence": "README.md:15,91 claim 'sourceKind 네 종류/네 가지' but tests/docs-source-kinds-sync.test.mjs only checks docs/getting-started.md against src/project-registry.mjs:6 sourceKinds; Founder direction 2026-09-26",
+          "title": "문서의 항목 종류 안내가 실제와 맞는지 확인"
         },
         {
           "taskId": "JUCONTROLER-KOREAN-ERROR-COUNT-SYNC",
@@ -11430,7 +11438,8 @@
           "tests": [
             "node --test tests/korean-error-count-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:249 claims '다섯 가지 오류' (five error kinds) but scripts/status-board.mjs:70-76 korean() branch count is unguarded by any test; Founder direction 2026-09-26"
+          "ssotEvidence": "docs/getting-started.md:249 claims '다섯 가지 오류' (five error kinds) but scripts/status-board.mjs:70-76 korean() branch count is unguarded by any test; Founder direction 2026-09-26",
+          "title": "오류 안내 다섯 가지가 실제와 맞는지 확인"
         }
       ],
       "qaRuntime": [
