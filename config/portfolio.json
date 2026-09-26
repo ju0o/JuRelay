@@ -2265,6 +2265,38 @@
           ],
           "ssotEvidence": "Founder 2026-09-26: 'ㅇㅋ 이렇게 진행 좋네' — approved the Lovable design for the Agent Relay app. Reference (read-only; do not copy React-router/Tailwind/shadcn or add dependencies): /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/ref-01-관제실.png … ref-05-설정.png, ref-900-관제실.png, /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/routes/index.tsx (layout/components), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/styles.css (tokens), /home/skkse12/Desktop/Projects/Team/design-ref/agentrelay-lovable/src-export/src/data/relay.ts (shape of the data only). Same visual language as the JuControler hub. founder-ux Skill 'Live status card'. Founder rewrite choice 2026-09-26: 범위 줄이기 — 연결 상태 표시만 먼저 — 화면 디자인은 뒤로 미루고 상태 표시부터 바로잡아요. Required test test/connection-state.test.mjs (imports dist/server/shared/connectionState.js) must | SHELL-R2 held after QA (2026-09-26); the notifier never redesigns an -R2, so the chain SHELL-R3 → CR-TOP… waited forever — this -R2-R2 satisfies SHELL-R3's dependsOn.",
           "title": "새 디자인 1단계 준비: 연결 상태·자동 실행 버튼 (다시)"
+        },
+        {
+          "taskId": "AGENTRELAY-POLISH-LANE-NAMES",
+          "scope": "In 계획 (planStudio) the project list shows raw ids 'juai', 'ai-agent-marketplace', 'juradar' and the 목표 card shows the raw English manifest goal ('Founder 2026-09-24 오후 (settled, do not re-ask): launch bar = …'). Add those three to src/shared/projectLabels.ts (JuAi · AI 인력사무소 · JuRadar with one-line Korean goals) and fall back to the lane's `name` field from the board before the id; the 목표 card shows the Korean goal from projectLabels (or '목표가 아직 정리되지 않았어요') and moves the raw manifest goal under 원문 보기. Test the label fallback order and that the visible goal has no Latin sentence.",
+          "files": [
+            "src/shared/projectLabels.ts",
+            "src/frontend/planStudio.tsx",
+            "test/polish-lane-names.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Supervisor review of the Linux Tester captures ~/jc-tester/agent-relay-vfinal0926 (2026-09-26 18:25, all 6 Lovable steps merged): founder-ux — no English/raw ids on Founder surfaces, numbers on one screen must agree.",
+          "title": "계획 화면: 프로젝트 이름·목표를 쉬운 한국어로"
+        },
+        {
+          "taskId": "AGENTRELAY-POLISH-SEATS-MATCH",
+          "scope": "관제실 showed '지금 일하는 AI 5' in the stat tile and '전체 AI 자리 11개 중 0개 사용 중' in the seat bar at the same moment. Make both read the same source: the seat bar's used count is the stat tile's working count (tasks in RUNNING or QA from the board), and the total is capacity.maxBuilders; when capacity is missing show only the tile. Pure helper + test with a board fixture where both must agree.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "src/shared/projectScope.ts",
+            "test/polish-seats-match.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Supervisor review of the Linux Tester captures ~/jc-tester/agent-relay-vfinal0926 (2026-09-26 18:25, all 6 Lovable steps merged): founder-ux — no English/raw ids on Founder surfaces, numbers on one screen must agree.",
+          "title": "관제실: 'AI 자리' 숫자와 '지금 일하는 AI' 숫자 맞추기"
         }
       ],
       "qaRuntime": [
