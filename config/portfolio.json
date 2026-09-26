@@ -3824,6 +3824,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "전체 화면 안내를 팝업 없이 보여주기"
+        },
+        {
+          "taskId": "ACTL-ACTIVITY-BATCH-PS",
+          "scope": "Stop observe_activity in src/actl/core/activity.py from running one `ps -o times= -g <pid>` per pane twice per refresh: add a module-level process-group CPU snapshot (one `ps -eo pgid=,times=` via _remote_args, reused for about 1s, the same way tmux.pane_snapshot is reused) that cpu_time() reads by pane_pid, keep the existing two-sample delta and classify_activity rules unchanged, and extend tests/test_rows_op_budget.py with a 4-pane _rows() test that counts fake subprocess calls and asserts at most 2 ps calls in total (0 per-pane `-g` calls), so the number cannot creep back up.",
+          "files": [
+            "src/actl/core/activity.py",
+            "tests/test_rows_op_budget.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Cut the 19 remote ops per board refresh … add a test that counts wrapper calls per _rows() so the lower number can't creep back up' (display-message part done in ACTL-ROWS-PANE-SNAPSHOT; the per-pane `ps -g` calls at src/actl/core/activity.py:46, run twice via the 0.4s resample, are what remains)"
+        },
+        {
+          "taskId": "ACTL-LIVE-CARD-LAST-ASKED",
+          "scope": "Fill the live card's '마지막에 시킨 일' line, which today always says '아직 시킨 일 없음' because no row sets last_asked: in src/actl/core/state.py add record_asked(agent, prompt) (keeps only the first non-blank line, cut to 60 characters, under a 'last_asked' key, with the same lock and atomic save as acknowledge) and last_asked() -> dict; call record_asked from cli._send_to_selected after a successful send; set row['last_asked'] in tui._rows from state.last_asked(); add tests/test_live_card_last_asked.py covering a stored one-line summary, a multi-line prompt cut to its first line, and the empty default.",
+          "files": [
+            "src/actl/core/state.py",
+            "src/actl/cli.py",
+            "src/actl/tui.py",
+            "tests/test_live_card_last_asked.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:46: 'AI 창 카드마다: 어떤 AI·어느 폴더, 일하는 중/쉬는 중/답 기다림/연결 안 됨, 마지막에 시킨 일 한 줄, 복사할 답 준비 여부'; src/actl/live_card.py:47 reads row.get('last_asked'), but nothing in src/ sets it"
         }
       ],
       "qaRuntime": [
