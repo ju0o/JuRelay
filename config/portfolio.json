@@ -13733,6 +13733,41 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' + founder-ux Live status card '확인 상태: exactly one of 확인됨 / 일부 확인 / 확인하지 못함, with the evidence in one short phrase'"
+        },
+        {
+          "taskId": "JCAPP-RAIL-STEPS-IDLE-AFTER-DONE",
+          "scope": "In operator/public/app.js laneRails, draw a lane's five rail steps as ✓ when it has no running task (not lane.state 'RUNNING' with lane.current) and board.done has an item for it with a valid doneAt, the same rule as liveCardModel's steps (n = last ? 5); railRowModel and its step/state/tone stay unchanged, so on 진행/홈 the rail no longer shows ○○○○○ under a card that shows ✓✓✓✓✓; add an assertion in test/live-status-projection.test.mjs that for every fixture lane the rail's ✓ count in laneRails HTML equals the card's ✓ count (extract laneRails and seatBarModel and supervisorPick as needed), and keep the v2-rail-rows and v2-project-supervisor pins passing",
+          "files": [
+            "operator/public/app.js",
+            "test/live-status-projection.test.mjs",
+            "test/v2-rail-rows.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-projection.test.mjs",
+            "node --test test/v2-rail-rows.test.mjs",
+            "node --test test/v2-project-supervisor.test.mjs",
+            "node --test test/live-status-card-html.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
+        },
+        {
+          "taskId": "JCAPP-GATED-NEXT-NO-AUTO",
+          "scope": "In operator/public/app.js liveCardModel next, when gated (대표님 할 일 결정 필요) and not paused, say '결정해 주시면 이어서 진행해요' before the hold-deadline line, adding ' · 멈춘 작업은 HH:MM에 추천대로 진행해요' only when an open hold has a deadline, so a gated card never says '안 고르면 HH:MM에 추천대로 진행해요' next to a 결정 필요 · 고르기 button (a Human Gate never goes ahead on its own); the order for paused, queued and ungated lanes stays the same; update the gate-and-open-hold pin in test/live-status-sentences.test.mjs and any gated-lane pin in test/live-status-card-html.test.mjs",
+          "files": [
+            "operator/public/app.js",
+            "test/live-status-sentences.test.mjs",
+            "test/live-status-card-html.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-sentences.test.mjs",
+            "node --test test/live-status-card-html.test.mjs",
+            "node --test test/live-status-projection.test.mjs",
+            "node --test test/lovable-live-cards.test.mjs",
+            "node --test test/agent-relay-module.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests."
         }
       ],
       "skills": {
