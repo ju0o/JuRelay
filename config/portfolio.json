@@ -7566,6 +7566,23 @@
             "npm test"
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 원문·개발자 정보는 원문 보기로 숨긴다"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-DELIVERED-FILES-PLAIN",
+          "scope": "Level 1 of the receipt view still shows file names in 받은 결과 (e.g. 'index.ts 수정', 'new.txt 파일 변경', the hard-coded 'README 설치 안내 보완') and in the 최종 결과 box (e.g. 'receipt.html'). Fix it in two places. First, in deliveredItemText in src/receipt/index.ts, build the text for non-validation outcomes from outcome.kind as one plain 해요체 sentence: documentation_change → '설명 문서를 바꿨어요', configuration_change → '설정 파일을 바꿨어요', feature_change → '프로그램 파일을 바꿨어요', any other kind → '파일을 바꿨어요'. Then drop repeated identical texts in buildPresentation, keeping the first outcome_ref. Second, in renderLevel1 in src/render/index.ts, replace the 최종 결과 file name with '결과 파일이 있어요 — 파일 이름은 원문 보기에 있어요' and keep the existing empty-state text. Leave outcome.title, the reconciler, Level 2 changed-file lists and 원문 보기 unchanged, so README.md and the other names still appear there. Update the assertions in tests/pipeline.test.ts (lines ~81, ~122, ~243, ~318) to expect the plain sentences on Level 1 and the file names only inside 원문 보기. Add cases to tests/receipt-delivered-plain.test.ts and tests/receipt-render-founder.test.ts showing that Level 1 contains no file name and that repeated items appear once.",
+          "files": [
+            "src/receipt/index.ts",
+            "src/render/index.ts",
+            "tests/pipeline.test.ts",
+            "tests/receipt-delivered-plain.test.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:09): founder-ux 규칙으로 영수증 보기 화면 점검 — 개발자 글자(파일 경로 등)는 원문 보기 안; base 83e6774 src/receipt/index.ts:108-112 deliveredItemText returns raw outcome.title for mutations, src/render/index.ts:33-34 shows the artifact basename in 최종 결과"
         }
       ],
       "skills": {
