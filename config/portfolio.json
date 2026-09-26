@@ -12840,6 +12840,18 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검); layout.mjs: '#사용법 contents ... Each entry is one Discord message (≤2000 chars).' and 'bot.mjs looks channels up by key'",
           "title": "채널·역할 설정과 안내문 길이 점검"
+        },
+        {
+          "taskId": "JUAI-CHECK-PRUNE-BOUNDARY",
+          "scope": "Add check.mjs assertions only (no lib.mjs change), using a fresh in-memory DB built from SCHEMA and placed after the existing pruneState block, for the retention edges: a kv key such as done:<date> exactly 45 days before now is kept and one 46 days before is deleted; a usage row exactly 60 days before now is kept and one 61 days before is deleted.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25): 'lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs:16-33 pruneState uses olderThan(date, now, 45) for kv and 60 for usage, but check.mjs only tests dates far from those limits"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
