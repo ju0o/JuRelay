@@ -11823,6 +11823,33 @@
             "node --test test/"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48 hub request): 진행 탭에 Live status card … 같은 용어 — and 2026-09-25 13:11 '진짜 비개발자도 보면 이해가 되게'; app.js relayLaneView passes \"lane.state === 'IDLE' ? idleLaneSentence(lane, done) : null\" regardless of liveCardModel's gated/holds/paused"
+        },
+        {
+          "taskId": "JCAPP-DECISION-BLOCKS-AMBER",
+          "scope": "In operator/public/app.css, decision and needs-a-look surfaces still use danger red; switch them to the amber warn tokens (--bd-warn/--bg-warn/--tx-warn), as .human-gate already does. The targets are the '확인이 필요해요' block from needsYouBlock (.needs-you border/background/text and .needs-you-card border), the 승인 note '이 분류는 규칙이 있어도 항상 질문해요' (.approval-group .always-ask) and the unused .gate-provenance. Real failure styles (.error, .inline-status.failure, .truth-blocked, .command-state.failure) stay red. Add an assert in test/lovable-home-order.test.mjs that these selectors no longer use --bd-bad/--bg-bad/--tx-bad.",
+          "files": [
+            "operator/public/app.css",
+            "test/lovable-home-order.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-home-order.test.mjs",
+            "node --test test/home-hub.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 15:48): '같은 용어·같은 색(초록 끝남, 노랑 확인 필요, 빨강 진짜 위험만)'; founder-ux rule 11 'red = only real danger or data loss … Being stuck is amber, not red'"
+        },
+        {
+          "taskId": "JCAPP-RULE-CONFIRM-NO-ID",
+          "scope": "In operator/public/app.js, the 승인 rule click handler (data-rule-edit / data-rule-remove / data-rule-add, ~line 2935) should stop showing raw rule ids. The inline 지우기 confirm becomes '정말 지울까요? 승인 규칙 '<summary>'을(를) 지울게요.' and the success lines become '규칙을 바꿨어요 ✓ · <summary>', '규칙을 지웠어요 ✓ · <summary>' and '규칙을 추가했어요 ✓ · <summary>' instead of '…: A-01'. Keep sending the unchanged ruleRemoveSentence/ruleEditSentence/ruleAddSentence as `confirm`, so operator/server.mjs and the UI=server pins do not change; the raw id may appear only under 원문 보기. Add asserts in test/control-tower.test.mjs that the shown remove confirm and the success lines contain no rule id.",
+          "files": [
+            "operator/public/app.js",
+            "test/control-tower.test.mjs"
+          ],
+          "tests": [
+            "node --test test/control-tower.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (2026-09-25 13:11): '대상: 허브 5개 탭(홈·진행·계획·승인·더보기) … 특히 승인 탭의 규칙 추가 폼 … 사람 확인 카드의 코드명'; founder-ux rule 2 'No developer text on the surface … task IDs … behind 원문 보기'"
         }
       ],
       "skills": {
