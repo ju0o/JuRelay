@@ -1878,6 +1878,30 @@ h1 { font-size: 22px; }
 .pm-add .btn { min-height: 44px; font-size: 16px; align-self: flex-start; }
 @media (max-width: 520px) { .pm-row-main { flex-wrap: wrap; } }
 
+/* ── 설정 → 허브 새 버전 반영. 실패는 amber(살펴볼 일). 위험·데이터 손실만 red. ── */
+.hub-promote {
+  --hub-warn: var(--warn);
+  min-width: 0;
+  max-width: 100%;
+}
+.app[data-theme="light"] .hub-promote { --hub-warn: #8a4b00; }
+.hub-promote h3 { margin: 0 0 8px; font-size: 18px; }
+.hub-promote p { font-size: 16px; color: inherit; margin: 2px 0; }
+.hub-promote .hub-promote-lead { margin: 4px 0 10px; color: var(--fg); }
+.hub-promote .btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 16px;
+  font-size: 16px;
+}
+.hub-promote .inline-confirm p { font-size: 16px; }
+.hub-promote .inline-confirm-actions { flex-wrap: wrap; gap: 8px; }
+.hub-promote .hub-note { margin: 8px 0 0; font-size: 16px; }
+.hub-promote .hub-note.ok { color: var(--accent); }
+.app[data-theme="light"] .hub-promote .hub-note.ok { color: #0d6b5c; }
+.hub-promote .hub-note.err { color: var(--hub-warn); }
+.hub-promote pre { white-space: pre-wrap; word-break: break-all; max-width: 100%; }
+
 /* ── 상단바: 작업 PC 연결 · 자동 실행 (amber = 살펴볼 일, red 아님) ── */
 .conn-cluster {
   --conn-attention: var(--warn);

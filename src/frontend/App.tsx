@@ -1799,6 +1799,7 @@ function AppInner(): React.ReactElement {
                 </details>
               </div>
               <ProjectManager />
+              <HubPromoteCard />
               <div className="settings-section shell-advanced">
                 <button
                   type="button"
@@ -2968,5 +2969,72 @@ function UpdateSection({ status, notify }: { status: UpdateStatus; notify: (kind
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * 설정 → 허브 새 버전 반영.
+ * [반영하기]는 바로 실행하지 않고, 안전한 [그만두기]를 먼저 보여 준 뒤에만 controlRoom:promoteHub를 호출한다.
+ */
+function HubPromoteCard(): React.ReactElement {
+  const [confirming, setConfirming] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<PmNote | null>(null);
+
+  async function promote(): Promise<void> {
+    if (busy) return;
+    setBusy(true);
+    setConfirming(false);
+    setNote(null);
+    try {
+      const raw = await must({ op: 'controlRoom:promoteHub' });
+      setNote({ kind: 'ok', lines: ['반영했어요 ✓'], raw: laneResultRaw(raw) });
+    } catch (e) {
+      const message = pmMessage(e);
+      setNote({
+        kind: 'err',
+        lines: laneErrorLines('반영하지', message),
+        raw: laneErrorRaw(message, (e as { detail?: string })?.detail),
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const rawView = (raw?: string): React.ReactNode => raw && (
+    <details className="pm-raw">
+      <summary className="pm-raw-summary">원문 보기</summary>
+      <pre className="mono">{raw}</pre>
+    </details>
+  );
+
+  return (
+    <section className="settings-section hub-promote" aria-label="허브 새 버전 반영">
+      <h3>허브 새 버전 반영</h3>
+      <p className="hub-promote-lead">JuControler 허브에 새 버전을 올리려면 반영하기를 눌러 주세요.</p>
+      {!confirming && note?.kind !== 'err' && (
+        <button className="btn primary" type="button" disabled={busy} onClick={() => setConfirming(true)}>
+          {busy ? '반영하는 중…' : '반영하기'}
+        </button>
+      )}
+      {confirming && (
+        <div className="inline-confirm" role="group" aria-label="허브 반영 확인">
+          <p>허브에 새 버전을 반영할까요? 반영하면 바로 적용되고, 되돌리려면 다시 작업이 필요해요.</p>
+          <div className="inline-confirm-actions">
+            <button className="btn primary" type="button" onClick={() => setConfirming(false)}>그만두기</button>
+            <button className="btn" type="button" disabled={busy} onClick={() => void promote()}>이대로 반영</button>
+          </div>
+        </div>
+      )}
+      {note && (
+        <div className={`hub-note ${note.kind}`} role="status">
+          {note.lines.map((line, i) => <p key={i}>{line}</p>)}
+          {note.kind === 'err' && !confirming && (
+            <button className="btn" type="button" onClick={() => setConfirming(true)}>다시 시도</button>
+          )}
+          {rawView(note.raw)}
+        </div>
+      )}
+    </section>
   );
 }
