@@ -6152,6 +6152,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: founder-ux 규칙 '누르면 1초 안에 결과 문장' — 대상 '대화로 바꾸기 → 미리보기 → 적용 → 되돌리기'",
           "title": "되돌리기 결과를 헷갈리지 않게 알려주기"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-LIVE-BANNER-REFRESH",
+          "scope": "실시간 갱신 때 계획 단계와 다음 행동 안내도 함께 바뀌도록 한다.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-live-sections.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- studio-live-sections.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: live refresh with gentle motion"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-DOC-TABLE-SCROLL-HINT",
+          "scope": "휴대폰에서 WBS·API·시험 표가 넓을 때 옆으로 밀어 보라는 한국어 안내를 표시한다.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-doc-tables.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- studio-doc-tables.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 및 글자 16px·휴대폰 폭 대응"
         }
       ],
       "qaRuntime": [
