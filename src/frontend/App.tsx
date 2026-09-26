@@ -9,7 +9,9 @@ import { DogfoodPanel } from './dogfooding.js';
 import { QuickDogfood } from './quickdf.js';
 import { ControlRoom } from './controlRoom.js';
 import { projectFromSearch } from '../shared/projectLabels.js';
-import { isLaneOn, laneErrorLines, laneRowLabel, laneRowName, newLaneIdFor, newLaneProblem } from '../shared/projectManager.js';
+import {
+  decodeLaneNames, encodeLaneNames, isLaneOn, laneErrorLines, laneErrorRaw, laneResultRaw, laneRowLabel, laneRowName, newLaneIdFor, newLaneProblem,
+} from '../shared/projectManager.js';
 import { approvalCategoryLabel, approvalUsedCount, dedupeApprovalRules, groupRulesByCategory, partitionSupersededApprovalRules, ApprovalRuleCard, SupersededApprovals, UnusedApprovalRules } from './approvals.js';
 import type { ApprovalRuleJson } from '../shared/types.js';
 import { PlanStudio } from './planStudio.js';
@@ -2160,13 +2162,12 @@ function pmLanes(board: unknown): PmLane[] {
 
 const PM_NAMES_KEY = 'relay.projectNames';
 function pmSavedNames(): Record<string, string> {
-  try { return JSON.parse(localStorage.getItem(PM_NAMES_KEY) ?? '{}') as Record<string, string>; } catch { return {}; }
+  try { return decodeLaneNames(localStorage.getItem(PM_NAMES_KEY)); } catch { return {}; }
 }
 function pmSaveName(id: string, name: string): void {
-  try { localStorage.setItem(PM_NAMES_KEY, JSON.stringify({ ...pmSavedNames(), [id]: name })); } catch { /* 이름 기억은 덤 */ }
+  try { localStorage.setItem(PM_NAMES_KEY, encodeLaneNames({ ...pmSavedNames(), [id]: name })); } catch { /* 이름 기억은 덤 */ }
 }
 
-const pmRaw = (value: unknown): string => { try { return JSON.stringify(value, null, 2); } catch { return String(value); } };
 const pmMessage = (e: unknown): string => (e instanceof Error ? e.message : String(e));
 
 /** 설정 → 프로젝트 관리: 프로젝트별 자동 진행 켜기/쉬기, 새 프로젝트 추가. */
@@ -2198,11 +2199,12 @@ function ProjectManager(): React.ReactElement {
     setConfirmId(null);
     try {
       const raw = await must({ op: on ? 'controlRoom:resume' : 'controlRoom:pause', project: lane.id });
-      setNotes(prev => ({ ...prev, [lane.id]: { kind: 'ok', lines: [on ? '켰어요 ✓' : '쉬게 했어요 ✓'], raw: pmRaw(raw) } }));
+      setNotes(prev => ({ ...prev, [lane.id]: { kind: 'ok', lines: [on ? '켰어요 ✓' : '쉬게 했어요 ✓'], raw: laneResultRaw(raw) } }));
       await load();
     } catch (e) {
-      const detail = (e as { detail?: string })?.detail;
-      setNotes(prev => ({ ...prev, [lane.id]: { kind: 'err', lines: laneErrorLines(on ? '켜지' : '쉬게 하지', pmMessage(e)), raw: detail } }));
+      const message = pmMessage(e);
+      const raw = laneErrorRaw(message, (e as { detail?: string })?.detail);
+      setNotes(prev => ({ ...prev, [lane.id]: { kind: 'err', lines: laneErrorLines(on ? '켜지' : '쉬게 하지', message), raw } }));
     } finally {
       setBusyId(null);
     }
@@ -2219,18 +2221,24 @@ function ProjectManager(): React.ReactElement {
     setAddNote(null);
     try {
       const raw = await must({ op: 'controlRoom:laneAdd', id, path: path.trim(), name: name.trim() });
-      setAddNote({ kind: 'ok', lines: ['추가했어요 ✓ · 곧 첫 계획을 세워요'], raw: pmRaw(raw) });
+      setAddNote({ kind: 'ok', lines: ['추가했어요 ✓ · 곧 첫 계획을 세워요'], raw: laneResultRaw(raw) });
       pmSaveName(id, name.trim());
       setName(''); setPath(''); setIdOverride('');
       await load();
     } catch (err) {
-      setAddNote({ kind: 'err', lines: laneErrorLines('추가하지', pmMessage(err)), raw: (err as { detail?: string })?.detail });
+      const message = pmMessage(err);
+      setAddNote({ kind: 'err', lines: laneErrorLines('추가하지', message), raw: laneErrorRaw(message, (err as { detail?: string })?.detail) });
     } finally {
       setAdding(false);
     }
   }
 
-  const rawView = (raw?: string): React.ReactNode => raw && <details><summary>원문 보기</summary><pre className="mono">{raw}</pre></details>;
+  const rawView = (raw?: string): React.ReactNode => raw && (
+    <details className="pm-raw">
+      <summary className="pm-raw-summary">원문 보기</summary>
+      <pre className="mono">{raw}</pre>
+    </details>
+  );
   const noteView = (n: PmNote | undefined): React.ReactNode => n && (
     <div className={`pm-note ${n.kind}`} role="status">
       {n.lines.map((line, i) => <p key={i}>{line}</p>)}
@@ -2245,7 +2253,7 @@ function ProjectManager(): React.ReactElement {
       {loadError && (
         <div className="pm-note err" role="status">
           {laneErrorLines('프로젝트 목록을 불러오지', loadError.message).map((line, i) => <p key={i}>{line}</p>)}
-          {rawView(loadError.detail || loadError.message)}
+          {rawView(laneErrorRaw(loadError.message, loadError.detail))}
           <button className="btn" type="button" onClick={() => void load()}>다시 시도</button>
         </div>
       )}
@@ -2289,7 +2297,7 @@ function ProjectManager(): React.ReactElement {
           onChange={e => setName(e.target.value)}
         />
         <label className="flabel" htmlFor="pm-path">프로젝트 폴더 (ASUS 경로)</label>
-        <input id="pm-path" type="text" value={path} placeholder="/home/…/프로젝트폴더" onChange={e => setPath(e.target.value)} />
+        <input id="pm-path" type="text" value={path} placeholder="ASUS에 있는 프로젝트 폴더 위치" onChange={e => setPath(e.target.value)} />
         <details className="pm-advanced">
           <summary>고급 (개발용)</summary>
           <label className="flabel" htmlFor="pm-id">짧은 이름 (영문 id) — 비우면 알아서 정해요</label>

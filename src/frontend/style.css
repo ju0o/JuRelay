@@ -1196,7 +1196,10 @@ h1 { font-size: 22px; }
 @media (max-width: 700px) { .control-room { padding: 16px; }.control-flow { gap: 2px; }.control-step { font-size: 10px; }.control-step-dot { width: 24px; height: 24px; } }
 
 /* ── 설정 → 프로젝트 관리 ── */
-.pm-lead { margin: 4px 0 10px; font-size: 16px; }
+/* .modcard p(13px, 회색)가 이 구역의 안내·결과 줄을 덮어쓰지 않도록, 더 높은 우선순위로 16px·상속 색을 준다. */
+.modcard .project-manager p, .project-manager p { font-size: 16px; color: inherit; margin: 2px 0; }
+.modcard .project-manager p.muted, .project-manager p.muted { color: var(--muted); }
+.modcard .project-manager p.pm-lead, .project-manager p.pm-lead { margin: 4px 0 10px; color: var(--fg); }
 .pm-row { padding: 10px 0; border-top: 1px solid var(--border); }
 .pm-row-main { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .pm-row-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; font-size: 16px; }
@@ -1208,7 +1211,6 @@ h1 { font-size: 22px; }
 .pm-switch.on { border-color: var(--accent); background: var(--accent); color: var(--bg); }
 .pm-switch:disabled { opacity: .6; cursor: default; }
 .pm-note { margin: 8px 0 0; font-size: 16px; }
-.pm-note p { margin: 2px 0; }
 .pm-note.ok { color: var(--accent); }
 .pm-note.err { color: var(--pm-warn); }
 .project-manager .btn { min-height: 44px; padding: 0 16px; font-size: 16px; }
@@ -1216,7 +1218,8 @@ h1 { font-size: 22px; }
 .project-manager .inline-confirm-actions { flex-wrap: wrap; gap: 8px; }
 .pm-advanced { margin-top: 4px; }
 .pm-advanced summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: 16px; }
-.pm-note pre { white-space: pre-wrap; word-break: break-all; font-size: 12px; color: var(--muted, inherit); }
+.pm-raw-summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: 16px; color: var(--fg); }
+.pm-raw pre { white-space: pre-wrap; word-break: break-all; font-size: 12px; color: var(--muted, inherit); }
 .pm-add { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
 .pm-add h4 { margin: 0; font-size: 16px; }
 .pm-add input { min-height: 44px; font-size: 16px; }

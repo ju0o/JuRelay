@@ -69,12 +69,67 @@ export function newLaneProblem(
   return null;
 }
 
-/** 실패를 세 줄(무슨 일 / 왜 / 할 일)로. 연결 문제면 ASUS가 꺼졌다는 뜻으로 구분한다. */
+export type LaneErrorKind = 'offline' | 'remote-failed' | 'bad-reply' | 'other';
+
+/** 백엔드 메시지로 실패 종류를 가른다 — ASUS가 꺼진 것과, 켜져 있는데 실패한 것을 구분하기 위해. */
+export function laneErrorKind(message: string): LaneErrorKind {
+  if (message.includes('연결할 수 없습니다')) return 'offline';
+  if (message.includes('켜져 있는데')) return 'remote-failed';
+  if (message.includes('응답을 읽지 못했습니다')) return 'bad-reply';
+  return 'other';
+}
+
+/**
+ * 실패를 세 줄(무슨 일 / 왜 / 할 일)로.
+ * 이 화면은 자동으로 다시 불러오지 않으므로, 백엔드 문구(자동 재시도 약속 포함)는 그대로 내보내지 않고
+ * 화면이 직접 이유를 적는다. 백엔드 원문은 원문 보기로 간다(laneErrorRaw).
+ */
 export function laneErrorLines(action: string, message: string): [string, string, string] {
-  const offline = message.includes('연결할 수 없습니다');
+  const kind = laneErrorKind(message);
+  const why: Record<LaneErrorKind, string> = {
+    offline: 'ASUS가 꺼져 있거나 네트워크가 끊긴 것 같아요.',
+    'remote-failed': 'ASUS는 켜져 있는데, 요청을 처리하다 오류가 났어요.',
+    'bad-reply': 'ASUS는 켜져 있는데, 답을 읽을 수 없는 모양으로 보냈어요.',
+    other: message || '이유를 알 수 없어요.',
+  };
   return [
     `${action} 못했어요.`,
-    message || '이유를 알 수 없어요.',
-    offline ? 'ASUS를 켠 뒤 다시 시도해 주세요.' : '잠시 뒤 다시 시도해 주세요. 계속되면 원문 보기를 알려 주세요.',
+    why[kind],
+    kind === 'offline' ? 'ASUS를 켠 뒤 다시 시도해 주세요.' : '잠시 뒤 다시 시도해 주세요. 계속되면 원문 보기를 알려 주세요.',
   ];
+}
+
+/** 추가할 때 적은 한국어 이름을 기억하는 저장 형식(id → 이름). 깨진 값은 빈 목록으로 본다. */
+export function decodeLaneNames(text: string | null | undefined): Record<string, string> {
+  if (!text) return {};
+  try {
+    const parsed: unknown = JSON.parse(text);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    const out: Record<string, string> = {};
+    for (const [id, name] of Object.entries(parsed as Record<string, unknown>)) {
+      if (typeof name === 'string' && name.trim()) out[id] = name.trim();
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+export function encodeLaneNames(names: Record<string, string>): string {
+  return JSON.stringify(names);
+}
+
+/** 성공 응답을 원문 보기용 문자열로. 화면 줄에는 절대 쓰지 않고 접이식 안에만 넣는다. */
+export function laneResultRaw(value: unknown): string {
+  try {
+    return JSON.stringify(value, null, 2) ?? String(value);
+  } catch {
+    return String(value);
+  }
+}
+
+/** 원문 보기에 넣을 내용 — 백엔드 메시지와 stderr 조각을 합친다. 둘 다 없으면 undefined(접이식 자체를 숨긴다). */
+export function laneErrorRaw(message?: string, detail?: string): string | undefined {
+  const raw = [message?.trim(), detail?.trim()].filter((part): part is string => Boolean(part)).join('\n');
+  return raw || undefined;
 }
