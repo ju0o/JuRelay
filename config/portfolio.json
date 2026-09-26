@@ -13890,6 +13890,23 @@
             "node --test test/live-status-projection.test.mjs test/live-status-colors.test.mjs test/live-status-card-html.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence ... add focused fixture tests'; ~/.agents/skills/auto-night-orchestrator/scripts/night-board.py:108 builds lane.current as {taskId,title,state,stage,attempts,worker,qa} with no startedAt, while test/fixtures/live-status/board.json adds startedAt to 10 of its 11 running lanes"
+        },
+        {
+          "taskId": "JCAPP-HOLD-WAIT-COUNTS-DOWN",
+          "scope": "In operator/public/app.js change homeHoldWaitMin(board, now) so the 홈 banner, homeHealth and the 진행 top line give the real time left on the earliest open hold, the same deadline the live card turns into '안 고르면 HH:MM에': for each unskipped, unresolved hold use min(waitMin, Math.ceil((holdDeadlineMs(hold) - now) / 60000)) when holdDeadlineMs is not null (at least 1), else waitMin, and take the smallest; keep the fallback of 5 when no hold has a usable waitMin, and keep the sentence '멈춘 작업 N건 — M분 안에 고르지 않으면 추천대로 진행해요.' unchanged; today a hold seen 3 minutes ago still says '5분 안에' while its card says a deadline 2 minutes away; add a hold-wait-from-board test with a fixed now (heldSeen = now - 3분, waitMin 5 → '2분 안에'; heldSeen in the future is clamped to waitMin; no heldSeen → waitMin) and update any existing pin whose number changes",
+          "files": [
+            "operator/public/app.js",
+            "test/hold-wait-from-board.test.mjs",
+            "test/home-all-ok.test.mjs",
+            "test/lovable-home-top.test.mjs",
+            "test/lovable-home-order.test.mjs",
+            "test/relay-top-line.test.mjs"
+          ],
+          "tests": [
+            "node --test test/hold-wait-from-board.test.mjs test/home-all-ok.test.mjs test/lovable-home-top.test.mjs test/lovable-home-order.test.mjs test/relay-top-line.test.mjs test/live-status-projection.test.mjs test/live-status-sentences.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (choice 2026-09-26): one shared live-status projection for Home and Progress including the Korean status sentence and next step; founder-ux rule 9 'When nobody answers, say what happens and when'"
         }
       ],
       "skills": {
