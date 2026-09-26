@@ -13219,6 +13219,18 @@
           ],
           "ssotEvidence": "README.md:8 \"멤버 명령어: `!도움말` · `!남은횟수` · `!구독 단어` · `!구독목록` · `!구독취소 단어`\"; bot.mjs:120 sends HELP_TEXT((k) => `<#${ids[k]}>`) for !도움말",
           "title": "도움말 속 채널과 명령어 안내 확인"
+        },
+        {
+          "taskId": "JUAI-CHECK-GAP-GLOBAL-COUNT",
+          "scope": "Add check.mjs assertions only (no lib.mjs change), on a fresh in-memory DB built from SCHEMA: a second takeQuota exactly LIMITS.gapMs after the first is allowed; one 1 ms earlier is rejected with reason 'gap' and waitSec 1; each allowed takeQuota adds 1 to the global '*' usage row for that day (member and staff calls alike), while a rejected call does not.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:48 '멤버 AI 대화는 무료 모델만, 1인 기본 하루 5회(피드백 보너스 최대 +3) · 30초 간격 · 서버 전체 하루 300회.'"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
