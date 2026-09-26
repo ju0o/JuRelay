@@ -13190,6 +13190,21 @@
           ],
           "ssotEvidence": "founder-ux Skill rule 11: 'green (teal) = done / OK · amber = needs a look · red = only real danger'; Founder direction 2026-09-26: shared live-status projection '... and color rules; add focused fixture tests'. Base operator/public/app.js:530 `c ? { word: '확인하지 못함', tone: 'warn', evidence: '아직 검사 전' }` shows amber while the same card's 대표님 할 일 is 없음 (good); no test pins this tone.",
           "title": "검사 전 상태는 차분한 색으로"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-LAST-SAME-NOW",
+          "scope": "In operator/public/app.js, give humanAgo(value, now) an optional now (Date.now() when absent) and have liveCardModel pass its now to it, so the live card's '여기까지 끝남' line ('마지막으로 끝난 일: … · N분 전') uses the same clock as the rest of the card. Other humanAgo callers stay unchanged. The juplan-module/juplan-status tests match the literal 'function humanAgo\\(value\\)', so loosen that regex to '\\([^)]*\\)'. Pin card.last for every fixture lane in live-status-sentences (for example idle-after-done '마지막으로 끝난 일: 작업을 마쳤어요 · 2분 전', run-stage-2 '마지막으로 끝난 일: 보고서 길이 맞추기 · 20분 전', and '아직 끝난 일이 없어요' where a lane has nothing done).",
+          "files": [
+            "operator/public/app.js",
+            "test/live-status-sentences.test.mjs",
+            "test/juplan-module.test.mjs",
+            "test/juplan-status.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-sentences.test.mjs test/live-status-projection.test.mjs test/live-status-card-html.test.mjs test/live-status-colors.test.mjs test/juplan-module.test.mjs test/juplan-status.test.mjs test/channel-thread-plain.test.mjs test/home-done-today.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' Today liveCardModel reads its own now, but humanAgo at operator/public/app.js:149 calls Date.now(), and card.last is not pinned in test/live-status-sentences.test.mjs"
         }
       ],
       "skills": {
