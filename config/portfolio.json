@@ -5665,6 +5665,54 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux 규칙 — 개발자 글자는 원문 보기 안, 한국어 문장; 대상 JuPlan Studio 화면(실시간 새로 고침)",
           "title": "잘못된 접속 안내를 쉬운 한국어로"
+        },
+        {
+          "taskId": "JUPLAN-DOC-TABLE-HEADER-KOREAN",
+          "scope": "In packages/runtime/src/documents.ts, take the English developer words out of the headers of the Founder's WBS and test-plan document tables: WBS_TABLE_COLUMNS becomes 작업 | 단계 | 먼저 할 작업 | 완료 기준 | 시험 | 상태 instead of '단계(level)', '먼저 할 작업(dependsOn)', '완료 기준(satisfies)', 'QA(verifiedBy)'; QA_TABLE_COLUMNS becomes 완료 기준 | 시험 항목 | 종류; the qa-plan headings become '## 완료 기준 → 시험 항목' and '## 시험이 없는 완료 기준'. Row data, edge logic and empty '아직 없음' cells do not change, and the existing header assertions are updated to match.",
+          "files": [
+            "packages/runtime/src/documents.ts",
+            "packages/runtime/test/documents.test.ts",
+            "packages/runtime/test/prd-doc-korean-words.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (Founder request 2026-09-25 13:08: 비개발자 UX 고도화 — founder-ux 한국어 라벨 규칙 '계획 / 만들기 / 검사 / 시험 / 반영', 대상 PRD/WBS/ERD/SSOT 보기); documents.ts:272-275 '\"단계(level)\", \"먼저 할 작업(dependsOn)\", \"완료 기준(satisfies)\", \"QA(verifiedBy)\"' and documents.ts:437 'const QA_TABLE_COLUMNS = [\"완료 기준\", \"QA 항목\", \"종류\"]' at c89f6e8"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-QA-WORD-KOREAN",
+          "scope": "In packages/runtime/src/index.ts, replace the English jargon 'QA' on the Studio screens with the founder-ux word 시험: NODE_TYPE_LABELS QaCase becomes '시험 항목', the PLAN_MAP_COLUMNS column title becomes '시험 항목', GATE_LABELS G4 becomes '작업·완료 기준·시험 항목', DOC_TITLE_LABELS 'qa-plan' becomes '시험 계획', and the TRACEABILITY_QA validation message becomes '모든 시험 항목은 완료 기준과 연결되어야 합니다. 완료 기준에서 시험 항목으로 연결을 추가하세요'. Finding codes, gate logic and ids do not change, and the existing assertions that quote these strings are updated.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/studio-doc-list.test.ts",
+            "packages/runtime/test/studio-gate-id-fold.test.ts",
+            "packages/runtime/test/studio-gates-next-step.test.ts",
+            "packages/runtime/test/runtime-validation-korean.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (Founder request 2026-09-25 13:08: founder-ux 규칙 3 '한국어 라벨 — 계획 / 만들기 / 검사 / 시험 / 반영', 대상 계획 그림·검증 문제 표시); index.ts:26 '\"qa-plan\": \"QA 계획\"', :146 TRACEABILITY_QA '모든 QA 항목은…', :773 'G4: \"작업·완료 기준·QA 항목\"', :856 'QaCase: \"QA 항목\"', :1389 '{ title: \"QA 항목\", …}' at c89f6e8"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-NODE-ROW-KIND",
+          "scope": "In renderNodesSection in packages/runtime/src/index.ts, stop running the item name and its Korean kind together (today a row reads '주문 저장 화면 화면' or 'Checkout App 프로젝트 개요'): print the name, then the kind as ' · 종류' in a muted span before the existing knowledge tag. The data-text search attribute, sort order, count, empty states and filter script do not change. Update the one studio-founder-banner assertion that quotes the old row, and add a regression test that a row keeps the name and kind apart.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/studio-founder-banner.test.ts",
+            "packages/runtime/test/studio-node-row-kind.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (Founder request 2026-09-25 13:08: '진짜 비개발자도 보면 이해가 되게', 대상 JuPlan Studio 화면); index.ts:1628 'return `<li data-text=…>${escapeHtml(item.label)} ${escapeHtml(typeLabel)}${knowledgeHtml}</li>`' and studio-founder-banner.test.ts:116 '\">Checkout App 프로젝트 개요</li>\"' at c89f6e8"
         }
       ],
       "qaRuntime": [
