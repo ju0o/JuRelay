@@ -2213,6 +2213,23 @@
             "AGENTRELAY-V2-PROJECT-SCOPE"
           ],
           "title": "같이 쓰는 AI 자리 보여주기"
+        },
+        {
+          "taskId": "AGENTRELAY-PROJECT-MANAGER",
+          "scope": "Add '프로젝트 관리' to 설정 in the desktop app: one row per lane from the existing board call (friendly Korean name, '켜짐 · ASUS 켤 때 자동으로 돌아요' or '쉬는 중'), a big toggle per row that runs `night roadmap pause|resume <id>` over the same ssh path controlRoom already uses (execFile, no shell, 30s timeout) with inline '켰어요 ✓'/'쉬게 했어요 ✓' and, before turning one off, an inline two-button confirm ([계속 돌리기] first). Below: '프로젝트 추가' card with 이름, 프로젝트 폴더 (ASUS path) and a short id suggested from the name, calling `night lane add <id> <path> <name>`; show the plain result ('추가했어요 ✓ · 곧 첫 계획을 세워요') or the three-line error (what / why / what to do). Raw output only under 원문 보기. Pure helpers (row label, id suggestion, arg validation) + test/project-manager.test.mjs.",
+          "files": [
+            "src/backend/controlRoom.ts",
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "test/project-manager.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: 'Agent-Relay안에서 내가 켰을 때 프로젝트 선택도 있음, 또는 뺄 프로젝트 및 다른 추가할 프로젝트 이런 기능들' + 'ASUS 켜면 항상 프로젝트 설정'. Backend already exists: `night board --json` lanes[] carry id, name, paused; `night roadmap pause <id>` / `night roadmap resume <id>` (persists across reboot, the runner skips paused lanes); `night lane add <id> <git repo path> [name]` lays a new rail (the PM plans its first tasks on the next idle re-plan).",
+          "title": "설정: 돌릴 프로젝트 고르기·추가하기"
         }
       ],
       "qaRuntime": [
