@@ -4,7 +4,7 @@ import { ModelUsagePanel } from './approvals.js';
 import { InlineConfirm } from './components.js';
 import type { ControlRoomModelUsage } from '../shared/types.js';
 import { controlRoomTaskId, controlRoomTaskTitle, founderTaskTitle, controlRoomHasDoneData, controlRoomTodayCount, controlRoomTodayDone, controlRoomVerifiedDoneTotal, controlRoomWorkingItems, controlRoomRoutingLine, laneAttention } from '../shared/types.js';
-import { PROJECT_LABELS, aiDisplayName, barPercent, envReasonText, envTone, normalizeEnvs, ramText, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
+import { PROJECT_LABELS, aiDisplayName, projectFromSearch, projectWindowKey, barPercent, envReasonText, envTone, normalizeEnvs, ramText, holdBadgeText, projectDisplayName, holdAutoProceedText, holdCardMessage, holdFlowStates, holdHeadingText, holdStepLabel, isSelfReviewChain, isSelfReviewOption, visibleHoldEntries } from '../shared/projectLabels.js';
 import type { EnvRow, EnvTone, NormalizedHold } from '../shared/projectLabels.js';
 import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from '../shared/tokens.js';
 import type { TokenFinding, TokensView } from '../shared/tokens.js';
@@ -829,6 +829,36 @@ export function liveStatusOf(lane: ControlRoomLane, now: number = Date.now()): L
   return { headline, doing, progress, lastDone, verify, verifyEvidence, todo, todoButton, next, taskId: working ? controlRoomTaskId(task) : '' };
 }
 
+/**
+ * '이 프로젝트만 새 창으로' 버튼 — 결과는 누른 자리에서 바로 보여준다.
+ * 훅 없이 DOM만 써서, 훅 없는 환경(카드 단독 렌더)에서도 그대로 그려진다.
+ */
+async function openProjectWindow(box: HTMLElement, project: string): Promise<void> {
+  const note = box.querySelector<HTMLElement>('[data-note]')!;
+  const retry = box.querySelector<HTMLElement>('[data-retry]')!;
+  const api = window.relayApi?.openProjectWindow;
+  const res = api ? await api(projectWindowKey(project)).catch(() => null) : null;
+  const ok = res?.ok === true;
+  note.style.color = ok ? 'var(--accent)' : 'var(--warn)';
+  note.textContent = ok
+    ? (res.value.focused ? '이미 열려 있어서 그 창을 앞으로 가져왔어요 ✓' : '새 창을 열었어요 ✓')
+    : ['새 창을 열지 못했어요.',
+      res ? '이 프로젝트 이름으로는 창을 만들 수 없었던 것 같아요.' : '이 앱이 창 만들기를 아직 준비하지 못했어요. 컴퓨터는 켜져 있고, 앱만 다시 켜면 돼요.',
+      '아래 [다시 시도]를 눌러 주세요.'].join('\n');
+  retry.hidden = ok;
+}
+
+function OpenProjectWindowButton({ project }: { project: string }): React.ReactElement {
+  const run = (el: HTMLElement): void => { void openProjectWindow(el.closest('[data-open-window]') as HTMLElement, project); };
+  return (
+    <div data-open-window>
+      <button className="btn" type="button" style={{ minHeight: 44 }} onClick={e => run(e.currentTarget)}>이 프로젝트만 새 창으로</button>
+      <p role="status" data-note style={{ whiteSpace: 'pre-line' }} />
+      <button className="btn" type="button" data-retry hidden style={{ minHeight: 44 }} onClick={e => run(e.currentTarget)}>다시 시도</button>
+    </div>
+  );
+}
+
 export function LiveStatusCard({ lane, now }: { lane: ControlRoomLane; now?: number }): React.ReactElement {
   const s = liveStatusOf(lane, now);
   const tone = (ok: boolean): React.CSSProperties => ({ color: ok ? 'var(--accent)' : 'var(--warn)' });
@@ -851,8 +881,9 @@ export function LiveStatusCard({ lane, now }: { lane: ControlRoomLane; now?: num
   );
 }
 
-function LaneView({ lane, onRefresh }: {
+function LaneView({ lane, onRefresh, canOpenWindow = true }: {
   lane: ControlRoomLane;
+  canOpenWindow?: boolean;
   onRefresh: () => Promise<void>;
 }): React.ReactElement {
   const current = lane.current ?? {};
@@ -903,6 +934,7 @@ function LaneView({ lane, onRefresh }: {
         </details>
       </header>
       <LiveStatusCard lane={lane} />
+      {canOpenWindow && project && <OpenProjectWindowButton project={project} />}
       <div className="control-flow" aria-label="진행 단계">
         {FLOW.map((name, index) => {
           const state = working && holdCurrent ? flowState(`BLOCK ${stageValue}`, index) : working ? flowState(stageValue, index) : 'pending';
@@ -995,24 +1027,22 @@ export function ControlRoom({ onClose }: { onClose: () => void }): React.ReactEl
     return () => { alive = false; window.clearInterval(timer); };
   }, [load]);
 
-  const lanes = board?.lanes ?? [];
+  // 새 창(?project=<id>)이면 그 프로젝트 하나만 보여준다.
+  const only = projectFromSearch(window.location.search).toLowerCase();
+  const lanes = (board?.lanes ?? []).filter(lane => !only || projectWindowKey(projectOf(lane)) === only);
   const sortedLanes = sortLanesByAttention(lanes);
   const decisionCount = sortedLanes.filter(lane => laneAttention(lane) === 'decision').length;
   const activeLane = sortedLanes.find((lane, index) => laneSelectKey(lane, index) === selectedId) ?? sortedLanes[0];
   const activeKey = activeLane ? laneSelectKey(activeLane, sortedLanes.indexOf(activeLane)) : null;
   return (
     <main className="control-room">
-      <div className="control-room-head"><div><h1>관제실</h1>{decisionCount > 0 && <p className="control-decision-count">결정 대기 {decisionCount}건</p>}<p className="muted">5초마다 자동으로 새로 고쳐요.</p></div><button className="btn" onClick={onClose}>닫기</button></div>
-      <EnvsCard />
-      <TokensCard />
-      <TodayCard board={board} />
-      <WhoLine board={board} />
-      <ModelUsagePanel models={board?.models} />
+      <div className="control-room-head"><div>{only ? <h1>{projectDisplayName(only)}</h1> : <h1>관제실</h1>}{decisionCount > 0 && <p className="control-decision-count">결정 대기 {decisionCount}건</p>}<p className="muted">5초마다 자동으로 새로 고쳐요.</p></div><button className="btn" onClick={only ? () => window.close() : onClose}>닫기</button></div>
+      {!only && <><EnvsCard /><TokensCard /><TodayCard board={board} /><WhoLine board={board} /><ModelUsagePanel models={board?.models} /></>}
       {board === null && !error ? <div className="control-empty">작업 PC에서 불러오는 중…</div>
       : error && lanes.length === 0 ? <div className="control-empty">{error}{errorDetail && <details><summary>원문 보기</summary><pre className="mono">{errorDetail}</pre></details>}</div>
       : !sortedLanes.length ? <div className="control-empty" role="status"><p>아직 진행 중인 프로젝트가 없어요. 지금 하실 일은 없어요.</p><p className="muted">계획이 승인되면 프로젝트가 여기에 자동으로 나타나요. 이 화면은 5초마다 알아서 새로 고쳐요.</p></div> : <>
         <div className="control-tabs" role="tablist" aria-label="프로젝트 목록">{sortedLanes.map((lane, index) => { const presentation = projectPresentation(lane); const key = laneSelectKey(lane, index); const isActive = key === activeKey; const attn = laneAttention(lane); return <button className={`control-tab${isActive ? ' active' : ''}`} key={lane.id ?? lane.project ?? index} onClick={() => setSelectedId(key)} role="tab" aria-selected={isActive} aria-label={`${presentation.name}: ${presentation.goal}`}><span>{presentation.name}</span>{attn === 'decision' && <span className="attn-badge decision">결정 필요</span>}{attn === 'hold' && <span className="attn-badge hold">{holdBadgeText(visibleHoldEntries(lane.holds).length)}</span>}<small style={{ display: 'block', marginTop: 4 }}>{presentation.goal}</small></button>; })}</div>
-        {activeLane && <LaneView lane={activeLane} onRefresh={load} />}
+        {activeLane && <LaneView lane={activeLane} onRefresh={load} canOpenWindow={!only} />}
       </>}
     </main>
   );

@@ -6,6 +6,7 @@ import { RelayRequest, RelayResponse, UpdateStatus } from '../shared/types.js';
 
 export interface RelayApi {
   call<T>(req: RelayRequest): Promise<RelayResponse<T>>;
+  openProjectWindow?(projectId: string): Promise<RelayResponse<{ focused: boolean }>>;
   dragFile?(filePath: string): void;
   onUpdateStatus?(cb: (s: UpdateStatus) => void): () => void;
 }

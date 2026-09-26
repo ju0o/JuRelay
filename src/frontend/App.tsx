@@ -8,6 +8,7 @@ import { must, hasBridge, dragLocalFile, onUpdateStatus } from './bridge.js';
 import { DogfoodPanel } from './dogfooding.js';
 import { QuickDogfood } from './quickdf.js';
 import { ControlRoom } from './controlRoom.js';
+import { projectFromSearch } from '../shared/projectLabels.js';
 import { approvalCategoryLabel, approvalUsedCount, dedupeApprovalRules, groupRulesByCategory, partitionSupersededApprovalRules, ApprovalRuleCard, SupersededApprovals, UnusedApprovalRules } from './approvals.js';
 import type { ApprovalRuleJson } from '../shared/types.js';
 import { PlanStudio } from './planStudio.js';
@@ -337,7 +338,8 @@ function AppInner(): React.ReactElement {
   const [showSettings, setShowSettings] = useState(false);
   const [dfMode, setDfMode]             = useState(false);
   const [pdMode, setPdMode]             = useState(false);
-  const [controlRoomMode, setControlRoomMode] = useState(false);
+  // '이 프로젝트만 새 창으로'로 열린 창(?project=<id>)은 처음부터 관제실만 보여준다.
+  const [controlRoomMode, setControlRoomMode] = useState(() => projectFromSearch(window.location.search) !== '');
   const [approvalsMode, setApprovalsMode] = useState(false);
   const [planStudioMode, setPlanStudioMode] = useState(false);
   const [missingRoot, setMissingRoot]   = useState(false);

@@ -39,6 +39,21 @@ export function projectDisplayName(projectId: string): string {
   return Object.prototype.hasOwnProperty.call(PROJECT_LABELS, key) ? PROJECT_LABELS[key].name : projectId;
 }
 
+/** 프로젝트 창 구분 키 — 대소문자·공백 무시. 같은 프로젝트는 같은 키라 창을 또 열지 않고 앞으로 가져온다. */
+export function projectWindowKey(projectId: string): string {
+  return projectId.trim().toLowerCase();
+}
+
+/** 프로젝트 창 제목: 'Agent Relay · <프로젝트 이름>'. */
+export function projectWindowTitle(projectId: string): string {
+  return `Agent Relay · ${projectDisplayName(projectId)}`;
+}
+
+/** 창 주소의 '?project=<id>' → 프로젝트 id. 없으면 ''. */
+export function projectFromSearch(search: string): string {
+  return (new URLSearchParams(search).get('project') ?? '').trim();
+}
+
 /** 쉬는 AI 종료 시각 → 'HH:MM' 로컬 시각. 'HH:MM'은 그대로, ISO/epoch는 로컬로 바꾸고, 못 읽으면 ''. */
 export function localClockLabel(value: unknown): string {
   if (typeof value === 'string' && /^\d{1,2}:\d{2}$/.test(value.trim())) return value.trim();

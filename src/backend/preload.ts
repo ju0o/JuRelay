@@ -19,6 +19,10 @@ const api = {
   dragFile(filePath: string): void {
     ipcRenderer.send('relay-drag-file', filePath);
   },
+  /** 한 프로젝트만 보이는 새 창을 연다 (이미 열려 있으면 그 창을 앞으로). */
+  openProjectWindow(projectId: string): Promise<RelayResponse<{ focused: boolean }>> {
+    return ipcRenderer.invoke('window:openProject', projectId) as Promise<RelayResponse<{ focused: boolean }>>;
+  },
   /**
    * In-app updater 상태 푸시 구독 (main이 relay-update-status로 방송한다).
    * Returns an unsubscribe function.

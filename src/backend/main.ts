@@ -10,9 +10,10 @@ import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electro
 import * as fs from 'fs';
 import * as path from 'path';
 import * as relay from './fs.js';
-import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomEnvs, runControlRoomTokens, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneSet, runControlRoomPause, runControlRoomPromoteHub, runControlRoomScheduleCancel, runControlRoomScheduleList, runControlRoomScheduleSet,runControlRoomResume, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
+import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomEnvs, runControlRoomTokens, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneSet, runControlRoomPause, runControlRoomPromoteHub, runControlRoomScheduleCancel, runControlRoomScheduleList, runControlRoomScheduleSet, runControlRoomResume, isValidProjectId, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
 import { migrateSettings } from './migrate.js';
 import { CaptureReport, parseCapturePath } from '../shared/capture.js';
+import { projectWindowKey, projectWindowTitle } from '../shared/projectLabels.js';
 import { checkForUpdates, downloadUpdate, initUpdater, installUpdate, updaterSupported } from './updater.js';
 import {
   AppSettings,
@@ -458,6 +459,14 @@ function handleUpdateEvent(e: UpdateEvent): void {
 }
 
 function registerIpc(): void {
+  ipcMain.handle('window:openProject', (_e, projectId: unknown): RelayResponse<{ focused: boolean }> => {
+    if (!isValidProjectId(projectId)) return { ok: false, error: '프로젝트 이름을 알아볼 수 없어요.' };
+    try {
+      return { ok: true, value: openProjectWindow(projectId) };
+    } catch (err) {
+      return { ok: false, error: friendlyErrorMessage(err), detail: err instanceof Error ? err.message : String(err) };
+    }
+  });
   ipcMain.handle('relay', async (_e, req: RelayRequest): Promise<RelayResponse<unknown>> => {
     try {
       const value = await handleRequest(req);
@@ -512,6 +521,48 @@ function devServerUrl(): string {
   return /^https?:\/\/.+/.test(raw) ? raw : '';
 }
 
+// Every window (main + project windows) gets the same preload and security options.
+const WEB_PREFERENCES = (): Electron.WebPreferences => ({
+  preload: path.join(__dirname, 'preload.js'),
+  // contextIsolation defaults to true in Electron 28 — keep default
+});
+
+/** '이 프로젝트만 새 창으로': 프로젝트마다 창 1개. 이미 열려 있으면 앞으로 가져온다. */
+const projectWindows = new Map<string, BrowserWindow>();
+
+function openProjectWindow(projectId: string): { focused: boolean } {
+  const key = projectWindowKey(projectId);
+  const existing = projectWindows.get(key);
+  if (existing && !existing.isDestroyed()) {
+    if (existing.isMinimized()) existing.restore();
+    existing.focus();
+    return { focused: true };
+  }
+  const win = new BrowserWindow({
+    width: 1100,
+    height: 780,
+    minWidth: 700,
+    minHeight: 560,
+    title: projectWindowTitle(projectId),
+    backgroundColor: '#17181c',
+    autoHideMenuBar: true,
+    webPreferences: WEB_PREFERENCES(),
+  });
+  projectWindows.set(key, win);
+  win.on('closed', () => { if (projectWindows.get(key) === win) projectWindows.delete(key); });
+  // The page <title> must not overwrite 'Agent Relay · <프로젝트 이름>'.
+  win.on('page-title-updated', e => e.preventDefault());
+  const clientPath = path.join(__dirname, '..', '..', 'client', 'index.html');
+  const devUrl = devServerUrl();
+  const query = { project: key };
+  const loadFromFile = (): void => { void win.loadFile(clientPath, { query }); };
+  if (devUrl) {
+    win.webContents.once('did-fail-load', () => { if (!win.isDestroyed() && fs.existsSync(clientPath)) loadFromFile(); });
+    void win.loadURL(`${devUrl}${devUrl.includes('?') ? '&' : '?'}project=${encodeURIComponent(key)}`);
+  } else loadFromFile();
+  return { focused: false };
+}
+
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -524,10 +575,7 @@ function createWindow(): void {
     title: 'Agent Relay',
     backgroundColor: '#17181c',
     autoHideMenuBar: true,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      // contextIsolation defaults to true in Electron 28 — keep default
-    },
+    webPreferences: WEB_PREFERENCES(),
   });
 
   // Per-build version suffix so installers can be told apart ('Agent Relay 0.3.N').
