@@ -8102,6 +8102,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09 (settled): founder-ux 규칙 '빈 화면 이유+다음 행동', 대상 'juceipt 명령 출력(daily)'; at 817f5df, src/daily/index.ts:145 tells the Founder to find an 'AI 보고' in the receipt, and no receipt field or rendered section holds one",
           "title": "하루 요약의 빈 결과 안내 고치기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-IMPACT-EMPTY-REASON",
+          "scope": "In renderLevel1 of src/render/index.ts, replace the self-contradicting empty text '중요한 영향이 없어요 — 원문 보기에서 확인하세요' (it says there is nothing, then sends the Founder to the raw view) with a plain 해요체 empty state that gives the reason and the next step, split by acceptance state like noRemainingText: when ready use '중요한 영향이 없어요 — 설정·설치·외부 요청 기록이 없어 따로 하실 일은 없어요', otherwise use '기록에서 중요한 영향을 찾지 못했어요 — AI에게 설정이나 설치를 바꿨는지 다시 물어보세요'; update the existing assertion in tests/receipt-render-founder.test.ts and add a non-ready case that checks the visible Level 1 part (before '<details class=\"raw-source\"') no longer contains '원문 보기에서 확인하세요'.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: founder-ux 규칙 '빈 화면 이유+다음 행동' 대상 '영수증 보기 화면'; src/render/index.ts:74 at 8bf49aa shows '중요한 영향이 없어요 — 원문 보기에서 확인하세요'"
+        },
+        {
+          "taskId": "JUCEIPT-RUN-RECEIPT-NEXT-LINE-MATCHES-STATE",
+          "scope": "In runCommand and receiptCommand in src/cli/main.ts, replace the fixed last line '다음: 화면 파일 위치가 필요하면 --show-raw(또는 --show-paths)를 붙여 다시 실행한 뒤 브라우저로 열어 결과를 확인하세요.' (it is printed the same way even when the verdict is 받아도 됨) with a line built from acceptance.state, the same way scanCommand already does it: ready → '다음: 지금 하실 일은 없어요 — 궁금하면 영수증 화면을 열어 보세요. 위치는 --show-raw로 다시 실행하면 나와요.', every other state → '다음: 영수증 화면을 열어 빠진 확인부터 보세요. 위치는 --show-raw로 다시 실행하면 나와요.'; keep paths hidden by default and shown only with --show-raw/--show-paths; update the two existing assertions in tests/receipt-cli.test.ts and tests/daily-cli.test.ts (the fixture is 확인 후 받기) and add one ready-state assertion by rewriting a copied receipt.json's acceptance.state to ready before running the receipt command.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npx tsc -p tsconfig.json --noEmit",
+            "npm test",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 대상 'juceipt 명령 출력(scan, daily, receipt)', founder-ux 규칙 '맨 위 한 문장 ... 지금 하실 일'; src/cli/main.ts:161 and :208 at 8bf49aa print the same next line for every verdict, while scanCommand (:289-292) already varies it by state"
         }
       ],
       "skills": {
