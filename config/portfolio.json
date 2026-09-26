@@ -4690,6 +4690,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-board.png.",
           "title": "환경을 골라 창을 빠르게 보기"
+        },
+        {
+          "taskId": "ACTL-BOARD-MAINPC-LOOK-FIXES",
+          "scope": "Real MainPC capture of JuActlBoard built from 7eb9365 (after the 4 Lovable steps) at 1456x939 showed, in src/actl/gui.py: (1) numbers disagree — top card says '확인 필요 2개', header says '확인 중 0', left '확인 필요' says '없음'; all three must come from one count; (2) the left '환경' section only shows '에이전트 2 · 프로젝트 1' — it must list each connected environment by name (e.g. 'ASUS · 연결됨 · AI 창 2개', WSL/SSH ones the same) per the approved design's '연결된 환경' column; (3) the project list rows ('전체', '프로젝트 미지정') render in a tiny font — use the 16px body font and ≥44px rows; (4) the AI window list (one row per AI window, grouped by environment) is not visible at this window size — it must be visible without scrolling at 1456x939, above or beside '선택한 창'; (5) the selected window says '상태: 쉬는 중' while '최근 답' says '답이 준비됐어요' — show one state sentence. Keep the approved dark look and plain Korean; no new data sources.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_board_look.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder approved the actl Lovable design 2026-09-26 ('좋아, 이대로 이식') and asked that every mapped environment be visible ('매핑 된 것들은 전부 다 보이게'). MainPC capture 2026-09-27 03:2x after installing 7eb9365 shows the five mismatches above. Add tests in tests/test_gui_board_look.py for one shared needs-check count and one row per environment in the environment section.",
+          "title": "보드: MainPC 실제 화면에서 본 어긋남 5가지"
         }
       ],
       "qaRuntime": [
