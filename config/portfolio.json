@@ -6299,6 +6299,36 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): founder-ux rules '빈 화면 이유+다음 행동' and '끝남 = teal/OK' for JuPlan Studio 검증·문서 보기; documents.ts:521 prints `## 시험이 없는 완료 기준\\n\\n${bullets(uncovered)}` → '아직 없음' even when every criterion has a test",
           "title": "완료 기준 시험 상태를 정확히 알려요"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-GATE-G5-PLAIN",
+          "scope": "In renderGatesSection and renderGatesNextStep in packages/runtime/src/index.ts: (1) stop printing a node count on the G5 row (검증·최종 검토 대기), because the count is only a pass flag and shows up as a meaningless '0개'/'1개'. (2) Leave G5 out of the '빠진 항목(…)' list, because it is not an item the Founder can ask the AI to add. When G5 is the only failing check, show one plain-Korean line instead: '필요한 항목은 모두 있어요. 검증 문제를 고치고 기획이 끝나면 자동으로 최종 검토로 넘어가요.' Gate evaluation, the badges and the G0–G4 rows stay unchanged. Update the existing assertions ('검증·최종 검토 대기 ✓ 1개' / '0개', the mirrored gateSatisfyingCount, and the missing-label list) and add a case where only G5 fails.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/runtime.test.ts",
+            "packages/runtime/test/studio-gate-id-fold.test.ts",
+            "packages/runtime/test/studio-gates-next-step.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 비개발자 UX 고도화, 검증 문제 표시 — founder-ux rules: 빈 화면·오류는 이유+다음 행동, 개발자 글자 금지; gate honesty per JUPLAN-GATES-HONEST-NAME (G5 = validation + lifecycle, not a node kind)"
+        },
+        {
+          "taskId": "JUPLAN-PLAN-MAP-OTHER-COLUMN-KIND",
+          "scope": "In layoutPlanMap in packages/runtime/src/index.ts, stop titling the catch-all plan-map column '기타' when it holds one or two node kinds. Title it with their NODE_TYPE_LABELS names joined by '·' (for example the ERD diagram's DataField boxes, or architecture's ExternalSystem/Storage/Runtime), and keep '기타' only for three or more kinds. This applies to the Studio 계획 지도 and every /view/diagrams page. Column order, box placement, colours and the 16px text stay unchanged. Add a new vitest file that checks the ERD and architecture subgraph maps show those Korean column titles instead of '기타', and that a map with three or more other kinds still reads '기타'.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/plan-map-other-column-kind.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test",
+            "pnpm typecheck",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:08): 대상 JuPlan Studio 화면(계획 그림 …) — founder-ux rule 1/3 한국어 라벨, 한눈에 이해; A-23/A-24 per-type diagrams"
         }
       ],
       "qaRuntime": [
