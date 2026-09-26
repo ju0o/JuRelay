@@ -22,6 +22,12 @@ export function discoverCodexCommand(env = process.env) {
 
 function processAlive(pid) { if (!pid) return false; try { process.kill(pid, 0); return true; } catch { return false; } }
 
+// The last 1500 chars of a long passing log hid which tests failed (2026-09-26 actl: "605 passed, 2 failed" and no names),
+// so QA and redesign guessed. Keep every failure line first, then the end of the output.
+export function gateTail(output) {
+  const fails = String(output).split("\n").filter((l) => /^(FAIL|not ok|✗|✖|×)\b|^\s*(FAIL|FAILED|Error|AssertionError)[:\s]/.test(l)).slice(0, 30).join("\n").slice(0, 2500);
+  return (fails ? `FAILURES:\n${fails}\n…\n` : "") + String(output).slice(-1500);
+}
 function memAvailableMb() { try { return Number(/MemAvailable:\s+(\d+)/.exec(readFileSync("/proc/meminfo", "utf8"))[1]) / 1024; } catch { return Infinity; } }
 function runtimeLaunchFailure(error) { return /(?:spawn|ENOENT|runtime command missing|cannot execute)/i.test(String(error?.message || error)); }
 
@@ -284,7 +290,7 @@ export function runTestGate(workspace, tests, { timeoutMs = 15 * 60_000, signal 
     child.stdout.on("data", add); child.stderr.on("data", add);
     const timer = setTimeout(() => child.kill("SIGTERM"), timeoutMs); const abort = () => child.kill("SIGTERM"); signal?.addEventListener("abort", abort, { once: true });
     child.once("error", (error) => { clearTimeout(timer); resolvePromise({ cmd, code: -1, tail: String(error.message) }); });
-    child.once("close", (code) => { clearTimeout(timer); signal?.removeEventListener("abort", abort); resolvePromise({ cmd, code: code ?? -1, tail: output.slice(-1500) }); });
+    child.once("close", (code) => { clearTimeout(timer); signal?.removeEventListener("abort", abort); resolvePromise({ cmd, code: code ?? -1, tail: gateTail(output) }); });
   });
   return (async () => { const results = []; for (const cmd of tests || []) { const result = await runOneCommand(cmd); results.push(result); if (result.code !== 0) return { ok: false, results }; } return { ok: true, results }; })();
 }

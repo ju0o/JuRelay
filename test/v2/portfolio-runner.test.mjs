@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import test from "node:test";
-import { agentContext, routeOrder, worktreeSetup, buildCoreV1Snapshot, discoverCodexCommand, formatCoreV1Results, formatCoreV1Text, parseQaPacket, parseResultPacket, parseTaskPacket, PortfolioRunner, WorktreeManager, STATES, QA_VERDICTS, TRANSIENT_ERROR } from "../../src/v2/portfolio-runner/index.mjs";
+import { agentContext, gateTail, routeOrder, worktreeSetup, buildCoreV1Snapshot, discoverCodexCommand, formatCoreV1Results, formatCoreV1Text, parseQaPacket, parseResultPacket, parseTaskPacket, PortfolioRunner, WorktreeManager, STATES, QA_VERDICTS, TRANSIENT_ERROR } from "../../src/v2/portfolio-runner/index.mjs";
 import { CommandRuntimeAdapter, RuntimeAdapter, createRuntimeAdapters } from "../../src/v2/runtime-adapters/index.mjs";
 const passGate = async () => ({ ok: true, results: [] });
 
@@ -519,4 +519,11 @@ test("allLanes: every lane builds at the same time even with maxBuilders 1", asy
   for (let i = 0; i < 300 && building.size < 3; i++) await new Promise((r) => setTimeout(r, 10));
   assert.equal(building.size, 3, `only ${[...building]} were building at once`);
   release(); controller.abort(); await loop;
+});
+
+test("gateTail keeps failing test names even when the log ends with many passes", () => {
+  const log = ["FAIL test_a.test_one: boom", ...Array.from({ length: 400 }, (_, i) => `PASS test_x.test_${i}`), "605 passed, 1 failed"].join("\n");
+  const tail = gateTail(log);
+  assert.match(tail, /FAIL test_a\.test_one: boom/); assert.match(tail, /605 passed, 1 failed$/);
+  assert.equal(gateTail("all good\n3 passed"), "all good\n3 passed");
 });
