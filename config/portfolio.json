@@ -17159,6 +17159,17 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:327-357 '사용자 행동은 다음 중 필요한 항목만 작성한다.'",
           "title": "사용자 안내 문구 일치 점검"
+        },
+        {
+          "taskId": "JUTELL-FIXTURE-GLOSSARY-NECESSITY-PARITY",
+          "scope": "Add an offline node:test asserting every parenthetical term explanation in the scenario fixtures matches a curated glossary-ko.md heading, enforcing PRODUCT_SCOPE §6.6's necessary-terms-only rule.",
+          "files": [
+            "tests/fixture-glossary-necessity-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/fixture-glossary-necessity-parity.test.mjs"
+          ],
+          "ssotEvidence": "Founder choice 2026-09-27: Add one offline test for §6.6 that keeps explanations limited to terms necessary for understanding the result, risk, or verification; docs/PRODUCT_SCOPE.md:288-294 §6.6 개발 용어 설명: 다음 조건에 해당하는 용어만 쉬운 설명을 제공한다"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
