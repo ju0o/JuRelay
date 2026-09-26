@@ -13113,6 +13113,17 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:199 '| B0 | Core value proof | M2 | 🟢 ACTIVE — M2 GO (A-14) |'; docs/operations/PM_STATUS_BOARD.md:173 '0 Founder seven-task rows join both artifacts; mapping is `UNDECIDED` ... M3 decision is pending'; docs/product/MASTER_ROADMAP.md:96 'M3 status: 10-receipt register filled; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED'"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-UNPLANNED-DECISION-STATUS-NOTE",
+          "scope": "In docs/decisions/UNPLANNED_WORK_01_DECISION.md, add one dated note after header line 7, in the same style as the handoff header notes. The note says the line-21/24 phrases ('blocked until M2 closes', 'not required to close M2') and §5 steps 3 and 5 (lines 86 and 88) reflect the state on 2026-09-19. It then says M2 is now GO (A-14, DECISION_LOG D-022) and the M3 decision is still pending: 0 Founder seven-task rows join both a Claude final and a Receipt, so the mapping is UNDECIDED per docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.2/§7. Leave every EXTRACT/DEFER/DROP classification and all other lines unchanged.",
+          "files": [
+            "docs/decisions/UNPLANNED_WORK_01_DECISION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/decisions/UNPLANNED_WORK_01_DECISION.md:86 '3. Finish M2 PR #4 value review.' vs docs/operations/PM_STATUS_BOARD.md:155 'M2 is closed by the A-14 GO decision.' and docs/validation/M3_DAILY_VALUE_VALIDATION.md §7 'The evidence-bounded result is `UNDECIDED` (`0 joined rows`); the PM records the M3 decision separately.'"
         }
       ]
     },
