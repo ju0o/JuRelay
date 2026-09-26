@@ -2473,6 +2473,22 @@
             "AGENTRELAY-LAUNCH-PROJECT-PICK"
           ],
           "title": "앱에서 필요 없는 정보 정리"
+        },
+        {
+          "taskId": "AGENTRELAY-CONTROLROOM-NIGHT-REPORTS",
+          "scope": "관제실에 NIGHT_REPORT와 LAST_NIGHT_RUN의 수신 목록을 읽기 전용으로 표시하고 기존 controlRoom.ts SSH JSON 경로와 가짜 명령 실행기 테스트를 연결한다.",
+          "files": [
+            "src/backend/controlRoom.ts",
+            "src/backend/main.ts",
+            "src/frontend/controlRoom.tsx",
+            "test/controlRoom.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node test/controlRoom.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: item 6 — add a read-only list of received night reports (NIGHT_REPORT / LAST_NIGHT_RUN) to the control room, fetched through the existing controlRoom.ts ssh JSON path and tested with a fake command runner"
         }
       ],
       "qaRuntime": [
