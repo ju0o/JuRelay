@@ -11571,6 +11571,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: SPEC §20 forbidden-phrase list appears unchanged in beginner-bridge SKILL.md/reference and existing scenario fixtures contain none",
           "title": "금지 표현이 빠짐없이 지켜지는지 확인"
+        },
+        {
+          "taskId": "JUTELL-EVIDENCE-SCOPE-RULE-PARITY",
+          "scope": "Add the SPEC §7.7 evidence-labeling rule to report-format.md §1 as one line placed right after the existing 중요한 주장에는 … 코드 예상 paragraph: don't attach evidence and check status to every sentence, only to important claims, and sentences that share the same evidence can be grouped. Add a new offline node:test that checks §7.7 still holds the 모든 문장에 근거와 확인 상태를 반복해서 붙이지 않는다 sentence and its six important-claim bullets, and that report-format.md §1 carries the matching rule.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/evidence-scope-rule-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/evidence-scope-rule-parity.test.mjs",
+            "node --test tests/skill-report-contract.test.mjs tests/info-system-scope-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:249 '모든 문장에 근거와 확인 상태를 반복해서 붙이지 않는다.' (§7.7 근거 표기 범위)"
+        },
+        {
+          "taskId": "JUTELL-CODE-EXPECTATION-NOT-CONFIRMED",
+          "scope": "Add a new test-only offline node:test that checks three things: SPEC §8.4 still says 코드 예상만으로 `확인됨`을 사용하지 않는다; report-format.md §1 still pairs `근거: 코드 예상` with `확인 상태: 확인하지 못함`; and no tests/results/scenario-*/*.fixture.md labels a claim with 근거: 코드 예상 together with 확인 상태: 확인됨 in the same claim block.",
+          "files": [
+            "tests/code-expectation-not-confirmed.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/code-expectation-not-confirmed.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:309 '### 8.4 예상 표현 … 코드 예상만으로 `확인됨`을 사용하지 않는다.'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
