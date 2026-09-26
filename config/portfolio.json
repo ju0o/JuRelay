@@ -16226,6 +16226,17 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:71 'These identifiers do not form a committed seven-row join, so no row is retained or mapped by inference.'; Founder direction 2026-09-27",
           "title": "출시 보류 결정 기록"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-DECISION-LOG-M3-UNDECIDED-ENTRY",
+          "scope": "Add a D-023 entry to DECISION_LOG.md recording the M3 evidence-based reconciliation outcome (0 of the Founder's seven register rows join a committed Claude final and a Receipt, so the mapping is UNDECIDED and no GO/DEFER/KILL is recorded), matching the wording already used in PM_STATUS_BOARD.md, MASTER_ROADMAP.md, and BUSINESS_PRODUCT_WBS.md.",
+          "files": [
+            "docs/decisions/DECISION_LOG.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:181 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'; Founder direction 2026-09-27"
         }
       ]
     },
