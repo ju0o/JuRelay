@@ -10384,6 +10384,35 @@
           ],
           "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:141 'A lane with id `agent-relay` is rejected as a duplicate of the runner entry.'; Founder direction 2026-09-26 offline E2E/Quickstart acceptance target",
           "title": "겹치는 작업 이름 오류 안내 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-RESERVED-LANE-ID-STEP",
+          "scope": "Add step run_reserved_lane_id to scripts/e2e.sh right after run_non_object_board, with label '예약된 레인 ID 안내' and next command board, modelled on run_lane_without_id: it writes a temp Agent Relay board whose only lane is {id:'agent-relay',state:'RUNNING'} for project agent-relay and passes only when exit is 0, the single row is UNKNOWN/stale true/reason invalid, and stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: agent-relay(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요'; add it to the step loop, the labels map and the commands map, append the step to the expected list in tests/e2e-script.test.mjs, and sync docs/getting-started.md (the ```json example steps, the `next` bullet's board step group, and one new step bullet after run-non-object-board).",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; base 24f572c tests/status-board-cli.test.mjs:235 'names an Agent Relay board with a lane id agent-relay with the plain-Korean invalid reason' covers the CLI but scripts/e2e.sh has no step for it"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-PROJECT-MISMATCH-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names a source without status with the plain-Korean missing-status reason': it writes a juplan-status current.json {projectId:'other',status:'READY',observedAt:<now>} under the registry entry 'moved' and asserts exit 0, the row ['moved','UNKNOWN',true,'project-mismatch'], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: moved(project-mismatch: 파일 속 프로젝트 ID가 달라요) — README 처음 쓰는 법의 reason 표를 보세요\\n', with no source or doc changes.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; base 24f572c scripts/e2e.sh run_project_mismatch (line ~193) checks this line in E2E and scripts/status-board.mjs:12 maps 'project-mismatch' to '파일 속 프로젝트 ID가 달라요', but tests/status-board-cli.test.mjs has no project-mismatch test"
         }
       ],
       "qaRuntime": [
