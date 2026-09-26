@@ -14097,6 +14097,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs olderThan: 'const at = Date.parse(`${date}T00:00:00Z`); return Number.isFinite(at) && at < now - days * DAY_MS;'",
           "title": "잘못된 날짜 기록 정리 확인"
+        },
+        {
+          "taskId": "JUAI-CHECK-OPENDB-MIGRATE",
+          "scope": "Import openDb from db.mjs into check.mjs and add assertions only (db.mjs stays as is), using a fresh directory from fs.mkdtempSync(os.tmpdir()) that is removed with rmSync at the end: openDb(dir) creates dir/juai.db, a kvSet value survives closing and calling openDb(dir) again (the second open does not throw even though the picks ALTER already ran), and PRAGMA table_info(picks) lists a msg_id column.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검) ... 작은 변경만'; db.mjs openDb has 'try { db.exec(\"ALTER TABLE picks ADD COLUMN msg_id TEXT\"); } catch { /* already migrated */ }' with no check.mjs coverage"
+        },
+        {
+          "taskId": "JUAI-CHECK-EMPTY-INPUTS",
+          "scope": "Add check.mjs assertions only (lib.mjs stays as is) for empty-input branches: bestFaq([], 'anything') is null, matchSubs([], 'MCP 서버') deep-equals new Map(), matchSubs keeps a keyword whose spaces differ from the text (keyword 'discord bot' matches text 'DiscordBot 만들기'), and similarity is symmetric (similarity('hello world','hello worlds') === similarity('hello worlds','hello world')).",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs: 'Keywords from subs that appear in text (case-insensitive, spaces ignored)'"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
