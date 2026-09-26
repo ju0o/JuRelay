@@ -4647,6 +4647,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-27 00:1x: '좋아, 이대로 이식' — approved the Lovable actl board design (project dc6be471). Reference image (read-only): /home/skkse12/Desktop/Projects/Team/design-ref/actl-lovable/ref-01-boar",
           "title": "보드 화면 새 디자인 정리"
+        },
+        {
+          "taskId": "ACTL-BOARD-ALL-ENVS-R2-R2",
+          "scope": "Narrowed to showing panes grouped by environment and the down-environment notice only. Add one pure helper in serve.py, `group_panes_by_environment(environments, fetch)`. For each enabled Environment from core/sources.load_environments(), it calls fetch inside tmux.using_environment(env), in its own thread with a timeout, so a slow SSH never blocks the other environments. It returns groups in order (local first, then SSH, then WSL), each with a header like '이 컴퓨터 · 창 N개', 'ASUS (SSH) · 창 N개' or 'WSL Ubuntu · 창 N개'. A down environment gets an amber header (never red) reading '연결할 수 없어요 — 켜져 있는지 확인해 주세요' with a [다시 연결] button that re-polls only that environment, and its raw error appears only under 원문 보기. The board header reads '연결된 환경 N곳 · 창 M개'. Render these groups in the serve.py web board and in tui.py. When no environments are saved, or `--ssh T` is used, show exactly one group, so today's behaviour is unchanged. Send, copy, the live card and result-check state stay exactly as they are now: do not touch core/state.py, the result-check keys or the send paths. Also remove the pane ID and coordinates (d.target) from Founder-visible text at serve.py:304 and :366, showing only d.display. Add tests/test_board_all_envs.py, offline with fake fetch/runner only (no real tmux, ssh or wsl). It must fail on the old code, because the helper does not exist and the page still contains `${d.target}`, and pass on the new. It covers: group order and headers, the total header line, one env down showing amber plus 원문 보기 while the others still list panes, a slow env not delaying the others, the single-group `--ssh` case, and the served HTML no longer containing `${d.target}`. QA of the previous attempt (commit a37f388, grouping tests passed) asked only for wording: src/actl/tui.py showed 'live pane', 'OpenCode … pane' and 'CPU+pane tail' developer text on the Founder surface. Keep the same grouping approach, rebuilt on the latest base, and every Founder-visible string you add or touch must be plain Korean (e.g. '창', '지금 화면', no 'pane'/'tail'/'CPU'). Add a test asserting the grouped board text contains none of 'pane', 'tail', 'CPU'.",
+          "files": [
+            "src/actl/serve.py",
+            "src/actl/tui.py",
+            "tests/test_board_all_envs.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-26: actl is open source — someone who needs nothing else maps only the terminals on their own computer; if actl finds an SSH environment it asks 'SSH 환경도 있네? 연동할까?' and maps it; SSH and WSL both found → ask and map both; every mapped environment is shown. The Founder now also runs Windows → WSL → codex | claude | opencode (Codex Windows bug) besides MainPC → ssh asus. Today src/actl/core/tmux.py routes everything through one global REMOTE_SSH_TARGET (set_remote_ssh, --ssh T). Founder rewrite choice: narrow — 환경별 묶음 화면과 연결 끊김 안내만 먼저, 보내기와 결과 확인은 지금처럼. | ALL-ENVS-R2 held after QA 2026-09-27 on wording only; Founder 2026-09-26 asked that every mapped environment be visible ('매핑 된 것들은 전부 다 보이게'), so this -R2-R2 is the final try.",
+          "title": "보드: 연결된 환경마다 창 묶어 보기 (다시)"
         }
       ],
       "qaRuntime": [
