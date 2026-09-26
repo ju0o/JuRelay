@@ -6959,6 +6959,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:09: 'juceipt 명령 출력(scan, daily, receipt)… 판정 '확인 후 받기' 같은 말의 뜻' — at base, receiptCommand prints '판정 뜻:' and runCommand prints advice, but scanCommand (src/cli/main.ts:254-277) prints only '작업 N개를 봤어요 — 받아도 됨 …, 확인 후 받기 …, 문제 있음 …' and never says what the words mean",
           "title": "작업 찾기 결과에 판정 뜻 보여주기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-WHO-WHEN",
+          "scope": "In renderLevel1 of src/render/index.ts, add one plain Korean line under the verdict sentence that says which AI did the work and when it finished in local time, for example 'Claude Code가 한 작업 · 9월 25일 오후 2:10에 끝남'. Build it from r.actor.agent_name and r.task.finished_at, falling back to r.generated_at, and format the time with Intl.DateTimeFormat('ko-KR', {month:'long', day:'numeric', hour:'numeric', minute:'2-digit'}). If neither time exists, show '끝난 시각 기록이 없어요'. Never show the raw ISO string outside 원문 보기, and make the text at least 16px. Extend tests/receipt-render-founder.test.ts: the visible Level 1 text contains the agent name and matches /\\d+월 \\d+일 (오전|오후) \\d+:\\d{2}/, it does not contain the ISO finished_at string, and the missing-time case shows the fallback sentence. All existing assertions stay unchanged.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: 비개발자 UX 고도화 — 영수증 보기 화면 점검; founder-ux rule 4 '시간은 상대/현지 시각, ISO 금지' and live-card rule 'which AI … in its friendly name'"
+        },
+        {
+          "taskId": "JUCEIPT-TASK-TITLE-DOCS-SCREEN-GROUPS",
+          "scope": "In taskTitle in src/daily/index.ts, add two keyword groups right after the existing install group so English and Korean requests about documents or screens stop falling back to the generic '작업 내용 확인'. The first group, /문서|번역|\\bdocs?\\b|\\bdocument(ation)?\\b|\\btranslate\\b/, returns '문서 정리'. The second, /화면|디자인|\\bui\\b|\\bscreen\\b|\\bpage\\b|\\bcss\\b|\\blayout\\b|\\bstyle\\b/, returns '화면 고치기'. Use whole-word English matching as the other groups already do, and leave the other groups and their order unchanged. In the tests/daily.test.ts case table, change 'update the latest docs' to expect '문서 정리'. Add cases for 'Translate the guide', 'README 문서 번역' (still '설치 안내 확인' because the install group wins), 'fix the UI layout' ('화면 고치기') and 'package update' (still '작업 내용 확인', since 'page' must not match inside 'package'). tests/daily-corpus.test.ts, tests/scan-summary.test.ts and tests/receipt-render-founder.test.ts must pass without changes.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:09: '영어 작업 제목을 쉬운 한국어 요약으로' (scan, daily, receipt 출력과 영수증 보기 화면); tests/daily.test.ts:112 currently maps 'update the latest docs' to the generic '작업 내용 확인'"
         }
       ],
       "skills": {
