@@ -10331,6 +10331,34 @@
             "node --test test/"
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): (2) actl AI 창 카드 — actl serve 실시간 창 API가 생기기 전엔 기존 /api/panes, 같은 용어; founder-ux actl card: 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨, whether an answer is ready to copy"
+        },
+        {
+          "taskId": "JCAPP-RELAY-TAB-LIVE-WORDS",
+          "scope": "In operator/public/app.js, make the 진행 tab use the live card's step words: change the relayView lede to '프로젝트마다 계획 → 만들기 → 검사 → 시험 → 반영이 자동으로 이어져요. 5초마다 새로 고쳐요.', and in projectQaPanel rename the '검수' row to '검사' ('검사 통과 ✓ · …', '… 검사 결과가 여기 생겨요', and '마지막 시험 · 검사 결과' in the note), then update the lede pin in test/agent-relay-module.test.mjs and the /검수 통과 ✓ · 12분 전/ pin in test/v2-project-qa-skills.test.mjs; leave STAGE_KO, laneSkillsSentence, relayChainSentence and the raw 'qa:' line under 원문 보기 unchanged.",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs",
+            "test/v2-project-qa-skills.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/v2-project-qa-skills.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 15:48): '같은 용어·같은 색 … Agent Relay 앱·actl 보드와 문구가 같아야 함'; founder-ux Live status card: '여기까지 끝남: … 계획 → 만들기 → 검사 → 시험 → 반영'"
+        },
+        {
+          "taskId": "JCAPP-RELAY-TASK-ID-RAW-FOLD",
+          "scope": "In operator/public/app.js relayLaneView (진행 lane, about line 2020), change the fold that holds the raw lane.current.taskId from '<details><summary>작업 번호</summary>' to '<details><summary>원문 보기</summary>'. Keep the task-chip span and its place after the flow row. Update the pins in test/agent-relay-module.test.mjs (lines 66-67, the indexOf check included) and test/home-working-line.test.mjs (line 74), and add one assert that the relay lane HTML no longer contains '작업 번호'.",
+          "files": [
+            "operator/public/app.js",
+            "test/agent-relay-module.test.mjs",
+            "test/home-working-line.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/home-working-line.test.mjs",
+            "node --test test/"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23 (request 2026-09-25 13:11): '특히 … 진행 탭의 작업 번호·담당 AI 순서(고급) 표현'; founder-ux rule 2: 'task IDs … Keep all of these behind one folded \"원문 보기\"'"
         }
       ],
       "skills": {
