@@ -15127,6 +15127,34 @@
             "node --test test/conversation-detail-fields.test.mjs"
           ],
           "ssotEvidence": "operator/public/app.js:1513 conversationTurn renders esc(item.ownerText || 'UNKNOWN') and app.js:1536 patchConversationTurn sets founderText.textContent = item.ownerText || 'UNKNOWN', printing the literal English enum word as if it were the Founder's own quoted message; founder-ux SKILL rule 2 'No developer text on the surface ... enum words such as HOLD, QUEUED, VERIFIED_DONE, UNMAPPED, unknown' must stay behind 원문 보기, never on the primary bubble"
+        },
+        {
+          "taskId": "JCAPP-HOME-WORKING-GUESS-NAME",
+          "scope": "Fix homeWorking's not-yet-assigned worker guess line in operator/public/app.js to name the AI the same way every other live-status line does once a worker is actually assigned (use aiName instead of runtimeName), so a guessed claude-team worker reads '맡은 AI: Claude Team (예상)' instead of '맡은 AI: Claude Team Opus (예상)'.",
+          "files": [
+            "operator/public/app.js",
+            "test/home-working-line.test.mjs"
+          ],
+          "tests": [
+            "node --test test/home-working-line.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js:744 `const guessed = !c.worker && guess && runtimeName(guess) !== 'UNKNOWN' ? ' — 맡은 AI: ' + runtimeName(guess) + ' (예상)' : '';` vs the assignment line using aiGa/aiName; runtimeName('claude-team')='Claude Team Opus' but aiName('claude-team')='Claude Team' (only mismatched id in both maps)"
+        },
+        {
+          "taskId": "JCAPP-LIVE-STATUS-PAUSED-HOLD-FIXTURE",
+          "scope": "Add the untested paused-lane-with-an-open-hold combination to the shared live-status fixture (a hold must outrank the paused todo/tone in both liveCardModel and railRowModel, per existing code, but no fixture lane exercises it) and pin its exact Korean sentences and stage count.",
+          "files": [
+            "test/fixtures/live-status/board.json",
+            "test/live-status-sentences.test.mjs",
+            "test/live-status-projection.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-sentences.test.mjs",
+            "node --test test/live-status-projection.test.mjs",
+            "node --test test/live-status-colors.test.mjs",
+            "node --test test/live-status-card-html.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js:518 `const paused = lane.paused === true && !gated && !open.length;` and :568 `const paused = !holds && !gated && lane.paused === true;` — hold suppresses paused in both, but test/fixtures/live-status/board.json has 5 paused:true lanes and none with a non-empty holds[]; Founder direction 2026-09-26 'add focused fixture tests'"
         }
       ],
       "skills": {
