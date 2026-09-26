@@ -4097,6 +4097,22 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "작업판 예산 표시를 바로잡아요"
+        },
+        {
+          "taskId": "ACTL-TUI-LIVE-CARD-STATUS-R2",
+          "scope": "In src/actl/tui.py _render only (not the other STATE_KO uses at lines ~491/~728), set the state column to actl.live_card.live_card(row)['status'] (일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨) instead of STATE_KO.get(row['state'], row['state']), leave the result column and '답이 왔어요' alone (deferred), keep pane ids out of the status wording, update the old-word assertions (tests/test_tui.py::test_render_shows_live_and_result_state must expect '연결 안 됨' instead of '미확인' for its sparse row with no pane_path; tests/test_tui_one_state.py must expect '답 기다림' instead of '승인 기다림' for BLOCKED; tests/test_tui_state_column.py wherever it still expects old words), and add tests/test_tui_live_card_status.py, which fails on the old code and passes on the new: _render WORKING, WAITING_INPUT, IDLE and DOWN rows that have target and pane_path set, then assert each shows exactly its matching word and no raw state word.",
+          "files": [
+            "src/actl/tui.py",
+            "tests/test_tui.py",
+            "tests/test_tui_one_state.py",
+            "tests/test_tui_state_column.py",
+            "tests/test_tui_live_card_status.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder request 2026-09-25 15:46: 'Live Pane 쉬운 상태 카드' — founder-ux Live status card rule 'the same everywhere' with 일하는 중/쉬는 중/답 기다림/연결 안 됨 and 복사할 답 준비 여부"
         }
       ],
       "qaRuntime": [
