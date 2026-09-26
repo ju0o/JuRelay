@@ -9718,6 +9718,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26 (offline E2E and Korean Quickstart as acceptance target); README.md §3 reason table at 172d7b0: '`invalid` | `current.json`이 `project-status.v1` 모양이 아니거나 … | 빠진 칸, 틀린 `projectId` … 확인하고 원본에서 다시 저장하세요.' (src/project-status.mjs strict `fields` check; today the only CLI invalid test uses an Agent Relay board)",
           "title": "잘못 적힌 항목 안내 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-SOURCE-FIELD-TYPO-STEP",
+          "scope": "Add step run_source_field_typo to scripts/e2e.sh right after run_unreadable_source (label '상태 파일 칸 오타 안내', next command board; add it to the step loop and to the labels and commands maps), modelled on run_bad_board_kind: it writes a fresh repository-status-file current.json for project 'typo' with both observedAt and a misspelled observedat field, and passes only when the board has one row typo/UNKNOWN/stale true/reason invalid and the stderr is exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: typo(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요'; then add the step to the expected list in tests/e2e-script.test.mjs, and in docs/getting-started.md add it to the example JSON line, the backticked step list and the step description list.",
+          "files": [
+            "scripts/e2e.sh",
+            "tests/e2e-script.test.mjs",
+            "docs/getting-started.md"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/*.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, no runtime integration; the matching CLI line test is already at base (9badd0f tests/status-board-cli.test.mjs:171 'names a status file with a misspelled field with the plain-Korean invalid reason')"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-DUPLICATE-LANE-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names an Agent Relay board with the wrong kind with the plain-Korean invalid reason': it writes a fresh Agent Relay board (kind BOARD, runner day IDLE/night RUNNING) whose lanes contain two lanes with the same id 'twin', registers project 'twin' with sourceKind agent-relay-board, and asserts exit 0, one row ['twin','UNKNOWN',true,'invalid','agent-relay/lanes/twin'], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: twin(invalid: 상태 파일 모양이 깨졌어요) — README 처음 쓰는 법의 reason 표를 보세요\\n'; do not change any code.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target; src/adapters/agent-relay.mjs at 9badd0f throws AgentRelayBoardError('duplicate-lane', ...) but no status-board CLI test covers it yet"
         }
       ],
       "qaRuntime": [
