@@ -3894,6 +3894,34 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23 (Founder choice 2026-09-26: 'add a test that counts wrapper calls per _rows() so the lower number can't creep back up'); BACKLOG.md: '원격 polling fan-out | 증폭 요인 확인 — 측정된 refresh 1회당 원격 작업 19개'. The existing test_rows_uses_pane_snapshot_for_hydration stubs out observe_activity and extract, so it never counts capture-pane, ps or git calls",
           "title": "다른 컴퓨터 확인이 느려지지 않게 점검"
+        },
+        {
+          "taskId": "ACTL-WEB-CARD-LIVE-STATUS",
+          "scope": "In src/actl/serve.py, add each row's live_card(row) result (title, status, answer_ready) to every agent in _board_data, and make the BOARD_HTML card show '<AI> · <폴더> 폴더' with the status pill 일하는 중 / 쉬는 중 / 답 기다림 / 연결 안 됨 instead of state_ko (답 기다림 in amber 'warn', 연결 안 됨 in dim, never red), with a new offline test for the data and the HTML strings.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_card_live_status.py",
+            "tests/test_serve_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:46 (settled): 'founder-ux Skill의 Live status card 규칙대로 AI 창 카드마다: 어떤 AI·어느 폴더, 일하는 중/쉬는 중/답 기다림/연결 안 됨 … 복사할 답 준비 여부'; src/actl/live_card.py at c879a9c already produces title/status/answer_ready, but serve.py BOARD_HTML still renders a.state_ko ('정상')"
+        },
+        {
+          "taskId": "ACTL-TK-HEADER-LIVE-CARD-STATUS",
+          "scope": "In src/actl/gui.py, make _card_header(row) take its state word from actl.live_card.live_card(row)['status'] so the Tk card and the actl serve card always agree (for example, UNKNOWN runtime with control_ready now reads 쉬는 중 rather than 확인 중, and not-live panes read 연결 안 됨), keep the '<display> · <role> · <folder> 폴더' parts unchanged, and update/add offline tests.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_card_ai_folder.py",
+            "tests/test_gui_card_plain_header.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 15:46: 'Live status card … the same everywhere: Agent Relay app, actl Board, JuControler hub' with the four statuses 일하는 중/쉬는 중/답 기다림/연결 안 됨; at c879a9c, gui.py:72-88 _card_header uses its own RUNTIME_STATE_LABELS logic with a '확인 중' fallback that live_card.py never returns"
         }
       ],
       "qaRuntime": [
