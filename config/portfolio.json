@@ -7938,6 +7938,32 @@
             "bash scripts/e2e.sh"
           ],
           "ssotEvidence": "docs/getting-started.md (base 4fea7c0) '상태판 안내 문장 읽는 법' table: '괄호 속 ID 중 하나로 `--project-id`를 다시 적습니다. 목록이 비었으면 `없음`으로 나옵니다.'; scripts/status-board.mjs: `.join(', ') || '없음'`; Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-PROJECT-ID-EXAMPLE-TEST",
+          "scope": "Add one offline test to tests/quickstart-registry-example.test.mjs, modelled on 'README Quickstart current.json example reads cleanly on the status board': it builds the README Quickstart registry and current.json examples in a temp dir (dataRoot set to that dir, observedAt set to now) and runs the fourth Quickstart command `node scripts/status-board.mjs registry.json --project-id my-project`; it checks exit code 0, stdout parses to exactly one row with projectId my-project and status READY, and stderr is exactly '프로젝트 1개 모두 상태를 읽었어요\\n'; no product code or docs change.",
+          "files": [
+            "tests/quickstart-registry-example.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/quickstart-registry-example.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target; README.md §3 3단계 lists `node scripts/status-board.mjs registry.json --project-id my-project` ('ID를 붙이면 그 프로젝트 하나만 보여 줍니다'), and today no test runs that command against the README examples"
+        },
+        {
+          "taskId": "JUCONTROLER-DOCS-SOURCE-KINDS-SYNC-TEST",
+          "scope": "Add one offline test, tests/docs-source-kinds-sync.test.mjs: it reads the `const sourceKinds = new Set([...])` list from the source text of src/project-registry.mjs and checks that it matches, in the same order, the backticked first-column values of the `sourceKind` | 읽는 것 table in docs/getting-started.md section '프로젝트 목록(`registry.json`) 규칙', and that the section's '네 종류' count equals the list length; no product code or docs change.",
+          "files": [
+            "tests/docs-source-kinds-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/docs-source-kinds-sync.test.mjs",
+            "node --test tests/*.test.mjs",
+            "bash scripts/e2e.sh"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target, with no runtime integration; README.md §3 sends readers to docs/getting-started.md for '`sourceKind` 네 종류', and src/project-registry.mjs:6 `const sourceKinds = new Set(['repository-status-file', 'juplan-status', 'juceipt-receipt', 'agent-relay-board'])` has no test tying it to that table"
         }
       ],
       "qaRuntime": [
