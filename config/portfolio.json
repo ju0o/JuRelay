@@ -12966,6 +12966,30 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-26: one shared live-status projection for Home and Progress including the Korean status sentence; 2026-09-25: 같은 용어·같은 색 … 문구가 같아야 함"
+        },
+        {
+          "taskId": "JCAPP-LIVE-CARD-HTML-FIXTURE-TEST",
+          "scope": "Add test/live-status-card-html.test.mjs that extracts the real liveProjectCard, liveCardModel and railRowModel (plus their helper lines/functions, the same way test/live-status-sentences.test.mjs does), renders every lane of test/fixtures/live-status/board.json twice — once for 홈 (inLane false) and once for 진행 (inLane true) — and asserts: each card has the five labels in order (지금 하는 일, 여기까지 끝남, 확인 상태, 대표님 할 일, 다음 단계); the HTML contains the model's doing, check word and evidence, todo word and next sentence; each chip's class is live-chip--<tone> for its model tone; the two renders are identical outside the 대표님 할 일 line; on 진행, 결정 필요 reads '결정하러 가기' and an open hold reads '멈춘 작업 N건 — 아래에서 골라 주세요'; and no task id or English enum word shows outside <details>. Test only.",
+          "files": [
+            "test/live-status-card-html.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-card-html.test.mjs",
+            "node --test test/live-status-sentences.test.mjs test/live-status-projection.test.mjs test/live-status-colors.test.mjs test/lovable-live-cards.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: 'Define one shared live-status projection for Home and Progress, including the Korean status sentence, confirmation state, founder action, next step, and color rules; add focused fixture tests.' Only the models are fixture-tested today; the rendered liveProjectCard HTML (operator/public/app.js:540) is only tested with inline boards."
+        },
+        {
+          "taskId": "JCAPP-LIVE-CHECK-PRECHECK-CALM",
+          "scope": "In operator/public/app.js liveCardModel (~line 530), change the tone of the running-but-not-yet-checked 확인 상태 ('확인하지 못함' · '아직 검사 전') from 'warn' to 'muted', so a lane at 계획, or queued, with 대표님 할 일 없음 no longer shows an amber chip; 검사/시험 '일부 확인' stays warn, and the words and evidence stay the same. In test/live-status-colors.test.mjs, assert over the fixture that check.tone is 'warn' only when check.word is '일부 확인', and that run-stage-0, run-stage-1 and run-queued read muted.",
+          "files": [
+            "operator/public/app.js",
+            "test/live-status-colors.test.mjs"
+          ],
+          "tests": [
+            "node --test test/live-status-colors.test.mjs test/live-status-sentences.test.mjs test/live-status-projection.test.mjs test/lovable-live-cards.test.mjs test/agent-relay-module.test.mjs"
+          ],
+          "ssotEvidence": "founder-ux Skill rule 11: 'green (teal) = done / OK · amber = needs a look · red = only real danger'; Founder direction 2026-09-26: shared live-status projection '... and color rules; add focused fixture tests'. Base operator/public/app.js:530 `c ? { word: '확인하지 못함', tone: 'warn', evidence: '아직 검사 전' }` shows amber while the same card's 대표님 할 일 is 없음 (good); no test pins this tone."
         }
       ],
       "skills": {
