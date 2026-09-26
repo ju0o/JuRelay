@@ -8365,6 +8365,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-26: offline E2E and Korean Quickstart as the bounded acceptance target. README.md:112 '| `future-observedAt` | 관찰 시각이 지금보다 뒤예요. | 원본 컴퓨터의 시계를 확인하세요. |' has no CLI stderr test at base.",
           "title": "미래 시각이 찍힌 기록을 알려주기"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-FUTURE-OBSERVED-STEP",
+          "scope": "Add step 24, run_future_observed, to scripts/e2e.sh right after run_project_mismatch, with label '미래 시각 안내' and next command board. The step writes a temp juplan-status current.json for projectId 'ahead' whose observedAt is one hour ahead in UTC, then runs status-board on a one-entry registry. It passes only if the exit code is 0, the single row is 'ahead' with status READY, stale true and reason future-observedAt, and stderr is exactly the one line '프로젝트 1개 중 1개는 상태를 알 수 없어요: ahead(future-observedAt: 관찰 시각이 미래예요) — README 처음 쓰는 법의 reason 표를 보세요'. Also sync docs/getting-started.md (the example JSON line, the board-step list and a new bullet after run-project-mismatch) and the ordered step list in tests/e2e-script.test.mjs.",
+          "files": [
+            "scripts/e2e.sh",
+            "docs/getting-started.md",
+            "tests/e2e-script.test.mjs"
+          ],
+          "tests": [
+            "bash scripts/e2e.sh",
+            "node --test tests/e2e-script.test.mjs tests/e2e-docs-sync.test.mjs tests/e2e-failure-output.test.mjs tests/e2e-cleanup.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no runtime integration or new product behavior; scripts/status-board.mjs reasonWords already has 'future-observedAt': '관찰 시각이 미래예요', and done task JUCONTROLER-STATUS-CLI-FUTURE-OBSERVED-LINE-TEST covers only the CLI test"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-FUTURE-GENERATED-LINE-TEST",
+          "scope": "Add one offline test to tests/status-board-cli.test.mjs, modelled on 'names a source observed in the future with the plain-Korean future-observedAt reason'. It writes a juceipt-receipt current.json {receipt_id:'rcpt-ahead', acceptance:{state:'ACCEPTED'}, generated_at: one hour ahead in UTC} for projectId 'ahead' and runs status-board. It asserts exit code 0, the row ['ahead','ACCEPTED',true,'future-generated-at'], and stderr exactly '프로젝트 1개 중 1개는 상태를 알 수 없어요: ahead(future-generated-at: 영수증 generated_at이 미래예요) — README 처음 쓰는 법의 reason 표를 보세요\\n'. No source changes.",
+          "files": [
+            "tests/status-board-cli.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-board-cli.test.mjs",
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-26: make the existing offline E2E and Korean Quickstart the next bounded acceptance target, with no new product behavior; src/adapters/juceipt.mjs sets staleReason 'future-generated-at' when age < 0, and scripts/status-board.mjs reasonWords has 'future-generated-at': '영수증 generated_at이 미래예요', but no CLI or E2E test checks that line at base 2497e9d"
         }
       ],
       "qaRuntime": [
