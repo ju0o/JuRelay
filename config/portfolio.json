@@ -2490,6 +2490,23 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: item 6 — add a read-only list of received night reports (NIGHT_REPORT / LAST_NIGHT_RUN) to the control room, fetched through the existing controlRoom.ts ssh JSON path and tested with a fake command runner",
           "title": "밤새 작업 결과 확인하기"
+        },
+        {
+          "taskId": "AGENTRELAY-TRIM-NOISE-ALL-PAGES",
+          "scope": "AGENTRELAY-TRIM-NOISE cleaned 관제실 only; 승인 규칙 (approvals.tsx), 계획 (planStudio.tsx) and 작업 기록 still render an inner second title + description + 닫기 under the top bar title (MainPC capture 2026-09-26 22:54). Remove the inner duplicate head and 닫기 on those pages (the left rail navigates), keeping the one-line description only in the top bar. Test that each page renders no second h2 title and no 닫기 button.",
+          "files": [
+            "src/frontend/approvals.tsx",
+            "src/frontend/planStudio.tsx",
+            "src/frontend/App.tsx",
+            "test/trim-noise-all-pages.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-26 'Agent-Relay에 필요없는 정보들은 좀 정리' + '버그도 먼저 다 수정하고 고쳐'; MainPC Tester vchk0926 approvals.png",
+          "title": "승인 규칙·계획·작업 기록 화면도 제목 중복·닫기 버튼 정리"
         }
       ],
       "qaRuntime": [
