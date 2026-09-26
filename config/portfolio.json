@@ -7289,7 +7289,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 \"Deliverables: project identity and PM-channel mapping in Agent Relay; bounded task intake/result routing; lane status and Founder Gate packet mapping.\""
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 \"Deliverables: project identity and PM-channel mapping in Agent Relay; bounded task intake/result routing; lane status and Founder Gate packet mapping.\"",
+          "title": "결과와 검수 기록 한곳에 모으기"
         },
         {
           "taskId": "JUPLAN-AR-RETRY-BOUND",
@@ -7302,7 +7303,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:211 \"independent QA returns ACCEPT, REQUEST_CHANGES, or FOUNDER_GATE\""
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:211 \"independent QA returns ACCEPT, REQUEST_CHANGES, or FOUNDER_GATE\"",
+          "title": "같은 작업 재시도 3회로 제한"
         },
         {
           "taskId": "JUPLAN-AR-RESTART-RECONCILE",
@@ -7315,7 +7317,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:215 \"Required Evidence: exact SSOT/WBS task identity, Agent Relay Result Inbox record, Worker RESULT_PACKET, independent QA_PACKET, and restart/reconcile evidence.\""
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:215 \"Required Evidence: exact SSOT/WBS task identity, Agent Relay Result Inbox record, Worker RESULT_PACKET, independent QA_PACKET, and restart/reconcile evidence.\"",
+          "title": "재시작해도 중복 작업 방지"
         }
       ],
       "qaRuntime": [
@@ -9419,7 +9422,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts"
           ],
-          "ssotEvidence": "src/render/index.ts:31 (base 63df4dde) `p.cost_summary.currency === \"USD\" ? \"달러\" : p.cost_summary.currency === \"KRW\" ? \"원\" : p.cost_summary.currency ?? \"\"` falls through to a raw currency code; founder-ux skill rule #2: 'No developer text on the surface... enum words'"
+          "ssotEvidence": "src/render/index.ts:31 (base 63df4dde) `p.cost_summary.currency === \"USD\" ? \"달러\" : p.cost_summary.currency === \"KRW\" ? \"원\" : p.cost_summary.currency ?? \"\"` falls through to a raw currency code; founder-ux skill rule #2: 'No developer text on the surface... enum words'",
+          "title": "영수증 비용 표시 한글화"
         }
       ],
       "skills": {
@@ -11917,7 +11921,8 @@
           "tests": [
             "node --test tests/e2e-docs-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-27: docs/getting-started.md's giant sample JSON block 'is still a hand-transcribed doc quote, not run for real'; tests/e2e-docs-sync.test.mjs's real-run test asserts only Object.keys/projects/statuses/steps, never message/ok/schema values"
+          "ssotEvidence": "Founder direction 2026-09-27: docs/getting-started.md's giant sample JSON block 'is still a hand-transcribed doc quote, not run for real'; tests/e2e-docs-sync.test.mjs's real-run test asserts only Object.keys/projects/statuses/steps, never message/ok/schema values",
+          "title": "설명서 실행결과 값 일치 검사"
         }
       ],
       "qaRuntime": [
@@ -15290,7 +15295,8 @@
           "tests": [
             "node --test test/approvals-module.test.mjs"
           ],
-          "ssotEvidence": "founder/BACKLOG_POST_V1.md:23 quote, project/role label on the NEEDS YOU card itself"
+          "ssotEvidence": "founder/BACKLOG_POST_V1.md:23 quote, project/role label on the NEEDS YOU card itself",
+          "title": "확인 카드에 담당자 표시"
         }
       ],
       "skills": {
@@ -16236,7 +16242,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:181 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'; Founder direction 2026-09-27"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:181 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'; Founder direction 2026-09-27",
+          "title": "매칭 결과 미확정 기록 남기기"
         }
       ]
     },
@@ -18576,7 +18583,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:34-40 \"layout.mjs 서버 구조(역할·채널·포럼 태그·입장 질문·안내문)를 데이터로\""
+          "ssotEvidence": "README.md:34-40 \"layout.mjs 서버 구조(역할·채널·포럼 태그·입장 질문·안내문)를 데이터로\"",
+          "title": "채널 카테고리 오류 사전 점검"
         },
         {
           "taskId": "JUAI-CHECK-ONBOARDING-OPTIONS",
@@ -18587,7 +18595,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:34-40 \"setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)\""
+          "ssotEvidence": "README.md:34-40 \"setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)\"",
+          "title": "온보딩 질문 오류 사전 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
