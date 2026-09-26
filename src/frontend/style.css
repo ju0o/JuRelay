@@ -1902,6 +1902,57 @@ h1 { font-size: 22px; }
 .hub-promote .hub-note.err { color: var(--hub-warn); }
 .hub-promote pre { white-space: pre-wrap; word-break: break-all; max-width: 100%; }
 
+/* ── 설정 → 밤 작업 예약. 실패는 amber(살펴볼 일). 위험·데이터 손실만 다른 색. ── */
+.night-schedule {
+  --night-warn: var(--warn);
+  min-width: 0;
+  max-width: 100%;
+}
+.app[data-theme="light"] .night-schedule { --night-warn: #8a4b00; }
+.night-schedule h3 { margin: 0 0 8px; font-size: 18px; }
+.night-schedule p { font-size: 16px; color: inherit; margin: 2px 0; }
+.night-schedule .night-schedule-lead { margin: 4px 0 10px; color: var(--fg); }
+.night-schedule .night-schedule-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+}
+.night-schedule .night-schedule-time {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+.night-schedule input[type="time"] {
+  min-height: 44px;
+  min-width: 44px;
+  max-width: 100%;
+  padding: 0 12px;
+  font-size: 16px;
+  color: var(--fg);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.night-schedule .btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 16px;
+  font-size: 16px;
+}
+.night-schedule .inline-confirm p { font-size: 16px; }
+.night-schedule .inline-confirm-actions { flex-wrap: wrap; gap: 8px; }
+.night-schedule .night-schedule-list { margin: 8px 0 10px; padding-left: 1.2em; font-size: 16px; }
+.night-schedule .night-note { margin: 8px 0 0; font-size: 16px; flex-basis: 100%; }
+.night-schedule .night-note.ok { color: var(--accent); }
+.app[data-theme="light"] .night-schedule .night-note.ok { color: #0d6b5c; }
+.night-schedule .night-note.err { color: var(--night-warn); }
+.night-schedule summary { min-height: 44px; display: flex; align-items: center; }
+.night-schedule pre { white-space: pre-wrap; word-break: break-all; max-width: 100%; }
+
 /* ── 상단바: 작업 PC 연결 · 자동 실행 (amber = 살펴볼 일, red 아님) ── */
 .conn-cluster {
   --conn-attention: var(--warn);

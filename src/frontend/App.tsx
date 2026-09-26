@@ -1800,6 +1800,7 @@ function AppInner(): React.ReactElement {
               </div>
               <ProjectManager />
               <HubPromoteCard />
+              <NightScheduleCard />
               <div className="settings-section shell-advanced">
                 <button
                   type="button"
@@ -3033,6 +3034,225 @@ function HubPromoteCard(): React.ReactElement {
             <button className="btn" type="button" onClick={() => setConfirming(true)}>다시 시도</button>
           )}
           {rawView(note.raw)}
+        </div>
+      )}
+    </section>
+  );
+}
+
+/** 백엔드 `SCHEDULE_TIME_PATTERN`과 같은 HH:MM 규칙 (00:00–23:59). */
+const SCHEDULE_TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+/**
+ * 시각 입력값을 HH:MM으로 맞춘다. 초가 붙은 `HH:MM:SS`만 시:분으로 줄이고, 규칙은 그대로다.
+ * @param value 시간 입력값
+ * @returns 규칙을 통과한 HH:MM, 아니면 null
+ */
+function scheduleHm(value: string): string | null {
+  const trimmed = value.trim();
+  const withSeconds = /^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(trimmed);
+  const hm = withSeconds ? trimmed.slice(0, 5) : trimmed;
+  return SCHEDULE_TIME_PATTERN.test(hm) ? hm : null;
+}
+
+/**
+ * 예약 목록에서 끝나는 시각만 골라 낸다. ISO 시각·영문 JSON은 화면에 올리지 않는다.
+ * 목록 한 줄은 `HH:MM에 끝나도록 예약됨`.
+ * @param value controlRoom:scheduleList 응답
+ * @returns 중복 없는 HH:MM 목록
+ */
+function scheduleTimes(value: unknown): string[] {
+  const found: string[] = [];
+  const addText = (raw: string): void => {
+    const text = raw.trim();
+    if (SCHEDULE_TIME_PATTERN.test(text)) {
+      if (!found.includes(text)) found.push(text);
+      return;
+    }
+    if (/\d{4}-\d{2}-\d{2}/.test(text)) return;
+    const match = text.match(/(?:^|[\s=:])((?:[01]\d|2[0-3]):[0-5]\d)(?=$|[\s,.;])/);
+    if (match && !found.includes(match[1])) found.push(match[1]);
+  };
+  const add = (node: unknown): void => {
+    if (typeof node === 'string') {
+      addText(node);
+      return;
+    }
+    if (Array.isArray(node)) {
+      node.forEach(add);
+      return;
+    }
+    if (node && typeof node === 'object') collect(node);
+  };
+  const collect = (node: unknown): void => {
+    if (Array.isArray(node) || typeof node === 'string') {
+      add(node);
+      return;
+    }
+    if (!node || typeof node !== 'object') return;
+    const record = node as Record<string, unknown>;
+    for (const key of ['time', 'end', 'deadline', 'endTime', 'at', 'schedule', 'times', 'bookings', 'schedules', 'items', 'info']) {
+      if (Object.prototype.hasOwnProperty.call(record, key)) add(record[key]);
+    }
+  };
+  collect(value);
+  return found;
+}
+
+/**
+ * 설정 → 밤 작업 예약.
+ * [예약하기]는 HH:MM 검사 후 controlRoom:scheduleSet.
+ * [예약 취소]는 안전한 [그만두기]를 먼저 보여 준 뒤에만 controlRoom:scheduleCancel을 호출한다.
+ */
+function NightScheduleCard(): React.ReactElement {
+  const [time, setTime] = useState('');
+  const [bookings, setBookings] = useState<string[] | null>(null);
+  const [loadError, setLoadError] = useState<{ message: string; detail?: string } | null>(null);
+  const [confirming, setConfirming] = useState(false);
+  const [busy, setBusy] = useState<'book' | 'cancel' | null>(null);
+  const [bookNote, setBookNote] = useState<PmNote | null>(null);
+  const [cancelNote, setCancelNote] = useState<PmNote | null>(null);
+
+  async function load(): Promise<void> {
+    try {
+      setBookings(scheduleTimes(await must({ op: 'controlRoom:scheduleList' })));
+      setLoadError(null);
+    } catch (e) {
+      setLoadError({ message: pmMessage(e), detail: (e as { detail?: string })?.detail });
+    }
+  }
+  useEffect(() => { void load(); }, []);
+
+  async function book(): Promise<void> {
+    if (busy) return;
+    const picked = scheduleHm(time);
+    if (!picked) {
+      setBookNote({
+        kind: 'err',
+        lines: [
+          '예약하지 못했어요.',
+          '끝나는 시각은 00:00부터 23:59 사이, 시:분으로 골라 주세요.',
+          '시각을 고른 뒤 다시 시도해 주세요.',
+        ],
+      });
+      return;
+    }
+    setBusy('book');
+    setBookNote(null);
+    try {
+      const raw = await must({ op: 'controlRoom:scheduleSet', time: picked });
+      setBookNote({ kind: 'ok', lines: ['예약했어요 ✓'], raw: laneResultRaw(raw) });
+      await load();
+    } catch (e) {
+      const message = pmMessage(e);
+      setBookNote({
+        kind: 'err',
+        lines: laneErrorLines('예약하지', message),
+        raw: laneErrorRaw(message, (e as { detail?: string })?.detail),
+      });
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function cancel(): Promise<void> {
+    if (busy) return;
+    setBusy('cancel');
+    setConfirming(false);
+    setCancelNote(null);
+    try {
+      const raw = await must({ op: 'controlRoom:scheduleCancel' });
+      setCancelNote({ kind: 'ok', lines: ['취소했어요 ✓'], raw: laneResultRaw(raw) });
+      await load();
+    } catch (e) {
+      const message = pmMessage(e);
+      setCancelNote({
+        kind: 'err',
+        lines: laneErrorLines('취소하지', message),
+        raw: laneErrorRaw(message, (e as { detail?: string })?.detail),
+      });
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  const rawView = (raw?: string): React.ReactNode => raw && (
+    <details className="pm-raw">
+      <summary className="pm-raw-summary">원문 보기</summary>
+      <pre className="mono">{raw}</pre>
+    </details>
+  );
+
+  const noteView = (note: PmNote, onRetry: () => void): React.ReactElement => (
+    <div className={`night-note ${note.kind}`} role="status">
+      {note.lines.map((line, i) => <p key={i}>{line}</p>)}
+      {note.kind === 'err' && !confirming && (
+        <button className="btn" type="button" onClick={onRetry}>다시 시도</button>
+      )}
+      {rawView(note.raw)}
+    </div>
+  );
+
+  const lead = loadError
+    ? '예약 목록을 아직 못 봤어요. 아래에서 다시 시도해 주세요.'
+    : bookings === null
+      ? '예약된 밤 작업을 불러오는 중이에요.'
+      : bookings.length === 0
+        ? '예약된 밤 작업이 없어요 — 끝나는 시각을 골라 예약하세요'
+        : '예약된 시각에 밤 작업이 끝나요. 바꾸려면 시각을 고르고, 없애려면 예약 취소를 눌러 주세요.';
+  const showCancel = bookings !== null && bookings.length > 0 && !confirming && cancelNote?.kind !== 'err';
+
+  return (
+    <section className="settings-section night-schedule" aria-label="밤 작업 예약">
+      <h3>밤 작업 예약</h3>
+      <p className="night-schedule-lead">{lead}</p>
+      {loadError && (
+        <div className="night-note err" role="status">
+          {laneErrorLines('예약 목록을 불러오지', loadError.message).map((line, i) => <p key={i}>{line}</p>)}
+          <button className="btn" type="button" onClick={() => void load()}>다시 시도</button>
+          {rawView(laneErrorRaw(loadError.message, loadError.detail))}
+        </div>
+      )}
+      {bookings !== null && bookings.length > 0 && (
+        <ul className="night-schedule-list">
+          {bookings.map(hm => <li key={hm}>{`${hm}에 끝나도록 예약됨`}</li>)}
+        </ul>
+      )}
+      <div className="night-schedule-row">
+        <label className="night-schedule-time">
+          끝나는 시각
+          <input
+            type="time"
+            step={60}
+            value={time}
+            aria-label="끝나는 시각"
+            onChange={e => setTime(e.target.value)}
+          />
+        </label>
+        {bookNote?.kind !== 'err' && (
+          <button className="btn primary" type="button" disabled={busy !== null || confirming} onClick={() => void book()}>
+            {busy === 'book' ? '예약하는 중…' : '예약하기'}
+          </button>
+        )}
+        {bookNote && noteView(bookNote, () => void book())}
+      </div>
+      {(showCancel || confirming || cancelNote) && (
+        <div className="night-schedule-row">
+          {showCancel && (
+            <button className="btn" type="button" disabled={busy !== null} onClick={() => setConfirming(true)}>
+              {busy === 'cancel' ? '취소하는 중…' : '예약 취소'}
+            </button>
+          )}
+          {confirming && (
+            <div className="inline-confirm" role="group" aria-label="밤 작업 예약 취소">
+              <p>예약을 취소할까요? 취소하면 그 시각에 끝나도록 해 둔 밤 작업이 없어져요.</p>
+              <div className="inline-confirm-actions">
+                <button className="btn primary" type="button" onClick={() => setConfirming(false)}>그만두기</button>
+                <button className="btn" type="button" disabled={busy !== null} onClick={() => void cancel()}>이대로 취소</button>
+              </div>
+            </div>
+          )}
+          {cancelNote && noteView(cancelNote, () => void cancel())}
         </div>
       )}
     </section>
