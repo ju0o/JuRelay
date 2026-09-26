@@ -14499,6 +14499,54 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 'SSOT: README.md + lib.mjs/check.mjs (순수 로직 + 자체 점검)'; lib.mjs: 'Keywords from subs that appear in text (case-insensitive, spaces ignored)'",
           "title": "빈 입력에도 정확하게 찾기"
+        },
+        {
+          "taskId": "JUAI-CHECK-CHANNEL-FIELDS",
+          "scope": "Import CATEGORIES into check.mjs and add assertions only (layout.mjs stays as is): every channel's access is one of open/readonly/botsonly/private (the keys setup.mjs overwrites() maps), every type is one of text/forum/voice (the setup.mjs TYPE keys), every forum has a non-empty tags array with no duplicates, every CHANNELS entry's category equals its parent CATEGORIES name, and the lab channel topic includes LIMITS.daily.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "layout.mjs:16 \"access: \\\"open\\\" = everyone writes, \\\"readonly\\\" = only agents/staff post ..., \\\"botsonly\\\" = only the bots talk, \\\"private\\\" = staff + agents only\"; README.md:40 \"lib.mjs ... 순수 로직 (check.mjs로 점검)\""
+        },
+        {
+          "taskId": "JUAI-CHECK-DAILY-REJECT-NOBUMP",
+          "scope": "Add check.mjs assertions only (lib.mjs stays as is), on a fresh in-memory DB built from SCHEMA with customLimits-style limits (daily: 1): after a member uses their one allowed takeQuota, two later daily-rejected calls (spaced past gapMs) leave the member's usage count at 1 and the '*' global count at 1, while the 'reject:*' row for that day reaches count 2.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "lib.mjs:47 \"/** Per-member AI chat quota. Records the use only when allowed. */\""
+        },
+        {
+          "taskId": "JUAI-CHECK-ADMIN-PLAN-INPUT",
+          "scope": "Add check.mjs assertions only (lib.mjs stays as is) for validateAdminPlan input guards: null, a string and a plan without action all return null; a params value that is not an object (params: \"x\") is treated as empty so an answer plan returns null; a timeout plan with minutes given as the string \"30\" gets params.minutes === 30; a numeric param passes through as a number.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "lib.mjs:133-135 \"if (!plan || typeof plan !== \\\"object\\\" || !ADMIN_ACTIONS.includes(plan.action)) return null; const p = plan.params && typeof plan.params === \\\"object\\\" ? plan.params : {};\""
+        },
+        {
+          "taskId": "JUAI-CHECK-KV-SCALARS",
+          "scope": "Add check.mjs assertions only (db.mjs stays as is) in the existing kvDb block: kvSet/kvGet round-trips a string ('hello'), an empty string, 0, false, null and an array, so falsy and null values come back as stored and are never mistaken for a missing key (undefined).",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "db.mjs:22 \"export const kvGet = (db, key) => { const v = ...get(key)?.value; return v === undefined ? undefined : JSON.parse(v); };\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
