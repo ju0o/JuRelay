@@ -7277,6 +7277,45 @@
           ],
           "ssotEvidence": "packages/runtime/src/documents.ts renderApiMarkdown (~line 491-502) writes the raw ApiEndpoint method enum with no Korean label, unlike WBS_LEVEL_LABELS/QA_KIND_LABELS/EVENT_DIRECTION_LABELS/CONSTRAINT_KIND_LABELS/FEATURE_SCOPE_LABELS in the same file; Founder request 2026-09-25 13:08 (founder-ux audit of JuPlan Studio PRD/WBS screens)",
           "title": "요청 종류를 쉽게 확인하기"
+        },
+        {
+          "taskId": "JUPLAN-AR-RESULT-INBOX",
+          "scope": "Add a machine-readable Result Inbox record linking the authorized task, Worker RESULT_PACKET, and independent QA_PACKET lifecycle without changing JuPlan behavior.",
+          "files": [
+            "docs/agent-relay/result-inbox.json",
+            "packages/runtime/test/agent-relay-result-inbox.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 \"Deliverables: project identity and PM-channel mapping in Agent Relay; bounded task intake/result routing; lane status and Founder Gate packet mapping.\""
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-BOUND",
+          "scope": "Add a machine-readable retry policy manifest and offline validation for same-task retries, the three-attempt limit, HOLD after exhaustion, and no substitute task.",
+          "files": [
+            "docs/agent-relay/retry-policy.json",
+            "packages/runtime/test/agent-relay-retry-policy.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:211 \"independent QA returns ACCEPT, REQUEST_CHANGES, or FOUNDER_GATE\""
+        },
+        {
+          "taskId": "JUPLAN-AR-RESTART-RECONCILE",
+          "scope": "Add an offline restart and reconciliation manifest proving that in-flight JuPlan work is recovered without duplicate dispatch and ambiguous state is held fail-closed.",
+          "files": [
+            "docs/agent-relay/restart-reconcile.json",
+            "packages/runtime/test/agent-relay-restart-reconcile.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:215 \"Required Evidence: exact SSOT/WBS task identity, Agent Relay Result Inbox record, Worker RESULT_PACKET, independent QA_PACKET, and restart/reconcile evidence.\""
         }
       ],
       "qaRuntime": [
