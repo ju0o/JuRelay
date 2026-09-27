@@ -2659,13 +2659,16 @@
       "autoContinue": true,
       "skills": {
         "pm": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "worker": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "qa": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ]
       }
     },
@@ -4967,13 +4970,16 @@
       ],
       "skills": {
         "pm": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "worker": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "qa": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ]
       }
     },
@@ -7677,13 +7683,16 @@
       ],
       "skills": {
         "pm": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "worker": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "qa": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ]
       }
     },
@@ -9842,13 +9851,16 @@
       ],
       "skills": {
         "pm": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "worker": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "qa": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ]
       }
     },
@@ -12359,13 +12371,16 @@
       ],
       "skills": {
         "pm": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "worker": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "qa": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ]
       }
     },
@@ -15923,13 +15938,16 @@
       ],
       "skills": {
         "pm": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "worker": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ],
         "qa": [
-          "founder-ux"
+          "founder-ux",
+          "founder-gate-relay"
         ]
       }
     },
@@ -16867,7 +16885,21 @@
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:181 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'; Founder direction 2026-09-27",
           "title": "매칭 결과 미확정 기록 남기기"
         }
-      ]
+      ],
+      "skills": {
+        "pm": [
+          "founder-ux",
+          "founder-gate-relay"
+        ],
+        "worker": [
+          "founder-ux",
+          "founder-gate-relay"
+        ],
+        "qa": [
+          "founder-ux",
+          "founder-gate-relay"
+        ]
+      }
     },
     {
       "id": "jutell",
@@ -18384,7 +18416,21 @@
       ],
       "worktreeSetup": [
         "jutell connect opencode --yes"
-      ]
+      ],
+      "skills": {
+        "pm": [
+          "founder-ux",
+          "founder-gate-relay"
+        ],
+        "worker": [
+          "founder-ux",
+          "founder-gate-relay"
+        ],
+        "qa": [
+          "founder-ux",
+          "founder-gate-relay"
+        ]
+      }
     },
     {
       "id": "juai",
@@ -19282,7 +19328,21 @@
           "title": "가입 안내 문구 길이 지키기"
         }
       ],
-      "note": "lane added by night plan request 2026-09-25"
+      "note": "lane added by night plan request 2026-09-25",
+      "skills": {
+        "pm": [
+          "founder-ux",
+          "founder-gate-relay"
+        ],
+        "worker": [
+          "founder-ux",
+          "founder-gate-relay"
+        ],
+        "qa": [
+          "founder-ux",
+          "founder-gate-relay"
+        ]
+      }
     },
     {
       "id": "ai-agent-marketplace",
@@ -19687,7 +19747,21 @@
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
-      "autoContinue": true
+      "autoContinue": true,
+      "skills": {
+        "pm": [
+          "founder-ux",
+          "founder-gate-relay"
+        ],
+        "worker": [
+          "founder-ux",
+          "founder-gate-relay"
+        ],
+        "qa": [
+          "founder-ux",
+          "founder-gate-relay"
+        ]
+      }
     },
     {
       "id": "juradar",
@@ -19805,7 +19879,21 @@
           "title": "협찬 제안용 미디어 킷 자동 작성"
         }
       ],
-      "note": "lane added by Founder request 2026-09-25 night (final-structure build: WBS sections 6-8)"
+      "note": "lane added by Founder request 2026-09-25 night (final-structure build: WBS sections 6-8)",
+      "skills": {
+        "pm": [
+          "founder-ux",
+          "founder-gate-relay"
+        ],
+        "worker": [
+          "founder-ux",
+          "founder-gate-relay"
+        ],
+        "qa": [
+          "founder-ux",
+          "founder-gate-relay"
+        ]
+      }
     }
   ],
   "pool": {
