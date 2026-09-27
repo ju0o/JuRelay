@@ -12545,6 +12545,17 @@
           ],
           "ssotEvidence": "README.md:23-24 '규칙을 파일로 적어 두고 테스트로 모양을 확인합니다. 규칙은 아직 적어만 둔 상태입니다.' and README.md:147 '실제로 적용하는 코드는 없습니다' — currently true (no src/scripts references found) but unguarded by any test, per Founder direction 2026-09-26 (bounded acceptance target: no runtime integration or new product behavior)",
           "title": "작성만 된 규칙 상태 지키기"
+        },
+        {
+          "taskId": "JUCONTROLER-GETTING-STARTED-E2E-SAMPLE-SYNC",
+          "scope": "실제 bash scripts/e2e.sh를 실행해 docs/getting-started.md의 bash 결과 예시 JSON steps 배열이 실측 결과와 정확히 일치하는지 오프라인 검사한다.",
+          "files": [
+            "tests/e2e-docs-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-docs-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: docs/getting-started.md의 giant sample JSON steps 배열을 실제 실행 결과와 동기화하는 검사를 추가"
         }
       ],
       "qaRuntime": [
