@@ -25,7 +25,8 @@
     "test:night-reports": "node test/controlRoom.test.mjs && node test/tokens.test.mjs && node test/envs-panel.test.mjs",
     "test:controlroom-copy": "node test/controlroom-today.test.mjs && node test/controlroom-no-raw-ids.test.mjs && node test/controlroom-titles-today.test.mjs && node test/today-done-honest.test.mjs && node test/who-works-routing.test.mjs",
     "test:automation-ui": "node test/connection-state.test.mjs && node test/lovable-shell.test.mjs",
-    "test": "npm run test:fs && npm run test:vnext && npm run test:v03 && npm run test:v2 && npm run test:night-buttons && npm run test:plan-request && npm run test:night-reports && npm run test:controlroom-copy && npm run test:automation-ui && node test/standalone-no-hub.test.mjs && node test/oss-local-run.test.mjs",
+"test:controlroom-toggle": "node test/controlroom-automation-toggle.test.mjs && node test/controlroom-plain-2.test.mjs",
+    "test": "npm run test:fs && npm run test:vnext && npm run test:v03 && npm run test:v2 && npm run test:night-buttons && npm run test:plan-request && npm run test:night-reports && npm run test:controlroom-copy && npm run test:controlroom-toggle && npm run test:automation-ui && node test/standalone-no-hub.test.mjs && node test/oss-local-run.test.mjs",
     "pretest": "npm run build:server",
     "build:win": "vite build && tsc -p tsconfig.server.json && electron-builder --config electron.builder.yml"
   },
