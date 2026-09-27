@@ -10168,6 +10168,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "오늘 요청과 비용을 쉽게 보기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-ROLLBACK-PLAIN",
+          "scope": "In renderLevel1 of src/render/index.ts, stop copying presentation.rollback_summary.detail into the visible 되돌리기 방법 panel, and show the existing plain 해요체 rollback sentence instead, adding that computer-outside effects are not undone when a saved restore point exists, so Git commit and 관찰 범위 stay only inside 원문 보기.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — 영수증 보기에서 개발자 글자는 원문 보기 안으로"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-EMPTY-TITLE-LINE",
+          "scope": "In buildScanSummary of src/sources/summary.ts, replace the bare empty line 작업 제목이 없어요. with a plain 해요체 line that gives the reason and the next step, in the same style as the existing 먼저 볼 영수증 empty state.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — scan 출력의 빈 화면은 이유와 다음 행동을 말한다"
         }
       ],
       "skills": {
