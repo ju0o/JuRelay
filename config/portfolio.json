@@ -21003,6 +21003,17 @@
           ],
           "ssotEvidence": "QA findings + Supervisor 2026-09-27 R2 redesign",
           "title": "변경 목록이 잘렸음을 알리고 관련 검사만 실행"
+        },
+        {
+          "taskId": "JUTELL-CONFIRMED-RESULT-CODE-EXPECTATION-SEPARATION",
+          "scope": "확인된 검증 결과와 코드 예상이 한 보고서에서 서로 다른 근거·확인 상태로 분리되는지 검증하는 오프라인 테스트를 추가한다.",
+          "files": [
+            "tests/confirmed-result-code-expectation-separation.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/confirmed-result-code-expectation-separation.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-28: 확인된 결과와 코드 기반 예상의 분리에 대한 오프라인 테스트를 추가하고 테스트가 통과하면 완료"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
