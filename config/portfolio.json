@@ -16158,6 +16158,30 @@
           ],
           "ssotEvidence": "Founder-persona Tester review 2026-09-27 (persona file ~/.claude-team/skills/founder-persona/PERSONA.md; report TESTER_persona_20260927.md, headless captures of integration builds): 허브 불편·다듬기. Test: app.js에서 laneSkillsBlock 함수를 그대로 추출해 설치된 Skill 7개짜리 lane으로 렌더한 HTML이 '장착된 Skill 7개 · 바꾸기' 요약 문구를 담고, <details>로 접히지 않은 채 페이지에 즉시 노출되는 input[type=checkbox]가 0개인지 확인한다 — 기존 코드는 이 요약 문구가 없고 21개 체크박스가 항상 펼쳐진 채로 렌더되어 실패한다.",
           "title": "설치된 기능을 접어 화면을 깔끔하게 보기"
+        },
+        {
+          "taskId": "JCAPP-RESULT-SUMMARY-KOREAN",
+          "scope": "결과 카드 대표 문장에 남는 개발자 영어를 기존 Founder 요약 경로에서 정리하되 제품명·AI 이름은 보존하고 원문 보기는 유지한다.",
+          "files": [
+            "operator/public/app.js",
+            "test/results-recent.test.mjs"
+          ],
+          "tests": [
+            "node --test test/results-recent.test.mjs"
+          ],
+          "ssotEvidence": "founder/BACKLOG_POST_V1.md:21-24 \"Persona polish ... stray English words in result summaries\""
+        },
+        {
+          "taskId": "JCAPP-CONNECTION-DETAILS-ENTRY",
+          "scope": "기존 연결 진단 화면을 더보기에서 두 번 안에 열 수 있는 한국어 연결 상태 항목으로 연결하고 원문 개발 정보는 접힌 상태로 유지한다.",
+          "files": [
+            "operator/public/app.js",
+            "test/binding-honest.test.mjs"
+          ],
+          "tests": [
+            "node --test test/binding-honest.test.mjs"
+          ],
+          "ssotEvidence": "founder/BACKLOG_POST_V1.md:21-24 \"연결 세부 정보 reachable in ≥2 taps\""
         }
       ],
       "skills": {
