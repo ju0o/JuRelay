@@ -7485,6 +7485,41 @@
           ],
           "ssotEvidence": "Founder 2026-09-27: 'JuPlan 프로젝트도 \"개별적인\" 프로젝트지 -> JuControler 계획 탭에 말해달라고 하네. JuControler를 설치하지 않은 경우도 알아야함 … JuControler 안에도 \"연동프로그램 Agent-Relay 감지되었어요 연동할까요? JuPlan 연동할까요?\" 만약 없다면 \"설치할까요?\" … N누르면 -> 그 기능들은 빼고 되는 JuControler 그리고 각 버전마다 \"새로운 기능\" 등장하면 업데이트할까요? … 모든 것들은 오픈소스로 공개 되는 것도 염두해서 만들어야 함.' Test: with no hub configured no user-facing string contains 'JuControler'; with JUPLAN_HUB_URL set the hub sentence appears.",
           "title": "JuPlan 혼자 써도 되게: 'JuControler 계획 탭에 말해 주세요' 문구 고치기"
+        },
+        {
+          "taskId": "JUPLAN-DIAGRAMS-ARCHIFY-ADAPTER",
+          "scope": "docs/DIAGRAMS.md already reserves Archify as an optional renderer adapter. Add packages/renderer-archify: pure functions that convert the Planning IR (graph nodes/edges) into Archify-style typed specs for architecture, user flow/workflow and data flow, then render self-contained inline SVG with automatic layout (one clear main path, short side branches, orthogonal routed arrows, no overlapping labels, ≤12 primary nodes per view — split larger graphs into linked sub-views), dark/light themes. Port only what is needed from the MIT Archify skill at ~/.agents/skills/archify (renderers/, schemas/) and keep its notices in THIRD_PARTY_NOTICES.md. The Planning IR must not depend on Archify's schema. Existing renderer stays as fallback.",
+          "files": [
+            "packages/renderer-archify/src/index.ts",
+            "packages/renderer-archify/src/layout.ts",
+            "packages/renderer-archify/test/adapter.test.ts",
+            "packages/renderer-archify/package.json",
+            "THIRD_PARTY_NOTICES.md"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 \"비슷하게\" 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan은 그리고 JuCeipt는 백그라운드에서 오늘 \"내 AI 로그 기록 내용\" 수집 그리고 만들어주는거임' Test: a 9-node plan yields an SVG whose node boxes do not overlap, every edge endpoint touches its nodes, labels stay inside the canvas; a 30-node plan splits into linked views of ≤12 nodes.",
+          "title": "JuPlan 그림을 자연스럽게: Archify식 그리기 엔진 연결 (1/2)"
+        },
+        {
+          "taskId": "JUPLAN-DIAGRAMS-STUDIO-ARCHIFY",
+          "scope": "Use packages/renderer-archify for the Studio plan map and the architecture / user flow / data flow / screen flow / lifecycle views (remaining types may keep the old renderer). Studio shows the new SVG with fit/zoom, click a box → inspector with evidence; export the same SVG into .juplan/exports/diagrams/. Offline, no network, same output for the same plan.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/src/diagrams.ts",
+            "packages/runtime/test/studio-archify-diagrams.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 \"비슷하게\" 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan은 그리고 JuCeipt는 백그라운드에서 오늘 \"내 AI 로그 기록 내용\" 수집 그리고 만들어주는거임' Test: Studio page for a fixture plan embeds renderer-archify SVG for the 5 views, identical across two runs; export files exist.",
+          "dependsOn": [
+            "JUPLAN-DIAGRAMS-ARCHIFY-ADAPTER"
+          ],
+          "title": "JuPlan 그림을 자연스럽게: Studio에 새 그림 적용 (2/2)"
         }
       ],
       "qaRuntime": [
