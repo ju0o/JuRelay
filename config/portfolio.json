@@ -9625,6 +9625,38 @@
           ],
           "ssotEvidence": "src/render/index.ts:31 (base 63df4dde) `p.cost_summary.currency === \"USD\" ? \"달러\" : p.cost_summary.currency === \"KRW\" ? \"원\" : p.cost_summary.currency ?? \"\"` falls through to a raw currency code; founder-ux skill rule #2: 'No developer text on the surface... enum words'",
           "title": "영수증 비용 표시 한글화"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-BACKGROUND",
+          "scope": "JuCeipt's core job: on the user's own computer, in the background, collect today's logs from the AI agents installed there (Claude Code, Codex, OpenCode, Cline, Cursor, Grok … whichever exist) and produce today's receipts + a daily summary, without the user running commands. Add `juceipt schedule on|off|status`: registers a per-user OS scheduler entry (Linux systemd --user timer, Windows Task Scheduler, macOS launchd) that runs the existing memory-bounded scan for the day every 2 hours and a final daily summary at 23:30, writing .juceipt/daily/YYYY-MM-DD/ (receipts, SUMMARY.md, index.html). `init` asks once '매일 자동으로 모을까요?' (default yes). Local only: no network, auth/login paths skipped, token-like strings masked (existing rules). Agent Relay receipts stay an optional source, not the default framing. Remote machines are never scanned.",
+          "files": [
+            "src/cli/main.ts",
+            "src/schedule/index.ts",
+            "src/daily/index.ts",
+            "test/daily-background.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 \"비슷하게\" 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan은 그리고 JuCeipt는 백그라운드에서 오늘 \"내 AI 로그 기록 내용\" 수집 그리고 만들어주는거임' Test: schedule on writes the right unit/task definition per platform (mocked), off removes it; a daily run over fixture logs from two agents writes receipts + SUMMARY.md + index.html under today's folder and skips an auth path.",
+          "title": "JuCeipt: 매일 뒤에서 오늘의 AI 기록 모아 영수증 만들기"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-PAGE",
+          "scope": "`juceipt open` (and the daily index.html) shows today's page: left list of today's receipts newest first with verdict (받아도 됨 / 검토 필요 / 부분 / 실패 / 알 수 없음) and agent · time, '먼저 볼 것 N' at top; right the selected receipt (요청 · 받은 결과 · 빠진 확인 · 중요한 영향 · 받기 전 할 일 · 되돌리기 · 비용). Static local HTML, no server required, readable on phone width. Header line: '모든 기록은 이 컴퓨터 안에서만 읽어요'.",
+          "files": [
+            "src/render/today.ts",
+            "src/cli/main.ts",
+            "test/today-page.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 \"비슷하게\" 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan은 그리고 JuCeipt는 백그라운드에서 오늘 \"내 AI 로그 기록 내용\" 수집 그리고 만들어주는거임' Test: fixture day with 4 receipts renders list in time order with correct verdict labels and the 먼저 볼 것 count; no external URLs in the HTML.",
+          "dependsOn": [
+            "JUCEIPT-DAILY-BACKGROUND"
+          ],
+          "title": "JuCeipt: '오늘의 AI 영수증' 한 화면"
         }
       ],
       "skills": {
