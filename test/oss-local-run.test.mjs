@@ -34,7 +34,7 @@ import {
   runLocationSavedLine,
   runLocationSentence,
 } from '../dist/server/shared/projectManager.js';
-import { BRIDGE_ENV, FounderBridgeTransport, FounderInboxBridge, LocalFounderBridgeTransport, createFounderBridgeTransport, resolveBridgeLocation } from '../src/v2/founder-bridge/index.mjs';
+import { BRIDGE_ENV, FounderBridgeTransport, FounderInboxBridge, LocalFounderBridgeTransport, createFounderBridgeTransport, founderBridgeLaunchOptions, loadFounderBridgeConfig, resolveBridgeLocation } from '../src/v2/founder-bridge/index.mjs';
 
 const root = new URL('..', import.meta.url);
 const read = (file) => readFile(new URL(file, root), 'utf8');
@@ -47,7 +47,7 @@ const fakeExec = (stdout = '{}') => {
 
 describe('run location is a setting, not a code default', { concurrency: false }, () => {
   test('code defaults carry no alias, person, or PC path', async () => {
-    for (const file of ['src/backend/controlRoom.ts', 'src/shared/projectManager.ts', 'src/v2/founder-bridge/index.mjs', 'bridge/founder-bridge.mjs', 'bridge/install-founder-bridge.ps1', 'src/frontend/App.tsx']) {
+    for (const file of ['src/backend/controlRoom.ts', 'src/shared/projectManager.ts', 'src/v2/founder-bridge/index.mjs', 'bridge/founder-bridge.mjs', 'bridge/founder-gate-ui.mjs', 'bridge/install-founder-bridge.ps1', 'src/frontend/App.tsx']) {
       const source = await read(file);
       for (const banned of ["'asus'", '"asus"', 'skkse12', '/home/skkse12', 'ASUS']) {
         assert.equal(source.includes(banned), false, `${file} contains ${banned}`);
@@ -225,6 +225,40 @@ describe('failures are told apart per location', { concurrency: false }, () => {
 });
 
 describe('founder bridge location', { concurrency: false }, () => {
+  test('gate UI launch options default to this computer; config or env opts into ssh', async () => {
+    const empty = founderBridgeLaunchOptions({}, {});
+    assert.equal(empty.alias || '', '');
+    assert.equal(empty.remoteRoot || '', '');
+    assert.deepEqual(resolveBridgeLocation(empty, {}), { kind: 'local', alias: '', remoteRoot: '' });
+    assert.ok(createFounderBridgeTransport(resolveBridgeLocation(empty, {})) instanceof LocalFounderBridgeTransport);
+    const fromConfig = founderBridgeLaunchOptions({}, { kind: 'ssh', alias: 'work-pc', remoteRoot: '/srv/data', localInbox: '/inbox' });
+    assert.deepEqual(resolveBridgeLocation(fromConfig, {}), { kind: 'ssh', alias: 'work-pc', remoteRoot: '/srv/data' });
+    assert.equal(fromConfig.localInbox, '/inbox');
+    const legacy = founderBridgeLaunchOptions({ REMOTE_ALIAS: 'work-pc', REMOTE_DATA_ROOT: '/srv/data' }, {});
+    assert.equal(resolveBridgeLocation(legacy, {}).kind, 'ssh');
+    const envWins = founderBridgeLaunchOptions({ [BRIDGE_ENV.alias]: 'env-pc', [BRIDGE_ENV.dataRoot]: '/env/data' }, { alias: 'cfg-pc', remoteRoot: '/cfg/data' });
+    assert.equal(envWins.alias, 'env-pc');
+    assert.equal(envWins.remoteRoot, '/env/data');
+    assert.deepEqual(loadFounderBridgeConfig('/no/such/founder-bridge-config'), {});
+    const { mkdtemp, writeFile, rm } = await import('node:fs/promises');
+    const { tmpdir } = await import('node:os');
+    const { join } = await import('node:path');
+    const dir = await mkdtemp(join(tmpdir(), 'agent-relay-bridge-config-'));
+    try {
+      await writeFile(join(dir, 'founder-bridge.config.json'), '{"kind":"ssh","alias":"work-pc","remoteRoot":"/srv/data"}');
+      const loaded = founderBridgeLaunchOptions({}, loadFounderBridgeConfig(dir));
+      assert.deepEqual(resolveBridgeLocation(loaded, {}), { kind: 'ssh', alias: 'work-pc', remoteRoot: '/srv/data' });
+      await writeFile(join(dir, 'founder-bridge.config.json'), '{');
+      assert.deepEqual(loadFounderBridgeConfig(dir), {});
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+    const ui = await read('bridge/founder-gate-ui.mjs');
+    assert.match(ui, /founderBridgeLaunchOptions\(process\.env, loadFounderBridgeConfig\(/);
+    assert.match(ui, /founder-bridge\.config\.json/);
+    assert.doesNotMatch(ui, /\|\|\s*["'][^"']+["']/);
+  });
+
   test('no alias anywhere means this computer; alias in env means ssh', () => {
     assert.deepEqual(resolveBridgeLocation({}, {}), { kind: 'local', alias: '', remoteRoot: '' });
     assert.deepEqual(resolveBridgeLocation({}, { [BRIDGE_ENV.alias]: 'work-pc', [BRIDGE_ENV.dataRoot]: '/srv/data' }), { kind: 'ssh', alias: 'work-pc', remoteRoot: '/srv/data' });

@@ -2,6 +2,7 @@
 
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { copyFile, mkdir, open, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
 import { promisify } from "node:util";
@@ -32,6 +33,35 @@ export function resolveBridgeLocation({ kind, alias, remoteRoot } = {}, env = pr
   const pickedKind = (text(kind) || text(env[BRIDGE_ENV.kind]) || (pickedAlias ? "ssh" : "local")).toLowerCase();
   const ssh = (pickedKind === "ssh" || pickedKind === "remote") && SSH_ALIAS_PATTERN.test(pickedAlias);
   return { kind: ssh ? "ssh" : "local", alias: ssh ? pickedAlias : "", remoteRoot: pickedRoot };
+}
+
+/**
+ * 실행기(bridge, Founder Gate UI)가 읽는 위치.
+ * 환경 변수 → founder-bridge.config.json → 없으면 '이 컴퓨터'. 코드에 별칭·경로는 없다.
+ * 예전 이름(REMOTE_ALIAS, REMOTE_DATA_ROOT)도 환경 변수로만 인정한다.
+ * @param {Record<string, string | undefined>} [env]
+ * @param {Record<string, unknown>} [config]
+ */
+export function founderBridgeLaunchOptions(env = {}, config = {}) {
+  const source = env && typeof env === "object" ? env : {};
+  const cfg = config && typeof config === "object" && !Array.isArray(config) ? config : {};
+  return {
+    kind: source[BRIDGE_ENV.kind] || cfg.kind,
+    alias: source[BRIDGE_ENV.alias] || source.REMOTE_ALIAS || cfg.alias,
+    remoteRoot: source[BRIDGE_ENV.dataRoot] || source.REMOTE_DATA_ROOT || cfg.remoteRoot,
+    localInbox: source.LOCAL_INBOX || cfg.localInbox || `${source.USERPROFILE || source.HOME}/Desktop/FounderInbox`,
+    pollIntervalMs: Number(source.POLL_INTERVAL_MS || cfg.pollIntervalMs || 15000),
+  };
+}
+
+/** 실행기 옆의 founder-bridge.config.json. 없거나 깨져 있으면 {}. */
+export function loadFounderBridgeConfig(dir) {
+  try {
+    const parsed = JSON.parse(readFileSync(join(dir, "founder-bridge.config.json"), "utf8"));
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
 }
 
 /** 다른 컴퓨터(SSH)와 파일을 주고받는다. 별칭이 없으면 첫 호출에서 분명한 오류를 낸다. */
