@@ -2586,6 +2586,21 @@
           ],
           "ssotEvidence": "Founder choice 2026-09-27: Wire the existing controlRoom:automationOn/automationOff/automationStatus backend ops into a control-room UI toggle showing current on/off state, since the backend calls exist but no frontend button invokes them yet.",
           "title": "자동 실행을 켜고 끄기"
+        },
+        {
+          "taskId": "AGENTRELAY-STANDALONE-NO-HUB",
+          "scope": "src/frontend/App.tsx shows the 'JuControler 허브에 새 버전을 올리려면 반영하기' card unconditionally and src/shared/projectLabels.ts hardcodes the Founder's projects. Show the hub card only when a JuControler hub is detected/configured; project names/goals come from the user's project config (fallback: repo folder name), keeping the current table only as the local user's config file, not code defaults. Open-source rule: no Founder-specific paths, hosts, names or project lists in defaults — everything comes from detection or a user config file; missing companions must never cause errors.",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/shared/projectLabels.ts",
+            "test/standalone-no-hub.test.mjs"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'JuPlan 프로젝트도 \"개별적인\" 프로젝트지 -> JuControler 계획 탭에 말해달라고 하네. JuControler를 설치하지 않은 경우도 알아야함 … JuControler 안에도 \"연동프로그램 Agent-Relay 감지되었어요 연동할까요? JuPlan 연동할까요?\" 만약 없다면 \"설치할까요?\" … N누르면 -> 그 기능들은 빼고 되는 JuControler 그리고 각 버전마다 \"새로운 기능\" 등장하면 업데이트할까요? … 모든 것들은 오픈소스로 공개 되는 것도 염두해서 만들어야 함.' Test: without hub config the hub card model is hidden; an unknown project id gets its folder name as label.",
+          "title": "Agent Relay 혼자 써도 되게: 허브·내 프로젝트 이름 가정 빼기"
         }
       ],
       "qaRuntime": [
