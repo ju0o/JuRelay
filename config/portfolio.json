@@ -19215,6 +19215,18 @@
             "node --test tests/low-risk-still-test-parity.test.mjs"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:353 낮은 위험도라고 해서 테스트가 필요 없는 것은 아니다."
+        },
+        {
+          "taskId": "JUTELL-VERIFY-RECORD-FIELDS-PARITY-R2",
+          "scope": "From base c54c8ede48bcb55d7b5da53e0188c9b25768f3fd, add BEGINNER_REPORT_SPEC §10's four verification fields and the rule against dumping the full log as one bullet to report-format.md, with an offline node:test that fails on the base text and passes only when all five requirements are present.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/verify-record-fields-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/verify-record-fields-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:406 검증 결과에는 가능한 경우 다음을 함께 기록한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
