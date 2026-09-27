@@ -16517,6 +16517,31 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "멈춘 이유를 쉽게 안내"
+        },
+        {
+          "taskId": "JCAPP-ROLE-QA-KO",
+          "scope": "Show the qa role as 검사 on Founder surfaces (담당 line, team, skill agents, advanced role option) and in lib/roleGraph.mjs, and keep a busy qa role as 검토 중, without changing hold-card sentences or step keys.",
+          "files": [
+            "operator/public/app.js",
+            "lib/roleGraph.mjs",
+            "test/approvals-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/approvals-module.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JCAPP-JUPLAN-G4-KO",
+          "scope": "On the 계획 tab, change the G4 gate label from 작업·완료 기준·QA to 작업·완료 기준·검사 and update the two assertions that lock the old label.",
+          "files": [
+            "operator/public/app.js",
+            "test/juplan-module.test.mjs"
+          ],
+          "tests": [
+            "node --test test/juplan-module.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
