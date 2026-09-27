@@ -13041,6 +13041,28 @@
             "node --test tests/contract-source-field-sync.test.mjs"
           ],
           "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:163 Source fields read (all others are ignored):"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-FAILURE-MESSAGE-DOC-SYNC",
+          "scope": "docs/getting-started.md message 항목의 줄바꿈된 실패 예시를 한 줄로 이어 읽고, status-board가 종료 코드 1로 끝나는 실제 scripts/e2e.sh 조기 실패의 message와 같은지 오프라인으로 고정한다.",
+          "files": [
+            "tests/e2e-failure-message-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-failure-message-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:27 실패하면 처음 멈춘 단계를 알려 줍니다(예: `상태판 실행 단계에서 멈췄어요 — next의"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-STALE-MINUTES-SYNC",
+          "scope": "README 빠른 시작의 '그대로 두면 N분이 지난' 문장이 src/project-status.mjs 기본 freshnessMs와 같은 분 수를 쓰는지, 기존 기본 신선도 파서를 재사용해 오프라인으로 고정한다.",
+          "files": [
+            "tests/docs-default-freshness-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/docs-default-freshness-sync.test.mjs"
+          ],
+          "ssotEvidence": "README.md:67 그대로 두면 5분이 지난 오래된 상태로 보입니다."
         }
       ],
       "qaRuntime": [
