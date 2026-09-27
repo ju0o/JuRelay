@@ -19131,6 +19131,18 @@
           ],
           "ssotEvidence": "packages/cli/src/commands/context.ts:107-124 (MAX_FILES 초과 시 truncated=true) 및 :271-278 (gitSummary가 truncated를 노출하지 않음), BEGINNER_REPORT_SPEC.md §8.1 '확인됨은 확인한 범위에만 적용한다'",
           "title": "변경 목록이 잘리면 알려주기"
+        },
+        {
+          "taskId": "JUTELL-LOW-RISK-STILL-TEST-PARITY-R2",
+          "scope": "Add PRODUCT_SCOPE §6.7's sentence that a low risk level still needs tests as one line in risk-level-guide.md, plus tests/low-risk-still-test-parity.test.mjs so node --test tests/low-risk-still-test-parity.test.mjs fails on the base while that sentence is missing from the guide and passes once both files contain it.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/risk-level-guide.md",
+            "tests/low-risk-still-test-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/low-risk-still-test-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:353 낮은 위험도라고 해서 테스트가 필요 없는 것은 아니다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
