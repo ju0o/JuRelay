@@ -16182,6 +16182,19 @@
             "node --test test/binding-honest.test.mjs"
           ],
           "ssotEvidence": "founder/BACKLOG_POST_V1.md:21-24 \"연결 세부 정보 reachable in ≥2 taps\""
+        },
+        {
+          "taskId": "JCAPP-HOME-LEFTOVERS-0927",
+          "scope": "Tester capture of 0b2f875 (fresh state): (1) the token-leak card still says '할 일: 그 창에 /compact 입력 (또는 새 대화)' — JCAPP-NO-TYPING-PLAIN-WORDS missed it; replace with a [대화 줄이기] button that sends /compact through the existing actl path when actl is connected, otherwise one plain line without the command text; (2) the summary says '연동 안 된 프로그램 2개' while three '감지됐어요. 연동할까요?' cards are shown — use the same count; (3) section headings '지금 상황' and 'AI 창' render with nothing under them when their companion is not connected — hide the heading with the section.",
+          "files": [
+            "operator/public/app.js",
+            "test/home-leftovers-0927.test.mjs"
+          ],
+          "tests": [
+            "node --test test/home-leftovers-0927.test.mjs"
+          ],
+          "ssotEvidence": "Founder-persona rules (no typing commands; same numbers everywhere). Hub Tester run-20260927-1601. Test: token card model has no '/compact' text; unconnected count equals the number of connect cards; hidden companions produce no empty headings.",
+          "title": "허브 홈: 토큰 카드 '/compact 입력' 버튼으로 · 연동 안 됨 개수 맞추기 · 빈 제목 숨기기"
         }
       ],
       "skills": {
