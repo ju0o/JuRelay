@@ -7722,6 +7722,24 @@
             "JUPLAN-OFFLINE-PLAN-FROM-IDEA-FIX"
           ],
           "title": "JuPlan: 기존 폴더를 열면 계획이 끝까지 만들어지게"
+        },
+        {
+          "taskId": "JUPLAN-OFFLINE-PLAN-USES-ANSWERS",
+          "scope": "Verified 2026-09-27 after JUPLAN-OFFLINE-PLAN-FROM-IDEA-FIX: an offline plan for '동네 가게 예약' now uses the idea (12 nodes, no JuPlan/대표님), but it is shallow: duplicate labels ('동네 가게 예약 완성하기' ×2), one generic '화면', one generic '기록', and the idea sentence copied as a node. When .juplan/interview.json exists (JUPLAN-GUIDED-INTERVIEW), the offline planner must turn each answer into its own nodes — each 핵심 기능 → a feature (+ requirement, task, test), 첫 화면/화면 answers → separate screen nodes linked in a user flow, 저장할 데이터 answers → separate data entities (ERD tables) with relations, 쓰는 사람 → personas on the journey, 언제까지 → milestones on the WBS. Never emit two nodes with the same label; never use the raw idea sentence as a node label (summarize to a short name).",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/src/interview.ts",
+            "packages/runtime/test/offline-plan-uses-answers.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: new project = '어떤 프로젝트를 만드나요 이후 여러 질문 및 대화 후 기획해주는거고'. Test: interview answers {기능:[시간 선택 예약, 예약 알림, 결제], 화면:[예약하기, 예약 확인], 데이터:[손님, 예약, 가게]} → ≥3 feature nodes, ≥2 screen nodes, 3 data entities with relations in ERD; all labels unique; no label equals the idea sentence.",
+          "dependsOn": [
+            "JUPLAN-EXISTING-FOLDER-PLAN-COMPLETE"
+          ],
+          "title": "JuPlan: 대화 답이 계획 칸마다 들어가게 (기능·화면·데이터 따로)"
         }
       ],
       "qaRuntime": [
