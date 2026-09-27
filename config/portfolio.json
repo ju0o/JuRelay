@@ -7930,6 +7930,18 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:66 Workers execute only the declared files and tests. They do not widen scope, invent Product work, touch other repositories, or push.",
           "title": "허용된 범위 밖 변경을 차단"
+        },
+        {
+          "taskId": "JUPLAN-AR-TRANSPORT-HOLD-BASEFIX",
+          "scope": "`pnpm typecheck` already fails on the integration tip e32c003 before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output: \n> juplan@0.0.0 typecheck /home/skkse12/.local/share/AgentRelay/data/portfolio-execution/worktrees/juplan-juplan-ar-transport-hold-1790498988306\n> pnpm -r run typecheck\n\nScope: 5 of 6 workspace projects\npackages/diagram-engine typecheck$ tsc -p tsconfig.typecheck.json\npackages/plan-core typecheck$ tsc -p tsconfig.typecheck.json\npackages/diagram-engine typecheck: sh: 1: tsc: not found\n/home/skkse12/.local/share/AgentRelay/data/portfolio-execution/worktrees/juplan-juplan-ar-transport-hold-1790498988306/packages/diagram-engine:\n ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @juplan/diagram-engine@0.1.0 typecheck: `tsc -p tsconfig.typecheck.json`\nspawn ENOENT\n WARN   Local package.json exists, but node_modules missing, did you mean to install?\n ELIFECYCLE  Command failed with exit code 1.\n",
+          "files": [
+            "packages/runtime/test/agent-relay-transport-hold.test.ts"
+          ],
+          "tests": [
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "qaRuntime": [
