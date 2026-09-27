@@ -20746,6 +20746,58 @@
           ],
           "ssotEvidence": "README.md:49 서버 전체 하루 300회",
           "title": "하루 전체 질문 한도 안내"
+        },
+        {
+          "taskId": "JUAI-SUB-KEYWORD-LEN",
+          "scope": "Export SUB_KEYWORD_MIN 2 and SUB_KEYWORD_MAX 20 from lib.mjs, use them in bot.mjs subscribe() without changing behavior (reject under 2, store at most 20), and add one short clause interpolating those constants on the README member-commands line and the GUIDE and HELP subscription sentences.",
+          "files": [
+            "lib.mjs",
+            "bot.mjs",
+            "layout.mjs",
+            "README.md",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:331 \"구독할 단어를 2글자 이상 붙여주세요\" and bot.mjs:326 slice(0, 20); README.md:8 lists !구독 without that length limit"
+        },
+        {
+          "taskId": "JUAI-GUIDE-STAFF-EXEMPT",
+          "scope": "Add one short clause to GUIDE's existing AI-quota bullet, leaving the daily, globalDaily, and gap sentence unchanged, that the server owner and 운영진 have no daily AI-question cap, and assert that clause in check.mjs.",
+          "files": [
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 \"서버 주인(Founder)·운영진은 일일 제한 없음\"; layout.mjs:119 omits it"
+        },
+        {
+          "taskId": "JUAI-FEEDBACK-MIN",
+          "scope": "Export FEEDBACK_MIN 30 from lib.mjs, use it for bot.mjs's feedback-bonus length check and both GUIDE phrases that hardcode 30자, and assert those phrases include the constant.",
+          "files": [
+            "lib.mjs",
+            "bot.mjs",
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:130 \"m.content.length >= 30\"; layout.mjs:120 \"30자 이상 피드백\""
+        },
+        {
+          "taskId": "JUAI-CHECK-FORUM-TAG-CAP",
+          "scope": "Add check.mjs assertions only that every forum channel has at most 20 tags and every tag name is a non-empty string, matching the availableTags payload setup.mjs sends to Discord.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "setup.mjs:80 \"availableTags: ch.tags.map((name) => ({ name }))\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
