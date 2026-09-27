@@ -4991,6 +4991,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-27 09:40 on MainPC after opening JuActlBoard 8242078: '쉬운 용어들로 써진 건 좋은데, 그 -> 너무 유치함 조금 가독성 있게 디자인 좀 바꾸면 좋겠음'. Test: header/status strings are short labels (≤ 8 Korean chars each), no intro card by default. | First attempt held 2026-09-27: body font 14px violated founder-ux ≥16px; first-run guide test failed. PM redesign found no bounded fix; this R2 is hand-written.",
           "title": "보드 말투·디자인 덜 유치하게 (다시 — 글자 16px 유지)"
+        },
+        {
+          "taskId": "ACTL-OSS-LOCAL-DEFAULT-R2",
+          "scope": "In src/actl/gui.py, replace the hardcoded 'ASUS' wording in the loading/unreachable/empty messages and the connection-status text with generic non-host wording, leaving the SSH-detection logic untouched, and update the two existing tests that assert those literal strings.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_empty_error_states.py",
+            "tests/test_gui_unreachable_layout.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: '오픈소스용으로 공개 되는 것을 염두 … 내 환경인 ssh 연동 및 이런 건 선택사항인거임 일반 오픈소스 사용 하는 유저들은 그거 사용하지 않고 본인 컴퓨터 내에서만 사용할 수도 있음'. Canvas 'Ju 제품군 완성 설계' phase 2 (혼자 쓰기). Founder 2026-09-27 narrowing: 화면 문구만 먼저, 확인 절차는 그대로. Test in tests/test_gui_empty_error_states.py (5 asserts) + tests/test_gui_unreachable_layout.py: expect new non-ASUS wording for gui.py's loading/unreachable/empty/status messages — fails against unmodified base 8aa2994dc50a56a74dc25773b91445789456c01d, passes once gui.py wording changes."
         }
       ],
       "qaRuntime": [
