@@ -5109,7 +5109,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild)."
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "상태 확인이 멈추지 않아요"
         }
       ],
       "qaRuntime": [
@@ -10202,7 +10203,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — 영수증 보기에서 개발자 글자는 원문 보기 안으로"
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — 영수증 보기에서 개발자 글자는 원문 보기 안으로",
+          "title": "되돌리기 범위를 쉽게 알려줘요"
         },
         {
           "taskId": "JUCEIPT-SCAN-EMPTY-TITLE-LINE",
@@ -10214,7 +10216,8 @@
           "tests": [
             "npx vitest run tests/scan-summary.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — scan 출력의 빈 화면은 이유와 다음 행동을 말한다"
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — scan 출력의 빈 화면은 이유와 다음 행동을 말한다",
+          "title": "영수증 제목이 없을 때 다음 일을 알려줘요"
         }
       ],
       "skills": {
@@ -12911,7 +12914,8 @@
           "tests": [
             "node --test tests/docs-registry-fields-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:195 항목 칸은 projectId, workspaceRoot, dataRoot, sourceRef(필수)와 sourceKind, freshnessMs(선택)뿐입니다"
+          "ssotEvidence": "docs/getting-started.md:195 항목 칸은 projectId, workspaceRoot, dataRoot, sourceRef(필수)와 sourceKind, freshnessMs(선택)뿐입니다",
+          "title": "등록에 필요한 정보와 선택 정보를 안내해요"
         },
         {
           "taskId": "JUCONTROLER-REASON-EMITTERS-SYNC",
@@ -12922,7 +12926,8 @@
           "tests": [
             "node --test tests/reason-emitters-sync.test.mjs"
           ],
-          "ssotEvidence": "scripts/status-board.mjs:54 reasonWords[row.reason ?? 'stale'] ?? '표에 없는 이유예요'"
+          "ssotEvidence": "scripts/status-board.mjs:54 reasonWords[row.reason ?? 'stale'] ?? '표에 없는 이유예요'",
+          "title": "상태 변경 이유가 일관되게 표시돼요"
         }
       ],
       "qaRuntime": [
@@ -16630,7 +16635,8 @@
             "node --test test/lovable-env-panel.test.mjs",
             "node --test test/lovable-home-order.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "실행 환경 사용량을 쉽게 확인"
         },
         {
           "taskId": "JCAPP-RESULT-FOLD-KO",
@@ -16642,7 +16648,8 @@
           "tests": [
             "node --test test/results-recent.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "결과 기록을 쉽게 찾아보기"
         }
       ],
       "skills": {
@@ -20423,7 +20430,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:114 First JSON object in model output (models like to wrap it in prose or fences)."
+          "ssotEvidence": "lib.mjs:114 First JSON object in model output (models like to wrap it in prose or fences).",
+          "title": "잘못된 답변은 다시 찾지 않아요"
         },
         {
           "taskId": "JUAI-CHECK-REDACT-SECRET-BOUNDS",
@@ -20434,7 +20442,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다."
+          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다.",
+          "title": "비밀정보를 안전하게 가려요"
         },
         {
           "taskId": "JUAI-CHECK-ADMIN-WHITESPACE",
@@ -20445,7 +20454,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:48 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다."
+          "ssotEvidence": "README.md:48 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다.",
+          "title": "빈칸만 입력한 작업은 받지 않아요"
         },
         {
           "taskId": "JUAI-CHECK-GLOBAL-ONE-UNDER",
@@ -20456,7 +20466,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만, 1인 기본 하루 5회(피드백 보너스 최대 +3) · 30초 간격 · 서버 전체 하루 300회 · 서버 주인(Founder)·운영진은 일일 제한 없음."
+          "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만, 1인 기본 하루 5회(피드백 보너스 최대 +3) · 30초 간격 · 서버 전체 하루 300회 · 서버 주인(Founder)·운영진은 일일 제한 없음.",
+          "title": "하루 전체 사용량을 정확히 제한해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
