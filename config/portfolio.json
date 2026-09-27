@@ -13007,6 +13007,28 @@
           ],
           "ssotEvidence": "scripts/status-board.mjs:54 reasonWords[row.reason ?? 'stale'] ?? '표에 없는 이유예요'",
           "title": "상태 변경 이유가 일관되게 표시돼요"
+        },
+        {
+          "taskId": "JUCONTROLER-CONTRACT-REASON-TABLE-SYNC",
+          "scope": "Add one offline test that each adapter reason table in PROJECT_STATUS_CONTRACT.md lists the same set of reason strings that adapter emits, without changing adapters or product behavior.",
+          "files": [
+            "tests/contract-reason-table-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-reason-table-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:111 `reason` values:"
+        },
+        {
+          "taskId": "JUCONTROLER-CONTRACT-SOURCE-FIELD-SYNC",
+          "scope": "Add one offline test that the JuPlan and JuCeipt source-field tables, default projectId values, and source id templates in PROJECT_STATUS_CONTRACT.md match the adapter source, without changing adapters.",
+          "files": [
+            "tests/contract-source-field-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-source-field-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:163 Source fields read (all others are ignored):"
         }
       ],
       "qaRuntime": [
