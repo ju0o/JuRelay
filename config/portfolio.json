@@ -17648,6 +17648,28 @@
           ],
           "ssotEvidence": "docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md:7 Note: This milestone line reflects the state when the handoff was issued; PM_STATUS_BOARD.md now shows M2 GO with M3 active.",
           "title": "다음 실행 단계와 결정 상태 안내"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-P0-M2-CURRENT-B1-SYNC",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md only, rewrite the §2.1 line-62 check that still says M2 is the current milestone so it matches M2 GO and M3 as the active milestone with the join still undecided, and replace the bare BLOCKED state on the two B1 rows (reconciliation line 30 and master row line 42) with the GTM join-gap wording, without recording M3 GO, DEFER, or KILL.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27-28 Active product milestone is M3 — Daily Agent Value Decision and product decision is M2 GO; docs/business/GROWTH_MONETIZATION_GTM.md:339 B1 state is BLOCKED — M2 GO (A-14) met; waiting on the M3 decision (0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED)"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-B0-B1-STATE-SYNC",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html, change only the B0 gate state cell from DEPENDENCY to ACTIVE — M2 GO (A-14) and the B1 gate state cell from BLOCKED to the GTM join-gap blocked wording; do not edit the hero paragraph and do not record an M3 decision.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:199 B0 state is ACTIVE — M2 GO (A-14); docs/business/GROWTH_MONETIZATION_GTM.md:338-339 B0 is ACTIVE — M2 GO (A-14) and B1 is blocked because 0 Founder seven-task rows join both artifacts and the mapping is UNDECIDED"
         }
       ],
       "skills": {
