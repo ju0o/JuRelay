@@ -18410,6 +18410,18 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "필요한 용어만 쉽게 설명"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-Q-INTERNAL-CHANGE-CHECKS",
+          "scope": "Add a tests/results/scenario-q report fixture and offline node:test for PRODUCT_SCOPE §10.2's 보조 시나리오 (내부 기능 변경), checking its 6 확인 항목: 화면 변화/입력 검증 변화 구분, 용어를 필요한 범위에서만 설명, 특정 기능만 수정됐는지 설명, 관련 테스트 실행 여부 명시, 기존 기능에 대한 영향 설명, 위험도와 근거의 일관성.",
+          "files": [
+            "tests/results/scenario-q/internal-change.fixture.md",
+            "tests/results/scenario-q/internal-change.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-q/internal-change.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:603 '### 10.2 보조 시나리오 — 내부 기능 변경'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
