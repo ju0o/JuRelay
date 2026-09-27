@@ -15696,6 +15696,40 @@
             "JCAPP-INTEGRATIONS-GATED-MODULES"
           ],
           "title": "허브: 개인 주소·경로·프로젝트 목록 기본값 빼기"
+        },
+        {
+          "taskId": "JCAPP-PERSONA-TESTER",
+          "scope": "Add lib/personaTester.mjs: after a Tester run (lib/testerRuns.mjs captures), load the active persona markdown (path from .jucontroler-state/personas/active.json) and build a review request: the persona text + each tab's screenshot path + extracted visible text, asking for findings in the persona's own report format (화면 · 본 것 · 기대 · 심각도 막힘/불편/다듬기, final '오케이 승인 가능' or '아직 — 막힘 N개'). Run it through the existing AI runtime used for directives (whatever runtime is configured; none configured → skip with a plain Korean line). Save results to .jucontroler-state/persona-reviews/<run>.json and show them under 진행 → 시험 결과 as '페르소나 검토' with the 막힘 count. Findings can be turned into a WBS draft only with the user's confirm. Open-source rule: the repo ships only a neutral template persona (docs/personas/example.md); a user's own persona file lives in their local config (.jucontroler-state/personas/, gitignored) and is never uploaded.",
+          "files": [
+            "lib/personaTester.mjs",
+            "lib/testerRuns.mjs",
+            "operator/public/app.js",
+            "docs/personas/example.md",
+            "test/persona-tester.test.mjs"
+          ],
+          "tests": [
+            "node --test test/persona-tester.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: '지금까지 대화 기반으로 나를 페르소나로 만든 Tester도 돌리면 좋을 거 같음 (이거는 나중에 JuControler 에 들어가는 슈퍼바이저 및 테스터의 페르소나)'. First persona written locally at ~/.claude-team/skills/founder-persona/PERSONA.md (private; never in the repo). Test with a stub runtime: request contains persona text + screenshot paths; parsed findings saved with 막힘 count; no persona configured → skipped line, no runtime call; the repo contains no .jucontroler-state/personas files.",
+          "title": "허브: 사용자 페르소나로 화면을 검토하는 Tester"
+        },
+        {
+          "taskId": "JCAPP-PERSONA-SUPERVISOR",
+          "scope": "The Supervisor (lib/supervisor-loop.mjs / directive dispatch) reads the same active persona and uses its 'Decision habits' section when auto-picking HOLD choices and phrasing questions: prefer the recommended option, never re-ask decided things, escalate only the categories the persona lists as escalation-only. Show on each auto-decision one line '페르소나 기준: <rule>'. No persona → current behaviour. Open-source rule: the repo ships only a neutral template persona (docs/personas/example.md); a user's own persona file lives in their local config (.jucontroler-state/personas/, gitignored) and is never uploaded.",
+          "files": [
+            "lib/supervisor-loop.mjs",
+            "lib/directiveDispatch.mjs",
+            "lib/personaTester.mjs",
+            "test/persona-supervisor.test.mjs"
+          ],
+          "tests": [
+            "node --test test/persona-supervisor.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: '지금까지 대화 기반으로 나를 페르소나로 만든 Tester도 돌리면 좋을 거 같음 (이거는 나중에 JuControler 에 들어가는 슈퍼바이저 및 테스터의 페르소나)'. First persona written locally at ~/.claude-team/skills/founder-persona/PERSONA.md (private; never in the repo). Test: with a persona whose habits say 'auto-pick recommended; escalate payments', a HOLD with a recommended option is auto-picked with the rule line, a payment-category gate is escalated; without persona behaviour is unchanged.",
+          "dependsOn": [
+            "JCAPP-PERSONA-TESTER"
+          ],
+          "title": "허브: Supervisor가 사용자 페르소나로 결정 (추천안 자동 선택 기준)"
         }
       ],
       "skills": {
