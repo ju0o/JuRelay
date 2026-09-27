@@ -11290,7 +11290,8 @@
           "tests": [
             "npx vitest run tests/pipeline.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "되돌리기 안내를 쉽게 보여줘"
         }
       ],
       "skills": {
@@ -14130,7 +14131,8 @@
           "tests": [
             "node --test tests/quickstart-registry-example.test.mjs"
           ],
-          "ssotEvidence": "README.md:61 \"status\": \"READY\""
+          "ssotEvidence": "README.md:61 \"status\": \"READY\"",
+          "title": "상태판에 프로젝트 정보가 맞게 보여요"
         },
         {
           "taskId": "JUCONTROLER-CONTRACT-EXAMPLE-STALE",
@@ -14141,7 +14143,8 @@
           "tests": [
             "node --test tests/contract-example-run.test.mjs"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:38 \"stale\": false"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:38 \"stale\": false",
+          "title": "최신 상태가 정상으로 표시돼요"
         }
       ],
       "qaRuntime": [
@@ -19184,7 +19187,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 No GO / DEFER / KILL decision is recorded."
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 No GO / DEFER / KILL decision is recorded.",
+          "title": "결정을 임의로 정하지 않아요"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-M3-STATE-NOT-HOLD",
@@ -19195,7 +19199,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 ACTIVE — integrated 10-task Daily Value summary; 10/10 receipts at 402d3ee; validation register complete; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED; decision pending"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 ACTIVE — integrated 10-task Daily Value summary; 10/10 receipts at 402d3ee; validation register complete; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED; decision pending",
+          "title": "검토 중인 상태를 보여줘요"
         }
       ],
       "skills": {
@@ -21070,7 +21075,8 @@
           "tests": [
             "node --test tests/confirmed-result-code-expectation-separation.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-28: 확인된 결과와 코드 기반 예상의 분리에 대한 오프라인 테스트를 추가하고 테스트가 통과하면 완료"
+          "ssotEvidence": "Founder direction 2026-09-28: 확인된 결과와 코드 기반 예상의 분리에 대한 오프라인 테스트를 추가하고 테스트가 통과하면 완료",
+          "title": "확인한 결과와 예상한 내용을 구분해요"
         },
         {
           "taskId": "JUTELL-GLOSSARY-CONTEXT-ROLE-PARITY",
@@ -21082,7 +21088,8 @@
           "tests": [
             "node --test tests/glossary-context-role-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:93 코드 구조상 검색 기능에 사용되는 Route로 예상되지만, 전체 연결 관계는 확인하지 못했습니다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:93 코드 구조상 검색 기능에 사용되는 Route로 예상되지만, 전체 연결 관계는 확인하지 못했습니다.",
+          "title": "확인 안 된 역할은 예상으로 안내해요"
         },
         {
           "taskId": "JUTELL-FEATURE-CENTERED-FILES-PARITY",
@@ -21094,7 +21101,8 @@
           "tests": [
             "node --test tests/feature-centered-files-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:426 파일은 해당 기능과 함께 설명한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:426 파일은 해당 기능과 함께 설명한다.",
+          "title": "파일을 어떤 기능인지 함께 알려줘요"
         },
         {
           "taskId": "JUTELL-GLOSSARY-OFF-OMIT-PARENS-PARITY",
@@ -21106,7 +21114,8 @@
           "tests": [
             "node --test tests/glossary-off-omit-parens-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:932 쉬운 용어 괄호 설명만 생략한다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:932 쉬운 용어 괄호 설명만 생략한다.",
+          "title": "쉬운 말 설명을 끄면 괄호를 빼요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -22493,7 +22502,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:38-41 \"setup.mjs 그 구조를 서버에 적용\" 및 \"lib.mjs ... check.mjs로 점검\""
+          "ssotEvidence": "README.md:38-41 \"setup.mjs 그 구조를 서버에 적용\" 및 \"lib.mjs ... check.mjs로 점검\"",
+          "title": "역할 없는 답만 자유대화, 역할은 방 없이"
         },
         {
           "taskId": "JUAI-CHECK-MENTOR-CAP-EDGES",
@@ -22504,7 +22514,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:20 \"입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와\""
+          "ssotEvidence": "README.md:20 \"입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와\"",
+          "title": "실무자 알림은 한도까지, 적으면 그대로"
         },
         {
           "taskId": "JUAI-GUIDE-TALK-SLOTS",
@@ -22518,7 +22529,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:105 하루 3번 주제 하나로 수다를 떨어요"
+          "ssotEvidence": "layout.mjs:105 하루 3번 주제 하나로 수다를 떨어요",
+          "title": "안내 글의 하루 수다 횟수를 실제와 같게"
         },
         {
           "taskId": "JUAI-CHECK-NAME-MAX",
@@ -22529,7 +22541,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "setup.mjs:79 name: ch.name"
+          "ssotEvidence": "setup.mjs:79 name: ch.name",
+          "title": "역할, 분류, 방 이름을 100자 안으로"
         },
         {
           "taskId": "JUAI-CHECK-CHUNK-DEFAULT",
@@ -22540,7 +22553,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:109 export function chunk(text, max = 1900)"
+          "ssotEvidence": "lib.mjs:109 export function chunk(text, max = 1900)",
+          "title": "채팅에 들어가는 글은 통째로, 긴 글은 나눠요"
         },
         {
           "taskId": "JUAI-CHECK-BESTFAQ-MIN-HIT",
@@ -22551,7 +22565,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:169 if (s >= score) { best = r; score = s; }"
+          "ssotEvidence": "lib.mjs:169 if (s >= score) { best = r; score = s; }",
+          "title": "기준만큼 비슷한 질문도 예전 답을 보여요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
