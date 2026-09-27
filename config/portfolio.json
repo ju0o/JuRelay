@@ -22724,6 +22724,56 @@
           ],
           "ssotEvidence": "bot.mjs:355 trim().slice(0, 100); README.md:8 봇수다 주제는 4자 이상·1인 대기 2개까지",
           "title": "대화 주제 길이 기준 안내"
+        },
+        {
+          "taskId": "JUAI-HELP-DM-QUOTA",
+          "scope": "Add the same short clause already on GUIDE's DM bullet, 하루 질문 횟수 공유, to HELP_TEXT's matching DM bullet that now ends at 공개가 부담스러울 때, and assert HELP_TEXT includes that phrase.",
+          "files": [
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:164 • 그냥 질문을 보내면 1:1로 답해요 (공개가 부담스러울 때)"
+        },
+        {
+          "taskId": "JUAI-README-DM-QUOTA",
+          "scope": "Add one short clause to README's member-commands line stating that an OpenCode personal message shares the daily AI quota, matching bot.mjs DM_HELP, and assert that phrase in check.mjs.",
+          "files": [
+            "README.md",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:207 • 그냥 질문을 보내면 여기서 바로 답해요 (하루 질문 횟수 공유)"
+        },
+        {
+          "taskId": "JUAI-GUIDE-BADGE-MIN",
+          "scope": "Export BADGE_MIN 3 and BADGE_TOP 3 from lib.mjs, use them in bot.mjs monthlyBadge's count minimum and LIMIT without changing who qualifies, add one short clause to GUIDE's existing 피드백 장인 sentence naming that minimum, and assert the sentence includes both constants.",
+          "files": [
+            "lib.mjs",
+            "bot.mjs",
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:979 count>=3 ORDER BY count DESC LIMIT 3"
+        },
+        {
+          "taskId": "JUAI-PLAYGROUND-TOPIC-LIMITS",
+          "scope": "Add the existing talk-topic minimum, maximum, and pending cap to the #봇-놀이터 topic that already tells members to use !봇수다, using TALK_TOPIC_MIN, TALK_TOPIC_MAX, and TALK_PENDING_MAX, and assert the topic includes them.",
+          "files": [
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:41 topic: AI 봇 4명만 대화하는 곳 (구경 전용). 주제 신청: 아무 채널에서 !봇수다 주제"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
