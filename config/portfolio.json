@@ -22137,6 +22137,56 @@
           ],
           "ssotEvidence": "README.md:8 키워드 구독은 2~20글자, 최대 5개",
           "title": "검색어 앞뒤 공백을 정리해줘요"
+        },
+        {
+          "taskId": "JUAI-ANON-MIN",
+          "scope": "Export ANON_MIN 5 from lib.mjs, use it in bot.mjs for the anonymous-question length check and the too-short reply, add one short clause naming that minimum on the existing !익명 lines in GUIDE, HELP_TEXT, and DM_HELP, and assert in check.mjs that the GUIDE and HELP_TEXT clauses include ANON_MIN.",
+          "files": [
+            "lib.mjs",
+            "bot.mjs",
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:236 if (question.length < 5)"
+        },
+        {
+          "taskId": "JUAI-TALK-LIMITS",
+          "scope": "Export TALK_TOPIC_MIN 4 and TALK_PENDING_MAX 2 from lib.mjs, use them in bot.mjs requestTalk for the topic-length check, the waiting-request cap, and both replies, add one short clause naming both limits on the existing !봇수다 lines in GUIDE and HELP_TEXT, and assert those clauses include both constants.",
+          "files": [
+            "lib.mjs",
+            "bot.mjs",
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:358 topic.length < 4; bot.mjs:359 n >= 2"
+        },
+        {
+          "taskId": "JUAI-CHECK-DELETE-MSG-BLANK",
+          "scope": "Add check.mjs assertions only, leaving lib.mjs unchanged, that validateAdminPlan returns null for delete_messages when channel is missing or whitespace-only, and that a surrounding-padded channel is trimmed while an omitted last still defaults to 20.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:146 delete_messages requires channel"
+        },
+        {
+          "taskId": "JUAI-CHECK-SCHEMA-COLUMNS",
+          "scope": "Add check.mjs assertions only, leaving db.mjs unchanged, on the existing in-memory database built from SCHEMA, that each table's columns are usage user_id/day/count/last_at, kv key/value, cards id/kind/payload/status/message_id/remind_at/created_at, picks repo/day, answers msg_id/asker/question/answer/url/model/at, votes msg_id/user_id/vote/at, faq id/source/question/answer/url/at, talk_requests id/user_id/topic/at/used, subs user_id/keyword, and profiles user_id/sns/making/github/message_id/updated_at.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "db.mjs:5 CREATE TABLE IF NOT EXISTS usage(user_id TEXT, day TEXT, count INTEGER, last_at INTEGER, PRIMARY KEY(user_id, day))"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
