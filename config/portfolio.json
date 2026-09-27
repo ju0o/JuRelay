@@ -15892,6 +15892,19 @@
             "JCAPP-NUMBERS-AGREE-EVERYWHERE"
           ],
           "title": "허브: 직접 입력 없애기·개발 용어 정리"
+        },
+        {
+          "taskId": "JCAPP-PERSONA-TESTER-R2",
+          "scope": "Add lib/personaTester.mjs exporting loadActivePersona (reads .jucontroler-state/personas/active.json and its markdown, or a skip signal when none is set) and buildReviewRequest (persona text + lib/testerRuns.mjs run headings/results only, no screenshots or capture files) to produce just the persona review-request text, with docs/personas/example.md as the neutral template persona used by the test.",
+          "files": [
+            "lib/personaTester.mjs",
+            "docs/personas/example.md",
+            "test/persona-tester.test.mjs"
+          ],
+          "tests": [
+            "node --test test/persona-tester.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: '지금까지 대화 기반으로 나를 페르소나로 만든 Tester도 돌리면 좋을 거 같음 (이거는 나중에 JuControler 에 들어가는 슈퍼바이저 및 테스터의 페르소나)'. First persona written locally at ~/.claude-team/skills/founder-persona/PERSONA.md (private; never in the repo). Founder 2026-09-27 narrowed the rework to the review request only, no screen saving. Test: buildReviewRequest's output contains the persona text and each stub run's heading/result with no screenshot path; loadActivePersona with no active.json returns the skip signal; the repo ships only docs/personas/example.md, no .jucontroler-state/personas files."
         }
       ],
       "skills": {
