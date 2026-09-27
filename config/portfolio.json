@@ -22367,6 +22367,28 @@
           ],
           "ssotEvidence": "setup.mjs:155 default_channel_ids passed to Discord onboarding; README.md:28 setup creates the join questions",
           "title": "안내 공간을 안전하게 확인해요"
+        },
+        {
+          "taskId": "JUAI-CHECK-ONBOARDING-ROUTING",
+          "scope": "check.mjs에 입장 질문의 역할 선택은 채널을 만들지 않고 역할 없는 선택만 자유대화 채널로 보내는 setup.mjs 매핑을 검증한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:38-41 \"setup.mjs 그 구조를 서버에 적용\" 및 \"lib.mjs ... check.mjs로 점검\""
+        },
+        {
+          "taskId": "JUAI-CHECK-MENTOR-CAP-EDGES",
+          "scope": "check.mjs에 capMentors의 기본 상한 경계와 빈 목록·상한 이하 입력 보존을 검증한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:20 \"입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
