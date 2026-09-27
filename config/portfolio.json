@@ -12466,6 +12466,28 @@
           ],
           "ssotEvidence": "tests/e2e-docs-sync.test.mjs test 2 compares doc next text only against scripts/e2e.sh source text (string match), while tests/e2e-failure-output.test.mjs only real-executes 2 of 54 steps; Founder direction 2026-09-27 asks the steps/next JSON block to be verified for real like offline-acceptance-sync.test.mjs did for the 5 checklist commands",
           "title": "전체 단계 안내 정확성 검사"
+        },
+        {
+          "taskId": "JUCONTROLER-README-ROLE-ORDER-SYNC",
+          "scope": "Add an assertion to tests/contract-role-order-sync.test.mjs that checks README.md's 'PM → Worker → QA → Tester' line matches the same docs/integration/ai-assignment.schema.json role enum already checked against docs/getting-started.md",
+          "files": [
+            "tests/contract-role-order-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-role-order-sync.test.mjs"
+          ],
+          "ssotEvidence": "README.md:130 'Agent Relay (셋톱박스: PM → Worker → QA → Tester)' has no matching test; tests/contract-role-order-sync.test.mjs (base ccfbe8486212daf34109f709a57880dcc2c15fde) only reads docs/getting-started.md's 역할(...) string, never README.md"
+        },
+        {
+          "taskId": "JUCONTROLER-README-CONTRACT-TOPICS-SYNC",
+          "scope": "Add an assertion to tests/contract-files-table-sync.test.mjs that checks README.md's 'AI 운영 규칙 파일' bullet's four topics (AI 자동 배정, Skill 장착, 승인한 기억, Tester 권한) appear as an order-preserving subsequence of docs/getting-started.md's 약속(계약) 파일 table '담긴 규칙' column",
+          "files": [
+            "tests/contract-files-table-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-files-table-sync.test.mjs"
+          ],
+          "ssotEvidence": "README.md:23 'AI 운영 규칙 파일 — AI 자동 배정, Skill 장착, 승인한 기억, Tester 권한' vs docs/getting-started.md '약속(계약) 파일' table rows (AI 자동 배정→ai-assignment.v1.json, Skill 장착→skill-attachment.v1.json, 승인한 기억→approved-memory.v1.json, Tester 역할→tester-harness.schema.json), base ccfbe8486212daf34109f709a57880dcc2c15fde; tests/contract-files-table-sync.test.mjs only checks file existence, never reads README.md"
         }
       ],
       "qaRuntime": [
