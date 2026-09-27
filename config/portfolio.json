@@ -15423,6 +15423,72 @@
           ],
           "ssotEvidence": "founder/BACKLOG_POST_V1.md:23 quote, project/role label on the NEEDS YOU card itself",
           "title": "확인 카드에 담당자 표시"
+        },
+        {
+          "taskId": "JCAPP-INTEGRATIONS-DETECT",
+          "scope": "New lib/integrations.mjs: detect each companion — Agent Relay, JuPlan, JuCeipt, actl, Tester — by its CLI on PATH / its data dir / a configured path, returning {id, name, installed, version, connected, how}. The user's choices (connect / later / never) live in .jucontroler-state/integrations.json. Add GET /api/integrations and POST /api/integrations/:id {decision}. No UI yet. Open-source rule: no Founder-specific paths, hosts, names or project lists in defaults — everything comes from detection or a user config file; missing companions must never cause errors.",
+          "files": [
+            "lib/integrations.mjs",
+            "operator/server.mjs",
+            "test/integrations-detect.test.mjs"
+          ],
+          "tests": [
+            "node --test test/integrations-detect.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'JuPlan 프로젝트도 \"개별적인\" 프로젝트지 -> JuControler 계획 탭에 말해달라고 하네. JuControler를 설치하지 않은 경우도 알아야함 … JuControler 안에도 \"연동프로그램 Agent-Relay 감지되었어요 연동할까요? JuPlan 연동할까요?\" 만약 없다면 \"설치할까요?\" … N누르면 -> 그 기능들은 빼고 되는 JuControler 그리고 각 버전마다 \"새로운 기능\" 등장하면 업데이트할까요? … 모든 것들은 오픈소스로 공개 되는 것도 염두해서 만들어야 함.' Test with fake PATH/dirs: installed+version found, missing ones reported installed:false, decisions persist.",
+          "title": "허브: 연동 프로그램 찾기 (Agent Relay·JuPlan·JuCeipt·actl·Tester)"
+        },
+        {
+          "taskId": "JCAPP-INTEGRATIONS-ASK",
+          "scope": "In operator/public (더보기 → '연동 프로그램', and once on first run on 홈): for each detected-but-undecided companion show '<name>이(가) 감지됐어요. 연동할까요? [연동] [나중에] [안 함]'; for a missing one '<name>이(가) 없어요. 설치할까요?' with [설치 방법 보기] (repo link + one copyable install command) and [안 함]. Nothing installs silently. Choices POST to /api/integrations. Open-source rule: no Founder-specific paths, hosts, names or project lists in defaults — everything comes from detection or a user config file; missing companions must never cause errors.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/integrations-ask.test.mjs"
+          ],
+          "tests": [
+            "node --test test/integrations-ask.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'JuPlan 프로젝트도 \"개별적인\" 프로젝트지 -> JuControler 계획 탭에 말해달라고 하네. JuControler를 설치하지 않은 경우도 알아야함 … JuControler 안에도 \"연동프로그램 Agent-Relay 감지되었어요 연동할까요? JuPlan 연동할까요?\" 만약 없다면 \"설치할까요?\" … N누르면 -> 그 기능들은 빼고 되는 JuControler 그리고 각 버전마다 \"새로운 기능\" 등장하면 업데이트할까요? … 모든 것들은 오픈소스로 공개 되는 것도 염두해서 만들어야 함.' Test: card model per state (detected/undecided → connect question, missing → install question, never → no card).",
+          "dependsOn": [
+            "JCAPP-INTEGRATIONS-DETECT"
+          ],
+          "title": "허브: '감지됐어요, 연동할까요?' / '없어요, 설치할까요?' 카드"
+        },
+        {
+          "taskId": "JCAPP-INTEGRATIONS-GATED-MODULES",
+          "scope": "Every module that depends on a companion (relay board / 진행 rails, JuPlan chat+status on 계획, JuCeipt receipts, Tester runs, actl panes/AI 창) checks the integration state: not connected → the tab/card is hidden or collapsed to one line '<name> 연동 안 됨 · 연동하기', and its APIs are not called. The hub must start and render with zero companions. Open-source rule: no Founder-specific paths, hosts, names or project lists in defaults — everything comes from detection or a user config file; missing companions must never cause errors.",
+          "files": [
+            "operator/public/app.js",
+            "operator/server.mjs",
+            "lib/integrations.mjs",
+            "test/integrations-gated.test.mjs"
+          ],
+          "tests": [
+            "node --test test/integrations-gated.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'JuPlan 프로젝트도 \"개별적인\" 프로젝트지 -> JuControler 계획 탭에 말해달라고 하네. JuControler를 설치하지 않은 경우도 알아야함 … JuControler 안에도 \"연동프로그램 Agent-Relay 감지되었어요 연동할까요? JuPlan 연동할까요?\" 만약 없다면 \"설치할까요?\" … N누르면 -> 그 기능들은 빼고 되는 JuControler 그리고 각 버전마다 \"새로운 기능\" 등장하면 업데이트할까요? … 모든 것들은 오픈소스로 공개 되는 것도 염두해서 만들어야 함.' Test: with all integrations off the home/tab models contain no companion modules and no companion API is requested; turning one on brings only its module back.",
+          "dependsOn": [
+            "JCAPP-INTEGRATIONS-ASK"
+          ],
+          "title": "허브: 연동 안 한 기능은 빼고 동작"
+        },
+        {
+          "taskId": "JCAPP-INTEGRATIONS-UPDATES",
+          "scope": "For JuControler itself and each connected companion, compare the installed version with the newest version tag in its configured source repo (the repo URL in the integration config, read via the public tags API); offline, private repo or any error → silent, check at most once a day. When newer: card '<name> <new version> — 새 기능: <first 3 changelog lines> · 업데이트할까요? [업데이트 방법] [나중에] [이 버전 건너뛰기]'. Never auto-update; [업데이트 방법] shows the app's own update command. Open-source rule: no Founder-specific paths, hosts, names or project lists in defaults — everything comes from detection or a user config file; missing companions must never cause errors.",
+          "files": [
+            "lib/integrations.mjs",
+            "operator/public/app.js",
+            "test/integrations-updates.test.mjs"
+          ],
+          "tests": [
+            "node --test test/integrations-updates.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'JuPlan 프로젝트도 \"개별적인\" 프로젝트지 -> JuControler 계획 탭에 말해달라고 하네. JuControler를 설치하지 않은 경우도 알아야함 … JuControler 안에도 \"연동프로그램 Agent-Relay 감지되었어요 연동할까요? JuPlan 연동할까요?\" 만약 없다면 \"설치할까요?\" … N누르면 -> 그 기능들은 빼고 되는 JuControler 그리고 각 버전마다 \"새로운 기능\" 등장하면 업데이트할까요? … 모든 것들은 오픈소스로 공개 되는 것도 염두해서 만들어야 함.' Test with a stubbed version fetcher: newer → card with notes, same → none, fetch error → none, skipped version → none.",
+          "dependsOn": [
+            "JCAPP-INTEGRATIONS-GATED-MODULES"
+          ],
+          "title": "허브: '새 기능 나왔어요, 업데이트할까요?'"
         }
       ],
       "skills": {
