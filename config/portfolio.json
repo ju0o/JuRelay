@@ -9939,6 +9939,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 '비슷하게' 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan",
           "title": "오늘 영수증을 한눈에 확인"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-TWO-PANE",
+          "scope": "Capture 2026-09-27 of renderTodayList (integration, sample fixtures): a single column of cards (title · '확인 후 받기' · agent/time · [받음] [되돌리기 방법 보기] · 원문 보기); the receipt's actual content is only inside 원문 보기. Match the approved canvas prototype (juceipt-Prototype): left column = today's list (verdict label, title, agent · time, 먼저 볼 것 N at top, '자동 수집 켜짐 · 마지막 HH:MM' when scheduled); right = the selected receipt shown in full without expanding: 판정 한 문장 (colored), 요청한 것, 받은 결과, 빠진 확인 N건, 중요한 영향, 받기 전 할 일 N건, 되돌리기, 비용 (unknown → '기록에 없음'), then 원문 보기 collapsed; [받음] [되돌리기 방법 보기] on the right pane. First item selected by default; clicking a list row switches the right pane (static HTML + small inline script, no server). Stacks to one column on phone width. Also: when the receipts are not from today, the heading says the real date range instead of '오늘'.",
+          "files": [
+            "src/render/today.ts",
+            "test/today-two-pane.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: JuCeipt = '백그라운드에서 오늘 내 AI 로그 기록 내용 수집 그리고 만들어주는거임'; canvas J8PhuaGiuEBcHVMox7fv6J juceipt-Prototype is the target. Test: two fixture receipts → HTML has a list with 2 rows and a detail pane containing 요청한 것/받은 결과/되돌리기/비용 of the first receipt; receipts dated 9월 5–6 are not headed '오늘'.",
+          "title": "JuCeipt 오늘 영수증: 목록 + 고른 영수증 내용 한 화면 (시안대로)"
         }
       ],
       "skills": {
