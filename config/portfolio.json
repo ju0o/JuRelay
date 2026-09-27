@@ -14205,7 +14205,8 @@
           "tests": [
             "node --test tests/getting-started-stale-pair-run.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:239 reason이 stale이나 source-stale이면"
+          "ssotEvidence": "docs/getting-started.md:239 reason이 stale이나 source-stale이면",
+          "title": "오래된 상태를 쉽게 확인"
         },
         {
           "taskId": "JUCONTROLER-GUIDE-TABLE-NEEDS-ACTION-PAIR-RUN",
@@ -14216,7 +14217,8 @@
           "tests": [
             "node --test tests/getting-started-needs-action-pair-run.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:240 위 줄 아래에 한 줄 더 나옵니다(human-gate·hold)"
+          "ssotEvidence": "docs/getting-started.md:240 위 줄 아래에 한 줄 더 나옵니다(human-gate·hold)",
+          "title": "지금 필요한 조치를 한눈에"
         }
       ],
       "qaRuntime": [
@@ -19309,7 +19311,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation.",
+          "title": "통과해도 다음 단계는 열리지 않아요"
         }
       ],
       "skills": {
@@ -21275,7 +21278,8 @@
           "tests": [
             "node --test tests/one-final-answer-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:170 기술 보고서와 비개발자용 보고서를 따로 생성하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:170 기술 보고서와 비개발자용 보고서를 따로 생성하지 않는다.",
+          "title": "최종 답변만으로도 쉽게 이해"
         },
         {
           "taskId": "JUTELL-SIMPLE-WORK-KINDS-PARITY",
@@ -21287,7 +21291,8 @@
           "tests": [
             "node --test tests/simple-work-kinds-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:120 * 문구 변경"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:120 * 문구 변경",
+          "title": "간단한 작업 종류를 한눈에"
         },
         {
           "taskId": "JUTELL-MAIN-FILE-OVERFLOW-PARITY",
@@ -21299,7 +21304,8 @@
           "tests": [
             "node --test tests/main-file-overflow-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:275 * 주요 파일 최대 5개: 역할과 변경 이유를 설명"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:275 * 주요 파일 최대 5개: 역할과 변경 이유를 설명",
+          "title": "변경된 파일을 쉽게 파악"
         },
         {
           "taskId": "JUTELL-NO-UNRELATED-GLOSSARY-PARITY",
@@ -21311,7 +21317,8 @@
           "tests": [
             "node --test tests/no-unrelated-glossary-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:298 프로젝트와 무관한 일반 개발 지식을 길게 설명하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:298 프로젝트와 무관한 일반 개발 지식을 길게 설명하지 않는다.",
+          "title": "불필요한 개발 용어 없이 이해"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -22816,7 +22823,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:164 • 그냥 질문을 보내면 1:1로 답해요 (공개가 부담스러울 때)"
+          "ssotEvidence": "layout.mjs:164 • 그냥 질문을 보내면 1:1로 답해요 (공개가 부담스러울 때)",
+          "title": "개인 메시지로 질문 횟수 안내"
         },
         {
           "taskId": "JUAI-README-DM-QUOTA",
@@ -22828,7 +22836,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:207 • 그냥 질문을 보내면 여기서 바로 답해요 (하루 질문 횟수 공유)"
+          "ssotEvidence": "bot.mjs:207 • 그냥 질문을 보내면 여기서 바로 답해요 (하루 질문 횟수 공유)",
+          "title": "개인 메시지로 하루 질문량 안내"
         },
         {
           "taskId": "JUAI-GUIDE-BADGE-MIN",
@@ -22842,7 +22851,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:979 count>=3 ORDER BY count DESC LIMIT 3"
+          "ssotEvidence": "bot.mjs:979 count>=3 ORDER BY count DESC LIMIT 3",
+          "title": "피드백 장인 선정 기준 안내"
         },
         {
           "taskId": "JUAI-PLAYGROUND-TOPIC-LIMITS",
@@ -22854,7 +22864,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:41 topic: AI 봇 4명만 대화하는 곳 (구경 전용). 주제 신청: 아무 채널에서 !봇수다 주제"
+          "ssotEvidence": "layout.mjs:41 topic: AI 봇 4명만 대화하는 곳 (구경 전용). 주제 신청: 아무 채널에서 !봇수다 주제",
+          "title": "놀이터 대화 이용 기준 안내"
         },
         {
           "taskId": "JUAI-README-ANON-DM",
@@ -22866,7 +22877,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 \"!익명 질문\""
+          "ssotEvidence": "README.md:8 \"!익명 질문\"",
+          "title": "개인 메시지에서 익명 제보 안내"
         },
         {
           "taskId": "JUAI-CHECK-BONUS-NOGLOBAL",
@@ -22877,7 +22889,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 \"서버 전체 하루 300회\""
+          "ssotEvidence": "README.md:49 \"서버 전체 하루 300회\"",
+          "title": "보너스 지급 내역 안전하게 확인"
         },
         {
           "taskId": "JUAI-SPAM-RULES",
@@ -22891,7 +22904,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:14 \"스팸 관리\""
+          "ssotEvidence": "README.md:14 \"스팸 관리\"",
+          "title": "반복 글을 막고 운영진은 예외 처리"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
