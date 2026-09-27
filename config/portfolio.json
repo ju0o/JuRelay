@@ -19161,6 +19161,28 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation.",
           "title": "추가 결정과 실행 권한을 명확히 함"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-CHECKBOX-NO-INFER",
+          "scope": "In BUSINESS_PRODUCT_WBS.md §4.3, rewrite only the still-open GO/DEFER/KILL checkbox so it says the M3 decision is not recorded and must not be inferred, because 0 of 7 Founder register rows join both a Claude final and a Receipt.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 No GO / DEFER / KILL decision is recorded."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-M3-STATE-NOT-HOLD",
+          "scope": "On the canonical map, change only the M3 gate-state Korean label from 멈춤 to 진행 중 while keeping the pending-decision facts and the English under 원문 보기, so it matches the WBS ACTIVE state without recording GO, DEFER, or KILL.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 ACTIVE — integrated 10-task Daily Value summary; 10/10 receipts at 402d3ee; validation register complete; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED; decision pending"
         }
       ],
       "skills": {
