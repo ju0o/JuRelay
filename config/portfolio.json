@@ -18897,6 +18897,54 @@
           ],
           "ssotEvidence": "packages/cli/src/commands/context.ts:107-124 (MAX_FILES 초과 시 truncated=true) 및 :271-278 (gitSummary가 truncated를 노출하지 않음), BEGINNER_REPORT_SPEC.md §8.1 '확인됨은 확인한 범위에만 적용한다'",
           "title": "변경 목록이 잘렸음을 알려줍니다"
+        },
+        {
+          "taskId": "JUTELL-LOW-RISK-STILL-TEST-PARITY",
+          "scope": "Add PRODUCT_SCOPE §6.7's sentence that a low risk level still needs tests as one line in risk-level-guide.md, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/risk-level-guide.md",
+            "tests/low-risk-still-test-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/low-risk-still-test-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:353 낮은 위험도라고 해서 테스트가 필요 없는 것은 아니다."
+        },
+        {
+          "taskId": "JUTELL-VERIFY-RECORD-FIELDS-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §10's four verification fields (실행한 명령, 확인 범위, 실패 개수, 실행하지 못한 이유) and the rule against dumping the full log as one bullet in report-format.md, plus an offline node:test.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/verify-record-fields-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/verify-record-fields-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:406 검증 결과에는 가능한 경우 다음을 함께 기록한다."
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-T-COULD-NOT-RUN",
+          "scope": "Add a scenario-t general-work fixture where a needed check exists but could not run because of a missing tool or permission, with 검증 결과 starting with 실행하지 못함 and 보고서 상태 작업 보류, plus an offline node:test for the six §4 headings.",
+          "files": [
+            "tests/results/scenario-t/could-not-run.fixture.md",
+            "tests/results/scenario-t/could-not-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-t/could-not-run.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:396 도구, 권한, 설정 또는 환경 문제로 실행하지 못했다."
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-TERM-COUNT-CAP-PARITY",
+          "scope": "Add GLOSSARY_POLICY §3.3's simple-report cap of three term explanations, including the security exception, as one sentence in glossary-ko.md's opening paragraph, plus an offline node:test.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-term-count-cap-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-term-count-cap-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:62 단순 작업 보고서에서는 설명할 용어를 최대 3개까지 우선한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
