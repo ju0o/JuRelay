@@ -16410,6 +16410,30 @@
           ],
           "ssotEvidence": "Founder-persona rules (no typing commands; same numbers everywhere). Hub Tester run-20260927-1601. Test: token card model has no '/compact' text; unconnected count equals the number of connect cards; hidden companions produce no empty headings.",
           "title": "허브 홈: 토큰 카드 '/compact 입력' 버튼으로 · 연동 안 됨 개수 맞추기 · 빈 제목 숨기기"
+        },
+        {
+          "taskId": "JCAPP-CHAT-STATUS-NO-UNKNOWN",
+          "scope": "In conversationStatus, stop printing the English word UNKNOWN on the 대화 status line and use the existing Korean fallback 상태 확인 필요 for any unmapped state, including a missing state.",
+          "files": [
+            "operator/public/app.js",
+            "test/conversation-detail-fields.test.mjs"
+          ],
+          "tests": [
+            "node --test test/conversation-detail-fields.test.mjs"
+          ],
+          "ssotEvidence": "docs/operator-surface/HOME_SCREEN_SPEC.md:18 Human-facing cards use concise Korean state labels. Exact IDs, UUIDs, long English, and raw JSON remain available in details drill-down blocks."
+        },
+        {
+          "taskId": "JCAPP-HOLD-SENTENCE-NO-QA",
+          "scope": "Change only the hold-card fallback surface sentence from QA가 멈춘 이유 to 검사가 멈춘 이유, and leave the 원문 보기 raw reason and any board-supplied explain.sentence unchanged.",
+          "files": [
+            "operator/public/app.js",
+            "test/hold-card-no-endless-explaining.test.mjs"
+          ],
+          "tests": [
+            "node --test test/hold-card-no-endless-explaining.test.mjs test/hold-card.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
