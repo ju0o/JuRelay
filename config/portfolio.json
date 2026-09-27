@@ -14195,6 +14195,28 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: Founder choice 2026-09-28 — Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table.",
           "title": "시작 안내와 상태판이 늘 같아요"
+        },
+        {
+          "taskId": "JUCONTROLER-GUIDE-TABLE-STALE-PAIR-RUN",
+          "scope": "Add one offline test that reads the unknown-summary row of the docs/getting-started.md 상태판 안내 문장 table and asserts scripts/status-board.mjs prints that sentence for one registry with a freshness-stale project then a source-stale project, filling the glosses from reasonWords.",
+          "files": [
+            "tests/getting-started-stale-pair-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-stale-pair-run.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:239 reason이 stale이나 source-stale이면"
+        },
+        {
+          "taskId": "JUCONTROLER-GUIDE-TABLE-NEEDS-ACTION-PAIR-RUN",
+          "scope": "Add one offline test that reads the all-read and needs-action rows of the docs/getting-started.md 상태판 안내 문장 table and asserts scripts/status-board.mjs prints them as two stderr lines for one Agent Relay board with a hold lane and a human-gate lane, filling the glosses from reasonWords.",
+          "files": [
+            "tests/getting-started-needs-action-pair-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-needs-action-pair-run.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:240 위 줄 아래에 한 줄 더 나옵니다(human-gate·hold)"
         }
       ],
       "qaRuntime": [
