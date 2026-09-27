@@ -15529,6 +15529,27 @@
             "JCAPP-INTEGRATIONS-GATED-MODULES"
           ],
           "title": "허브: '새 기능 나왔어요, 업데이트할까요?'"
+        },
+        {
+          "taskId": "JCAPP-OSS-NO-PERSONAL-DEFAULTS",
+          "scope": "Code defaults hold the Founder's setup: JUCONTROL_OPERATOR_HOST default 100.82.108.31 in scripts/operator-serve.sh, promote-operator.sh, resume.sh (operator-serve refuses 127.0.0.1); /home/skkse12 paths in operator/server.mjs RELAY_ROOT, lib/resultsProjection.mjs, lib/state.mjs (bridge, actl binary, sqlite), lib/juplanStatus.mjs, lib/juceiptReceipts.mjs, scripts/work-status.sh; app.js PROJECT_NAMES and STUDIO_RUNTIME_LABELS hardcoded. Defaults become 127.0.0.1 and detected/configured paths (via lib/integrations.mjs); project names come from the board data. The live Founder hub keeps its Tailscale host via the systemd unit's Environment=. The Founder's own setup must keep working unchanged through explicit config/env (set it in his local config, not in code defaults).",
+          "files": [
+            "scripts/operator-serve.sh",
+            "operator/server.mjs",
+            "lib/state.mjs",
+            "lib/juplanStatus.mjs",
+            "lib/juceiptReceipts.mjs",
+            "operator/public/app.js",
+            "test/oss-no-personal-defaults.test.mjs"
+          ],
+          "tests": [
+            "node --test test/oss-no-personal-defaults.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: '오픈소스용으로 공개 되는 것을 염두 … 내 환경인 ssh 연동 및 이런 건 선택사항인거임 일반 오픈소스 사용 하는 유저들은 그거 사용하지 않고 본인 컴퓨터 내에서만 사용할 수도 있음'. Canvas 'Ju 제품군 완성 설계' phase 2 (혼자 쓰기). Test: grep-style check that lib/, operator/ and scripts/ contain no '/home/skkse12' and no '100.82.108.31' outside comments; unknown project ids render via projectName().",
+          "dependsOn": [
+            "JCAPP-INTEGRATIONS-GATED-MODULES"
+          ],
+          "title": "허브: 개인 주소·경로·프로젝트 목록 기본값 빼기"
         }
       ],
       "skills": {
