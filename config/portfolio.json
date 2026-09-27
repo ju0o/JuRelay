@@ -9739,6 +9739,23 @@
             "npx vitest run tests/daily-background.test.ts"
           ],
           "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 '비슷하게' 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-ACTIONS-NO-CLI",
+          "scope": "The receipt says '받아 주세요' but has no way to accept; viewing needs the CLI and it tells the user to 're-run with --show-raw'. On the today page/receipt: [받음] and [되돌리기 방법 보기] buttons (받음 records a local decision in .juceipt/decisions.json and moves it off '먼저 볼 것'); raw details are a collapsed '원문 보기' in the page instead of a CLI flag hint.",
+          "files": [
+            "src/render/today.ts",
+            "src/render/index.ts",
+            "test/receipt-actions.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder-persona Tester review 2026-09-27 (persona file ~/.claude-team/skills/founder-persona/PERSONA.md; report TESTER_persona_20260927.md, headless captures of integration builds): JuCeipt 오케이 승인 가능, 불편 2. Test: rendered receipt has 받음 control and no '--show-raw' text; a 받음 decision removes it from 먼저 볼 것.",
+          "dependsOn": [
+            "JUCEIPT-TODAY-PAGE"
+          ],
+          "title": "JuCeipt 영수증: '받아 주세요'에 버튼, CLI 안내 빼기"
         }
       ],
       "skills": {
