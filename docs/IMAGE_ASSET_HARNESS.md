@@ -33,6 +33,18 @@ DELIVERED → VERIFIED | REWORK (→GENERATING, 3회 한도).
 
 멱등: `AST-sha12(task|run|kind|path|prompt)` — 동일 요청은 기존 기록 반환.
 
+## T7: ChatGPT 경유 전달 (우리 MCP, API키 없음)
+
+- `relay_pm_deliver_asset` (PM 도구): ChatGPT가 그림을 만들고 `{assetId, imageUrl}`
+  전달 → Relay가 직접 다운로드·검증·기록. REQUESTED는 chatgpt 백엔드로 자동 라우팅.
+- 보안: https 전용(loopback 제외), 호스트 allowlist(oaistatic/oaiusercontent +
+  `AGENT_RELAY_ASSET_HOSTS` env 확장), 10MB 상한, PNG/JPG 매직 검사,
+  workspace 하위 강제, CAS(GENERATING).
+- `relay_pm_list_assets`: 상태 필터 조회 (읽기 전용).
+- `src/backend/asset-chatgpt.ts` + `src/mcp/asset-tools.ts`
+  (PM·App 양 표면에 등록). 테스트 `test/asset-chatgpt.test.mjs` (3 PASS).
+- 프로덕션 (`mcp.relay-agent.site`)에 반영됨. 위젯에 에셋 요청 표시는 TODO.
+
 ## 보안
 
 - output_path는 run workspace 하위로 강제 (탈출 거부).

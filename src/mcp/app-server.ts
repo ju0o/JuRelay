@@ -21,6 +21,7 @@ import * as crypto from 'node:crypto';
 import type { PmServerContext } from './server.js';
 import { buildPmReadTools, buildPmWriteTools } from './pm-tools.js';
 import { buildPmWakeTools } from './app/pm-wake-tools.js';
+import { buildAssetPmTools } from './asset-tools.js';
 import {
   PM_WIDGET_MIME_TYPE,
   PM_WIDGET_RESOURCE_NAME,
@@ -108,6 +109,7 @@ export function buildAppTools(ctx: PmServerContext): AppTool[] {
     ...buildPmReadTools(ctx),
     ...buildPmWriteTools(ctx),
     ...buildPmWakeTools(ctx),
+    ...buildAssetPmTools(ctx),
   ];
   // Widget-opener tool: linking a tool to the UI resource is how the MCP Apps
   // host renders the widget in a conversation.
