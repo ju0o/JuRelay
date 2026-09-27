@@ -8686,6 +8686,21 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "JUPLAN-AR-PROVIDER-FAILURE",
+          "scope": "Add an offline manifest and pure decision so a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none while the runtime chain is empty.",
+          "files": [
+            "docs/agent-relay/provider-failure.json",
+            "packages/runtime/src/agentRelayProviderFailure.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-provider-failure.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-provider-failure.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:133 Quota, timeout, or transient provider failures may fall through the configured runtime chain. They are not a license to change scope."
         }
       ],
       "qaRuntime": [
