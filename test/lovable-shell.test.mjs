@@ -6,6 +6,7 @@ import * as path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { connectionStatusText } from '../dist/server/shared/connectionState.js';
+import { PROJECT_LABELS, projectDisplayName } from '../dist/server/shared/projectLabels.js';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const components = fs.readFileSync(path.join(root, 'src/frontend/components.tsx'), 'utf8');
@@ -85,6 +86,21 @@ test('env line uses live labels and does not invent a sample machine', () => {
   assert.equal(shellEnvLine(['  ', ''], 'offline'), '실행 환경: 작업 PC에 연결할 수 없어요');
   assert.match(app, /shellEnvLine\(envLabels, envPhase\)/);
   assert.match(app, /controlRoom:envs/);
+});
+
+test('?project=<id> scoped window shows the project name instead of 관제실', () => {
+  assert.match(app, /projectFromSearch\(window\.location\.search\)/);
+  assert.match(app, /projectDisplayName\(scopedProjectId\)/);
+  assert.match(app, /controlRoomMode && scopedProjectId \? projectDisplayName\(scopedProjectId\) : pageCopy\.title/);
+  assert.match(app, /<h1>\{headerTitle\}<\/h1>/);
+
+  PROJECT_LABELS.foo = { name: '테스트 프로젝트' };
+  try {
+    assert.equal(projectDisplayName('foo'), '테스트 프로젝트');
+  } finally {
+    delete PROJECT_LABELS.foo;
+  }
+  assert.equal(projectDisplayName('unknown-id'), 'unknown-id');
 });
 
 test('shell tokens, fixed rail, and phone wrap are in the stylesheet', () => {

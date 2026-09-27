@@ -9,7 +9,7 @@ import { DogfoodPanel } from './dogfooding.js';
 import { QuickDogfood } from './quickdf.js';
 import { ControlRoom } from './controlRoom.js';
 import { AutoWorklog } from './worklog.js';
-import { applyUserProjectConfig, barPercent, envReasonText, hubCardVisible, normalizeEnvs, projectFromSearch, projectHubConfigured, PROJECT_LABELS_STORAGE_KEY, userProjectConfigFromSettings, type EnvRow } from '../shared/projectLabels.js';
+import { applyUserProjectConfig, barPercent, envReasonText, hubCardVisible, normalizeEnvs, projectDisplayName, projectFromSearch, projectHubConfigured, PROJECT_LABELS_STORAGE_KEY, userProjectConfigFromSettings, type EnvRow } from '../shared/projectLabels.js';
 import { sharedSeatsView } from '../shared/projectScope.js';
 import {
   automationResultText,
@@ -676,7 +676,8 @@ function AppInner(): React.ReactElement {
   const [dfMode, setDfMode]             = useState(false);
   const [pdMode, setPdMode]             = useState(false);
   // '이 프로젝트만 새 창으로'로 열린 창(?project=<id>)은 처음부터 관제실만 보여준다.
-  const [controlRoomMode, setControlRoomMode] = useState(() => projectFromSearch(window.location.search) !== '');
+  const [scopedProjectId] = useState(() => projectFromSearch(window.location.search));
+  const [controlRoomMode, setControlRoomMode] = useState(() => scopedProjectId !== '');
   const [approvalsMode, setApprovalsMode] = useState(false);
   const [planStudioMode, setPlanStudioMode] = useState(false);
   const [missingRoot, setMissingRoot]   = useState(false);
@@ -1670,6 +1671,8 @@ function AppInner(): React.ReactElement {
           ? 'settings'
           : 'records';
   const pageCopy = shellPageCopy(shellPage);
+  // ?project=<id>로 스코프된 창은 '관제실' 대신 그 프로젝트 이름을 머리글로 보여준다.
+  const headerTitle = controlRoomMode && scopedProjectId ? projectDisplayName(scopedProjectId) : pageCopy.title;
 
   // ── 렌더 ──────────────────────────────────────────────────────────────────────
   return (
@@ -1719,7 +1722,7 @@ function AppInner(): React.ReactElement {
               <div className="shell-col">
                 <div className="topbar-row">
                   <div className="topbar-copy">
-                    <h1>{pageCopy.title}</h1>
+                    <h1>{headerTitle}</h1>
                     <p className="shell-lead">{pageCopy.lead}</p>
                   </div>
                   <ConnectionBar />
