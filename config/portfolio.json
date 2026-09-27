@@ -19441,6 +19441,51 @@
           ],
           "ssotEvidence": "README.md:43-45 \"AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다.\"",
           "title": "봇 비밀정보만 가리고 내용은 지켜요"
+        },
+        {
+          "taskId": "JUAI-README-COMMANDCODE-MODEL",
+          "scope": "README 봇 4명 표의 CommandCode 모델 칸을 ai.mjs가 실제로 쓰는 자체 무료 모델(Laguna S 2.1, OpenCode 대체)에 맞게 고친다",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "ai.mjs:19 const COMMANDCODE_MODEL = process.env.JUAI_COMMANDCODE_MODEL || \"poolside/laguna-s-2.1-free\"; vs README.md CommandCode row still says '오픈코드 무료 모델' (commit d1e7b8d: CommandCode bot speaks with its own free model)"
+        },
+        {
+          "taskId": "JUAI-GUIDE-GAP-SECONDS",
+          "scope": "layout.mjs GUIDE 안내문의 하드코딩된 '질문 사이 30초'를 LIMITS.gapMs 기반 값으로 바꾸고 check.mjs에 그 값이 반영됐는지 자체 점검을 추가한다",
+          "files": [
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:119 literal '질문 사이 30초' does not derive from LIMITS.gapMs=30_000 (contrast layout.mjs:40/42 which do use LIMITS.daily and are already asserted in check.mjs)"
+        },
+        {
+          "taskId": "JUAI-CHECK-ROLE-COLOR-RANGE",
+          "scope": "check.mjs에 ROLES의 모든 color 값이 0~0xFFFFFF 범위의 정수인지 검증하는 자체 점검을 추가한다 (setup.mjs가 이 값을 그대로 Discord API에 전달)",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "setup.mjs:46-47 guild.roles.create/edit({ color: r.color, ... }) passes ROLES[].color to Discord's role API unvalidated, unlike hoist/mentionable which are coerced with !!"
+        },
+        {
+          "taskId": "JUAI-CHECK-VOICE-NO-TOPIC-TAGS",
+          "scope": "check.mjs에 type이 voice인 채널은 topic과 tags 필드를 갖지 않는다는 자체 점검을 추가한다 (setup.mjs가 voice 채널의 topic을 조용히 무시하기 때문)",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "setup.mjs:79 ...(ch.topic && ch.type !== \"voice\" ? { topic: ch.topic } : {}) silently drops a voice channel's topic with no test to catch a future mismatch"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
