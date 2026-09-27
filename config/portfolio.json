@@ -8731,6 +8731,51 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
           "title": "이미 정한 제품 범위 밖은 멈춤"
+        },
+        {
+          "taskId": "JUPLAN-AR-TRANSPORT-BEFORE-QUEUE",
+          "scope": "Refuse an otherwise authorized TASK_PACKET inside validateTaskPacket when a supplied PM-transport fact says pm/juplan is disconnected, leaving dispatch none and inventing no Product task, while calls that omit that fact keep today's result.",
+          "files": [
+            "packages/runtime/src/agentRelayPackets.ts",
+            "packages/runtime/test/agent-relay-transport-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-transport-queue.test.ts",
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-packet-schema.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
+        },
+        {
+          "taskId": "JUPLAN-AR-INTAKE-PACKAGE-API",
+          "scope": "Export validateTaskPacket, validateResultPacket, validateQaPacket, decideQaTestGate, and the PM-transport hold functions from packages/runtime/src/index.ts, and import those symbols from that package entry in the existing offline tests.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-packet-schema.test.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts",
+            "packages/runtime/test/agent-relay-transport-hold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-packet-schema.test.ts",
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-transport-hold.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:159 An exact authorized task can be received and routed."
+        },
+        {
+          "taskId": "JUPLAN-AR-BLOCKED-NO-QA",
+          "scope": "Add a pure function that a BLOCKED RESULT_PACKET holds the lane with dispatch none, refuses an attached QA packet, and invents no substitute task, covered by a new offline test.",
+          "files": [
+            "packages/runtime/src/agentRelayBlockedHold.ts",
+            "packages/runtime/test/agent-relay-blocked-hold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-blocked-hold.test.ts",
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:91 BLOCKED holds the task. It does not invent a substitute Product task and does not continue to QA."
         }
       ],
       "qaRuntime": [
