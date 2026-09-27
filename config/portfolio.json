@@ -19007,6 +19007,39 @@
           ],
           "ssotEvidence": "bot.mjs:125 !?요약(해\\s?줘)? triggers summarizeThread; bot.mjs:325 SUB_DAILY=3 caps notifySubs; README.md:8 멤버 명령어 줄에 두 항목 모두 없음",
           "title": "요약 명령어와 알림 횟수 안내 추가"
+        },
+        {
+          "taskId": "JUAI-CHECK-ROLE-PERMS",
+          "scope": "Add check.mjs assertions that every ROLES[].perms entry is a valid discord.js PermissionFlagsBits key, since setup.mjs does perms.map(p => P[p]) and a typo silently becomes undefined until a live setup.mjs run against Discord fails.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "setup.mjs:44 `const perms = r.perms.map((p) => P[p]);` combined with layout.mjs:6-13 ROLES perms arrays"
+        },
+        {
+          "taskId": "JUAI-CHECK-TEXT-LEN-LIMITS",
+          "scope": "Add check.mjs assertions only (no layout.mjs change) that every channel topic is <=1024 chars and every forum tag name is <=20 chars, matching Discord's real API limits so a future edit that breaches them fails npm run check instead of setup.mjs at runtime.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:40-45 channel topic and tags fields (e.g. key:'suggest' topic and tags:['기능','채널','봇','규칙','반영됨'])"
+        },
+        {
+          "taskId": "JUAI-CHECK-ONBOARDING-LABEL-LEN",
+          "scope": "Add check.mjs assertions only (no layout.mjs change) that every ONBOARDING question title, option title, and option description is <=100 chars, matching Discord's select/component label limits.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:48-49 ONBOARDING question/option definitions"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
