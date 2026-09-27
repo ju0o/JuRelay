@@ -10254,7 +10254,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "되돌릴 수 있는 방법을 쉽게 안내"
         },
         {
           "taskId": "JUCEIPT-TASK-TITLE-REVIEW-WORDS",
@@ -10266,7 +10267,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "업무 확인과 문서 정리를 알기 쉽게 표시"
         }
       ],
       "skills": {
@@ -16707,7 +16709,8 @@
           "tests": [
             "node --test test/result-state-changes-amber.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "막힌 작업과 실패를 쉽게 구분하기"
         },
         {
           "taskId": "JCAPP-INSPECT-WORD-ONE",
@@ -16726,7 +16729,8 @@
             "node --test test/review-line-ai-names.test.mjs",
             "node --test test/skill-draft-id.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];"
+          "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];",
+          "title": "검수 안내를 검사로 통일하기"
         }
       ],
       "skills": {
@@ -17758,7 +17762,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/qa/P0_CROSS_ARTIFACT_AUDIT.md:22 quote: P0 PASS 경계가 B3 및 M3/M4/M5를 명시하지 않아 보정이 필요하다"
+          "ssotEvidence": "docs/qa/P0_CROSS_ARTIFACT_AUDIT.md:22 quote: P0 PASS 경계가 B3 및 M3/M4/M5를 명시하지 않아 보정이 필요하다",
+          "title": "초기 작업 범위를 안전하게 한정"
         }
       ],
       "skills": {
@@ -19473,7 +19478,8 @@
           "tests": [
             "node --test tests/main-files-select-priority-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:618 선정 우선순위는 다음과 같다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:618 선정 우선순위는 다음과 같다.",
+          "title": "요청 기능 중심 보고 기준 정리"
         },
         {
           "taskId": "JUTELL-TERM-MEANING-KEEP-PARITY",
@@ -19485,7 +19491,8 @@
           "tests": [
             "node --test tests/term-meaning-keep-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:38 쉽게 설명하더라도 용어의 범위를 다른 개념으로 바꾸지 않는다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:38 쉽게 설명하더라도 용어의 범위를 다른 개념으로 바꾸지 않는다.",
+          "title": "용어 뜻을 정확하게 지키기"
         },
         {
           "taskId": "JUTELL-FEATURE-OFF-NO-CONFIRMED-PARITY",
@@ -19497,7 +19504,8 @@
           "tests": [
             "node --test tests/feature-off-no-confirmed-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:961 검증 실패가 있는데 확인 완료로 표시하지 않는다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:961 검증 실패가 있는데 확인 완료로 표시하지 않는다.",
+          "title": "검증 실패를 완료로 착각하지 않기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
