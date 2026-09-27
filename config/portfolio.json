@@ -13946,6 +13946,28 @@
           ],
           "ssotEvidence": "README.md:67 그대로 두면 5분이 지난 오래된 상태로 보입니다.",
           "title": "그대로 두면 지난 시간을 실제와 맞춰요"
+        },
+        {
+          "taskId": "JUCONTROLER-CONTRACT-OFFLINE-USAGE-RUN",
+          "scope": "Add one offline test that runs the three PROJECT_STATUS_CONTRACT.md Offline usage node --input-type=module snippets, as written except for a temp fixture path, and asserts each prints project-status.v1 for a fresh Agent Relay board, JuPlan status, and JuCeipt receipt.",
+          "files": [
+            "tests/contract-offline-usage-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-offline-usage-run.test.mjs"
+          ],
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:144 Offline usage, from a saved snapshot:"
+        },
+        {
+          "taskId": "JUCONTROLER-CONTRACT-RELAY-ENTRY-SYNC",
+          "scope": "Add one offline test that the Agent Relay entry table in PROJECT_STATUS_CONTRACT.md matches src/adapters/agent-relay.mjs for runner projectId agent-relay, source ids agent-relay/runner and agent-relay/lanes/, status day=${day};night=${night}, sourceRevision lane.latestVersion, and observedAt candidate order observedAt, board.observedAt, board.generatedAt.",
+          "files": [
+            "tests/contract-relay-entry-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-relay-entry-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:104 | Runner | `agent-relay` | `agent-relay/runner` | `day=<day>;night=<night>` | — |"
         }
       ],
       "qaRuntime": [
