@@ -17384,6 +17384,28 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:181 'Proposed mapping in Section 7 (using Section 6 legend) | `UNDECIDED` — the Founder seven-task register cannot be joined to committed Claude final and Receipt artifacts'; Founder direction 2026-09-27",
           "title": "매칭 결과 미확정 기록 남기기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-B0-EXIT-COLUMN-RESTORE",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md, restore the §1 B0 row to six columns, keeping the current deliverable and depends-on cells, setting Exit gate to 'core Receipt value proof establishes the foundation for later free Checkup/share demand.' and State to 'ACTIVE — M2 GO (A-14)', and replace the §2 purpose word implementation-ready with planning-consistent and implementation-constrained.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/qa/P0_WBS_ENTITY_GATE_MATRIX_AUDIT.md:38 Bounded correction: change the B0 outcome/exit wording to “core Receipt value proof establishes the foundation for later free Checkup/share demand.” docs/qa/P0_WBS_ENTITY_GATE_MATRIX_AUDIT.md:50 Bounded correction: use “planning-consistent and implementation-constrained.”"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-CANONICAL-PROVENANCE",
+          "scope": "Add one visible sentence to the existing hero paragraph of docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html stating that 05 is the canonical visual, 04 is draft/history only, and the DBML remains authoritative for logical detail.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:26 When 04 and 05 differ, **05 is authoritative** for the business-system visual, while DBML remains authoritative for logical entity/relationship detail."
         }
       ],
       "skills": {
