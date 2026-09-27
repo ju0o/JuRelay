@@ -17516,6 +17516,28 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:26 When 04 and 05 differ, **05 is authoritative** for the business-system visual, while DBML remains authoritative for logical entity/relationship detail.",
           "title": "서비스 전체 흐름을 한눈에 안내"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-REPORT-JOIN-ONLY-DECISION",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md, change only the §B.4 heading (line 78, 'M2 current') and unresolved item 6 (line 252, 'separate recording of the M3 decision') so they match D-023: M2 is GO, M3 stays unrecorded because 0 Founder-register rows join a Claude final and a Receipt, and GO/DEFER/KILL is not inferred from missing joins.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 No GO / DEFER / KILL decision is recorded. Founder direction 2026-09-27: record M3 GO, DEFER, or KILL only for joined rows; do not infer missing joins."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HANDOFF-M2-CURRENT-CHECK",
+          "scope": "In docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md, change only the Audit Work Package A check at line 71 ('M2 remains current implementation milestone') so it matches the line-7 note and the board: M2 is GO (A-14) and the current execution milestone is M3 Daily Agent Value Decision, with no GO/DEFER/KILL recorded from missing final-plus-Receipt joins.",
+          "files": [
+            "docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md:7 Note: This milestone line reflects the state when the handoff was issued; PM_STATUS_BOARD.md now shows M2 GO with M3 active."
         }
       ],
       "skills": {
