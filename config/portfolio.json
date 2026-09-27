@@ -16066,7 +16066,8 @@
           "tests": [
             "node --test test/lane-skills-collapse.test.mjs"
           ],
-          "ssotEvidence": "Founder-persona Tester review 2026-09-27 (persona file ~/.claude-team/skills/founder-persona/PERSONA.md; report TESTER_persona_20260927.md, headless captures of integration builds): 허브 불편·다듬기. Test: app.js에서 laneSkillsBlock 함수를 그대로 추출해 설치된 Skill 7개짜리 lane으로 렌더한 HTML이 '장착된 Skill 7개 · 바꾸기' 요약 문구를 담고, <details>로 접히지 않은 채 페이지에 즉시 노출되는 input[type=checkbox]가 0개인지 확인한다 — 기존 코드는 이 요약 문구가 없고 21개 체크박스가 항상 펼쳐진 채로 렌더되어 실패한다."
+          "ssotEvidence": "Founder-persona Tester review 2026-09-27 (persona file ~/.claude-team/skills/founder-persona/PERSONA.md; report TESTER_persona_20260927.md, headless captures of integration builds): 허브 불편·다듬기. Test: app.js에서 laneSkillsBlock 함수를 그대로 추출해 설치된 Skill 7개짜리 lane으로 렌더한 HTML이 '장착된 Skill 7개 · 바꾸기' 요약 문구를 담고, <details>로 접히지 않은 채 페이지에 즉시 노출되는 input[type=checkbox]가 0개인지 확인한다 — 기존 코드는 이 요약 문구가 없고 21개 체크박스가 항상 펼쳐진 채로 렌더되어 실패한다.",
+          "title": "설치된 기능을 접어 화면을 깔끔하게 보기"
         }
       ],
       "skills": {
@@ -18564,7 +18565,8 @@
           "tests": [
             "node --test tests/browser-no-new-tools-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:575 '브라우저 도구가 없으면 새 도구를 설치하거나 별도 서비스를 연결하지 않는다.' (§13, present in SPEC only)"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:575 '브라우저 도구가 없으면 새 도구를 설치하거나 별도 서비스를 연결하지 않는다.' (§13, present in SPEC only)",
+          "title": "새 도구 없이 안내합니다"
         },
         {
           "taskId": "JUTELL-EXPLAINED-DIFF-MAIN-FILES-CAP-PARITY",
@@ -18575,7 +18577,8 @@
           "tests": [
             "node --test tests/explained-diff-main-files-cap-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:902-903 '단순 작업 주요 파일: 최대 3개' / '일반 작업 주요 파일: 최대 5개' vs .agents/skills/beginner-bridge/references/explained-diff-format.md:59"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:902-903 '단순 작업 주요 파일: 최대 3개' / '일반 작업 주요 파일: 최대 5개' vs .agents/skills/beginner-bridge/references/explained-diff-format.md:59",
+          "title": "중요 파일 수를 일관되게 안내합니다"
         },
         {
           "taskId": "JUTELL-SCENARIO-R-NO-VERIFICATION-MEANS",
@@ -18587,7 +18590,8 @@
           "tests": [
             "node --test tests/results/scenario-r/no-verification-means.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:402-404 '### 10.6 검증 수단 없음 — 프로젝트에서 사용할 수 있는 테스트나 확인 방법을 찾지 못했다.'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:402-404 '### 10.6 검증 수단 없음 — 프로젝트에서 사용할 수 있는 테스트나 확인 방법을 찾지 못했다.'",
+          "title": "검증 방법이 없음을 보여줍니다"
         },
         {
           "taskId": "JUTELL-SCENARIO-S-PARTIAL-PASS-REPORT",
@@ -18599,7 +18603,8 @@
           "tests": [
             "node --test tests/results/scenario-s/partial-pass-report.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:388-390 '### 10.2 일부 통과 — 실행한 검증 중 일부만 성공했다.'"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:388-390 '### 10.2 일부 통과 — 실행한 검증 중 일부만 성공했다.'",
+          "title": "일부 검증 통과를 보여줍니다"
         },
         {
           "taskId": "JUTELL-CONTEXT-TRUNCATED-FILE-DISCLOSURE",
@@ -18611,7 +18616,8 @@
           "tests": [
             "npm test --prefix packages/cli"
           ],
-          "ssotEvidence": "packages/cli/src/commands/context.ts:107-124 (MAX_FILES 초과 시 truncated=true) 및 :271-278 (gitSummary가 truncated를 노출하지 않음), BEGINNER_REPORT_SPEC.md §8.1 '확인됨은 확인한 범위에만 적용한다'"
+          "ssotEvidence": "packages/cli/src/commands/context.ts:107-124 (MAX_FILES 초과 시 truncated=true) 및 :271-278 (gitSummary가 truncated를 노출하지 않음), BEGINNER_REPORT_SPEC.md §8.1 '확인됨은 확인한 범위에만 적용한다'",
+          "title": "변경 목록이 잘렸음을 알려줍니다"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -19553,7 +19559,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "ai.mjs:19 const COMMANDCODE_MODEL = process.env.JUAI_COMMANDCODE_MODEL || \"poolside/laguna-s-2.1-free\"; vs README.md CommandCode row still says '오픈코드 무료 모델' (commit d1e7b8d: CommandCode bot speaks with its own free model)"
+          "ssotEvidence": "ai.mjs:19 const COMMANDCODE_MODEL = process.env.JUAI_COMMANDCODE_MODEL || \"poolside/laguna-s-2.1-free\"; vs README.md CommandCode row still says '오픈코드 무료 모델' (commit d1e7b8d: CommandCode bot speaks with its own free model)",
+          "title": "봇이 쓰는 무료 모델을 바로 알기"
         },
         {
           "taskId": "JUAI-GUIDE-GAP-SECONDS",
@@ -19565,7 +19572,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:119 literal '질문 사이 30초' does not derive from LIMITS.gapMs=30_000 (contrast layout.mjs:40/42 which do use LIMITS.daily and are already asserted in check.mjs)"
+          "ssotEvidence": "layout.mjs:119 literal '질문 사이 30초' does not derive from LIMITS.gapMs=30_000 (contrast layout.mjs:40/42 which do use LIMITS.daily and are already asserted in check.mjs)",
+          "title": "질문 사이 안내 시간을 정확히 맞추기"
         },
         {
           "taskId": "JUAI-CHECK-ROLE-COLOR-RANGE",
@@ -19576,7 +19584,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "setup.mjs:46-47 guild.roles.create/edit({ color: r.color, ... }) passes ROLES[].color to Discord's role API unvalidated, unlike hoist/mentionable which are coerced with !!"
+          "ssotEvidence": "setup.mjs:46-47 guild.roles.create/edit({ color: r.color, ... }) passes ROLES[].color to Discord's role API unvalidated, unlike hoist/mentionable which are coerced with !!",
+          "title": "역할 색상 오류를 미리 막기"
         },
         {
           "taskId": "JUAI-CHECK-VOICE-NO-TOPIC-TAGS",
@@ -19587,7 +19596,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "setup.mjs:79 ...(ch.topic && ch.type !== \"voice\" ? { topic: ch.topic } : {}) silently drops a voice channel's topic with no test to catch a future mismatch"
+          "ssotEvidence": "setup.mjs:79 ...(ch.topic && ch.type !== \"voice\" ? { topic: ch.topic } : {}) silently drops a voice channel's topic with no test to catch a future mismatch",
+          "title": "음성 채널 설정 오류를 미리 막기"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
