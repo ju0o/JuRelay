@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { mkdtemp, readFile, writeFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { FounderInboxBridge } from "../../src/v2/founder-bridge/index.mjs";
@@ -14,7 +15,7 @@ function transport(remotePath, bytes) {
 }
 
 test("bridge pulls UTF-8 packet, reuses identical local packet, and writes idempotent receipt", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-bridge-"); roots.push(root);
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-bridge-")); roots.push(root);
   const packet = Buffer.from("# Founder Gate\nGATE_ID: FG-utf8\nPROJECT: JuActl\n\n## 지금 어디까지 됐나\n\n확인 필요\n", "utf8");
   const remote = "/remote/founder-outbox/JuActl/packets/FG-utf8.md"; const tx = transport(remote, packet);
   const bridge = new FounderInboxBridge({ localInbox: root, remoteRoot: "/remote/data", transport: tx });
@@ -24,7 +25,7 @@ test("bridge pulls UTF-8 packet, reuses identical local packet, and writes idemp
 });
 
 test("bridge fails closed on local hash mismatch and keeps response lane exact", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-bridge-"); roots.push(root);
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-bridge-")); roots.push(root);
   const packet = Buffer.from("# Founder Gate\nGATE_ID: FG-hash\nPROJECT: JuActl\n", "utf8"); const remote = "/remote/founder-outbox/JuActl/packets/FG-hash.md"; const tx = transport(remote, packet);
   await import("node:fs/promises").then(({ mkdir }) => mkdir(join(root, "JuActl"), { recursive: true }));
   await writeFile(join(root, "JuActl/FG-hash.md"), "tampered\n");
@@ -37,14 +38,14 @@ test("bridge fails closed on local hash mismatch and keeps response lane exact",
 });
 
 test("transport failure leaves the packet pending for the next poll", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-bridge-"); roots.push(root);
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-bridge-")); roots.push(root);
   const bridge = new FounderInboxBridge({ localInbox: root, transport: { async discover() { return ["/remote/founder-outbox/JuActl/packets/FG-fail.md"]; }, async hash() { return "0".repeat(64); }, async pull() { throw new Error("scp unavailable"); } } });
   await assert.rejects(() => bridge.syncOnce(), /scp unavailable/);
   await assert.rejects(() => readFile(join(root, "JuActl/FG-fail.md")));
 });
 
 test("single instance, receipt reconciliation, response normalization, and packet newlines", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-bridge-"); roots.push(root);
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-bridge-")); roots.push(root);
   const manager = new FounderGateManager({ root }); const gate = await manager.create({ project: "JuActl", taskId: "t", type: "FOUNDER_E2E_REQUIRED", summary: "확인", reason: "Windows", evidence: [], founderAction: "Run E2E", expectedInput: "GATE_ID=<exact>\\nDECISION: APPROVE\\ntimestamp: <ISO>", resumeAction: "Resume", relatedEvidence: [] });
   const packet = await readFile(gate.packet, "utf8"); assert.match(packet, /GATE_ID=<exact>\nDECISION: APPROVE\ntimestamp: <ISO>/);
   const firstBridge = new FounderInboxBridge({ localInbox: root }); await firstBridge.acquireSingleInstance();

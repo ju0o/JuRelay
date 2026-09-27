@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import test from "node:test";
@@ -25,7 +26,7 @@ const git = async (cwd, ...args) => (await exec("git", ["-C", cwd, ...args])).st
 const fixtures = [];
 
 async function gitFixture() {
-  const root = await mkdtemp("/tmp/agent-relay-target-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-target-"));
   fixtures.push(root);
   const remote = join(root, "remote.git");
   const source = join(root, "source");
@@ -255,7 +256,7 @@ test("READ_ONLY_QA detects target modification and leaves unrelated dirty checko
 });
 
 test("Founder Gates classify strictly, deduplicate, and preserve pending delivery", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-gate-"); fixtures.push(root);
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-gate-")); fixtures.push(root);
   const manager = new FounderGateManager({ root });
   assert.equal(isFounderGateType("FOUNDER_E2E_REQUIRED"), true);
   assert.equal(isFounderGateType("QA_CHANGES"), false);
@@ -267,7 +268,7 @@ test("Founder Gates classify strictly, deduplicate, and preserve pending deliver
 });
 
 test("blocked lane releases slots, other lane continues, and valid response resumes only it", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-gate-"); fixtures.push(root);
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-gate-")); fixtures.push(root);
   const gateManager = new FounderGateManager({ root });
   const adapter = { async start(need) { return { id: `rt-${need.projectId}-${Date.now()}`, provider: "mock", state: "STARTING" }; }, async ready(rt) { rt.state = "READY"; return true; }, async dispatch() {}, async collect(_rt, task) { return { resultText: task.goal, sendAck: true, resultAck: true }; }, async stop() {} };
   const tasks = [{ lane: "JuActl", projectId: "juactl", goal: "JUACTL_MARKER", requiresQa: true }, { lane: "JuPlan", projectId: "juplan", goal: "JUPLAN_MARKER", requiresQa: true }];

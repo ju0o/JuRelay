@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { promisify } from "node:util";
@@ -20,7 +21,7 @@ test("packet parsers are strict and exit-zero without a packet is not completion
 });
 
 test("repository TASK_PACKET intake is exact and rejects unauthorized scope", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-intake-test-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-intake-test-"));
   const runner = new PortfolioRunner({ manifest: { projects: [{ id: "p", active: true, task: { taskId: "P-1", scope: "bounded", files: ["a"], tests: ["test"] } }] }, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees") });
   await runner.acceptTaskPacket({ schema: "agent-relay.task.v1", taskId: "P-1", projectId: "p", scope: "bounded", files: ["a"], tests: ["test"] });
   assert.equal((await runner.load()).tasks[0].state, "QUEUED");
@@ -48,7 +49,7 @@ test("CORE V1 snapshot prefers active task over historical completed task", () =
 
 test("core-v1 status supports --json and preserves text default", async () => {
   const execFileAsync = promisify(execFile);
-  const root = await mkdtemp("/tmp/agent-relay-core-status-json-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-core-status-json-"));
   const manifestPath = join(root, "portfolio.json");
   await writeFile(manifestPath, JSON.stringify({ projects: [{ id: "p", coreV1: true, pmChannel: "pm/p", pmState: "READY", runtime: "codex", task: { taskId: "P-1", scope: "bounded", files: [], tests: [] } }] }));
   const bridgePath = new URL("../../bridge/agent-relay.mjs", import.meta.url).pathname;
@@ -68,7 +69,7 @@ test("core-v1 status supports --json and preserves text default", async () => {
 });
 
 test("runner blocks external/no-scope projects without launching a Builder", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-runner-test-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-runner-test-"));
   const statePath = join(root, "state.json");
   let launched = 0;
   const runner = new PortfolioRunner({ manifest: { maxBuilders: 2, projects: [{ id: "juactl", owner: "cursor", state: "BLOCKED_EXTERNAL" }] }, statePath, worktreeRoot: join(root, "worktrees"), runtime: { async run() { launched += 1; } } });
@@ -80,7 +81,7 @@ test("runner blocks external/no-scope projects without launching a Builder", asy
 });
 
 test("runner requeues interrupted execution on reconcile", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-reconcile-test-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-reconcile-test-"));
   const statePath = join(root, "state.json");
   await writeFile(statePath, JSON.stringify({ tasks: [{ taskId: "T", projectId: "p", state: "RUNNING" }], activeBuilders: [{ taskId: "T", pid: 1 }], activeQa: [] }));
   const runner = new PortfolioRunner({ manifest: { projects: [] }, statePath, worktreeRoot: join(root, "worktrees") });
@@ -91,7 +92,7 @@ test("runner requeues interrupted execution on reconcile", async () => {
 });
 
 test("runner requires independent QA and never exceeds one QA slot", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-slots-test-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-slots-test-"));
   const statePath = join(root, "state.json");
   let qaActive = 0; let maxQa = 0; let seq = 0;
   const runner = new PortfolioRunner({
@@ -108,7 +109,7 @@ test("runner requires independent QA and never exceeds one QA slot", async () =>
 });
 
 test("reconcile creates one Founder Gate packet and preserves blocker arrays", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-founder-reconcile-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-founder-reconcile-"));
   const runner = new PortfolioRunner({
     manifest: { projects: [
       { id: "juplan", state: "FOUNDER_GATE", founderRequired: true, founderGate: { type: "FOUNDER_DECISION", taskId: "JUPLAN-REVIEW", summary: "review", reason: "gate", evidence: ["ssot"], founderAction: "review", expectedInput: "DECISION: APPROVE|PAUSE", resumeAction: "resume lane", relatedEvidence: [] } },
@@ -125,7 +126,7 @@ test("reconcile creates one Founder Gate packet and preserves blocker arrays", a
 });
 
 test("reconcile ignores historical Founder decisions for non-gated integration lanes", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-stale-decision-test-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-stale-decision-test-"));
   const runner = new PortfolioRunner({ manifest: { projects: [{ id: "juplan", coreV1: true, state: "INTEGRATION_TARGET", founderRequired: false }] }, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees") });
   await writeFile(join(root, "state.json"), JSON.stringify({ founderDecisions: [{ projectId: "juplan", decision: "PAUSE", scope: "old V1.1 hold" }], tasks: [] }));
   const state = await runner.reconcile();
@@ -142,7 +143,7 @@ test("runtime adapters fail closed on ownership and unavailable execution", asyn
 });
 
 test("authorized verification task uses the common Codex adapter without fallback", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-adapter-test-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-adapter-test-"));
   const runner = new PortfolioRunner({ manifest: { maxBuilders: 1, projects: [{ id: "p", owner: "codex", runtime: "codex", path: "/safe", task: { taskId: "P-VERIFY", scope: "verify", files: [], tests: [] } }] }, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees"), worktrees: { async create() { return { path: root, base: "abc", async cleanup() {} }; } }, runtime: { command: "codex", async run({ sandbox }) { return { pid: 7, code: 0, startedAt: new Date().toISOString(), text: sandbox === "workspace-write" ? 'RESULT_PACKET: {"schema":"agent-relay.result.v1","taskId":"P-VERIFY","status":"IMPLEMENTED","changedFiles":[],"tests":[],"commitSha":"abc","summary":"verified"}' : 'QA_PACKET: {"schema":"agent-relay.qa.v1","taskId":"P-VERIFY","verdict":"ACCEPT","tests":[],"findings":[],"summary":"accepted"}' }; } } });
   await runner.enqueue("p");
   const state = await runner.runOnce();
@@ -154,7 +155,7 @@ test("authorized verification task uses the common Codex adapter without fallbac
 });
 
 test("QA ACCEPT requires and records durable promotion when available", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-promotion-test-"); let promoted = null;
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-promotion-test-")); let promoted = null;
   const runner = new PortfolioRunner({ manifest: { maxBuilders: 1, projects: [{ id: "p", owner: "codex", runtime: "codex", path: "/safe", task: { taskId: "P-PROMOTE", scope: "verify", files: [], tests: [] } }] }, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees"), worktrees: { async create() { return { path: root, base: "abc", async cleanup() {} }; }, async promote(_project, taskId, sha) { promoted = { taskId, sha }; return `refs/agent-relay/promotions/${taskId}`; } }, runtime: { command: "codex", async run({ sandbox }) { return { pid: 7, code: 0, startedAt: new Date().toISOString(), text: sandbox === "workspace-write" ? `RESULT_PACKET: ${JSON.stringify({ schema: "agent-relay.result.v1", taskId: "P-PROMOTE", status: "IMPLEMENTED", changedFiles: [], tests: [], commitSha: "a".repeat(40), summary: "verified" })}` : 'QA_PACKET: {"schema":"agent-relay.qa.v1","taskId":"P-PROMOTE","verdict":"ACCEPT","tests":[],"findings":[],"summary":"accepted"}' }; } } });
   await runner.enqueue("p"); const state = await runner.runOnce();
   assert.equal(state.tasks[0].state, "VERIFIED_DONE"); assert.deepEqual(promoted, { taskId: "P-PROMOTE", sha: "a".repeat(40) }); assert.match(state.tasks[0].promotionRef, /refs\/agent-relay\/promotions/);
@@ -162,7 +163,7 @@ test("QA ACCEPT requires and records durable promotion when available", async ()
 });
 
 test("REQUEST_CHANGES retries the same task, then promotion precedes NEXT", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-retry-test-"); let builds = 0; let qas = 0;
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-retry-test-")); let builds = 0; let qas = 0;
   const runner = new PortfolioRunner({ manifest: { maxBuilders: 1, projects: [{ id: "p", owner: "codex", runtime: "codex", path: "/safe", state: "QUEUED", tasks: [{ taskId: "P-RETRY", scope: "retry", files: [], tests: [] }, { taskId: "P-NEXT", scope: "next", files: [], tests: [] }] }] }, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees"), worktrees: { async create() { return { path: root, base: "abc", async cleanup() {} }; } }, runtime: { command: "codex", async run({ sandbox }) { if (sandbox === "workspace-write") { builds += 1; return { pid: builds, code: 0, startedAt: new Date().toISOString(), text: `RESULT_PACKET: ${JSON.stringify({ schema: "agent-relay.result.v1", taskId: "P-RETRY", status: "IMPLEMENTED", changedFiles: [], tests: [], commitSha: "b".repeat(40), summary: "retry" })}` }; } qas += 1; return { pid: qas, code: 0, startedAt: new Date().toISOString(), text: qas === 1 ? 'QA_PACKET: {"schema":"agent-relay.qa.v1","taskId":"P-RETRY","verdict":"REQUEST_CHANGES","tests":[],"findings":["retry"],"summary":"retry"}' : 'QA_PACKET: {"schema":"agent-relay.qa.v1","taskId":"P-RETRY","verdict":"ACCEPT","tests":[],"findings":[],"summary":"accept"}' }; } } });
   await runner.enqueue("p"); const state = await runner.runOnce();
   assert.equal(builds, 2); assert.equal(qas, 2); assert.equal(state.tasks[0].state, "VERIFIED_DONE"); assert.equal(state.tasks[0].taskId, "P-RETRY");
@@ -170,7 +171,7 @@ test("REQUEST_CHANGES retries the same task, then promotion precedes NEXT", asyn
 });
 
 test("portfolio state saves are atomic and never leave truncated JSON", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-atomic-state-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-atomic-state-"));
   const statePath = join(root, "state.json");
   const runner = new PortfolioRunner({ manifest: { projects: [] }, statePath, worktreeRoot: join(root, "worktrees") });
   await runner.save({ schema: "agent-relay.portfolio-state.v1", service: "IDLE", tasks: [{ taskId: "A" }] });
@@ -183,7 +184,7 @@ test("portfolio state saves are atomic and never leave truncated JSON", async ()
 });
 
 test("stale temp files from an interrupted save never shadow valid state", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-atomic-crash-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-atomic-crash-"));
   const statePath = join(root, "state.json");
   await writeFile(statePath, JSON.stringify({ schema: "agent-relay.portfolio-state.v1", tasks: [{ taskId: "GOOD" }] }));
   await writeFile(`${statePath}.${process.pid}.crashed.tmp`, '{"tasks": [{"taskId": "TRUNC');
@@ -195,7 +196,7 @@ test("stale temp files from an interrupted save never shadow valid state", async
 });
 
 test("corrupt portfolio state fails closed with blocked evidence instead of resetting", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-corrupt-state-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-corrupt-state-"));
   const statePath = join(root, "state.json");
   const corrupt = '{"tasks": [{"taskId": "TRUNC';
   await writeFile(statePath, corrupt);
@@ -225,7 +226,7 @@ test("corrupt portfolio state fails closed with blocked evidence instead of rese
 });
 
 test("malformed state arrays and lifecycle events fail closed instead of reaching runner logic", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-state-shape-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-state-shape-"));
   const statePath = join(root, "state.json");
   const runner = new PortfolioRunner({ manifest: { projects: [] }, statePath, worktreeRoot: join(root, "worktrees") });
   const base = { schema: "agent-relay.portfolio-state.v1", tasks: [] };
@@ -254,7 +255,7 @@ test("malformed state arrays and lifecycle events fail closed instead of reachin
 });
 
 test("non-ENOENT state read errors fail closed as corrupt instead of propagating raw", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-corrupt-read-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-corrupt-read-"));
   const statePath = join(root, "state-dir");
   await mkdtemp(join(root, "placeholder-"));
   const { mkdir } = await import("node:fs/promises");
@@ -265,7 +266,7 @@ test("non-ENOENT state read errors fail closed as corrupt instead of propagating
 });
 
 test("runLoop interval timer is defined on the live start path", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-runloop-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-runloop-"));
   const runner = new PortfolioRunner({ manifest: { projects: [] }, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees") });
   let iterations = 0;
   runner.runOnce = async () => { iterations += 1; controller.abort(); return {}; };
@@ -276,7 +277,7 @@ test("runLoop interval timer is defined on the live start path", async () => {
 });
 
 test("result inbox publishes are atomic and never leave truncated JSON", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-atomic-result-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-atomic-result-"));
   const runner = new PortfolioRunner({ manifest: { projects: [] }, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees"), resultRoot: join(root, "result-outbox") });
   await runner.publishResult({ taskId: "P-ATOMIC", state: "VERIFIED_DONE", result: { status: "IMPLEMENTED" }, qa: { verdict: "ACCEPT" } });
   const outPath = join(root, "result-outbox", "P-ATOMIC.json");
@@ -287,7 +288,7 @@ test("result inbox publishes are atomic and never leave truncated JSON", async (
 
 test("temporary repository-file PM contract validates packets and rejects unknown result states", async () => {
   assert.equal(PM_FILE_CONTRACT.transport, "repository-file");
-  const root = await mkdtemp("/tmp/agent-relay-pm-file-contract-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-pm-file-contract-"));
   const runner = new PortfolioRunner({ manifest: { projects: [{ id: "p", active: true, task: { taskId: "P-FILE", scope: "bounded", files: ["a"], tests: ["test"] } }] }, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees"), resultRoot: join(root, "result-outbox") });
   const intakeFile = join(root, "pm-inbox-P-FILE.txt");
   await writeFile(intakeFile, `TASK_PACKET: ${JSON.stringify({ schema: "agent-relay.task.v1", taskId: "P-FILE", projectId: "p", scope: "bounded", files: ["a"], tests: ["test"] })}\n`);
@@ -304,7 +305,7 @@ test("temporary repository-file PM contract validates packets and rejects unknow
 });
 
 test("lifecycle events persist dispatch, result, QA verdict, and completion in order", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-lifecycle-events-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-lifecycle-events-"));
   const runner = new PortfolioRunner({ manifest: { maxBuilders: 1, projects: [{ id: "p", owner: "codex", runtime: "codex", path: "/safe", task: { taskId: "P-LIFE", scope: "bounded", files: [], tests: [] } }] }, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees"), worktrees: { async create() { return { path: root, base: "abc", async cleanup() {} }; } }, runtime: { async run({ sandbox }) { return { pid: 7, code: 0, startedAt: new Date().toISOString(), text: sandbox === "workspace-write" ? `RESULT_PACKET: ${JSON.stringify({ schema: "agent-relay.result.v1", taskId: "P-LIFE", status: "IMPLEMENTED", changedFiles: [], tests: [], commitSha: "c".repeat(40), summary: "ok" })}` : `QA_PACKET: ${JSON.stringify({ schema: "agent-relay.qa.v1", taskId: "P-LIFE", verdict: "ACCEPT", tests: [], findings: [], summary: "ok" })}` }; } } });
   await runner.enqueue("p");
   const state = await runner.runOnce();
@@ -323,7 +324,7 @@ test("lifecycle events persist dispatch, result, QA verdict, and completion in o
 });
 
 test("lifecycle events capture retry then completion, and failures stay diagnosable", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-lifecycle-retry-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-lifecycle-retry-"));
   let builds = 0; let qas = 0;
   const runner = new PortfolioRunner({ manifest: { maxBuilders: 1, projects: [{ id: "p", owner: "codex", runtime: "codex", path: "/safe", task: { taskId: "P-RETRY-LIFE", scope: "bounded", files: [], tests: [] } }] }, statePath: join(root, "state.json"), worktreeRoot: join(root, "worktrees"), worktrees: { async create() { return { path: root, base: "abc", async cleanup() {} }; } }, runtime: { async run({ sandbox }) { if (sandbox === "workspace-write") { builds += 1; return { pid: builds, code: 0, startedAt: new Date().toISOString(), text: `RESULT_PACKET: ${JSON.stringify({ schema: "agent-relay.result.v1", taskId: "P-RETRY-LIFE", status: "IMPLEMENTED", changedFiles: [], tests: [], commitSha: "d".repeat(40), summary: "ok" })}` }; } qas += 1; return { pid: 10 + qas, code: 0, startedAt: new Date().toISOString(), text: qas === 1 ? `QA_PACKET: ${JSON.stringify({ schema: "agent-relay.qa.v1", taskId: "P-RETRY-LIFE", verdict: "REQUEST_CHANGES", tests: [], findings: ["retry"], summary: "retry" })}` : `QA_PACKET: ${JSON.stringify({ schema: "agent-relay.qa.v1", taskId: "P-RETRY-LIFE", verdict: "ACCEPT", tests: [], findings: [], summary: "ok" })}` }; } } });
   await runner.enqueue("p");
@@ -332,7 +333,7 @@ test("lifecycle events capture retry then completion, and failures stay diagnosa
   assert.deepEqual(types, ["TASK_DISPATCHED", "WORKER_RESULT", "QA_VERDICT", "TASK_RETRY", "TASK_DISPATCHED", "WORKER_RESULT", "QA_VERDICT", "TASK_COMPLETED"]);
   assert.equal(lastLifecycleEvent(state).type, "TASK_COMPLETED");
 
-  const failRoot = await mkdtemp("/tmp/agent-relay-lifecycle-fail-");
+  const failRoot = await mkdtemp(join(tmpdir(), "agent-relay-lifecycle-fail-"));
   const failing = new PortfolioRunner({ manifest: { maxBuilders: 1, projects: [{ id: "p", owner: "codex", runtime: "codex", path: "/safe", task: { taskId: "P-FAIL", scope: "bounded", files: [], tests: [] } }] }, statePath: join(failRoot, "state.json"), worktreeRoot: join(failRoot, "worktrees"), worktrees: { async create() { return { path: failRoot, base: "abc", async cleanup() {} }; } }, runtime: { async run() { throw new Error("builder exploded"); } } });
   await failing.enqueue("p");
   const failed = await failing.runOnce();
@@ -356,7 +357,7 @@ test("lifecycle event store stays concise and bounded", () => {
 });
 
 test("QA prompt goes to the qaRuntime adapter and not to the worker adapter", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-qa-runtime-separate-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-qa-runtime-separate-"));
   const statePath = join(root, "state.json");
   const workerCalls = [];
   const qaCalls = [];
@@ -392,7 +393,7 @@ test("QA prompt goes to the qaRuntime adapter and not to the worker adapter", as
 });
 
 test("runner blocks non-independent QA before creating a worktree", async () => {
-  const root = await mkdtemp("/tmp/agent-relay-qa-not-self-");
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-qa-not-self-"));
   const statePath = join(root, "state.json");
   let worktreesCreated = 0;
   let runs = 0;

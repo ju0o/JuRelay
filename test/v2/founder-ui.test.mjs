@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { promisify } from "node:util";
@@ -11,7 +12,7 @@ const exec = promisify(execFile);
 test.after(async () => Promise.all(roots.map((path) => rm(path, { recursive: true, force: true }))));
 
 async function fixture() {
-  const root = await mkdtemp("/tmp/agent-relay-ui-"); roots.push(root); await mkdir(join(root, "JuActl"));
+  const root = await mkdtemp(join(tmpdir(), "agent-relay-ui-")); roots.push(root); await mkdir(join(root, "JuActl"));
   const packet = `# Founder Gate\nGATE_ID: FG-ui\nPROJECT: juactl\nTYPE: FOUNDER_E2E_REQUIRED\nSTATUS: BLOCKED_FOR_FOUNDER\nCREATED_AT: 2026-09-22T00:00:00.000Z\nTASK_ID: JuActl\nRUN_ID: run-1\n\n## 지금 어디까지 됐나\n\n검증 완료\n\n## 왜 사람 확인이 필요한가\n\nWindows E2E 필요\n\n## 이미 Agent가 확인한 것\n\n- SHA exact\n\n## Founder가 해야 할 것\n\nRun E2E\n\n## 결정 후 자동으로 할 일\n\nResume exact lane\n\n## 관련 증거\n\n- repo=https://github.com/ju0o/JuActl.git ref=feat/test sha=${"a".repeat(40)}\n`;
   await writeFile(join(root, "JuActl/FG-ui.md"), packet); return root;
 }
