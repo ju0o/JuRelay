@@ -49,8 +49,8 @@ v1-qa-loop (6/6) + phase-h-closed-loop (PASS) on current build.
 
 ## Not yet proven (Founder gate)
 
-- ChatGPT에서 `relay_pm_open_widget` 호출 → 렌더링 (connector URL 재지정 필요).
-- ChatGPT PM 판단 ACCEPT/CHANGES → VERIFIED_DONE → NEXT (연결 후).
+- ~~ChatGPT에서 `relay_pm_open_widget` 호출 → 렌더링~~ PASS (2026-09-27 Aside 실측).
+- ChatGPT PM 판단 ACCEPT/CHANGES → VERIFIED_DONE → NEXT (연결됨, 실주문 대기).
 
 ## Provenance
 

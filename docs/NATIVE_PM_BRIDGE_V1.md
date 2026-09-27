@@ -116,6 +116,14 @@ intake/dispatch/verification/judgment/retry/execution-plan + wake + widget:
 - `dist/`는 gitignored이므로 `git status` clean 유지. 되돌리려면 브랜치 HEAD(`4658448`)에서 재빌드.
 - portfolio-runner(nightly)는 손대지 않음. `/tmp/native-pm-e2e/` scratch는 삭제 가능.
 
+## P1 결과 (2026-09-27 확정)
+
+- 로컬 + 터널 PASS에 이어 **ChatGPT 실측 PASS** (Aside 보고):
+  커넥터 `https://mcp.relay-agent.site/mcp` (변경 없음, 기존 그대로),
+  `relay_pm_open_widget` 5초 만에 성공, 위젯 iframe 에러 없이 렌더링.
+- 위젯 표시: "대기 중인 검토 / 제출 대기 중 0건 · 승인 대기 0건 / 최근 실행 로그 0건"
+  (ws 프로덕션에 쌓인 검토가 없어서 정상적인 빈 화면).
+
 ## Implementation worker (Founder-approved scope exception, 2026-09-27)
 
 - `scripts/relay-worker-opencode-impl.mjs` (new): Builder relay path for OpenCode,
