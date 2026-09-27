@@ -8700,7 +8700,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-provider-failure.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:133 Quota, timeout, or transient provider failures may fall through the configured runtime chain. They are not a license to change scope."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:133 Quota, timeout, or transient provider failures may fall through the configured runtime chain. They are not a license to change scope.",
+          "title": "외부 오류에도 작업을 안전하게 보류"
         }
       ],
       "qaRuntime": [
@@ -18897,7 +18898,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-27: record M3 GO, DEFER, or KILL only for joined rows; do not infer missing joins. docs/product/MASTER_ROADMAP.md:561 the M3 GO/DEFER/KILL decision is still to be recorded"
+          "ssotEvidence": "Founder direction 2026-09-27: record M3 GO, DEFER, or KILL only for joined rows; do not infer missing joins. docs/product/MASTER_ROADMAP.md:561 the M3 GO/DEFER/KILL decision is still to be recorded",
+          "title": "완료 근거가 있을 때만 결정 기록"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-DECISION-STATUS-SYNC-R2",
@@ -22045,7 +22047,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 서버 전체 하루 300회"
+          "ssotEvidence": "README.md:49 서버 전체 하루 300회",
+          "title": "연구실의 하루 사용 한도를 안내해요"
         },
         {
           "taskId": "JUAI-GUIDE-MENTOR-MAX",
@@ -22059,7 +22062,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:20 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다."
+          "ssotEvidence": "README.md:20 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다.",
+          "title": "초보 질문을 도울 인원을 알려줘요"
         },
         {
           "taskId": "JUAI-CHECK-SUB-KEYWORD-TRIM",
@@ -22070,7 +22074,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 키워드 구독은 2~20글자, 최대 5개"
+          "ssotEvidence": "README.md:8 키워드 구독은 2~20글자, 최대 5개",
+          "title": "검색어 앞뒤 공백을 정리해줘요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
