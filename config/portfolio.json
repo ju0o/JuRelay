@@ -12747,6 +12747,28 @@
             "node --test tests/contract-freshness-sync.test.mjs"
           ],
           "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md lines with 'freshnessMs' (default: `300000`...) at ~136,191,243 vs src/adapters/agent-relay.mjs:45, src/adapters/juplan.mjs:30, src/adapters/juceipt.mjs:32 freshnessMs = 5 * 60 * 1000; existing tests/docs-default-freshness-sync.test.mjs only checks src/project-status.mjs vs README/getting-started, not this doc or these adapters (confirmed by reading both at 02fe2c67f)"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-STEP-QUOTE-SYNC",
+          "scope": "Add one offline test that every backtick-quoted Korean result sentence in the docs/getting-started.md e2e step bullets appears verbatim in that step's function in scripts/e2e.sh.",
+          "files": [
+            "tests/e2e-step-quote-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-step-quote-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-27: docs/getting-started.md e2e result section is still a hand-transcribed quote"
+        },
+        {
+          "taskId": "JUCONTROLER-CONTRACT-EXAMPLE-RUN",
+          "scope": "Run the Minimal example JSON from the project status contract through the read-only status board and assert projectId, status, source, and sourceRevision match the example.",
+          "files": [
+            "tests/contract-example-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-example-run.test.mjs"
+          ],
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:29 Minimal example:"
         }
       ],
       "qaRuntime": [
