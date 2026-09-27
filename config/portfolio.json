@@ -15758,6 +15758,54 @@
             "node --test test/integrations-ask.test.mjs"
           ],
           "ssotEvidence": "Founder 2026-09-27: 'JuPlan 프로젝트도 '개별적인' 프로젝트지 -> JuControler 계획 탭에 말해달라고 하네. JuControler를 설치하지 않은 경우도 알아야함 … JuControler 안에도 '연동프로그램 Agent-Relay 감지되었어요 연동할까요? JuPlan 연동할까요?' 만약 없다면 '설치할까요?' … N누르면 ->"
+        },
+        {
+          "taskId": "JCAPP-HOLD-CARD-STUCK-EXPLAINING",
+          "scope": "Home shows HOLD cards stuck at '해석 중이에요…' with no choice buttons (e.g. AGENTRELAY-OSS-LOCAL-RUN, a board env-grouping task). When no explanation is available within 30 s (or the task already has a redo/R2), the card must still show the one-sentence reason from the task's QA findings and the standard choices (추천 강조), never an endless spinner. Also the countdown line must use the real remaining time (cards showed past times like '00:48에' next to '1분 안에 추천대로').",
+          "files": [
+            "operator/public/app.js",
+            "operator/server.mjs",
+            "test/hold-card-no-endless-explaining.test.mjs"
+          ],
+          "tests": [
+            "node --test test/hold-card-no-endless-explaining.test.mjs"
+          ],
+          "ssotEvidence": "Founder-persona Tester review 2026-09-27 (persona file ~/.claude-team/skills/founder-persona/PERSONA.md; report TESTER_persona_20260927.md, headless captures of integration builds): 허브 막힘 1. Test: a HOLD without explanation renders reason + buttons after the fallback; a past auto-pick time is not shown as future.",
+          "title": "허브: 멈춘 작업 카드가 '해석 중이에요…'에서 멈춤"
+        },
+        {
+          "taskId": "JCAPP-NUMBERS-AGREE-EVERYWHERE",
+          "scope": "Home says 대표님 선택 7건 while 승인 tab lists 1; '지금 일하는 AI 3' while AI 창 says '일하는 창 0개'. Each count comes from one shared projection (same function used by home stat, banner, tab badge and card list); where two concepts differ (AI in rails vs actl windows) label them differently so they never look contradictory.",
+          "files": [
+            "operator/public/app.js",
+            "lib/resultsProjection.mjs",
+            "test/numbers-agree.test.mjs"
+          ],
+          "tests": [
+            "node --test test/numbers-agree.test.mjs"
+          ],
+          "ssotEvidence": "Founder-persona Tester review 2026-09-27 (persona file ~/.claude-team/skills/founder-persona/PERSONA.md; report TESTER_persona_20260927.md, headless captures of integration builds): 허브 불편: numbers disagree. Test: fixture board → home 선택 count == 승인 tab count; working-AI label differs from actl window count label.",
+          "dependsOn": [
+            "JCAPP-HOLD-CARD-STUCK-EXPLAINING"
+          ],
+          "title": "허브: 같은 숫자는 어디서나 같게"
+        },
+        {
+          "taskId": "JCAPP-NO-TYPING-PLAIN-WORDS",
+          "scope": "Remove typing-required steps and developer text: 'that pane: /compact 입력' instruction → a button that does it via the existing actl path; 프로젝트 추가 'folder location (e.g. /home/me/my-app)' → a folder picker listing detected git repos; approval rules show SSOT/PM/QA/E2E/push → plain Korean labels (원본 문서/계획 담당/검사/실제 기기 시험/올리기); 진행 대화 기록 raw English commit lines collapsed to one Korean line with 원문 보기; the 21-checkbox Skill table collapsed to '장착된 Skill N개 · 바꾸기'; repeated '담당: Claude Team 바꾸기' ×11 → one 담당 line per project with a single 바꾸기.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/no-typing-plain-words.test.mjs"
+          ],
+          "tests": [
+            "node --test test/no-typing-plain-words.test.mjs"
+          ],
+          "ssotEvidence": "Founder-persona Tester review 2026-09-27 (persona file ~/.claude-team/skills/founder-persona/PERSONA.md; report TESTER_persona_20260927.md, headless captures of integration builds): 허브 불편·다듬기. Test: rendered home/진행/승인/더보기 models contain none of 'SSOT','E2E','push','/compact 입력' and at most one '바꾸기' per project.",
+          "dependsOn": [
+            "JCAPP-NUMBERS-AGREE-EVERYWHERE"
+          ],
+          "title": "허브: 직접 입력 없애기·개발 용어 정리"
         }
       ],
       "skills": {
