@@ -5003,7 +5003,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-27: '오픈소스용으로 공개 되는 것을 염두 … 내 환경인 ssh 연동 및 이런 건 선택사항인거임 일반 오픈소스 사용 하는 유저들은 그거 사용하지 않고 본인 컴퓨터 내에서만 사용할 수도 있음'. Canvas 'Ju 제품군 완성 설계' phase 2 (혼자 쓰기). Founder 2026-09-27 narrowing: 화면 문구만 먼저, 확인 절차는 그대로. Test in tests/test_gui_empty_error_states.py (5 asserts) + tests/test_gui_unreachable_layout.py: expect new non-ASUS wording for gui.py's loading/unreachable/empty/status messages — fails against unmodified base 8aa2994dc50a56a74dc25773b91445789456c01d, passes once gui.py wording changes."
+          "ssotEvidence": "Founder 2026-09-27: '오픈소스용으로 공개 되는 것을 염두 … 내 환경인 ssh 연동 및 이런 건 선택사항인거임 일반 오픈소스 사용 하는 유저들은 그거 사용하지 않고 본인 컴퓨터 내에서만 사용할 수도 있음'. Canvas 'Ju 제품군 완성 설계' phase 2 (혼자 쓰기). Founder 2026-09-27 narrowing: 화면 문구만 먼저, 확인 절차는 그대로. Test in tests/test_gui_empty_error_states.py (5 asserts) + tests/test_gui_unreachable_layout.py: expect new non-ASUS wording for gui.py's loading/unreachable/empty/status messages — fails against unmodified base 8aa2994dc50a56a74dc25773b91445789456c01d, passes once gui.py wording changes.",
+          "title": "어디서든 연결 상태를 알려줘"
         }
       ],
       "qaRuntime": [
@@ -12506,7 +12507,8 @@
           "tests": [
             "node --test tests/contract-role-order-sync.test.mjs"
           ],
-          "ssotEvidence": "README.md:130 'Agent Relay (셋톱박스: PM → Worker → QA → Tester)' has no matching test; tests/contract-role-order-sync.test.mjs (base ccfbe8486212daf34109f709a57880dcc2c15fde) only reads docs/getting-started.md's 역할(...) string, never README.md"
+          "ssotEvidence": "README.md:130 'Agent Relay (셋톱박스: PM → Worker → QA → Tester)' has no matching test; tests/contract-role-order-sync.test.mjs (base ccfbe8486212daf34109f709a57880dcc2c15fde) only reads docs/getting-started.md's 역할(...) string, never README.md",
+          "title": "AI 역할 순서 안내 맞추기"
         },
         {
           "taskId": "JUCONTROLER-README-CONTRACT-TOPICS-SYNC",
@@ -12517,7 +12519,8 @@
           "tests": [
             "node --test tests/contract-files-table-sync.test.mjs"
           ],
-          "ssotEvidence": "README.md:23 'AI 운영 규칙 파일 — AI 자동 배정, Skill 장착, 승인한 기억, Tester 권한' vs docs/getting-started.md '약속(계약) 파일' table rows (AI 자동 배정→ai-assignment.v1.json, Skill 장착→skill-attachment.v1.json, 승인한 기억→approved-memory.v1.json, Tester 역할→tester-harness.schema.json), base ccfbe8486212daf34109f709a57880dcc2c15fde; tests/contract-files-table-sync.test.mjs only checks file existence, never reads README.md"
+          "ssotEvidence": "README.md:23 'AI 운영 규칙 파일 — AI 자동 배정, Skill 장착, 승인한 기억, Tester 권한' vs docs/getting-started.md '약속(계약) 파일' table rows (AI 자동 배정→ai-assignment.v1.json, Skill 장착→skill-attachment.v1.json, 승인한 기억→approved-memory.v1.json, Tester 역할→tester-harness.schema.json), base ccfbe8486212daf34109f709a57880dcc2c15fde; tests/contract-files-table-sync.test.mjs only checks file existence, never reads README.md",
+          "title": "운영 규칙 주제 안내 맞추기"
         },
         {
           "taskId": "JUCONTROLER-README-SOURCE-ORDER-SYNC",
@@ -12528,7 +12531,8 @@
           "tests": [
             "node --test tests/docs-source-kinds-sync.test.mjs"
           ],
-          "ssotEvidence": "README.md:15-16 '네 가지 원본 읽기 — 저장소 상태 파일, JuPlan 상태, JuCeipt 영수증, Agent Relay 야간 보드 스냅샷' vs src/project-registry.mjs sourceKinds order (repository-status-file, juplan-status, juceipt-receipt, agent-relay-board) — currently matches but unchecked by any existing test, per Founder direction 2026-09-26 (bounded acceptance target: no runtime behavior change, doc/test sync only)"
+          "ssotEvidence": "README.md:15-16 '네 가지 원본 읽기 — 저장소 상태 파일, JuPlan 상태, JuCeipt 영수증, Agent Relay 야간 보드 스냅샷' vs src/project-registry.mjs sourceKinds order (repository-status-file, juplan-status, juceipt-receipt, agent-relay-board) — currently matches but unchecked by any existing test, per Founder direction 2026-09-26 (bounded acceptance target: no runtime behavior change, doc/test sync only)",
+          "title": "원본 자료 읽는 순서 맞추기"
         },
         {
           "taskId": "JUCONTROLER-AI-RULES-UNWIRED-GUARD",
@@ -12539,7 +12543,8 @@
           "tests": [
             "node --test tests/ai-rules-unwired-guard.test.mjs"
           ],
-          "ssotEvidence": "README.md:23-24 '규칙을 파일로 적어 두고 테스트로 모양을 확인합니다. 규칙은 아직 적어만 둔 상태입니다.' and README.md:147 '실제로 적용하는 코드는 없습니다' — currently true (no src/scripts references found) but unguarded by any test, per Founder direction 2026-09-26 (bounded acceptance target: no runtime integration or new product behavior)"
+          "ssotEvidence": "README.md:23-24 '규칙을 파일로 적어 두고 테스트로 모양을 확인합니다. 규칙은 아직 적어만 둔 상태입니다.' and README.md:147 '실제로 적용하는 코드는 없습니다' — currently true (no src/scripts references found) but unguarded by any test, per Founder direction 2026-09-26 (bounded acceptance target: no runtime integration or new product behavior)",
+          "title": "작성만 된 규칙 상태 지키기"
         }
       ],
       "qaRuntime": [
@@ -19685,7 +19690,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:325 const SUB_MAX = 5, SUB_DAILY = 3 (private, not shared); layout.mjs:137 hardcodes (최대 5개) and layout.mjs:159 hardcodes (하루 최대 3회) while layout.mjs:120 already correctly interpolates ${LIMITS.bonusMax}"
+          "ssotEvidence": "bot.mjs:325 const SUB_MAX = 5, SUB_DAILY = 3 (private, not shared); layout.mjs:137 hardcodes (최대 5개) and layout.mjs:159 hardcodes (하루 최대 3회) while layout.mjs:120 already correctly interpolates ${LIMITS.bonusMax}",
+          "title": "이용 한도를 한눈에 안내"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
