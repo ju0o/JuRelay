@@ -8702,6 +8702,33 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:133 Quota, timeout, or transient provider failures may fall through the configured runtime chain. They are not a license to change scope.",
           "title": "외부 오류에도 작업을 안전하게 보류"
+        },
+        {
+          "taskId": "JUPLAN-AR-QA-GATE-REWRITE",
+          "scope": "Add a pure offline decision that rewrites a QA ACCEPT into REQUEST_CHANGES with the runner test-gate finding and does not promote that candidate, leaving the existing QA packet shape check unchanged.",
+          "files": [
+            "packages/runtime/src/agentRelayQaGate.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:120 An ACCEPT that fails the runner test gate is rewritten to REQUEST_CHANGES with the gate finding. That rewrite does not promote the candidate."
+        },
+        {
+          "taskId": "JUPLAN-AR-SCOPE-HOLD",
+          "scope": "Add an offline manifest and pure decision that dispatches none and invents no product task when requested work would change V1 product semantics, reopen DEC-G012, expand providers, or change public visibility, while a clean AR-JUPLAN-001 request stays authorized-task-only.",
+          "files": [
+            "docs/agent-relay/scope-hold.json",
+            "packages/runtime/src/agentRelayScopeHold.ts",
+            "packages/runtime/test/agent-relay-scope-hold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-scope-hold.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
         }
       ],
       "qaRuntime": [
