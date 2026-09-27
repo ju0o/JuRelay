@@ -17839,6 +17839,28 @@
           ],
           "ssotEvidence": "docs/product/MASTER_ROADMAP.md:96 M3 status: 10-receipt register filled; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED per M3_DAILY_VALUE_VALIDATION §2.2/§7; M3 decision pending",
           "title": "계획과 진행 상황을 헷갈리지 않게 해요"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-B1-JOIN-GAP-STATE-SYNC",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md change only the business-track B1 state cell so it uses the same join-gap blocked wording as the WBS, and do not record GO, DEFER, or KILL.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:30 BLOCKED — M2 GO (A-14) met; waiting on the M3 decision (0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED)"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-M3-KO-SURFACE",
+          "scope": "On the canonical map, show the M3 hero pill and the M3 gate state in Korean with the existing English join-gap sentence under 원문 보기, matching the B1 pattern, without recording a milestone decision.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:83 멈춤 — 사업 흐름 연결 공백 · M3 결정 대기, with the English join-gap sentence under 원문 보기; line 84 still shows MAPPING UNDECIDED · DECISION PENDING on the surface"
         }
       ],
       "skills": {
