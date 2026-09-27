@@ -19299,6 +19299,17 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:162-175 'No M3 decision is recorded' 및 'Record the M3 GO / DEFER / KILL decision'; Founder direction 2026-09-23",
           "title": "결정된 보류 상태를 일관되게 기록"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-MORNING-NONUNLOCK-SYNC",
+          "scope": "In the P0 planning-gate report morning summary, replace only the short non-unlock sentence so it matches the status board: P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
         }
       ],
       "skills": {
