@@ -20526,6 +20526,39 @@
           ],
           "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만, 1인 기본 하루 5회(피드백 보너스 최대 +3) · 30초 간격 · 서버 전체 하루 300회 · 서버 주인(Founder)·운영진은 일일 제한 없음.",
           "title": "하루 전체 사용량을 정확히 제한해요"
+        },
+        {
+          "taskId": "JUAI-CHECK-ONBOARDING-FLAGS",
+          "scope": "Add check.mjs assertions only (no layout.mjs change) that every ONBOARDING question has boolean single and required values, matching the fields setup.mjs sends as single_select and required.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "setup.mjs:156 single_select: q.single, required: q.required"
+        },
+        {
+          "taskId": "JUAI-CHECK-REDACT-OPEN-KEY",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) that redact masks an unclosed BEGIN PRIVATE KEY block through the end of the string and keeps text after a closed END PRIVATE KEY marker, building those markers by concatenation like the existing RSA assertion.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-PEEK-NOWRITE",
+          "scope": "Add check.mjs assertions only (no lib.mjs change), on a fresh in-memory DB built from SCHEMA, that peekQuota leaves the usage table unchanged for that member and for the global star row.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:135 !남은횟수 오늘 남은 AI 질문 수 확인 (횟수 안 씀)"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
