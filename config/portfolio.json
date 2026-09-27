@@ -11266,6 +11266,18 @@
           ],
           "ssotEvidence": "QA REQUEST_CHANGES 2 findings + Supervisor 2026-09-27 R2 redesign",
           "title": "오늘 화면 파일명과 다크 모드 고치기"
+        },
+        {
+          "taskId": "JUCEIPT-ROLLBACK-DETAIL-PLAIN-R2",
+          "scope": "In buildPresentation, change rollback_summary.detail to the four specified plain 해요체 안내 문장 and add assertions for all four in tests/pipeline.test.ts so the test fails on the base code and passes after the change.",
+          "files": [
+            "src/receipt/index.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/pipeline.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
