@@ -2649,6 +2649,18 @@
           ],
           "ssotEvidence": "Prior task AGENTRELAY-V2-PROJECT-SCOPE-R2 scope note: 'the page-header project name and the pause/resume control move to a later task' (pause/resume already shipped via ProjectPauseControl in src/frontend/controlRoom.tsx:1110; only the header name remains undone)",
           "title": "관제실에 프로젝트 이름 표시"
+        },
+        {
+          "taskId": "AGENTRELAY-TEST-WIRE-CONTROLROOM-TOGGLE",
+          "scope": "Add npm script test:controlroom-toggle chaining test/controlroom-automation-toggle.test.mjs and test/controlroom-plain-2.test.mjs and include it in the test aggregate so unattended npm test covers the already-built Control Room automation on/off toggle",
+          "files": [
+            "package.json"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "package.json scripts.test omits test/controlroom-automation-toggle.test.mjs and test/controlroom-plain-2.test.mjs, which already cover Founder direction 2026-09-27 (controlRoom automationOn/automationOff/automationStatus UI toggle, already built per AGENTRELAY-CONTROLROOM-AUTOMATION-TOGGLE done); same wiring pattern as AGENTRELAY-TEST-WIRE-AUTOMATION-UI (done)"
         }
       ],
       "qaRuntime": [
