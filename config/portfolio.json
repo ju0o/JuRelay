@@ -7690,6 +7690,24 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "JUPLAN-EXISTING-FOLDER-PLAN-COMPLETE",
+          "scope": "Real run on integration after JUPLAN-IMPORT-EXISTING-DOCS: `init` → `scan --path <a repo with docs/roadmap, WBS, status boards>` → `plan --offline` ends BLOCKED: G1 requirement/feature, G2 user-flow/screen, G3 system component, G4 task/acceptance/test nodes all missing. The offline planner must build those passes from the scan + imported documents (WBS items → tasks with acceptance, roadmap/PRD → requirements/features, README/UI files → screens and flows, code modules → system components, test files → test items), each with evidence refs; only truly unknown parts go to '없는 문서 — 같이 기획해볼까요?'. The start-screen path '기존 프로젝트 폴더 열기' must reach the normal Studio map without a BLOCKED error for a docs-rich repo.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/project-scanner/src/docs.ts",
+            "packages/runtime/test/existing-folder-plan-complete.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: '폴더선택하면 기존에 있던 프로젝트의 WBS | SSOT | ERD | DBML 다 가져와서 정리해주는거고'. Verified 2026-09-27 13:20 on a docs-rich repo: plan --offline BLOCKED on G1–G4. Test: fixture repo with docs/WBS.md, docs/ROADMAP.md, README and a tests/ folder → plan --offline returns PLANNING_READY_FOR_FINAL_REVIEW with task/feature/screen/test nodes carrying evidence.",
+          "dependsOn": [
+            "JUPLAN-OFFLINE-PLAN-FROM-IDEA-FIX"
+          ],
+          "title": "JuPlan: 기존 폴더를 열면 계획이 끝까지 만들어지게"
         }
       ],
       "qaRuntime": [
