@@ -4756,6 +4756,86 @@
           ],
           "ssotEvidence": "Founder approved design 2026-09-26; capture 2026-09-27 03:57 of b37c1ab. Tests in tests/test_gui_board_look.py: row state text equals detail state text for the same agent; duplicate names in one environment get distinct labels; rows under a group heading omit the environment.",
           "title": "보드: AI 창 줄 상태 맞추기·같은 이름 구분"
+        },
+        {
+          "taskId": "ACTL-BOARD-SEND-DELIVERS",
+          "scope": "Sending from the MainPC board to an ASUS AI window shows '보냈는지 확실하지 않아요 — ASUS 화면 전환으로 확인하세요' (DELIVERY_AMBIGUOUS, src/actl/core/send_truth.py) and nothing arrives. Evidence: ASUS ~/.local/state/actl/audit.jsonl has no entry after 2026-09-26 22:49, so the send never reached the ASUS side. Trace the board send path end to end (gui.py → core/remote.py ManagedSendDelivery/_runtime_request over ssh → ASUS actl runtime reserve/send) and fix the root cause so the text is typed into the pane and submitted, then the board shows '보냈어요'. Reproduce ONLY with a scratch tmux session running `cat` (never a real AI pane). If the ssh runtime request fails, show the real reason in plain Korean instead of 'ambiguous'.",
+          "files": [
+            "src/actl/core/remote.py",
+            "src/actl/core/send_truth.py",
+            "src/actl/gui.py",
+            "tests/test_board_send_delivers.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 09:40 on MainPC after opening JuActlBoard 8242078: 'actl로 보내기 해봤더니 \"보냈는지 확실하지 않아요 화면전환으로확인하세요\" 뜨고 전송 안되었음'. Test in tests/test_board_send_delivers.py: a fake ssh runtime that accepts reserve+send yields SUBMITTED, and a failing one yields SEND_FAILED with its reason (not DELIVERY_AMBIGUOUS).",
+          "title": "보드에서 보내기가 실제로 전송되게"
+        },
+        {
+          "taskId": "ACTL-BOARD-NO-CONSOLE-WINDOWS",
+          "scope": "Opening JuActlBoard.exe on Windows pops several cmd/console windows (every ssh/subprocess call). Every subprocess the board or its core starts on Windows must pass creationflags=subprocess.CREATE_NO_WINDOW (and STARTUPINFO hidden) through one shared helper; the board exe stays windowed-only (no console). No behaviour change on Linux.",
+          "files": [
+            "src/actl/core/proc.py",
+            "src/actl/core/remote.py",
+            "src/actl/gui.py",
+            "tests/test_no_console_windows.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 09:40 on MainPC after opening JuActlBoard 8242078: 'actl 실행하면 cmd창이 여러개 뜸 이거는 백그라운드로 못돌림?'. Test in tests/test_no_console_windows.py: with os.name patched to 'nt', the shared helper adds CREATE_NO_WINDOW; a grep-style test asserts no bare subprocess.Popen/run remains in src/actl outside the helper.",
+          "title": "보드 켤 때 까만 창(cmd) 안 뜨게"
+        },
+        {
+          "taskId": "ACTL-BOARD-LIVE-PANE-VIEW",
+          "scope": "Herdr-style: clicking an AI window row shows that window's live screen on the right (the last screen of the tmux pane, monospace, auto-scrolled to the bottom, updated when it changes), so the Founder can see which answer is ready. Replace the current '최근 답 / 답이 준비됐어요' block with this live view plus the send box under it. Also: after '답이 준비됐어요' the detail shows '프로젝트: 프로젝트 미지정 · 역할: 미지정' — take project/role from the existing mapping, and when unknown hide those lines instead of printing 미지정.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/serve.py",
+            "tests/test_board_live_pane_view.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 09:40 on MainPC after opening JuActlBoard 8242078: '\"답이 준비됐어요\" 이후 -> 프로젝트, 프로젝트미지정, 역할 전부 미지정 으로 뜸 그리고 어떤 답이 준비 되었는지 Live Pane이 안 보임' and 'Herdr처럼 한 쪽에 클릭하면 라이브 Pane이 보이는 구조 안됨?'. Test: selecting a row feeds its pane capture to the live view model; unknown project/role produce no lines.",
+          "dependsOn": [
+            "ACTL-BOARD-SEND-DELIVERS"
+          ],
+          "title": "창을 누르면 옆에 실시간 화면 (Herdr처럼)"
+        },
+        {
+          "taskId": "ACTL-BOARD-EVENT-REFRESH",
+          "scope": "Replace the '자동 갱신 켜짐/꺼짐' timer toggle with event-driven refresh: the board refreshes a window's row/live view only when that pane's content or state changed (cheap per-pane content hash or tmux activity from the ASUS side, one batched check), plus immediately after send/copy/connect actions. Remove the toggle from the header. Keep a manual '새로 고침' button.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/serve.py",
+            "tests/test_board_event_refresh.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 09:40 on MainPC after opening JuActlBoard 8242078: ''새로고침' 자동갱신도 오히려 이벤트성으로 바꾸면 좋겠고'. Test: unchanged hashes cause no redraw; a changed hash redraws only that row.",
+          "dependsOn": [
+            "ACTL-BOARD-LIVE-PANE-VIEW"
+          ],
+          "title": "자동 갱신 대신 바뀔 때만 새로 고침"
+        },
+        {
+          "taskId": "ACTL-BOARD-READABLE-TONE",
+          "scope": "The Founder likes plain words but finds the board childish. Keep the approved dark palette, change tone and density: short noun labels instead of sentences ('연결됨', '작업 중', '답 준비', '확인 필요'), remove the long intro card (move it to a '?' help tooltip), status as small colored dots + label, window list as a compact table (이름 · 환경 · 상태 · 마지막 변화), headings 14–15px semibold, body 13–14px, consistent 8px spacing grid, no emoji-like chips. Numbers in the header stay but read like a status bar.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_board_look.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 09:40 on MainPC after opening JuActlBoard 8242078: '쉬운 용어들로 써진 건 좋은데, 그 -> 너무 유치함 조금 가독성 있게 디자인 좀 바꾸면 좋겠음'. Test: header/status strings are short labels (≤ 8 Korean chars each), no intro card by default.",
+          "dependsOn": [
+            "ACTL-BOARD-EVENT-REFRESH"
+          ],
+          "title": "보드 말투·디자인 덜 유치하게, 더 읽기 쉽게"
         }
       ],
       "qaRuntime": [
