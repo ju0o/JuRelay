@@ -14107,6 +14107,28 @@
           ],
           "ssotEvidence": "scripts/status-board.mjs:9 'invalid-request': '요청 값이 잘못됐어요'",
           "title": "잘못된 요청 안내를 확인해요"
+        },
+        {
+          "taskId": "JUCONTROLER-QUICKSTART-EXAMPLE-FIELDS",
+          "scope": "When the README Quickstart current.json example is read with observedAt refreshed, assert the status-board row keeps that example's projectId, status, schema, and source, not only the Korean success line.",
+          "files": [
+            "tests/quickstart-registry-example.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/quickstart-registry-example.test.mjs"
+          ],
+          "ssotEvidence": "README.md:61 \"status\": \"READY\""
+        },
+        {
+          "taskId": "JUCONTROLER-CONTRACT-EXAMPLE-STALE",
+          "scope": "Assert the project-status contract Minimal example keeps schema, observedAt, and stale false when the read-only status board loads it, without requiring generatedAt string equality.",
+          "files": [
+            "tests/contract-example-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-example-run.test.mjs"
+          ],
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:38 \"stale\": false"
         }
       ],
       "qaRuntime": [
