@@ -20109,6 +20109,41 @@
           ],
           "ssotEvidence": "lib.mjs:144 timeout's minutes uses a Number(x) or 60 fallback; check.mjs tests -1 and an invalid string but never the exact 0 value that triggers the fallback",
           "title": "정지 시간을 0으로 두면 기본값 적용 확인"
+        },
+        {
+          "taskId": "JUAI-MEMBER-SUB-CAPS",
+          "scope": "Name both the SUB_MAX keyword cap and the SUB_DAILY per-person match-notification cap in HELP_TEXT and on the GUIDE sentence that already mentions !구독 MCP, assert those two subscription sentences include the interpolated values, and leave the feedback-bonus wording on LIMITS.bonusMax.",
+          "files": [
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 키워드 구독은 최대 5개, 매칭 알림은 1인 하루 3회"
+        },
+        {
+          "taskId": "JUAI-GUIDE-GLOBAL-CAP",
+          "scope": "Add one short clause to GUIDE's AI-quota warning that already cites LIMITS.daily, naming the server-wide daily cap from LIMITS.globalDaily, and assert that warning includes the interpolated value.",
+          "files": [
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 서버 전체 하루 300회"
+        },
+        {
+          "taskId": "JUAI-CHECK-GLOBAL-NOBUMP",
+          "scope": "Add check.mjs assertions only (no lib.mjs change), on a fresh in-memory DB built from SCHEMA, that takeQuota returning reason global for a member and for staff leaves the global count unchanged and writes neither a member usage row nor reject:*.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:53 if (global >= limits.globalDaily) return { ok: false, reason: \"global\" }"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
