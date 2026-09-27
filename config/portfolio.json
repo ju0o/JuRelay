@@ -20685,6 +20685,18 @@
           ],
           "ssotEvidence": "layout.mjs:135 !남은횟수 오늘 남은 AI 질문 수 확인 (횟수 안 씀)",
           "title": "사용량을 보기만 해도 기록은 그대로"
+        },
+        {
+          "taskId": "JUAI-GUIDE-GLOBAL-CAP-R2",
+          "scope": "Keep the existing GUIDE bullet `• AI 질문은 **1인 하루 ${LIMITS.daily}회**, 질문 사이 ${LIMITS.gapMs / 1000}초. 매일 **오전 9시**에 충전돼요.` unchanged except inserting `, 서버 전체 **하루 ${LIMITS.globalDaily}회**` immediately after the daily clause, and add `assert.ok(GUIDE(mention).some((message) => message.includes(`AI 질문은 **1인 하루 ${LIMITS.daily}회**, 서버 전체 **하루 ${LIMITS.globalDaily}회**, 질문 사이 ${LIMITS.gapMs / 1000}초`)), \"guide omits LIMITS.globalDaily\")` directly after the existing gapMs assertion so that new assertion fails on the old bullet and passes only when the interpolated LIMITS.globalDaily clause sits in that same sentence.",
+          "files": [
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 서버 전체 하루 300회"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
