@@ -45,12 +45,21 @@ DELIVERED → VERIFIED | REWORK (→GENERATING, 3회 한도).
   (PM·App 양 표면에 등록). 테스트 `test/asset-chatgpt.test.mjs` (3 PASS).
 - 프로덕션 (`mcp.relay-agent.site`)에 반영됨. 위젯에 에셋 요청 표시는 TODO.
 
+## T8: 코드 렌더 백엔드 (자체 생성, AI-아트 제외)
+
+- `code-render`: 작업자가 낸 인라인 SVG → headless Chrome 스크린샷 → PNG.
+  다이어그램/OG/썸네일/아이콘은 Agent-Relay가 직접 만듦 (외부모델 불필요).
+- `src/backend/asset-coderender.ts` + `svg` 필드(64KiB, `<svg>` 필수).
+  치수는 preset 기준 (thumbnail 640x360 등).
+- 사진풍 AI-아트는 여전히 외부 백엔드(ChatGPT 전달) 필요.
+- 테스트 2개 PASS (실제 PNG·치수 검증).
+
 ## 보안
 
 - output_path는 run workspace 하위로 강제 (탈출 거부).
 - prompt 16 KiB 상한, count 1..4, aspect `W:H` 형식.
 - 작업자는 자기 run의 에셋만 조회 (FORBIDDEN).
-- 진짜 생성 백엔드(T7)는 별도 결정 필요 (API키=비밀 게이트).
+- 사진풍 생성은 ChatGPT 전달(T7) 경로로, API키 방식은 씀 (결정됨).
 
 ## 롤백
 

@@ -15,6 +15,7 @@ const backend = await import('../dist/server/backend/asset-backend.js');
 const verify = await import('../dist/server/backend/asset-verify.js');
 const presets = await import('../dist/server/backend/asset-presets.js');
 const kernel = await import('../dist/server/backend/asset-request.js');
+const coderender = await import('../dist/server/backend/asset-coderender.js');
 
 const ROOT = fs.mkdtempSync(path.join(os.tmpdir(), 'arl-assetharness-'));
 const WS = path.join(ROOT, 'ws');
@@ -135,5 +136,34 @@ describe('presets (T5)', () => {
     assert.equal(presets.presetFor('og_image').aspectRatio, '1200:630');
     assert.equal(presets.presetFor('nope'), null);
     assert.equal(presets.suggestOutputPath('hero_image', 'AI 스터디 모집!'), 'public/assets/ai-스터디-모집.png');
+  });
+});
+
+describe('code-render backend (T8)', () => {
+  const SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"><rect width="640" height="360" fill="#123456"/><text x="20" y="40" font-size="28" fill="white">T8</text></svg>';
+  it('renders SVG to PNG with preset dimensions', () => {
+    const rec = kernel.createAssetRequest(ROOT, PROJECT, {
+      asset_kind: 'thumbnail', purpose: 'p', prompt: 'x', output_path: 'public/t8.png',
+      svg: SVG, owner_task_id: TASK_ID, requester_run_id: 'RUN-1', workspaceRoot: WS,
+    }).record;
+    kernel.routeAssetRequest(ROOT, PROJECT, rec.assetId, 'code-render');
+    kernel.markAssetGenerating(ROOT, PROJECT, rec.assetId);
+    return coderender.codeRenderBackend.generate({ record: rec, workspaceRoot: WS }).then((out) => {
+      assert.equal(out.source, 'code-render');
+      assert.equal(out.width, 640);
+      assert.equal(out.height, 360);
+      assert.ok(verify.allAssetChecksPass(verify.verifyAssetFile(WS, 'public/t8.png')));
+      assert.equal(kernel.markAssetDelivered(ROOT, PROJECT, rec.assetId, { ...out, path: 'public/t8.png' }).status, 'DELIVERED');
+    });
+  });
+  it('refuses missing svg', async () => {
+    const rec = kernel.createAssetRequest(ROOT, PROJECT, {
+      asset_kind: 'diagram', purpose: 'p', prompt: 'x', output_path: 'public/nosvg.png',
+      owner_task_id: TASK_ID, requester_run_id: 'RUN-1', workspaceRoot: WS,
+    }).record;
+    await assert.rejects(
+      coderender.codeRenderBackend.generate({ record: rec, workspaceRoot: WS }),
+      /inline svg/,
+    );
   });
 });

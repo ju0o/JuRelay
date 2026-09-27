@@ -40,6 +40,7 @@ export const ASSET_STATUSES = [
 export type AssetStatus = (typeof ASSET_STATUSES)[number];
 
 export const PROMPT_SIZE_LIMIT_BYTES = 16 * 1024;
+export const SVG_SIZE_LIMIT_BYTES = 64 * 1024;
 export const MAX_GENERATION_ATTEMPTS = 3;
 
 export class AssetRequestError extends Error {
@@ -67,6 +68,8 @@ export interface AssetRequestInput {
   requester_run_id: string;
   priority?: string;
   workspaceRoot: string;
+  /** Optional inline SVG source (code-render backend). 64 KiB cap. */
+  svg?: string;
 }
 
 export interface AssetRecord {
@@ -87,6 +90,7 @@ export interface AssetRecord {
   editTargetAssetId?: string;
   count: number;
   priority: string;
+  svg?: string;
   status: AssetStatus;
   backendId?: string;
   attempts: number;
@@ -168,6 +172,14 @@ function validateInput(input: AssetRequestInput): void {
   const count = input.count ?? 1;
   if (!Number.isInteger(count) || count < 1 || count > 4) {
     throw new AssetRequestError('INVALID_ARGUMENT', 'count는 1..4 정수여야 합니다.');
+  }
+  if (input.svg !== undefined) {
+    if (typeof input.svg !== 'string' || !input.svg.includes('<svg')) {
+      throw new AssetRequestError('INVALID_ARGUMENT', 'svg는 <svg> 마크업이어야 합니다.');
+    }
+    if (Buffer.byteLength(input.svg, 'utf8') > SVG_SIZE_LIMIT_BYTES) {
+      throw new AssetRequestError('INVALID_ARGUMENT', 'svg가 64 KiB를 초과합니다.');
+    }
   }
 }
 
@@ -254,6 +266,7 @@ export function createAssetRequest(
     editTargetAssetId: input.edit_target_asset_id?.trim() || undefined,
     count: input.count ?? 1,
     priority: input.priority?.trim() || 'normal',
+    svg: input.svg ?? undefined,
     status: 'REQUESTED',
     attempts: 0,
     createdAt: now,

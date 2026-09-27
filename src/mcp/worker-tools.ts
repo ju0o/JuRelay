@@ -319,6 +319,7 @@ export function buildWorkerWriteTools(ctx: WorkerServerContext): McpTool[] {
           output_path: { type: 'string' },
           reference_asset_ids: { type: 'array', items: { type: 'string' } },
           edit_target_asset_id: { type: 'string' },
+          svg: { type: 'string' },
           count: { type: 'number' },
           priority: { type: 'string' },
         },
@@ -328,7 +329,7 @@ export function buildWorkerWriteTools(ctx: WorkerServerContext): McpTool[] {
         rejectUnknownFields(args, [
           'asset_kind', 'purpose', 'prompt', 'negative_prompt', 'style',
           'aspect_ratio', 'transparent_background', 'output_path',
-          'reference_asset_ids', 'edit_target_asset_id', 'count', 'priority',
+          'reference_asset_ids', 'edit_target_asset_id', 'svg', 'count', 'priority',
         ]);
         const count = args.count;
         if (count !== undefined && (!Number.isInteger(count) || (count as number) < 1)) {
@@ -342,6 +343,7 @@ export function buildWorkerWriteTools(ctx: WorkerServerContext): McpTool[] {
         if (refs !== undefined && (!Array.isArray(refs) || !refs.every((x) => typeof x === 'string'))) {
           throw new McpError('INVALID_ARGUMENT', '잘못된 인자 형식: reference_asset_ids');
         }
+        const svg = optionalString(args, 'svg');
         try {
           const workspaceRoot = assetKernel.workspaceRootForRun(dataRoot, project, taskId, runId);
           const { record, created } = assetKernel.createAssetRequest(dataRoot, project, {
@@ -355,6 +357,7 @@ export function buildWorkerWriteTools(ctx: WorkerServerContext): McpTool[] {
             output_path: requireString(args, 'output_path'),
             reference_asset_ids: refs as string[] | undefined,
             edit_target_asset_id: optionalString(args, 'edit_target_asset_id'),
+            svg,
             count: count as number | undefined,
             priority: optionalString(args, 'priority'),
             owner_task_id: taskId,
