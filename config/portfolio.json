@@ -21162,6 +21162,42 @@
           ],
           "ssotEvidence": "docs/TEST_SCENARIOS.md:932 쉬운 용어 괄호 설명만 생략한다.",
           "title": "쉬운 말 설명을 끄면 괄호를 빼요"
+        },
+        {
+          "taskId": "JUTELL-NO-EVIDENCE-AS-FACT-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §7.6's sentence that content without evidence is not written as a confirmed fact as one line in report-format.md §1, plus an offline node:test that the sentence stays in both places.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/no-evidence-as-fact-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/no-evidence-as-fact-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:245 근거가 없는 내용을 확인된 사실처럼 작성하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-TERM-STATE-PARITY",
+          "scope": "Add GLOSSARY_POLICY §5's filename-only expected-wording rule and the rule that a term explanation itself gets no report state as one sentence in glossary-ko.md's opening paragraph, plus an offline node:test, without adding a new heading.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-term-state-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-term-state-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:110 용어 설명 자체에는 보고서 상태를 붙이지 않는다."
+        },
+        {
+          "taskId": "JUTELL-MINIMAL-PROFILE-KEEP-PARITY",
+          "scope": "Add TEST_SCENARIOS §14.1's four minimal-profile keep rules as one paragraph in feature-registry.md, plus an offline node:test that those four sentences stay aligned, without running C1 or editing scenario fixtures.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/minimal-profile-keep-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/minimal-profile-keep-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:918 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동은 유지한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
