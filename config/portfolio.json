@@ -18565,6 +18565,53 @@
             "node --test tests/browser-no-new-tools-parity.test.mjs"
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:575 '브라우저 도구가 없으면 새 도구를 설치하거나 별도 서비스를 연결하지 않는다.' (§13, present in SPEC only)"
+        },
+        {
+          "taskId": "JUTELL-EXPLAINED-DIFF-MAIN-FILES-CAP-PARITY",
+          "scope": "explained-diff-format.md §3.3의 주요 파일 개수 상한 문구가 BEGINNER_REPORT_SPEC.md §23 결정 기록과 동일한지 확인하는 오프라인 테스트를 추가한다.",
+          "files": [
+            "tests/explained-diff-main-files-cap-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/explained-diff-main-files-cap-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:902-903 '단순 작업 주요 파일: 최대 3개' / '일반 작업 주요 파일: 최대 5개' vs .agents/skills/beginner-bridge/references/explained-diff-format.md:59"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-R-NO-VERIFICATION-MEANS",
+          "scope": "SPEC §10.6 검증 수단 없음 상태를 보여주는 시나리오 R fixture와 오프라인 테스트를 추가한다.",
+          "files": [
+            "tests/results/scenario-r/no-verification-means.fixture.md",
+            "tests/results/scenario-r/no-verification-means.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-r/no-verification-means.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:402-404 '### 10.6 검증 수단 없음 — 프로젝트에서 사용할 수 있는 테스트나 확인 방법을 찾지 못했다.'"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-S-PARTIAL-PASS-REPORT",
+          "scope": "SPEC §10.2 일부 통과 검증 결과를 보여주는 시나리오 S fixture와 오프라인 테스트를 추가한다.",
+          "files": [
+            "tests/results/scenario-s/partial-pass-report.fixture.md",
+            "tests/results/scenario-s/partial-pass-report.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-s/partial-pass-report.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:388-390 '### 10.2 일부 통과 — 실행한 검증 중 일부만 성공했다.'"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-TRUNCATED-FILE-DISCLOSURE",
+          "scope": "context.ts의 gitSummary가 git.truncated일 때 변경 파일 목록이 잘렸음을 문구로 알리도록 하고 오프라인 테스트로 검증한다.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "packages/cli/tests/context.test.ts"
+          ],
+          "tests": [
+            "npm test --prefix packages/cli"
+          ],
+          "ssotEvidence": "packages/cli/src/commands/context.ts:107-124 (MAX_FILES 초과 시 truncated=true) 및 :271-278 (gitSummary가 truncated를 노출하지 않음), BEGINNER_REPORT_SPEC.md §8.1 '확인됨은 확인한 범위에만 적용한다'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
