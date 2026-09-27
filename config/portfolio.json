@@ -2647,7 +2647,8 @@
             "node test/lovable-shell.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "Prior task AGENTRELAY-V2-PROJECT-SCOPE-R2 scope note: 'the page-header project name and the pause/resume control move to a later task' (pause/resume already shipped via ProjectPauseControl in src/frontend/controlRoom.tsx:1110; only the header name remains undone)"
+          "ssotEvidence": "Prior task AGENTRELAY-V2-PROJECT-SCOPE-R2 scope note: 'the page-header project name and the pause/resume control move to a later task' (pause/resume already shipped via ProjectPauseControl in src/frontend/controlRoom.tsx:1110; only the header name remains undone)",
+          "title": "관제실에 프로젝트 이름 표시"
         }
       ],
       "qaRuntime": [
@@ -4949,7 +4950,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-27 09:40 on MainPC after opening JuActlBoard 8242078: ''새로고침' 자동갱신도 오히려 이벤트성으로 바꾸면 좋겠고'. Test: unchanged hashes cause no redraw; a changed hash redraws only that row."
+          "ssotEvidence": "Founder 2026-09-27 09:40 on MainPC after opening JuActlBoard 8242078: ''새로고침' 자동갱신도 오히려 이벤트성으로 바꾸면 좋겠고'. Test: unchanged hashes cause no redraw; a changed hash redraws only that row.",
+          "title": "자동 새로고침 없애고 수동 버튼만 남김"
         },
         {
           "taskId": "ACTL-BOARD-EVENT-REFRESH-BASEFIX",
@@ -15933,7 +15935,8 @@
           "tests": [
             "node --test test/persona-tester.test.mjs"
           ],
-          "ssotEvidence": "Founder 2026-09-27: '지금까지 대화 기반으로 나를 페르소나로 만든 Tester도 돌리면 좋을 거 같음 (이거는 나중에 JuControler 에 들어가는 슈퍼바이저 및 테스터의 페르소나)'. First persona written locally at ~/.claude-team/skills/founder-persona/PERSONA.md (private; never in the repo). Founder 2026-09-27 narrowed the rework to the review request only, no screen saving. Test: buildReviewRequest's output contains the persona text and each stub run's heading/result with no screenshot path; loadActivePersona with no active.json returns the skip signal; the repo ships only docs/personas/example.md, no .jucontroler-state/personas files."
+          "ssotEvidence": "Founder 2026-09-27: '지금까지 대화 기반으로 나를 페르소나로 만든 Tester도 돌리면 좋을 거 같음 (이거는 나중에 JuControler 에 들어가는 슈퍼바이저 및 테스터의 페르소나)'. First persona written locally at ~/.claude-team/skills/founder-persona/PERSONA.md (private; never in the repo). Founder 2026-09-27 narrowed the rework to the review request only, no screen saving. Test: buildReviewRequest's output contains the persona text and each stub run's heading/result with no screenshot path; loadActivePersona with no active.json returns the skip signal; the repo ships only docs/personas/example.md, no .jucontroler-state/personas files.",
+          "title": "테스트 요청에 성격 설명 자동 첨부"
         }
       ],
       "skills": {
