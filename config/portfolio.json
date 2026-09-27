@@ -10218,6 +10218,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — scan 출력의 빈 화면은 이유와 다음 행동을 말한다",
           "title": "영수증 제목이 없을 때 다음 일을 알려줘요"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-INDEX-SITUATION-INTRO",
+          "scope": "In dailyIndexHtml, replace the fixed intro with one plain Korean sentence that matches an empty receipt list versus a list that has receipts, and keep the visible summary line breaks so the page stays readable.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily-background.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-background.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장, 빈 화면 이유+다음 행동, 대상은 daily 출력과 영수증 보기 화면"
+        },
+        {
+          "taskId": "JUCEIPT-SCHEDULE-UNKNOWN-THREE-LINES",
+          "scope": "Replace the one-line unknown schedule error with three plain Korean lines and no English on/off/status words, keep exit code 2, and leave the existing help text unchanged.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-cli.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 오류 3줄, 개발자 글자와 enum 단어는 화면에 두지 않음"
         }
       ],
       "skills": {
