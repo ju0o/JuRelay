@@ -7414,6 +7414,22 @@
           ],
           "ssotEvidence": "Founder 2026-09-27 09:40: '바탕화면에 있는 JuPlan 실행 안됨'. Verified on MainPC: PowerShell Parser.ParseFile reports 3 errors without BOM, 0 after re-saving with BOM (hotfixed in F:\\MainPC_Projects\\JuPlan). Test in windows-launcher.test.ts: every scripts/*.ps1 starts with EF BB BF.",
           "title": "바탕화면 JuPlan이 한글 때문에 안 켜지던 것 고치기"
+        },
+        {
+          "taskId": "JUPLAN-STANDALONE-NO-JUCONTROLER",
+          "scope": "About 20 Founder-facing strings in packages/runtime/src/index.ts and documents.ts tell the user to 'JuControler 계획 탭에서 … 말해 주세요', assuming JuControler is installed. JuPlan is a standalone product. Add one helper `fixHint(action)` that returns the JuControler sentence only when JuControler is detected (env JUPLAN_HUB_URL or a `hub` entry in .juplan/config.json), otherwise the in-JuPlan way (the Studio edit/undo control or the CLI command, e.g. '`juplan edit …`로 고치거나 Studio에서 되돌리기를 누르세요'). Route every such string through it. Open-source rule: no Founder-specific paths, hosts, names or project lists in defaults — everything comes from detection or a user config file; missing companions must never cause errors.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/src/documents.ts",
+            "packages/runtime/src/hints.ts",
+            "packages/runtime/test/standalone-hints.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'JuPlan 프로젝트도 \"개별적인\" 프로젝트지 -> JuControler 계획 탭에 말해달라고 하네. JuControler를 설치하지 않은 경우도 알아야함 … JuControler 안에도 \"연동프로그램 Agent-Relay 감지되었어요 연동할까요? JuPlan 연동할까요?\" 만약 없다면 \"설치할까요?\" … N누르면 -> 그 기능들은 빼고 되는 JuControler 그리고 각 버전마다 \"새로운 기능\" 등장하면 업데이트할까요? … 모든 것들은 오픈소스로 공개 되는 것도 염두해서 만들어야 함.' Test: with no hub configured no user-facing string contains 'JuControler'; with JUPLAN_HUB_URL set the hub sentence appears.",
+          "title": "JuPlan 혼자 써도 되게: 'JuControler 계획 탭에 말해 주세요' 문구 고치기"
         }
       ],
       "qaRuntime": [
