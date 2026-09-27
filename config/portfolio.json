@@ -9905,7 +9905,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 '비슷하게' 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan"
+          "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 '비슷하게' 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan",
+          "title": "오늘 영수증을 한눈에 확인"
         }
       ],
       "skills": {
