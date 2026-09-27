@@ -18945,6 +18945,18 @@
             "node --test tests/glossary-term-count-cap-parity.test.mjs"
           ],
           "ssotEvidence": "docs/GLOSSARY_POLICY.md:62 단순 작업 보고서에서는 설명할 용어를 최대 3개까지 우선한다."
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-TRUNCATED-FILE-DISCLOSURE-R2",
+          "scope": "context.ts의 gitSummary가 truncated일 때 변경 파일 목록이 잘렸음을 알리는 문구를 추가하고 context.test.ts의 해당 gitSummary disclosure 테스트가 기존 코드에서는 실패하고 수정 코드에서는 통과하도록 검증한다.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "packages/cli/tests/context.test.ts"
+          ],
+          "tests": [
+            "npm test --prefix packages/cli -- context.test.ts"
+          ],
+          "ssotEvidence": "packages/cli/src/commands/context.ts:107-124 (MAX_FILES 초과 시 truncated=true) 및 :271-278 (gitSummary가 truncated를 노출하지 않음), BEGINNER_REPORT_SPEC.md §8.1 '확인됨은 확인한 범위에만 적용한다'"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
