@@ -12488,6 +12488,28 @@
             "node --test tests/contract-files-table-sync.test.mjs"
           ],
           "ssotEvidence": "README.md:23 'AI 운영 규칙 파일 — AI 자동 배정, Skill 장착, 승인한 기억, Tester 권한' vs docs/getting-started.md '약속(계약) 파일' table rows (AI 자동 배정→ai-assignment.v1.json, Skill 장착→skill-attachment.v1.json, 승인한 기억→approved-memory.v1.json, Tester 역할→tester-harness.schema.json), base ccfbe8486212daf34109f709a57880dcc2c15fde; tests/contract-files-table-sync.test.mjs only checks file existence, never reads README.md"
+        },
+        {
+          "taskId": "JUCONTROLER-README-SOURCE-ORDER-SYNC",
+          "scope": "Extend tests/docs-source-kinds-sync.test.mjs with one offline test asserting README.md's '네 가지 원본 읽기' bullet lists source labels in the same order as src/project-registry.mjs's sourceKind enum order, not just the same count.",
+          "files": [
+            "tests/docs-source-kinds-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/docs-source-kinds-sync.test.mjs"
+          ],
+          "ssotEvidence": "README.md:15-16 '네 가지 원본 읽기 — 저장소 상태 파일, JuPlan 상태, JuCeipt 영수증, Agent Relay 야간 보드 스냅샷' vs src/project-registry.mjs sourceKinds order (repository-status-file, juplan-status, juceipt-receipt, agent-relay-board) — currently matches but unchecked by any existing test, per Founder direction 2026-09-26 (bounded acceptance target: no runtime behavior change, doc/test sync only)"
+        },
+        {
+          "taskId": "JUCONTROLER-AI-RULES-UNWIRED-GUARD",
+          "scope": "Add one offline test, tests/ai-rules-unwired-guard.test.mjs, that greps src/ and scripts/ for any reference to docs/integration/{ai-assignment,skill-attachment,approved-memory,tester-harness,create-skill-registry} contract files and fails if one appears, guarding README's '규칙은 아직 적어만 둔 상태' claim against silent drift.",
+          "files": [
+            "tests/ai-rules-unwired-guard.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/ai-rules-unwired-guard.test.mjs"
+          ],
+          "ssotEvidence": "README.md:23-24 '규칙을 파일로 적어 두고 테스트로 모양을 확인합니다. 규칙은 아직 적어만 둔 상태입니다.' and README.md:147 '실제로 적용하는 코드는 없습니다' — currently true (no src/scripts references found) but unguarded by any test, per Founder direction 2026-09-26 (bounded acceptance target: no runtime integration or new product behavior)"
         }
       ],
       "qaRuntime": [
