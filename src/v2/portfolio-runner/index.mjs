@@ -42,7 +42,7 @@ function packetLine(text, prefix) {
 // A quota/rate-limit failure moves the lane to the next runtime in its chain instead of holding the task.
 export const QUOTA_ERROR = /\b402\b|Payment Required|balance exhausted|rate.?limit|quota|usage limit|limit (reached|exceeded)|hit your [a-z ]*limit|weekly limit|too many requests|\b429\b|insufficient[_ ]quota|out of credits|credit balance|exceeded your/i;
 // Provider-side outages (free models overload): the next runtime in the chain takes the turn, like a quota hit.
-export const ENV_MISSING = /Test timed out in \d+ ?ms|timed out after \d+|not the tsc command|command not found|Cannot find module|ERR_MODULE_NOT_FOUND|Cannot find package|No module named|npm ERR! missing/i;
+export const ENV_MISSING = /Test timed out in \d+ ?ms|timed out after \d+|not the tsc command|command not found|Cannot find module|ERR_MODULE_NOT_FOUND|Cannot find package|No module named|npm ERR! missing|EDQUOT|ENOSPC|system error -122|disk quota exceeded|No space left on device/i;  // full disk/quota is the machine, not the base (2026-09-27: /tmp quota parked agent-relay)
 export const TRANSIENT_ERROR = /\b50[234]\b|\b426\b|Upgrade Required|failed to connect to websocket|ECONNREFUSED|stream disconnected|error sending request|overloaded|temporarily unavailable|service unavailable|upstream error|ECONNRESET|ETIMEDOUT|socket hang up|model not found|hook dispatch failed|session not found/i; // last two: a misconfigured runtime (cline 2026-09-23) — the next runtime takes over; cline "session not found" 2026-09-26
 // Lane config: runtime / qaRuntime may be one id or an ordered fallback list, e.g. ["opencode", "codex"].
 const chainOf = (value) => [value].flat().filter(Boolean);

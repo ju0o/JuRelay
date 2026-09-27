@@ -527,3 +527,10 @@ test("gateTail keeps failing test names even when the log ends with many passes"
   assert.match(tail, /FAIL test_a\.test_one: boom/); assert.match(tail, /605 passed, 1 failed$/);
   assert.equal(gateTail("all good\n3 passed"), "all good\n3 passed");
 });
+
+test("a full disk or quota is an environment problem, not a broken base", async () => {
+  const { ENV_MISSING } = await import("../../src/v2/portfolio-runner/index.mjs");
+  assert.ok(ENV_MISSING.test("error: 'Unknown system error -122: Unknown system error -122, write'"));
+  assert.ok(ENV_MISSING.test("ENOSPC: no space left on device, write"));
+  assert.ok(!ENV_MISSING.test("AssertionError: expected 2 to equal 3"));
+});
