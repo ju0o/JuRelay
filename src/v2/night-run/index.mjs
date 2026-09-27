@@ -46,16 +46,31 @@ export function readCompletion(value) {
 // node --test marks its processes with NODE_TEST_CONTEXT; a real power command from a test is always a bug.
 const underTest = () => Boolean(process.env.NODE_TEST_CONTEXT);
 
-export function runPoweroff({ checkpoint, command = "sudo", args = ["-n", "/usr/sbin/poweroff"] }) {
-  if (underTest() && command === "sudo") return Promise.resolve({ ok: false, status: "REFUSED", reason: "REAL_POWEROFF_UNDER_TEST" });
-  const gate = readCompletion(checkpoint);
-  if (!gate.ok) return Promise.resolve({ ok: false, status: "REFUSED", reason: gate.reason });
+function spawnPoweroff(command, args) {
   return new Promise((resolve) => {
     const child = spawn(command, args, { stdio: ["ignore", "pipe", "pipe"] });
     let stderr = ""; child.stderr.setEncoding("utf8"); child.stderr.on("data", (chunk) => { stderr += chunk; });
-    child.once("error", (error) => resolve({ ok: false, status: "SHUTDOWN_PERMISSION_REQUIRED", reason: error.message }));
-    child.once("close", (code) => resolve(code === 0 ? { ok: true, status: "POWEROFF_REQUESTED" } : { ok: false, status: "SHUTDOWN_PERMISSION_REQUIRED", reason: stderr.trim() || `exit ${code}` }));
+    child.once("error", (error) => resolve({ ok: false, reason: error.message }));
+    child.once("close", (code) => resolve(code === 0 ? { ok: true } : { ok: false, reason: stderr.trim() || `exit ${code}` }));
   });
+}
+
+// 2026-09-27: `sudo -n poweroff` failed once with the reason thrown away and ASUS stayed on. Keep every reason and
+// fall back to the other sudoers-allowed power commands after a pause.
+const SUDO_FALLBACKS = [["-n", "/usr/sbin/shutdown", "-h", "now"], ["-n", "/usr/bin/systemctl", "poweroff"]];
+
+export async function runPoweroff({ checkpoint, command = "sudo", args = ["-n", "/usr/sbin/poweroff"], fallbacks = command === "sudo" ? SUDO_FALLBACKS : [], pauseMs = 15_000, sleep = (ms) => new Promise((resolvePromise) => setTimeout(resolvePromise, ms)) }) {
+  if (underTest() && command === "sudo") return { ok: false, status: "REFUSED", reason: "REAL_POWEROFF_UNDER_TEST" };
+  const gate = readCompletion(checkpoint);
+  if (!gate.ok) return { ok: false, status: "REFUSED", reason: gate.reason };
+  const reasons = [];
+  for (const [index, attempt] of [args, ...fallbacks].entries()) {
+    if (index > 0) await sleep(pauseMs);
+    const result = await spawnPoweroff(command, attempt);
+    if (result.ok) return { ok: true, status: "POWEROFF_REQUESTED", ...(reasons.length ? { reason: reasons.join(" | ") } : {}) };
+    reasons.push(`${attempt.join(" ")}: ${result.reason}`);
+  }
+  return { ok: false, status: "SHUTDOWN_PERMISSION_REQUIRED", reason: reasons.join(" | ") };
 }
 
 export async function drainManaged(entries = [], { graceMs = 1_000, sleep = (ms) => new Promise((resolvePromise) => setTimeout(resolvePromise, ms)) } = {}) {
@@ -160,7 +175,7 @@ export async function finalizeNightRun({ record: initial, checkpointPath, persis
   if (dryRun || deferPoweroff) return persist({ ...record, shutdownState: dryRun ? "DRY_RUN_COMPLETE" : "READY_FOR_ASUS_POWEROFF", asusShutdownRequested: false });
   record = { ...record, asusShutdownRequested: true, shutdownState: "ASUS_POWEROFF_REQUESTED" }; await persist(record);
   const asus = await poweroff({ checkpoint: record });
-  return persist({ ...record, asusShutdownState: asus.status, shutdownState: asus.ok ? "POWEROFF_REQUESTED" : asus.status });
+  return persist({ ...record, asusShutdownState: asus.status, asusShutdownReason: asus.reason || null, shutdownState: asus.ok ? "POWEROFF_REQUESTED" : asus.status });
 }
 
 function currentTask(state) {

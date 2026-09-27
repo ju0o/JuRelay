@@ -53,6 +53,15 @@ test("shutdown uses non-interactive sudo and reports missing permission", async 
   assert.equal(result.status, "SHUTDOWN_PERMISSION_REQUIRED");
 });
 
+test("poweroff keeps the failure reason and falls back to the next command", async () => {
+  const checkpoint = { schema: "agent-relay.last-night-run.v1", runId: "r", startedAt: "x", deadline: "x", freezeAt: "x", checkpointAt: "x", endedAt: "x", endReason: "DEADLINE_COMPLETE", shutdownState: "x", lanes: [] };
+  const pauses = [];
+  const ok = await runPoweroff({ checkpoint, command: "sh", args: ["-c", "echo busy >&2; exit 1"], fallbacks: [["-c", "exit 0"]], sleep: async (ms) => pauses.push(ms) });
+  assert.equal(ok.status, "POWEROFF_REQUESTED"); assert.match(ok.reason, /busy/); assert.deepEqual(pauses, [15000]);
+  const bad = await runPoweroff({ checkpoint, command: "sh", args: ["-c", "echo one >&2; exit 1"], fallbacks: [["-c", "echo two >&2; exit 1"]], sleep: async () => {} });
+  assert.equal(bad.status, "SHUTDOWN_PERMISSION_REQUIRED"); assert.match(bad.reason, /one.*two/);
+});
+
 test("run loops through multiple NEXT iterations and exits on exhaustion", async () => {
   const state = lanes([["agent-relay", "RUNNING"]]);
   const done = lanes([["agent-relay", "V1_COMPLETE"]]);
