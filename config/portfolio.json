@@ -12594,7 +12594,8 @@
           "tests": [
             "node --test tests/e2e-docs-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: docs/getting-started.md의 giant sample JSON steps 배열을 실제 실행 결과와 동기화하는 검사를 추가"
+          "ssotEvidence": "Founder direction 2026-09-23: docs/getting-started.md의 giant sample JSON steps 배열을 실제 실행 결과와 동기화하는 검사를 추가",
+          "title": "안내서 예시 결과가 실제와 맞는지 확인"
         },
         {
           "taskId": "JUCONTROLER-AGENT-RELAY-FRESHNESS-NOW-TEST",
@@ -12605,7 +12606,8 @@
           "tests": [
             "node --test tests/agent-relay-adapter.test.mjs"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:138-140 lists 8 AgentRelayBoardError codes including invalid-freshness and invalid-now; src/adapters/agent-relay.mjs:52-63 throws both but tests/agent-relay-adapter.test.mjs only covers 6 of 8"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:138-140 lists 8 AgentRelayBoardError codes including invalid-freshness and invalid-now; src/adapters/agent-relay.mjs:52-63 throws both but tests/agent-relay-adapter.test.mjs only covers 6 of 8",
+          "title": "Agent Relay 오류 상황 빠짐없이 점검하기"
         },
         {
           "taskId": "JUCONTROLER-DOCS-ADAPTERS-LIST-SYNC",
@@ -12616,7 +12618,8 @@
           "tests": [
             "node --test tests/docs-adapters-list-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:257 names the three adapter files; git ls-tree confirms src/adapters/ currently has exactly those three files with no existing test comparing them"
+          "ssotEvidence": "docs/getting-started.md:257 names the three adapter files; git ls-tree confirms src/adapters/ currently has exactly those three files with no existing test comparing them",
+          "title": "안내서의 연동 목록이 실제와 같은지 확인"
         }
       ],
       "qaRuntime": [
@@ -16230,7 +16233,8 @@
           "tests": [
             "node --test test/results-recent.test.mjs"
           ],
-          "ssotEvidence": "founder/BACKLOG_POST_V1.md:21-24 \"Persona polish ... stray English words in result summaries\""
+          "ssotEvidence": "founder/BACKLOG_POST_V1.md:21-24 \"Persona polish ... stray English words in result summaries\"",
+          "title": "결과 카드 문장 한국어로 다듬기"
         },
         {
           "taskId": "JCAPP-CONNECTION-DETAILS-ENTRY",
@@ -16242,7 +16246,8 @@
           "tests": [
             "node --test test/binding-honest.test.mjs"
           ],
-          "ssotEvidence": "founder/BACKLOG_POST_V1.md:21-24 \"연결 세부 정보 reachable in ≥2 taps\""
+          "ssotEvidence": "founder/BACKLOG_POST_V1.md:21-24 \"연결 세부 정보 reachable in ≥2 taps\"",
+          "title": "더보기에서 연결 상태 확인 추가"
         },
         {
           "taskId": "JCAPP-HOME-LEFTOVERS-0927",
@@ -19811,7 +19816,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:303-304 mentorPing() pings up to two experienced members with a matching interest tag for a beginner-role member's post, once per mentor per day; undocumented in README.md"
+          "ssotEvidence": "bot.mjs:303-304 mentorPing() pings up to two experienced members with a matching interest tag for a beginner-role member's post, once per mentor per day; undocumented in README.md",
+          "title": "질문방 멘토 매칭 기능 안내문 추가"
         },
         {
           "taskId": "JUAI-README-COMMANDCODE-PREREQ",
@@ -19822,7 +19828,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "ai.mjs:42-43 spawns a commandcode CLI process through the same bwrap sandbox used for codex/opencode, but README.md:32 and README.md:45 name only claude/codex/opencode"
+          "ssotEvidence": "ai.mjs:42-43 spawns a commandcode CLI process through the same bwrap sandbox used for codex/opencode, but README.md:32 and README.md:45 name only claude/codex/opencode",
+          "title": "필요 프로그램 목록을 최신 도구까지 갱신"
         },
         {
           "taskId": "JUAI-CHECK-STAFF-GAP-REPEAT",
@@ -19833,7 +19840,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:56 takeQuota's staff guard skips the gap-rejection branch entirely, but check.mjs only calls staff takeQuota once and never proves the bypass on a second immediate call"
+          "ssotEvidence": "lib.mjs:56 takeQuota's staff guard skips the gap-rejection branch entirely, but check.mjs only calls staff takeQuota once and never proves the bypass on a second immediate call",
+          "title": "직원 연속 이용 예외 검증 추가"
         },
         {
           "taskId": "JUAI-CHECK-TIMEOUT-ZERO-FALLBACK",
@@ -19844,7 +19852,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:144 timeout's minutes uses a Number(x) or 60 fallback; check.mjs tests -1 and an invalid string but never the exact 0 value that triggers the fallback"
+          "ssotEvidence": "lib.mjs:144 timeout's minutes uses a Number(x) or 60 fallback; check.mjs tests -1 and an invalid string but never the exact 0 value that triggers the fallback",
+          "title": "정지 시간을 0으로 두면 기본값 적용 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
