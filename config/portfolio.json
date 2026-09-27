@@ -10142,6 +10142,30 @@
           ],
           "ssotEvidence": "Founder 2026-09-27: JuCeipt = '백그라운드에서 오늘 내 AI 로그 기록 내용 수집 그리고 만들어주는거임'; canvas J8PhuaGiuEBcHVMox7fv6J juceipt-Prototype is the target. Test: two fixture receipts → HTML has a list with 2 rows and a detail pane containing 요청한 것/받은 결과/되돌리기/비용 of the first receipt; receipts dated 9월 5–6 are not headed '오늘'.",
           "title": "JuCeipt 오늘 영수증: 목록 + 고른 영수증 내용 한 화면 (시안대로)"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-INDEX-FOLD-RAW",
+          "scope": "In dailyIndexHtml, show only the plain Korean summary before the embedded 원문 보기 block, turn markdown 영수증 열기 links into visible label text so file paths stay in the folded 원문 보기 and hrefs, and give those links a 44px target plus a dark-mode color scheme.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily-background.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-background.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-LIST-PLAIN-SURFACE",
+          "scope": "In renderTodayList, keep the raw request under 원문 보기, replace the bare cost and '먼저 볼 것 N' with plain Korean sentences that match the receipt view, and add a dark-mode color scheme with readable contrast.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
