@@ -7520,6 +7520,59 @@
             "JUPLAN-DIAGRAMS-ARCHIFY-ADAPTER"
           ],
           "title": "JuPlan 그림을 자연스럽게: Studio에 새 그림 적용 (2/2)"
+        },
+        {
+          "taskId": "JUPLAN-STUDIO-START-SCREEN",
+          "scope": "Replace the first-run page (no .juplan yet) with two large choices: (1) '기존 프로젝트 폴더 열기' — a folder picker served by the local Studio (list drives/home and subfolders, recent folders, typed path allowed) → POST /api/start/existing {path} runs scan + plan --offline into the chosen folder's .juplan and reloads into the normal Studio; (2) '새 프로젝트 시작' → goes to the guided interview (next tasks; until then a two-field form: 이름 + 한 문장 아이디어 → init + plan --offline). Progress shows as plain Korean steps; errors in 3 lines (무엇이 · 왜 · 할 일). The Windows launcher no longer needs the folder dialog: it opens the Studio start screen when no last project exists. Write actions go through the local serve on 127.0.0.1 only, with a per-session token checked on every POST; no network; JuControler is never mentioned unless detected.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/src/startServer.ts",
+            "scripts/juplan-studio.ps1",
+            "packages/runtime/test/studio-start-screen.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 10:30 opening JuPlan from the desktop: first-run page says '프로젝트 이름과 한 문장 아이디어를 JuControler 계획 탭에 말해 주세요'. Founder: '폴더 선택 같은 거나 (폴더선택하면 기존에 있던 프로젝트의 WBS | SSOT | ERD | DBML 다 가져와서 정리해주는거고, PRD랑 근데, 만약 없다면 같이 기획해볼까요? 이후 기획하게 해주고, 이후 -> 새로운 프로젝트 같은 경우는 \"어떤 프로젝트를 만드나요 이후 여러 질문 및 대화 후 기획해주는거고\"'. Test: GET / with no project renders both choices and no 'JuControler'; POST /api/start/existing without token → 403; with token on a fixture repo creates .juplan and the next GET renders the plan map; folder listing never goes above an allowed root it was given.",
+          "title": "JuPlan 첫 화면: [기존 프로젝트 폴더 열기] / [새 프로젝트 시작]"
+        },
+        {
+          "taskId": "JUPLAN-IMPORT-EXISTING-DOCS",
+          "scope": "When an existing folder is opened, the scanner also finds planning documents already in the repo — WBS/roadmap, SSOT/CURRENT/BACKLOG, ERD, *.dbml, PRD/기획서, README, docs/**/*.md (by name and heading patterns, Korean and English) — and imports them into the plan graph as evidence-linked nodes (file + line). Studio shows '가져온 문서' (what was found, per type) and '없는 문서' (e.g. PRD, ERD). If something important is missing it asks '없는 문서가 있어요: PRD · ERD — 같이 기획해볼까요?' [같이 기획하기] (→ interview for just the missing parts) [나중에]. Files the scanner already excludes (.env and similar) stay excluded.",
+          "files": [
+            "packages/project-scanner/src/docs.ts",
+            "packages/project-scanner/src/index.ts",
+            "packages/runtime/src/index.ts",
+            "packages/project-scanner/test/import-docs.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 10:30 opening JuPlan from the desktop: first-run page says '프로젝트 이름과 한 문장 아이디어를 JuControler 계획 탭에 말해 주세요'. Founder: '폴더 선택 같은 거나 (폴더선택하면 기존에 있던 프로젝트의 WBS | SSOT | ERD | DBML 다 가져와서 정리해주는거고, PRD랑 근데, 만약 없다면 같이 기획해볼까요? 이후 기획하게 해주고, 이후 -> 새로운 프로젝트 같은 경우는 \"어떤 프로젝트를 만드나요 이후 여러 질문 및 대화 후 기획해주는거고\"'. Test: fixture repo with docs/WBS.md, schema.dbml and README imports WBS items, DBML tables and README goal with evidence refs; missing PRD/ERD listed; a .env is never read.",
+          "dependsOn": [
+            "JUPLAN-STUDIO-START-SCREEN"
+          ],
+          "title": "JuPlan: 기존 폴더의 WBS·SSOT·ERD·DBML·PRD 가져와 정리"
+        },
+        {
+          "taskId": "JUPLAN-GUIDED-INTERVIEW",
+          "scope": "A conversation page in Studio used for a new project and for filling missing docs: starts with '어떤 프로젝트를 만드나요?', then asks one question at a time (누가 쓰나요 · 꼭 필요한 기능 3가지 · 첫 화면 · 저장할 데이터 · 언제까지 · 하지 않을 것), shows a running summary on the side, lets the user skip/edit answers, and ends with '이대로 계획을 만들까요?' → plan. Offline it uses a fixed question set; when an AI provider is available it asks adaptive follow-ups (max 10) through the existing provider package. Answers saved to .juplan/interview.json so a closed tab resumes.",
+          "files": [
+            "packages/runtime/src/interview.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/guided-interview.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 10:30 opening JuPlan from the desktop: first-run page says '프로젝트 이름과 한 문장 아이디어를 JuControler 계획 탭에 말해 주세요'. Founder: '폴더 선택 같은 거나 (폴더선택하면 기존에 있던 프로젝트의 WBS | SSOT | ERD | DBML 다 가져와서 정리해주는거고, PRD랑 근데, 만약 없다면 같이 기획해볼까요? 이후 기획하게 해주고, 이후 -> 새로운 프로젝트 같은 경우는 \"어떤 프로젝트를 만드나요 이후 여러 질문 및 대화 후 기획해주는거고\"'. Test: offline interview walks the fixed questions, persists and resumes, and its answers produce a plan whose goal/users/features match; with a stub provider, follow-up questions come from the provider and are capped at 10.",
+          "dependsOn": [
+            "JUPLAN-IMPORT-EXISTING-DOCS"
+          ],
+          "title": "JuPlan: '어떤 프로젝트를 만드나요?'부터 대화로 기획"
         }
       ],
       "qaRuntime": [
