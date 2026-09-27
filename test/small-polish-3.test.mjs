@@ -4,9 +4,10 @@ import { readFile } from 'node:fs/promises';
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('jutell project label exists', async () => {
+test('jutell is not a built-in project label', async () => {
   const src = await read('src/shared/projectLabels.ts');
-  assert.match(src, /jutell:\s*\{\s*name:\s*'JuTell',\s*goal:\s*'짧고 쉬운 작업 보고서'\s*\}/);
+  assert.doesNotMatch(src, /jutell:\s*\{/);
+  assert.equal(src.includes('JuTell'), false);
 });
 
 test('AI 순서 저장 result says 만드는 AI / 검수하는 AI, not worker/qa', async () => {

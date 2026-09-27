@@ -5,13 +5,13 @@ import { controlRoomWorkingRows } from '../dist/server/shared/types.js';
 test('working rows use worker for worker stages and Korean task title', () => {
   assert.deepEqual(controlRoomWorkingRows([
     { project: 'agent-relay', current: { stage: 2, title: '라우팅 고치기' }, workerChain: ['opencode'], qaChain: ['cline'] },
-  ]), ['Agent Relay · 작업 · OpenCode · 라우팅 고치기']);
+  ]), ['agent-relay · 작업 · OpenCode · 라우팅 고치기']);
 });
 
 test('working rows use current QA for QA stages', () => {
   assert.deepEqual(controlRoomWorkingRows([
     { project: 'agent-relay', current: { stage: 3, title: '검수하기', qa: 'cline' }, workerChain: ['opencode'], qaChain: ['grok'] },
-  ]), ['Agent Relay · 검수 · Cline · 검수하기']);
+  ]), ['agent-relay · 검수 · Cline · 검수하기']);
 });
 
 test('unknown lanes keep a safe label', () => {

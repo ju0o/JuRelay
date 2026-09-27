@@ -70,7 +70,7 @@ test("a row shows the friendly name, and checked means not paused", () => {
     { project: "" },
   ], { "custom-app": "기억한 이름" });
   assert.deepEqual(rows, [
-    { id: "jucontroler-app", name: "통합 관제 화면", on: true },
+    { id: "jucontroler-app", name: "이름 없는 프로젝트", on: true },
     { id: "receipt-app", name: "영수증 앱", on: false },
     { id: "custom-app", name: "기억한 이름", on: false },
   ]);

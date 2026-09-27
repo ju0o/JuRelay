@@ -28,7 +28,7 @@ test("id suggestion", () => {
 
 test("row name never shows the english id", () => {
   assert.equal(laneRowName("receipt-app", "영수증 앱"), "영수증 앱");
-  assert.equal(laneRowName("jucontroler-app"), "통합 관제 화면");
+  assert.equal(laneRowName("jucontroler-app"), "이름 없는 프로젝트");
   assert.equal(laneRowName("receipt-app"), "이름 없는 프로젝트");
   assert.equal(laneRowName("receipt-app", "  "), "이름 없는 프로젝트");
 });

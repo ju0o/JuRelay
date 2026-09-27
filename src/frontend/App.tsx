@@ -9,7 +9,7 @@ import { DogfoodPanel } from './dogfooding.js';
 import { QuickDogfood } from './quickdf.js';
 import { ControlRoom } from './controlRoom.js';
 import { AutoWorklog } from './worklog.js';
-import { barPercent, envReasonText, normalizeEnvs, projectFromSearch, type EnvRow } from '../shared/projectLabels.js';
+import { applyUserProjectConfig, barPercent, envReasonText, hubCardVisible, normalizeEnvs, projectFromSearch, projectHubConfigured, PROJECT_LABELS_STORAGE_KEY, userProjectConfigFromSettings, type EnvRow } from '../shared/projectLabels.js';
 import { sharedSeatsView } from '../shared/projectScope.js';
 import {
   automationResultText,
@@ -975,6 +975,7 @@ function AppInner(): React.ReactElement {
 
   // ── 설정 ─────────────────────────────────────────────────────────────────────
   async function applySettings(s: SettingsView): Promise<void> {
+    installUserProjectConfig(s);
     setSettings(s);
     // 에이전트 순서 — 저장된 agentOrder를 반영해 표시 (신규 항목은 뒤에 추가)
     setAgents(applyOrderByKeys([...DEFAULT_AGENTS, ...(s.customAgents ?? [])], a => a, s.agentOrder ?? []));
@@ -3016,13 +3017,52 @@ function UpdateSection({ status, notify }: { status: UpdateStatus; notify: (kind
 }
 
 /**
+ * 사용자 프로젝트 이름·목표를 반영한다.
+ * settings.json의 projectLabels와 이 기기에 저장된 같은 JSON을 본다.
+ * 설정이 없거나 깨져 있어도 앱은 연다.
+ */
+function installUserProjectConfig(settings: unknown): void {
+  let stored: string | null = null;
+  try {
+    stored = localStorage.getItem(PROJECT_LABELS_STORAGE_KEY);
+  } catch {
+    stored = null;
+  }
+  try {
+    applyUserProjectConfig(userProjectConfigFromSettings(settings), stored);
+  } catch {
+    /* 사용자 설정이 없어도 화면은 그대로 연다. */
+  }
+}
+
+/**
  * 설정 → 허브 새 버전 반영.
+ * JuControler 허브가 설정되어 있거나 보드에서 보일 때만 카드를 보여 준다.
+ * 허브가 없으면 카드를 숨기고, 연결 실패로 화면을 막지 않는다.
  * [반영하기]는 바로 실행하지 않고, 안전한 [그만두기]를 먼저 보여 준 뒤에만 controlRoom:promoteHub를 호출한다.
  */
-function HubPromoteCard(): React.ReactElement {
+function HubPromoteCard(): React.ReactElement | null {
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<PmNote | null>(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      let board: unknown = null;
+      try {
+        board = await must({ op: 'controlRoom:board' });
+      } catch {
+        board = null;
+      }
+      if (!alive) return;
+      setShown(hubCardVisible({ configured: projectHubConfigured(), board }));
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  if (!shown) return null;
 
   async function promote(): Promise<void> {
     if (busy) return;

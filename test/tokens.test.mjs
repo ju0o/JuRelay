@@ -58,8 +58,8 @@ test("normalizeTokens: anomalies before leaks, friendly names, top 6, raw kept a
   assert.equal(v.cache, 2_500_000_000);
   const top = topTokenProjects(v);
   assert.equal(top.length, 6);
-  assert.equal(top[0].label, "Agent Relay");
-  assert.equal(top[1].label, "JuPlan");
+  assert.equal(top[0].label, "agent-relay");
+  assert.equal(top[1].label, "juplan");
 });
 
 test("normalizeTokens merges separate anomalies/leaks arrays and survives junk", () => {

@@ -15,10 +15,18 @@ const root = new URL('..', import.meta.url);
 const read = file => readFile(new URL(file, root), 'utf8');
 const MANIFEST = 'Founder 2026-09-24 오후 (settled, do not re-ask): launch bar = stay';
 
-test('label fallback is registered name, then lane name, then id', () => {
-  assert.equal(planLaneDisplayName('juai', '다른 이름'), 'JuAi');
-  assert.equal(planLaneDisplayName('JURADAR', 'juradar'), 'JuRadar');
-  assert.equal(planLaneDisplayName('AI-AGENT-MARKETPLACE'), 'AI 인력사무소');
+test('label fallback is registered name, then folder, then lane name, then id', () => {
+  const labels = {
+    juai: { name: 'JuAi', goal: '대화로 일을 맡기는 비서' },
+    juradar: { name: 'JuRadar', goal: '돌아가는 작업을 한눈에 살피는 레이더' },
+    'ai-agent-marketplace': { name: 'AI 인력사무소', goal: '일감을 맡기고 결과를 받는 장터' },
+    'folder-only': { name: '', goal: '', path: '/repos/내폴더' },
+  };
+  assert.equal(planLaneDisplayName('juai', '다른 이름', labels), 'JuAi');
+  assert.equal(planLaneDisplayName('JURADAR', 'juradar', labels), 'JuRadar');
+  assert.equal(planLaneDisplayName('AI-AGENT-MARKETPLACE', undefined, labels), 'AI 인력사무소');
+  assert.equal(planLaneDisplayName('folder-only', '보드 이름', labels), '내폴더');
+  assert.equal(planLaneDisplayName('juai', '다른 이름'), '다른 이름');
   assert.equal(planLaneDisplayName('custom-lane', '보드에 적힌 이름'), '보드에 적힌 이름');
   assert.equal(planLaneDisplayName('custom-lane', '   '), 'custom-lane');
   assert.equal(planLaneDisplayName('custom-lane'), 'custom-lane');
@@ -26,22 +34,26 @@ test('label fallback is registered name, then lane name, then id', () => {
 });
 
 test('visible goal is the Korean label, and the raw manifest stays folded', () => {
-  assert.equal(PROJECT_LABELS.juai.name, 'JuAi');
-  assert.equal(PROJECT_LABELS['ai-agent-marketplace'].name, 'AI 인력사무소');
-  assert.equal(PROJECT_LABELS.juradar.name, 'JuRadar');
+  const labels = {
+    juai: { name: 'JuAi', goal: '대화로 일을 맡기는 비서' },
+    juradar: { name: 'JuRadar', goal: '돌아가는 작업을 한눈에 살피는 레이더' },
+    'ai-agent-marketplace': { name: 'AI 인력사무소', goal: '일감을 맡기고 결과를 받는 장터' },
+  };
+  assert.equal(labels.juai.name, 'JuAi');
+  assert.equal(PROJECT_LABELS.juai, undefined);
   for (const id of ['juai', 'ai-agent-marketplace', 'juradar', 'agent-relay', 'missing-lane']) {
-    const goal = planVisibleGoal(id);
+    const goal = planVisibleGoal(id, id === 'missing-lane' || id === 'agent-relay' ? undefined : labels);
     assert.equal(goal.includes('\n'), false);
     assert.equal(isLatinSentence(goal), false, goal);
   }
   for (const id of ['juai', 'ai-agent-marketplace', 'juradar']) {
-    assert.doesNotMatch(planVisibleGoal(id), /[A-Za-z]{3,}/);
+    assert.doesNotMatch(planVisibleGoal(id, labels), /[A-Za-z]{3,}/);
   }
   assert.equal(planVisibleGoal('missing-lane'), PLAN_GOAL_UNSET);
   assert.equal(isLatinSentence(MANIFEST), true);
-  const folded = foldedManifestGoal(planVisibleGoal('juradar'), MANIFEST, MANIFEST, '  ');
+  const folded = foldedManifestGoal(planVisibleGoal('juradar', labels), MANIFEST, MANIFEST, '  ');
   assert.equal(folded, MANIFEST);
-  assert.equal(foldedManifestGoal(planVisibleGoal('juai'), planVisibleGoal('juai')), '');
+  assert.equal(foldedManifestGoal(planVisibleGoal('juai', labels), planVisibleGoal('juai', labels)), '');
 });
 
 test('plan goal card shows the Korean goal and hides the manifest under 원문 보기', async () => {

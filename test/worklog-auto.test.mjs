@@ -30,11 +30,11 @@ const board = {
 test('rows for the chosen date only, newest first', () => {
   const rows = worklogRows(board, '2026-09-26');
   assert.deepEqual(rows.map(r => r.line), [
-    'Agent Relay · 작업 기록 자동으로 · 오후 2:10',
-    'JuPlan · 계획 저장 고치기 · 오전 11:00',
-    'Agent Relay · 영수증 화면 쉽게 · 오전 9:05',
+    'agent-relay · 작업 기록 자동으로 · 오후 2:10',
+    'juplan · 계획 저장 고치기 · 오전 11:00',
+    'agent-relay · 영수증 화면 쉽게 · 오전 9:05',
   ]);
-  assert.deepEqual(worklogRows(board, '2026-09-25').map(r => r.line), ['Agent Relay · 어제 고친 일 · 오후 11:00']);
+  assert.deepEqual(worklogRows(board, '2026-09-25').map(r => r.line), ['agent-relay · 어제 고친 일 · 오후 11:00']);
   assert.deepEqual(worklogRows(board, '2026-09-24'), []);
   assert.deepEqual(worklogRows(null, '2026-09-26'), []);
 });
@@ -69,13 +69,13 @@ test('root done fills the list even when lanes have no done array', () => {
     lanes: [{ id: 'agent-relay', channel: [{ taskId: 'AGENTRELAY-A', kind: 'qa', text: 'ACCEPT: 확인했어요' }] }],
   };
   const [row] = worklogRows(onlyRoot, '2026-09-26');
-  assert.equal(row.line, 'Agent Relay · 보드에 끝난 일 · 오전 8:30');
+  assert.equal(row.line, 'agent-relay · 보드에 끝난 일 · 오전 8:30');
   assert.equal(row.result, '작업을 끝냈어요 · 검사 통과');
   assert.doesNotMatch(`${row.line}\n${row.result}`, /ACCEPT|AGENTRELAY-/);
   const onlyLanes = {
     lanes: [{ id: 'agent-relay', done: [{ taskId: 'AGENTRELAY-Z', title: '레인에만 있는 일', at: new Date(2026, 8, 26, 8, 0).toISOString() }] }],
   };
-  assert.equal(worklogRows(onlyLanes, '2026-09-26')[0].line, 'Agent Relay · 레인에만 있는 일 · 오전 8:00');
+  assert.equal(worklogRows(onlyLanes, '2026-09-26')[0].line, 'agent-relay · 레인에만 있는 일 · 오전 8:00');
 });
 
 test('작업 기록 shows the auto list first and folds the old notebook', async () => {

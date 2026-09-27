@@ -6,12 +6,9 @@ import { PROJECT_LABELS, holdCardMessage, visibleHoldEntries, normalizeHoldEntry
 const root = new URL("..", import.meta.url);
 const read = (file) => readFile(new URL(file, root), "utf8");
 
-test("shared label map uses plain names without raw lane ids", () => {
-  assert.equal(PROJECT_LABELS["juactl"]?.name, "actl");
-  assert.equal(PROJECT_LABELS["jucontroler-app"]?.name, "통합 관제 화면");
-  assert.equal(PROJECT_LABELS["juceipt-planning"]?.name, "JuCeipt 기획");
+test("shared label map starts empty so unknown ids are not invented", () => {
   for (const id of ["juactl", "jucontroler-app", "juceipt-planning"]) {
-    assert.doesNotMatch(PROJECT_LABELS[id].name, new RegExp(`\\(${id}\\)`));
+    assert.equal(PROJECT_LABELS[id], undefined);
   }
 });
 

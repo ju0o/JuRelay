@@ -6,22 +6,12 @@ import { isSelfReviewChain } from "../dist/server/shared/projectLabels.js";
 const root = new URL("..", import.meta.url);
 const read = file => readFile(new URL(file, root), "utf8");
 
-test("shared project labels use the exact product names", async () => {
+test("shared project labels are not a built-in product list", async () => {
   const source = await read("src/shared/projectLabels.ts");
-  for (const [id, name] of Object.entries({
-    "agent-relay": "Agent Relay",
-    actl: "actl",
-    juplan: "JuPlan",
-    juceipt: "JuCeipt",
-    jucontroler: "JuControler",
-    "jucontroler-app": "통합 관제 화면",
-    "juceipt-planning": "JuCeipt 기획",
-  })) {
-    const key = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const value = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    assert.match(source, new RegExp(`[\\"']?${key}[\\"']?:[\\s\\S]*?name: ['"]${value}['"]`));
+  assert.match(source, /export const PROJECT_LABELS: Record<string, ProjectLabel> = \{\}/);
+  for (const name of ["JuPlan", "JuCeipt", "통합 관제 화면", "JuCeipt 기획", "에이전트 릴레이", "주플랜", "주싯", "주컨트롤러"]) {
+    assert.equal(source.includes(name), false, name);
   }
-  for (const oldName of ["에이전트 릴레이", "주플랜", "주싯", "주컨트롤러"]) assert.doesNotMatch(source, new RegExp(oldName));
 });
 
 test("Control Room and Plan Studio consume the shared map and render goals separately", async () => {

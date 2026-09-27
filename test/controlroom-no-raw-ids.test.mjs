@@ -6,7 +6,7 @@ import { aiDisplayName, coolingItemText, holdBadgeText, localClockLabel, project
 test('task without a Korean title shows 새 작업 and keeps the id apart', () => {
   const lanes = [{ project: 'juceipt', current: { stage: 2, taskId: 'JUCEIPT-CODEX-TOOL-MASKING' }, workerChain: ['codex'] }];
   const [row] = controlRoomWorkingRows(lanes);
-  assert.equal(row, 'JuCeipt · 작업 · Codex · 새 작업 (이름 짓는 중)');
+  assert.equal(row, 'juceipt · 작업 · Codex · 새 작업 (이름 짓는 중)');
   assert.doesNotMatch(row, /JUCEIPT-CODEX/);
   assert.equal(controlRoomWorkingItems(lanes)[0].taskId, 'JUCEIPT-CODEX-TOOL-MASKING');
 });
@@ -29,8 +29,8 @@ test('cooling time is local HH:MM, not ISO', () => {
 });
 
 test('lane tab name and hold badge', () => {
-  assert.equal(projectDisplayName('jutell'), 'JuTell');
-  assert.equal(projectDisplayName('JUTELL'), 'JuTell');
+  assert.equal(projectDisplayName('jutell'), 'jutell');
+  assert.equal(projectDisplayName('JUTELL'), 'JUTELL');
   assert.equal(projectDisplayName('other'), 'other');
   assert.equal(holdBadgeText(2), '멈춘 작업 2');
   assert.equal(holdBadgeText(0), '멈춘 작업 1');

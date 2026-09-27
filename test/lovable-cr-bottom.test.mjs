@@ -77,7 +77,7 @@ test('AI chips use friendly names and plain states from the board', () => {
     ['OpenCode', '잠시 쉬게 함 · 12분 뒤 다시', 'amber'],
     ['Cline', '준비 안 됨', 'amber'],
   ]);
-  assert.equal(chips[0].detail, 'Agent Relay · 영수증 화면 쉽게');
+  assert.equal(chips[0].detail, 'agent-relay · 영수증 화면 쉽게');
   assert.equal(chips[1].detail, '');
   assert.match(chips[3].raw, /opencode/);
   assert.doesNotMatch(chips.map((chip) => `${chip.name} ${chip.status} ${chip.detail}`).join('\n'), /UNMAPPED|T-77|HOLD|QUEUED|opencode|cline/);
@@ -217,10 +217,10 @@ test('the bottom renders chips, amber findings, and a divided today list from va
     now: NOW,
   }));
   const todayText = surface(todayHtml);
-  assert.match(todayText, /JuCeipt/);
+  assert.match(todayText, /juceipt/);
   assert.match(todayText, /영수증 날짜 확인/);
   assert.match(todayText, /18분 전/);
-  assert.match(todayHtml, /<strong>JuCeipt<\/strong>/);
+  assert.match(todayHtml, /<strong>juceipt<\/strong>/);
   assert.doesNotMatch(todayText, /T-3|2026-/);
   assert.match(todayHtml, /<details><summary>원문 보기<\/summary>.*T-3/s);
 });

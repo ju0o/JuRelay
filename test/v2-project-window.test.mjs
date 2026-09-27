@@ -11,9 +11,9 @@ test("window key ignores case/space so a second click focuses instead of duplica
 });
 
 test("window title is 'Agent Relay · <프로젝트 이름>' (unknown ids fall back to the id)", () => {
-  assert.equal(projectWindowTitle("agent-relay"), "Agent Relay · Agent Relay");
-  assert.equal(projectWindowTitle("jucontroler-app"), "Agent Relay · 통합 관제 화면");
-  assert.equal(projectWindowTitle("jutell"), "Agent Relay · JuTell");
+  assert.equal(projectWindowTitle("agent-relay"), "Agent Relay · agent-relay");
+  assert.equal(projectWindowTitle("jucontroler-app"), "Agent Relay · jucontroler-app");
+  assert.equal(projectWindowTitle("jutell"), "Agent Relay · jutell");
   assert.equal(projectWindowTitle("other-lane"), "Agent Relay · other-lane");
 });
 

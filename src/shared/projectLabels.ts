@@ -1,22 +1,171 @@
 export interface ProjectLabel {
   name: string;
   goal: string;
+  /** 저장소 폴더. 이름이 비어 있을 때만 폴더 이름으로 보여주고, 경로 자체는 화면에 올리지 않는다. */
+  path?: string;
 }
 
-export const PROJECT_LABELS: Record<string, ProjectLabel> = {
-  'agent-relay': { name: 'Agent Relay', goal: 'CORE V1 자동 실행과 결과 수집' },
-  actl: { name: 'actl', goal: '안전한 작업 전달과 Windows Board 검증' },
-  juactl: { name: 'actl', goal: '안전한 작업 전달과 Windows Board 검증' },
-  juplan: { name: 'JuPlan', goal: '계획 기반 프로젝트 실행과 릴리스 검증' },
-  juceipt: { name: 'JuCeipt', goal: '영수증 처리 재시도와 안정성 검증' },
-  jucontroler: { name: 'JuControler', goal: '프로젝트 통합 제어와 운영 가시성' },
-  'jucontroler-app': { name: '통합 관제 화면', goal: '여러 프로젝트 진행 상황을 한눈에 확인' },
-  'juceipt-planning': { name: 'JuCeipt 기획', goal: 'JuCeipt 기획안 정리와 실행 준비' },
-  jutell: { name: 'JuTell', goal: '짧고 쉬운 작업 보고서' },
-  juai: { name: 'JuAi', goal: '대화로 일을 맡기는 비서' },
-  'ai-agent-marketplace': { name: 'AI 인력사무소', goal: '일감을 맡기고 결과를 받는 장터' },
-  juradar: { name: 'JuRadar', goal: '돌아가는 작업을 한눈에 살피는 레이더' },
-};
+/**
+ * 코드에 실린 기본 목록은 비어 있다.
+ * 이름과 목표는 사용자 설정(`settings.json`의 projectLabels, 또는 같은 JSON을 담은
+ * localStorage `agent-relay.project-labels`)에서만 온다. 파일이 없거나 깨져 있어도 예외를 내지 않는다.
+ */
+export const PROJECT_LABELS: Record<string, ProjectLabel> = {};
+
+/** 브라우저가 기억하는 사용자 프로젝트 설정 키. 파일과 같은 JSON이다. */
+export const PROJECT_LABELS_STORAGE_KEY = 'agent-relay.project-labels';
+
+/** JuControler 허브로 보는 제품 id. 다른 프로젝트 목록은 코드에 두지 않는다. */
+const HUB_PROJECT_IDS = new Set(['jucontroler', 'jucontroler-app']);
+
+let hubFromConfig = false;
+
+export interface UserProjectConfig {
+  labels: Record<string, ProjectLabel>;
+  /** 사용자 설정이 JuControler 허브를 가리키면 true. */
+  hub: boolean;
+}
+
+/** 사용자 홈 아래의 프로젝트 이름 파일. 특정 사람·PC 경로는 넣지 않는다. */
+export function userProjectConfigPath(home: string): string {
+  const base = home.trim().replace(/[\\/]+$/, '');
+  if (!base) return '';
+  return `${base}/.config/agent-relay/project-labels.json`;
+}
+
+/**
+ * 설정 파일을 읽는다. 없거나 읽기 실패면 null. 예외를 밖으로 던지지 않는다.
+ * @param read 경로를 받아 문자열을 돌려주는 함수. 실패하면 던져도 된다.
+ * @param file 사용자 설정 파일 경로
+ */
+export function readUserProjectConfigText(read: (file: string) => string, file: string): string | null {
+  try {
+    const text = read(file);
+    return typeof text === 'string' ? text : null;
+  } catch {
+    return null;
+  }
+}
+
+/** 저장소 경로에서 폴더 이름만. 경로를 읽지 못하면 ''. */
+export function folderDisplayName(folder: unknown): string {
+  if (typeof folder !== 'string') return '';
+  const trimmed = folder.trim().replace(/[\\/]+$/, '');
+  if (!trimmed || trimmed === '.' || trimmed === '..') return '';
+  const parts = trimmed.split(/[\\/]/).filter(part => part.length > 0 && part !== '.');
+  const base = parts[parts.length - 1] ?? '';
+  return base === '..' ? '' : base;
+}
+
+function labelFromEntry(value: unknown): ProjectLabel | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const record = value as Record<string, unknown>;
+  const name = typeof record.name === 'string' ? record.name.trim() : '';
+  const goal = typeof record.goal === 'string' ? record.goal.trim() : '';
+  const path = typeof record.path === 'string' ? record.path.trim() : '';
+  if (!name && !goal && !path) return null;
+  const label: ProjectLabel = { name, goal };
+  if (path) label.path = path;
+  return label;
+}
+
+function hubFlagOf(value: unknown): boolean {
+  if (value === true) return true;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  return (value as Record<string, unknown>).configured === true;
+}
+
+/**
+ * 사용자 프로젝트 설정. 객체 또는 JSON 문자열.
+ * `{ projects: { id: { name, goal, path } }, hub }` 또는 id → { name, goal } 평평한 표 둘 다 받는다.
+ * 깨진 값이면 빈 설정. 예외 없음.
+ */
+export function parseUserProjectConfig(input: unknown): UserProjectConfig {
+  try {
+    const value = typeof input === 'string' ? JSON.parse(input) as unknown : input;
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return { labels: {}, hub: false };
+    const record = value as Record<string, unknown>;
+    const nested = record.projects ?? record.labels;
+    const source = nested && typeof nested === 'object' && !Array.isArray(nested)
+      ? nested as Record<string, unknown>
+      : record;
+    const labels: Record<string, ProjectLabel> = {};
+    for (const [id, entry] of Object.entries(source)) {
+      if (id === 'hub' || id === 'projects' || id === 'labels' || id === 'schema') continue;
+      const key = id.trim().toLowerCase();
+      if (!key) continue;
+      const label = labelFromEntry(entry);
+      if (!label) continue;
+      labels[key] = label;
+    }
+    const hub = hubFlagOf(record.hub) || Object.keys(labels).some(id => HUB_PROJECT_IDS.has(id));
+    return { labels, hub };
+  } catch {
+    return { labels: {}, hub: false };
+  }
+}
+
+/** settings.json에 실린 projectLabels. 없으면 null. 다른 필드는 프로젝트 목록으로 보지 않는다. */
+export function userProjectConfigFromSettings(settings: unknown): unknown {
+  if (!settings || typeof settings !== 'object' || Array.isArray(settings)) return null;
+  const record = settings as Record<string, unknown>;
+  return Object.prototype.hasOwnProperty.call(record, 'projectLabels') ? record.projectLabels : null;
+}
+
+/**
+ * 사용자 설정을 화면 이름 표에 반영한다. 나중 값이 같은 id를 덮어쓴다.
+ * 비어 있거나 깨진 소스는 건너뛴다. 예외 없음.
+ */
+export function applyUserProjectConfig(...sources: unknown[]): UserProjectConfig {
+  const labels: Record<string, ProjectLabel> = {};
+  let hub = false;
+  for (const source of sources) {
+    if (source == null || source === '') continue;
+    const parsed = parseUserProjectConfig(source);
+    const ids = Object.keys(parsed.labels);
+    if (ids.length === 0 && !parsed.hub) continue;
+    for (const id of ids) labels[id] = parsed.labels[id];
+    if (parsed.hub) hub = true;
+  }
+  for (const key of Object.keys(PROJECT_LABELS)) delete PROJECT_LABELS[key];
+  Object.assign(PROJECT_LABELS, labels);
+  hubFromConfig = hub;
+  return { labels: PROJECT_LABELS, hub };
+}
+
+/** 사용자 설정이 허브를 가리키는지. 반영 전이면 false. */
+export function projectHubConfigured(): boolean {
+  return hubFromConfig;
+}
+
+function laneLooksLikeHub(lane: unknown): boolean {
+  if (!lane || typeof lane !== 'object' || Array.isArray(lane)) return false;
+  const row = lane as Record<string, unknown>;
+  const id = typeof row.project === 'string' ? row.project : typeof row.id === 'string' ? row.id : '';
+  if (HUB_PROJECT_IDS.has(id.trim().toLowerCase())) return true;
+  return folderDisplayName(row.path ?? row.repo ?? row.folder).toLowerCase() === 'jucontroler';
+}
+
+/**
+ * 허브 반영 카드를 보여줄지.
+ * 사용자 설정이 허브를 가리키거나, 보드에서 JuControler 허브가 보일 때만 true.
+ * 보드가 없거나 깨져 있으면 false. 예외 없음.
+ */
+export function hubCardVisible(input?: { configured?: boolean; board?: unknown } | null): boolean {
+  try {
+    if (!input) return false;
+    if (input.configured === true) return true;
+    const board = input.board;
+    if (!board || typeof board !== 'object') return false;
+    if (Array.isArray(board)) return board.some(laneLooksLikeHub);
+    const record = board as Record<string, unknown>;
+    if (hubFlagOf(record.hub)) return true;
+    const lanes = record.lanes;
+    return Array.isArray(lanes) && lanes.some(laneLooksLikeHub);
+  } catch {
+    return false;
+  }
+}
 
 /** 목표 카드에 등록된 한국어 목표가 없을 때. */
 export const PLAN_GOAL_UNSET = '목표가 아직 정리되지 않았어요';
@@ -28,11 +177,14 @@ function knownProject(projectId: string, labels: Record<string, ProjectLabel>): 
 
 /**
  * 계획 화면 프로젝트 이름.
- * 등록된 이름 → 보드 lane.name → id.
+ * 사용자 설정의 이름 → 저장소 폴더 이름 → 보드 lane.name → id.
  */
 export function planLaneDisplayName(projectId: string, laneName?: unknown, labels: Record<string, ProjectLabel> = PROJECT_LABELS): string {
-  const known = knownProject(projectId, labels)?.name?.trim();
-  if (known) return known;
+  const known = knownProject(projectId, labels);
+  const name = known?.name?.trim();
+  if (name) return name;
+  const folder = folderDisplayName(known?.path);
+  if (folder) return folder;
   if (typeof laneName === 'string' && laneName.trim()) return laneName.trim();
   return projectId.trim() || '알 수 없는 프로젝트';
 }
@@ -81,10 +233,18 @@ export function aiDisplayName(runtimeId: string): string {
   return Object.prototype.hasOwnProperty.call(AI_DISPLAY_NAMES, key) ? AI_DISPLAY_NAMES[key] : runtimeId;
 }
 
-/** project/lane id → 화면 이름 (대소문자 무시). 모르면 id 그대로. */
+/**
+ * project/lane id → 화면 이름 (대소문자 무시).
+ * 사용자 설정의 이름 → 저장소 폴더 이름 → id.
+ */
 export function projectDisplayName(projectId: string): string {
   const key = projectId.trim().toLowerCase();
-  return Object.prototype.hasOwnProperty.call(PROJECT_LABELS, key) ? PROJECT_LABELS[key].name : projectId;
+  const known = Object.prototype.hasOwnProperty.call(PROJECT_LABELS, key) ? PROJECT_LABELS[key] : undefined;
+  const name = known?.name?.trim();
+  if (name) return name;
+  const folder = folderDisplayName(known?.path);
+  if (folder) return folder;
+  return projectId;
 }
 
 /** 프로젝트 창 구분 키 — 대소문자·공백 무시. 같은 프로젝트는 같은 키라 창을 또 열지 않고 앞으로 가져온다. */

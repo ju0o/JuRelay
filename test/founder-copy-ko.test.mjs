@@ -53,22 +53,11 @@ test('settings file path comes from the backend path.join value', () => {
   assert.doesNotMatch(appTsx, /\{settings\.baseDir\}\/settings\.json/);
 });
 
-test('lane goals are deduped (통합 관제 화면 · JuCeipt 기획 keep names, unique goals)', () => {
-  assert.match(labelsTs, /'jucontroler-app': \{\s*name: '통합 관제 화면'/);
-  assert.match(labelsTs, /'juceipt-planning': \{\s*name: 'JuCeipt 기획'/);
-  const goals = [...labelsTs.matchAll(/goal: '([^']+)'/g)].map((m) => m[1]);
-  const goalOf = (id) => {
-    const m = labelsTs.match(new RegExp(`['"]?${id}['"]?: \\{[^}]*?goal: '([^']+)'`));
-    return m ? m[1] : null;
-  };
-  const appGoal = goalOf('jucontroler-app');
-  const parentGoal = goalOf('jucontroler');
-  const planningGoal = goalOf('juceipt-planning');
-  assert.ok(appGoal && parentGoal && appGoal !== parentGoal, '통합 관제 화면 goal must differ from jucontroler goal');
-  for (const other of [goalOf('juplan'), goalOf('juceipt')]) {
-    assert.ok(planningGoal && other && planningGoal !== other, 'JuCeipt 기획 goal must differ from JuPlan/JuCeipt goals');
-  }
-  assert.ok(!goals.includes('프로젝트 통합 제어와 운영 가시성') || appGoal !== '프로젝트 통합 제어와 운영 가시성', 'no duplicated parent goal on jucontroler-app');
+test('lane goals are not hardcoded in the label source', () => {
+  assert.equal(labelsTs.includes('통합 관제 화면'), false);
+  assert.equal(labelsTs.includes('JuCeipt 기획'), false);
+  assert.equal(labelsTs.includes('프로젝트 통합 제어와 운영 가시성'), false);
+  assert.match(labelsTs, /export const PROJECT_LABELS: Record<string, ProjectLabel> = \{\}/);
 });
 
 /** WCAG relative luminance + contrast ratio. */
