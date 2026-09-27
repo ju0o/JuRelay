@@ -4977,6 +4977,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "ACTL-BOARD-READABLE-TONE-R2",
+          "scope": "Start from commit ac4013825e31683d1a370c835ba5ef9f36ea8894 (first attempt: short noun labels, compact window table — keep those). Fix exactly the QA findings: (1) body text stays ≥16px (founder-ux rule; my earlier '13–14px' instruction was wrong) — reduce the childish feel with short labels, status dots, tighter spacing and a table layout, not smaller fonts; headings 18–20px semibold; (2) the first-run guide must still exist: move the long intro into a '?' help panel that opens on first run and on click, and update tests/test_gui_korean_labels.py::test_first_run_guide_explains_purpose_setting_and_next_step to check that help panel's text (purpose · one setting · next step) instead of the removed card. All other tests must pass.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_board_look.py",
+            "tests/test_gui_korean_labels.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 09:40 on MainPC after opening JuActlBoard 8242078: '쉬운 용어들로 써진 건 좋은데, 그 -> 너무 유치함 조금 가독성 있게 디자인 좀 바꾸면 좋겠음'. Test: header/status strings are short labels (≤ 8 Korean chars each), no intro card by default. | First attempt held 2026-09-27: body font 14px violated founder-ux ≥16px; first-run guide test failed. PM redesign found no bounded fix; this R2 is hand-written.",
+          "title": "보드 말투·디자인 덜 유치하게 (다시 — 글자 16px 유지)"
         }
       ],
       "qaRuntime": [
