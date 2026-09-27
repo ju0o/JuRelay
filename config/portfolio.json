@@ -18993,6 +18993,18 @@
           ],
           "ssotEvidence": "README.md:34-40 \"setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)\"",
           "title": "온보딩 질문 오류 사전 점검"
+        },
+        {
+          "taskId": "JUAI-README-SUMMARY-SUBDAILY",
+          "scope": "Extend README's member-commands line to also name the thread-only !요약해줘 summary command and note the 3-per-day cap on subscription match notifications, matching bot.mjs behavior that layout.mjs's own GUIDE/HELP_TEXT already documents",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "npm run check",
+            "git diff --check"
+          ],
+          "ssotEvidence": "bot.mjs:125 !?요약(해\\s?줘)? triggers summarizeThread; bot.mjs:325 SUB_DAILY=3 caps notifySubs; README.md:8 멤버 명령어 줄에 두 항목 모두 없음"
         }
       ],
       "note": "lane added by night plan request 2026-09-25"
