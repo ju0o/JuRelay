@@ -19015,6 +19015,19 @@
           ],
           "ssotEvidence": "Founder 2026-09-27 M3=DEFER 결정 + Supervisor R2 redesign",
           "title": "M3 보류 근거를 현행 문서에 기록"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-DEFER-STATUS-SYNC-R2",
+          "scope": "Record the Founder-decided M3=DEFER outcome and its 0-of-7 joined Claude-final-and-Receipt evidence consistently in the roadmap, status board, and decision log.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md",
+            "docs/operations/PM_STATUS_BOARD.md",
+            "docs/decisions/DECISION_LOG.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-27: M3 최종 판정은 DEFER; DEFER 근거는 Claude final과 Receipt가 모두 있는 joined rows evidence만 사용"
         }
       ],
       "skills": {
