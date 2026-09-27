@@ -7887,7 +7887,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:68 `ACCEPT` may select only the next task already authorized for this lane. It does not create new Product scope."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:68 `ACCEPT` may select only the next task already authorized for this lane. It does not create new Product scope.",
+          "title": "승인된 작업만 다음으로 진행"
         },
         {
           "taskId": "JUPLAN-AR-TRANSPORT-HOLD",
@@ -7901,7 +7902,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-transport-hold.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task.",
+          "title": "연결이 끊기면 작업을 안전하게 멈춤"
         },
         {
           "taskId": "JUPLAN-AR-RESULT-SCOPE",
@@ -7914,7 +7916,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-result-scope.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:66 Workers execute only the declared files and tests. They do not widen scope, invent Product work, touch other repositories, or push."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:66 Workers execute only the declared files and tests. They do not widen scope, invent Product work, touch other repositories, or push.",
+          "title": "허용된 범위 밖 변경을 차단"
         }
       ],
       "qaRuntime": [
@@ -12735,7 +12738,8 @@
           "tests": [
             "node --test tests/contract-error-codes-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:138-140,194-195,245-246 lists AgentRelayBoardError/JuPlanStatusError/JuCeiptReceiptError code tuples with no tests/*-sync.test.mjs referencing PROJECT_STATUS_CONTRACT.md (confirmed via git grep at 02fe2c67f)"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:138-140,194-195,245-246 lists AgentRelayBoardError/JuPlanStatusError/JuCeiptReceiptError code tuples with no tests/*-sync.test.mjs referencing PROJECT_STATUS_CONTRACT.md (confirmed via git grep at 02fe2c67f)",
+          "title": "오류 안내 목록을 실제 동작과 맞춤"
         },
         {
           "taskId": "JUCONTROLER-CONTRACT-FRESHNESS-SYNC",
@@ -12746,7 +12750,8 @@
           "tests": [
             "node --test tests/contract-freshness-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md lines with 'freshnessMs' (default: `300000`...) at ~136,191,243 vs src/adapters/agent-relay.mjs:45, src/adapters/juplan.mjs:30, src/adapters/juceipt.mjs:32 freshnessMs = 5 * 60 * 1000; existing tests/docs-default-freshness-sync.test.mjs only checks src/project-status.mjs vs README/getting-started, not this doc or these adapters (confirmed by reading both at 02fe2c67f)"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md lines with 'freshnessMs' (default: `300000`...) at ~136,191,243 vs src/adapters/agent-relay.mjs:45, src/adapters/juplan.mjs:30, src/adapters/juceipt.mjs:32 freshnessMs = 5 * 60 * 1000; existing tests/docs-default-freshness-sync.test.mjs only checks src/project-status.mjs vs README/getting-started, not this doc or these adapters (confirmed by reading both at 02fe2c67f)",
+          "title": "상태 갱신 주기를 문서와 맞춤"
         },
         {
           "taskId": "JUCONTROLER-E2E-STEP-QUOTE-SYNC",
@@ -12757,7 +12762,8 @@
           "tests": [
             "node --test tests/e2e-step-quote-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-27: docs/getting-started.md e2e result section is still a hand-transcribed quote"
+          "ssotEvidence": "Founder direction 2026-09-27: docs/getting-started.md e2e result section is still a hand-transcribed quote",
+          "title": "시작 안내 결과를 실제 실행과 맞춤"
         },
         {
           "taskId": "JUCONTROLER-CONTRACT-EXAMPLE-RUN",
@@ -12768,7 +12774,8 @@
           "tests": [
             "node --test tests/contract-example-run.test.mjs"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:29 Minimal example:"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:29 Minimal example:",
+          "title": "상태 예시가 실제 결과와 맞는지 확인"
         },
         {
           "taskId": "JUCONTROLER-GETTING-STARTED-E2E-SAMPLE-SYNC-R2",
@@ -12780,7 +12787,8 @@
           "tests": [
             "node --test tests/e2e-docs-sync.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: docs/getting-started.md의 giant sample JSON steps 배열을 실제 실행 결과와 동기화하는 검사를 추가"
+          "ssotEvidence": "Founder direction 2026-09-23: docs/getting-started.md의 giant sample JSON steps 배열을 실제 실행 결과와 동기화하는 검사를 추가",
+          "title": "시작 안내 실행 예시를 실제 결과와 맞춤"
         }
       ],
       "qaRuntime": [
@@ -16433,7 +16441,8 @@
           "tests": [
             "node --test test/conversation-detail-fields.test.mjs"
           ],
-          "ssotEvidence": "docs/operator-surface/HOME_SCREEN_SPEC.md:18 Human-facing cards use concise Korean state labels. Exact IDs, UUIDs, long English, and raw JSON remain available in details drill-down blocks."
+          "ssotEvidence": "docs/operator-surface/HOME_SCREEN_SPEC.md:18 Human-facing cards use concise Korean state labels. Exact IDs, UUIDs, long English, and raw JSON remain available in details drill-down blocks.",
+          "title": "대화 상태를 알기 쉽게 표시"
         },
         {
           "taskId": "JCAPP-HOLD-SENTENCE-NO-QA",
@@ -16445,7 +16454,8 @@
           "tests": [
             "node --test test/hold-card-no-endless-explaining.test.mjs test/hold-card.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "멈춘 이유를 쉽게 안내"
         }
       ],
       "skills": {
@@ -17406,7 +17416,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/qa/P0_WBS_ENTITY_GATE_MATRIX_AUDIT.md:38 Bounded correction: change the B0 outcome/exit wording to “core Receipt value proof establishes the foundation for later free Checkup/share demand.” docs/qa/P0_WBS_ENTITY_GATE_MATRIX_AUDIT.md:50 Bounded correction: use “planning-consistent and implementation-constrained.”"
+          "ssotEvidence": "docs/qa/P0_WBS_ENTITY_GATE_MATRIX_AUDIT.md:38 Bounded correction: change the B0 outcome/exit wording to “core Receipt value proof establishes the foundation for later free Checkup/share demand.” docs/qa/P0_WBS_ENTITY_GATE_MATRIX_AUDIT.md:50 Bounded correction: use “planning-consistent and implementation-constrained.”",
+          "title": "영수증 가치 증명의 기준 정리"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-CANONICAL-PROVENANCE",
@@ -17417,7 +17428,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:26 When 04 and 05 differ, **05 is authoritative** for the business-system visual, while DBML remains authoritative for logical entity/relationship detail."
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:26 When 04 and 05 differ, **05 is authoritative** for the business-system visual, while DBML remains authoritative for logical entity/relationship detail.",
+          "title": "서비스 전체 흐름을 한눈에 안내"
         }
       ],
       "skills": {
@@ -19029,7 +19041,8 @@
           "tests": [
             "node --test tests/low-risk-still-test-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:353 낮은 위험도라고 해서 테스트가 필요 없는 것은 아니다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:353 낮은 위험도라고 해서 테스트가 필요 없는 것은 아니다.",
+          "title": "낮은 위험도도 테스트 확인"
         },
         {
           "taskId": "JUTELL-VERIFY-RECORD-FIELDS-PARITY",
@@ -19041,7 +19054,8 @@
           "tests": [
             "node --test tests/verify-record-fields-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:406 검증 결과에는 가능한 경우 다음을 함께 기록한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:406 검증 결과에는 가능한 경우 다음을 함께 기록한다.",
+          "title": "검증 내용을 빠짐없이 기록"
         },
         {
           "taskId": "JUTELL-SCENARIO-T-COULD-NOT-RUN",
@@ -19053,7 +19067,8 @@
           "tests": [
             "node --test tests/results/scenario-t/could-not-run.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:396 도구, 권한, 설정 또는 환경 문제로 실행하지 못했다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:396 도구, 권한, 설정 또는 환경 문제로 실행하지 못했다.",
+          "title": "확인 못 한 이유까지 안내"
         },
         {
           "taskId": "JUTELL-GLOSSARY-TERM-COUNT-CAP-PARITY",
@@ -19065,7 +19080,8 @@
           "tests": [
             "node --test tests/glossary-term-count-cap-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:62 단순 작업 보고서에서는 설명할 용어를 최대 3개까지 우선한다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:62 단순 작업 보고서에서는 설명할 용어를 최대 3개까지 우선한다.",
+          "title": "용어 설명은 세 개까지, 보안은 예외"
         },
         {
           "taskId": "JUTELL-CONTEXT-TRUNCATED-FILE-DISCLOSURE-R2",
@@ -19077,7 +19093,8 @@
           "tests": [
             "npm test --prefix packages/cli -- context.test.ts"
           ],
-          "ssotEvidence": "packages/cli/src/commands/context.ts:107-124 (MAX_FILES 초과 시 truncated=true) 및 :271-278 (gitSummary가 truncated를 노출하지 않음), BEGINNER_REPORT_SPEC.md §8.1 '확인됨은 확인한 범위에만 적용한다'"
+          "ssotEvidence": "packages/cli/src/commands/context.ts:107-124 (MAX_FILES 초과 시 truncated=true) 및 :271-278 (gitSummary가 truncated를 노출하지 않음), BEGINNER_REPORT_SPEC.md §8.1 '확인됨은 확인한 범위에만 적용한다'",
+          "title": "변경 목록이 잘리면 알려주기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -20132,7 +20149,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 키워드 구독은 최대 5개, 매칭 알림은 1인 하루 3회"
+          "ssotEvidence": "README.md:8 키워드 구독은 최대 5개, 매칭 알림은 1인 하루 3회",
+          "title": "구독 단어 한도와 하루 알림 횟수를 안내"
         },
         {
           "taskId": "JUAI-GUIDE-GLOBAL-CAP",
@@ -20144,7 +20162,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 서버 전체 하루 300회"
+          "ssotEvidence": "README.md:49 서버 전체 하루 300회",
+          "title": "서버 전체 하루 질문 한도를 안내"
         },
         {
           "taskId": "JUAI-CHECK-GLOBAL-NOBUMP",
@@ -20155,7 +20174,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:53 if (global >= limits.globalDaily) return { ok: false, reason: \"global\" }"
+          "ssotEvidence": "lib.mjs:53 if (global >= limits.globalDaily) return { ok: false, reason: \"global\" }",
+          "title": "서버가 꽉 차면 거절해도 횟수는 그대로"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
