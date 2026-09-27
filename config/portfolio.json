@@ -20390,6 +20390,50 @@
           ],
           "ssotEvidence": "lib.mjs:53 if (global >= limits.globalDaily) return { ok: false, reason: \"global\" }",
           "title": "서버가 꽉 차면 거절해도 횟수는 그대로"
+        },
+        {
+          "taskId": "JUAI-CHECK-EXTRACT-JSON-LATER",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) that extractJson returns null when the first brace-delimited span is invalid JSON even if a later object in the same text is valid.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:114 First JSON object in model output (models like to wrap it in prose or fences)."
+        },
+        {
+          "taskId": "JUAI-CHECK-REDACT-SECRET-BOUNDS",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) that redact leaves a too-short Discord token, GitHub token, AWS key, and sk- token unchanged, masks an N-prefix Discord token, and masks an unclosed private-key block through the end of the string.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-ADMIN-WHITESPACE",
+          "scope": "Add check.mjs assertions only (no lib.mjs change) that validateAdminPlan returns null when a required string field is whitespace-only, with any other required fields valid, for answer, post_notice, add_rule, create_channel, delete_channel, implement_feature, and timeout.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:48 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-GLOBAL-ONE-UNDER",
+          "scope": "Add check.mjs assertions only (no lib.mjs change), on a fresh in-memory DB built from SCHEMA, that a member takeQuota succeeds when the global count is exactly one below LIMITS.globalDaily for a now whose quotaDay matches that row, and the global count then equals LIMITS.globalDaily.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만, 1인 기본 하루 5회(피드백 보너스 최대 +3) · 30초 간격 · 서버 전체 하루 300회 · 서버 주인(Founder)·운영진은 일일 제한 없음."
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
