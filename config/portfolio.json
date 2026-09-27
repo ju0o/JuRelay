@@ -2663,6 +2663,167 @@
           ],
           "ssotEvidence": "package.json scripts.test omits test/controlroom-automation-toggle.test.mjs and test/controlroom-plain-2.test.mjs, which already cover Founder direction 2026-09-27 (controlRoom automationOn/automationOff/automationStatus UI toggle, already built per AGENTRELAY-CONTROLROOM-AUTOMATION-TOGGLE done); same wiring pattern as AGENTRELAY-TEST-WIRE-AUTOMATION-UI (done)",
           "title": "관제실 자동전환 점검 자동화"
+        },
+        {
+          "taskId": "AGENTRELAY-V1-TOUCH-DRAG-REORDER-R3",
+          "scope": "터치 폴백만 추가하고 데스크톱 HTML5 DnD는 불변, 새 의존성 금지. 포인터이벤트 최소 폴백(press-hold, 이동, drop으로 순서교체)을 App.tsx에 추가. test/v03.test.mjs에 표면별+데스크톱 DnD 회귀 테스트 추가.",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "test/v03.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "node test/v03.test.mjs"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES (missing touch pointer coverage) + Supervisor 2026-09-27 R2 redesign",
+          "title": "터치로 작업 탭 순서 바꾸기"
+        },
+        {
+          "taskId": "AGENTRELAY-CORE-V1-STALE-LOCK-FAIL-CLOSED-R3",
+          "scope": "bridge/agent-relay.mjs의 invokedDirectly 가드를 고쳐 keepalive shim(import 실행)과 bin 심링크 실행에서도 CLI가 동작하게 하고, 기존 spawn 기반 탐침에 의존. ACTIVE/STALE/CORRUPT/MISSING 구분, stale/corrupt 잠금 해제 유지. 차단 문구 정리 + 빈 출력 fail-closed 회귀검사 추가.",
+          "files": [
+            "bridge/agent-relay.mjs",
+            "test/v2/night-run.test.mjs"
+          ],
+          "tests": [
+            "node --test test/v2/night-run.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES BLOCKING (invokedDirectly breaks launches) + Supervisor 2026-09-27 R2 redesign",
+          "title": "잠금 상태를 정확히 구분해 안전하게 멈추기"
+        },
+        {
+          "taskId": "AGENTRELAY-CORE-SNAPSHOT-CURRENT-TASK-R3",
+          "scope": "findLast(unfinished)||at(-1) 유지. 테스트가 기대 작업을 마지막에 두어 base에서도 통과하는 문제 수정: 미완료 이력이 최신 완료보다 우선하고 next는 VERIFIED_DONE에만 붙음을 단언하는 구성으로 교체.",
+          "files": [
+            "src/v2/portfolio-runner/index.mjs",
+            "test/v2/portfolio-runner.test.mjs"
+          ],
+          "tests": [
+            "node --test test/v2/portfolio-runner.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES BLOCKING (non-discriminating test) + Supervisor 2026-09-27 R2 redesign",
+          "title": "진행 중인 작업을 정확히 표시하기"
+        },
+        {
+          "taskId": "AGENTRELAY-WHO-WORKS-ROUTING-R3",
+          "scope": "controlRoomWorkingRows 규칙 유지. controlroom-titles-today 기대값을 새 라벨+제목 행 모양으로 고쳐 회귀검사 통과. 작업자 단계·검수 단계·알 수 없는 lane 케이스를 who-works-routing 테스트에 추가.",
+          "files": [
+            "src/shared/types.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/shared/projectLabels.ts",
+            "test/who-works-routing.test.mjs",
+            "test/controlroom-titles-today.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/who-works-routing.test.mjs test/controlroom-titles-today.test.mjs"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES (stale test expectations) + Supervisor 2026-09-27 R2 redesign",
+          "title": "일하는 담당자를 정확히 보여주기"
+        },
+        {
+          "taskId": "AGENTRELAY-SMALL-POLISH-3-R3",
+          "scope": "PROJECT_LABELS에 jutell 항목만 추가하고 기존 항목 불변. light 탭 active 색상 리터럴 덮어쓰기 규칙 추가. controlRoom 문구·무료 모델 선택지·기록 화면 여백 유지. small-polish-3 테스트를 기본 실패·수정후 통과로 확장.",
+          "files": [
+            "src/shared/projectLabels.ts",
+            "src/frontend/controlRoom.tsx",
+            "src/frontend/style.css",
+            "test/small-polish-3.test.mjs"
+          ],
+          "tests": [
+            "npm run typecheck",
+            "npm run build",
+            "node --test test/small-polish-3.test.mjs",
+            "node --test test/project-labels.test.mjs"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES findings (label mismatch, tab color) + Supervisor 2026-09-27 R2 redesign",
+          "title": "프로젝트 이름과 자잘한 화면 고치기"
+        },
+        {
+          "taskId": "AGENTRELAY-NIGHT-SUPERVISOR-OWN-SCOPE-R3",
+          "scope": "buildOwnScopeArgs 유지. systemd-run 대기자 PID를 보는 대기를 버리고 ready 파일 payload pid의 cgroup 확인으로 교체. 실행기는 분리 실행하고 ok면 0·아니면 사유로 1 종료. node -e 단언 금지, payload 케이스 검사 추가. 마감·보고·전원 동작 불변.",
+          "files": [
+            "src/v2/night-run/index.mjs",
+            "bridge/agent-relay.mjs",
+            "test/v2/night-run.test.mjs"
+          ],
+          "tests": [
+            "node --test test/v2/night-run.test.mjs",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES findings (wrong-PID confirmation) + Supervisor 2026-09-27 R2 redesign",
+          "title": "예약 밤샘 실행이 죽지 않게 하기"
+        },
+        {
+          "taskId": "AGENTRELAY-CONTROLROOM-LIVE-STATUS-CARD-R3",
+          "scope": "다섯 줄 쉬운 한국어 상태·접힌 원문·상대 시간·할 일 버튼 유지. ResumeControl·이어하기 오류 문구 분기: 꺼짐은 기존 문구, 켜진채 실패·INVALID_JSON은 한국어 메시지를 본문에 보이고 원문은 원문 보기로만. 두 갈래 테스트 추가.",
+          "files": [
+            "src/frontend/controlRoom.tsx",
+            "test/controlroom-today.test.mjs"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck",
+            "node --test test/controlroom-today.test.mjs"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES finding (error hiding) + Supervisor 2026-09-27 R2 redesign",
+          "title": "관제 카드에 진행 상황 알기 쉽게 보이기"
+        },
+        {
+          "taskId": "AGENTRELAY-LOVABLE-SHELL-R4",
+          "scope": "뼈대·레일 유지. 상태 조회 실패 분류를 한국어 백엔드 문구로: 연결 불가만 꺼짐 문구, 켜진채 실패는 amber 문구로, 실패 조회 뒤 확인 중 표시 금지. 켜기·끄기 실패는 한국어 메시지를 본문으로 직접 보이고 다시 시도 제공. IPC·백엔드 변경과 새 의존성 금지.",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "src/frontend/components.tsx",
+            "test/lovable-shell.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES findings (status conflation) + Supervisor 2026-09-27 R2 redesign",
+          "title": "연결이 끊겼을 때 화면을 헷갈리지 않게 하기"
+        },
+        {
+          "taskId": "AGENTRELAY-LOVABLE-SHELL-R2-R3",
+          "scope": "connectionState 도우미와 배선 유지, IPC·백엔드 변경 금지. enabled null을 끄기로 다룸: 자동 실행 켜기 버튼 동작 + 켰어요/껐어요 또는 분류된 한국어 사유+다시 시도 표시. connection-state 테스트에 null 경로 케이스 추가.",
+          "files": [
+            "src/shared/connectionState.ts",
+            "src/frontend/App.tsx",
+            "src/frontend/style.css",
+            "test/connection-state.test.mjs"
+          ],
+          "tests": [
+            "npm run build",
+            "npm run typecheck",
+            "npm test"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES findings (dead toggle, test gaps) + Supervisor 2026-09-27 R2 redesign",
+          "title": "꺼진 자동 실행을 버튼 한 번으로 켜기"
+        },
+        {
+          "taskId": "AGENTRELAY-V2-PROJECT-SCOPE-R3",
+          "scope": "걸러내기만 구현. 새 순수 파일 scopeBoard(board,projectId): 빈 id는 그대로, 아니면 id·project 일치 lane만 담은 새 board 반환, 입력 불변. controlRoom 변경은 board 정규화 직후 적용 한 줄. .tsx 정규식 검사 없는 fixture 검사 추가. package.json 검사 스크립트에 등록.",
+          "files": [
+            "src/shared/projectScope.ts",
+            "src/frontend/controlRoom.tsx",
+            "test/v2/project-scope.test.mjs",
+            "package.json"
+          ],
+          "tests": [
+            "npm run build",
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES finding (regex false positive) + Supervisor 2026-09-27 R2 redesign",
+          "title": "자기 프로젝트 기록만 따로 보여주기"
         }
       ],
       "qaRuntime": [
@@ -5127,6 +5288,561 @@
           ],
           "ssotEvidence": "Founder 2026-09-27 16:40 on MainPC with board 8c37b8e: 'actl켰을 때, 터미널이 여러개 뜨는 거 백그라운드로 못 숨김? … 새환경찾기 눌러도 여러개 뜨는 거', 'actl창 지금 -> 글씨랑 너무 큼', 'Claude Team 1, 2, Cursor 다 작업중인데 왜 상태가 쉬는중으로 나옴?', 'MainPC -> wsl 환경은? 연동 안됨 아직?'. Test: live_card row with runtime_state OTHER or UNKNOWN and control_ready true → '확인 중' (tests/test_live_card.py::test_live_card_maps_statuses fails on 87490553c5a9bc1903ed926afbab5958e54d3476 until this assertion is updated); IDLE and DONE stay '쉬는 중'; do not measure pane activity.",
           "title": "현재 상태를 정확히 알려드려요"
+        },
+        {
+          "taskId": "ACTL-PREVIEW-TIMEOUT-BOUND-R3",
+          "scope": "_preview_text 부분일치 오판 수정: 결과 텍스트에 'timeout' 포함만으로 실패로 보지 않고, TmuxError·'live pane capture timed out'·'timed out'·'(미리보기 불가'일 때만 last-good 유지, 성공 텍스트에 'timeout'이 들어간 경우('request timeout recovered')는 새 텍스트로 교체하고 last_previews 갱신. 테스트: _preview_text('LAST_GOOD','request timeout recovered ready')가 (새텍스트,True)임을 assert, 기존 타임아웃 변형 테스트 유지.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_tui.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: substring-timeout over-match freezes good pane text (gui.py _preview_text) + Supervisor 2026-09-27 R2 redesign",
+          "title": "미리보기 타임아웃 판정 오류 고치기"
+        },
+        {
+          "taskId": "ACTL-TK-PLAIN-CARDS-KEYBOARD-R3",
+          "scope": "R2에서 드러난 결함까지 포함해 복구: 삭제된 _move_card 복원 + 루트 Up/Down 바인딩 복원 + 포커스가 미리보기 tk.Text일 때는 카드 이동 건너뛰기(캐럿 유지). 테스트는 메서드를 스텁하지 않고 _move_card_from_event와 실제 바인딩 경로로 검증: 미리보기 Text 포커스 시 캐럿 보존, 그 외 포커스 시 카드 이동.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: preview-Text guard missing; R2 QA: _move_card undefined + root bindings removed + stub-only test + Supervisor 2026-09-27 R2 redesign",
+          "title": "키보드 카드 이동과 미리보기 커서 충돌 고치기"
+        },
+        {
+          "taskId": "ACTL-TK-PLAIN-CARDS-KEYBOARD-R2-R2",
+          "scope": "R2 재시도: _move_card 메서드를 실제로 복원하고 루트 Up/Down 바인딩을 _move_card_from_event에 다시 연결한 뒤 미리보기 Text 가드를 유지. 테스트를 스텁 방식에서 이벤트 경로 기반(바인딩 존재 assert + focus_get 스텁으로 미리보기/비미리보기 분기)으로 교체, 기존 카드·인스펙터 동작 불변.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: _move_card undefined, root bindings removed, stub test covers nothing + Supervisor 2026-09-27 R2 redesign",
+          "title": "삭제된 카드 이동 기능 복원하기"
+        },
+        {
+          "taskId": "ACTL-CROSS-PROCESS-PANE-LOCK-R3",
+          "scope": "원격(SSH) 잠금에 2.0초 fail-closed 한글 PANE_LOCK_ERROR 적용: REMOTE_SSH_TARGET 경로가 10초 하드코딩 대신 2.0초 타임아웃 후 한글 메시지 반환. 범위 밖 tests/test_tmux.py 수정은 되돌리기. 2초 타임아웃-한글 메시지 경로 테스트를 tests/test_transport_socket.py에 추가.",
+          "files": [
+            "src/actl/core/tmux.py",
+            "src/juactl-board.py",
+            "tests/test_transport_socket.py",
+            "tests/test_tmux.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: remote path loses 2s Korean timeout; out-of-scope test_tmux.py edit; no timeout-message test + Supervisor 2026-09-27 R2 redesign",
+          "title": "원격 전송 잠금 시간 초과 한글 안내 고치기"
+        },
+        {
+          "taskId": "ACTL-RESULT-READY-COPY-CTA-R3",
+          "scope": "오경보 CTA 수정: previous_rows에 기준선이 없을 때 _hydration_done/_refresh_done이 _result_ready를 세우지 않도록, 실제 기준선이 있을 때만 작동. _refresh_done에서 previous_rows 기록 복원. 테스트에서 직접 호출: 첫 하이드레이션 RUNNING·동일해시-CTA 미작동, 실제 전이-카드 표시 assert.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_visible_feedback.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: false CTA arm on missing baseline; tests never call hydration/refresh nor assert card text + Supervisor 2026-09-27 R2 redesign",
+          "title": "답 도착 알림 오작동 고치기"
+        },
+        {
+          "taskId": "ACTL-CROSS-PROCESS-PANE-LOCK-R2-R2",
+          "scope": "원격 잠금 개행 버그 수정: ssh 전달 시 소실되는 개행을 고쳐 원격 acquired 뒤에 실제 개행이 오게 하고(readline 정상 해제), 빈 잠금에서 한글 busy 오반환 제거. 범위 밖 remote_scheduler.py 변경은 되돌리기. 스텁 테스트를 실제 ssh 명령 바이트 검증까지 강화.",
+          "files": [
+            "src/actl/core/tmux.py",
+            "src/juactl-board.py",
+            "tests/test_transport_socket.py",
+            "tests/test_tmux.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: printf newline loss, out-of-scope remote_scheduler.py edit + Supervisor 2026-09-27 R2 redesign",
+          "title": "원격 잠금 해제 신호 오류 고치기"
+        },
+        {
+          "taskId": "ACTL-CLI-AUTO-REMAP-KOREAN-R3",
+          "scope": "기존 한글 재매핑 작업 유지 + 게이트 단일 실패 해소: 오래된 기대값이면 의도된 동작으로 갱신, 코드 회귀면 코드 수정, assertion 약화 금지. 전체 게이트 통과 확인.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_korean_messages.py",
+            "tests/test_ne_state.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: TEST_GATE exit 1 on ne_state only (scope ACCEPT) + Supervisor 2026-09-27 R2 redesign",
+          "title": "전송 대상 안내 한글화 마무리하기"
+        },
+        {
+          "taskId": "ACTL-WEB-FOUNDER-SURFACE-R3",
+          "scope": "QA 지적 단일 결함 수정: serve.py 웹 보드에 첫 실행 3단계 안내 추가. 기존 pane ID·원시 오류 원문보기 처리와 보내기·복사 즉시 표시는 유지. tests/test_serve.py에 3단계 안내 렌더 assert 추가.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: no first-run 3-step guide in serve.py + Supervisor 2026-09-27 R2 redesign",
+          "title": "웹 보드 첫 실행 안내 추가하기"
+        },
+        {
+          "taskId": "ACTL-BOARD-LIVE-STATE-TRUTH-R3",
+          "scope": "코드는 QA 통과했으므로 유지. 게이트 실패가 pytest 미설치뿐이므로, 가짜 원격 탐색 페이로드 기반 오프라인 테스트를 run_tests.py에서 도는 plain assert로 tests/test_board_live_state_truth.py에 추가. pytest 명령 사용 금지.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/core/status.py",
+            "src/actl/core/remote.py",
+            "tests/test_board_live_state_truth.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: TEST_GATE only No module named pytest; no scope violations + Supervisor 2026-09-27 R2 redesign",
+          "title": "원격 상태 표시 검증 방식 고치기"
+        },
+        {
+          "taskId": "ACTL-BOARD-PLAIN-WORDS-R5",
+          "scope": "표면 개발자 용어 3건 제거: SSH/LOCAL 노출-쉬운 환경 이름, 영어 ON(12s)-한글 상태, tmux/pane/session/window-원문 보기 뒤로. 각 위치 회귀 assert 추가(구 코드에서 실패·신 코드에서 통과).",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_board_plain_words.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: SSH/LOCAL, English ON, tmux terms + Supervisor 2026-09-27 R2 redesign",
+          "title": "보드 쉬운 말로 바꾸기"
+        },
+        {
+          "taskId": "ACTL-WEB-STUCK-AMBER-R2",
+          "scope": "BLOCKED-amber 변경 유지(DOWN은 red 유지). 게이트 실패가 pytest 미설치뿐이므로 매핑 검사를 run_tests.py용 plain assert로 tests/test_serve_stuck_amber.py에 추가. pytest 명령 사용 금지.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_stuck_amber.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: TEST_GATE only No module named pytest + Supervisor 2026-09-27 R2 redesign",
+          "title": "승인 대기 노란색 표시 검증 고치기"
+        },
+        {
+          "taskId": "ACTL-WEB-RESULT-READY-CTA-R3",
+          "scope": "QA 지적 단일 결함 수정: doCopy() 성공 시 이벤트 로그가 아닌 클릭 위치에 즉시 표면 피드백 표시. READY teal pill과 복사 버튼 primary 강조는 유지. 피드백 문자열·핸들러 assert 테스트 추가.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_result_ready.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: no immediate success feedback at click position + Supervisor 2026-09-27 R2 redesign",
+          "title": "웹 복사 완료 즉시 알림 넣기"
+        },
+        {
+          "taskId": "ACTL-TK-READABLE-SIZES-R3",
+          "scope": "QA 지적 단일 결함 수정: 하드코딩 11pt를 12pt로 상향(FONT 규칙과 일치). 버튼 pady 10 유지. AST 기반 최소값 테스트에 해당 화면 케이스 추가.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_readable_sizes.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: 11pt below 12pt requirement + Supervisor 2026-09-27 R2 redesign",
+          "title": "작게 남은 화면 글자 키우기"
+        },
+        {
+          "taskId": "ACTL-TEST-VERSION-PY310-R3",
+          "scope": "정규식 버전 읽기 유지. 게이트 실패가 pytest 미설치뿐이므로 동등 검사를 run_tests.py용 plain assert로 두고 러너에서 돌게 하고, pytest 명령 사용 금지.",
+          "files": [
+            "tests/test_version_one.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: TEST_GATE only No module named pytest + Supervisor 2026-09-27 R2 redesign",
+          "title": "버전 검사 실행 방식 고치기"
+        },
+        {
+          "taskId": "ACTL-WEB-TOKEN-INLINE-R3",
+          "scope": "2건 수정: (1) details 안의 #board 때문에 closest-details 가드가 remap 클릭을 막으므로 #board를 details 밖으로 이동(또는 remap 클릭 예외), (2) pane보드-쉬운 한글 명칭. 인라인 토큰 재시도·한글 3줄 안내는 유지. 클릭 차단 회귀 테스트 추가.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: #board blocks remap; dev label paneboard + Supervisor 2026-09-27 R2 redesign",
+          "title": "웹 연결 변경 클릭 막힘 고치기"
+        },
+        {
+          "taskId": "ACTL-BOARD-PLAIN-WORDS-R2-R2",
+          "scope": "R2 QA 2건 수정: (1) 일반 표면에 plain=False 상태 문구가 새지 않게 렌더 경로 분리, (2) 필터 라벨-반환값 단일 dict 매핑으로 각 필터가 실제 걸러지게 하고 라벨별 테스트 추가(구 코드 실패·신 코드 통과).",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_board_plain_words.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: plain=False leak; filter mismatch + Supervisor 2026-09-27 R2 redesign",
+          "title": "보드 필터와 쉬운 말 다시 고치기"
+        },
+        {
+          "taskId": "ACTL-BOARD-PLAIN-WORDS-R3-R3",
+          "scope": "R3 QA 2건을 메인보드 손대지 않고 수정: (1) 재매핑 후보 화면 pane ID·경로-원문 보기 뒤로, (2) AI 연결 대화상자 Agent·pane ID·tmux-쉬운 한글+원문 보기. 각 화면 회귀 assert 추가.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_board_plain_words.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: remap screen + AI-connect dialog dev strings + Supervisor 2026-09-27 R2 redesign",
+          "title": "연결 관리 화면 개발자 문구 숨기기"
+        },
+        {
+          "taskId": "ACTL-BOARD-PLAIN-WORDS-R3-R2-R2",
+          "scope": "QA 지적 단일 결함 수정: state=UP 매핑을 확인 중에서 연결됨으로 변경하고, 잘못된 상태를 고정한 테스트를 연결됨 assert로 수정. 메인보드·필터 범위는 손대지 않음.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_board_plain_words.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: UP mapped wrong + Supervisor 2026-09-27 R2 redesign",
+          "title": "연결됨 상태 표시 바로잡기"
+        },
+        {
+          "taskId": "ACTL-BOARD-TOKEN-DETECT-R3",
+          "scope": "QA 지적 단일 결함 수정: long-session 카드 문구를 지정 문구로 변경. 문구·amber 색상 assert 테스트 추가. 토큰 모듈·5분 갱신·원문 보기는 유지.",
+          "files": [
+            "src/actl/tokens.py",
+            "src/actl/gui.py",
+            "tests/test_tokens.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: card wording/color + Supervisor 2026-09-27 R2 redesign",
+          "title": "긴 대화 경고 문구 바로잡기"
+        },
+        {
+          "taskId": "ACTL-TK-PANE-BOARD-INLINE-ERRORS-R3",
+          "scope": "QA 지적 단일 결함 수정: 전체 창 표에 직접 노출되는 내부 명령어를 원문 보기 뒤로 숨기거나 쉬운 한글 라벨로 교체. 인라인 한국어 안내·확인 흐름은 유지. 명령어 노출 회귀 assert 추가.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_korean_labels.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: command displayed directly + Supervisor 2026-09-27 R2 redesign",
+          "title": "창 표 내부 명령어 숨기기"
+        },
+        {
+          "taskId": "ACTL-TK-PANE-BOARD-INLINE-ERRORS-R2-R2",
+          "scope": "R2 QA 3건 수정: (1) 망 불안정 하드코딩 제거-원인별 한글 메시지 전달, (2) 표면 pane/Agent/ID 문구 한글화·원문보기 처리, (3) 테스트를 소스 문자열 검사가 아닌 실제 오류 콜백 호출+렌더 assert로 교체.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_korean_labels.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: hard-coded cause; dev text; weak tests + Supervisor 2026-09-27 R2 redesign",
+          "title": "창 오류 안내 원인별 표시하기"
+        },
+        {
+          "taskId": "ACTL-WEB-BOARD-OP-BUDGET-BASEFIX-R3",
+          "scope": "게이트 단일 실패 해소: 깨진 베이스의 오래된 기대값이면 의도된 동작으로 갱신, 코드 회귀면 수정(assertion 약화 금지). serve op-budget mock 수정은 유지. 전체 run_tests.py 통과.",
+          "files": [
+            "tests/test_serve_op_budget.py",
+            "tests/test_validation.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: TEST_GATE exit 1 single stale test + Supervisor 2026-09-27 R2 redesign",
+          "title": "깨진 검사 기준 바로잡기"
+        },
+        {
+          "taskId": "ACTL-TUI-LIVE-CARD-STATUS-R3",
+          "scope": "QA 지적 단일 결함 수정: 오래된 미확인 기대값을 과제 의도 동작(연결 안 됨)으로 갱신. live_card 상태열·답이 왔어요·WORKING/WAITING/DOWN/READY 커버리지는 유지.",
+          "files": [
+            "src/actl/tui.py",
+            "tests/test_tui_one_state.py",
+            "tests/test_tui_state_column.py",
+            "tests/test_tui_live_card_status.py",
+            "tests/test_tui.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: stale test expectation + Supervisor 2026-09-27 R2 redesign",
+          "title": "터미널 상태 낡은 검사 고치기"
+        },
+        {
+          "taskId": "ACTL-ENV-SOURCES-MODEL-R3",
+          "scope": "환경 모델 작업 유지 + 게이트 단일 실패 해소: 오래된 기대값이면 의도된 동작으로 테스트 갱신 또는 코드 수정. 실제 tmux/ssh 건드리는 테스트 금지(가짜 러너만).",
+          "files": [
+            "src/actl/core/sources.py",
+            "src/actl/core/tmux.py",
+            "src/actl/core/config.py",
+            "tests/test_env_sources_model.py",
+            "tests/test_validation.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: TEST_GATE single stale + Supervisor 2026-09-27 R2 redesign",
+          "title": "환경 모델 검사 실패 바로잡기"
+        },
+        {
+          "taskId": "ACTL-ENV-FIRST-RUN-ASK-R3",
+          "scope": "R2 QA 5건 수정: 빈 상태 오문구-다음 행동 안내로 교체; 연결하기/나중에가 카드 파괴 없이 환경명을 담은 결과줄 표시; 질문에서 전문용어 제거한 쉬운 말; 스캔 예외 try 처리+한글 3줄 오류로 계속; 테스트에 GUI 카드별 종료·결과줄·TUI 저장 커버리지 추가.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/tui.py",
+            "src/actl/core/sources.py",
+            "tests/test_env_first_run_ask.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: 5 items + Supervisor 2026-09-27 R2 redesign",
+          "title": "새 환경 묻기 화면 다듬기"
+        },
+        {
+          "taskId": "ACTL-BOARD-ALL-ENVS-R3",
+          "scope": "2건 수정: (1) 결과 확인 상태를 agent 단일 키-환경+AI 키로 격리, (2) d.target pane ID/좌표 노출-d.disp만 표시. 그룹 묶음·amber 끊김 안내·헤더 문구는 유지. 보내기·복사·live card 경로는 손대지 않음.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/serve.py",
+            "src/actl/tui.py",
+            "src/actl/core/state.py",
+            "tests/test_board_all_envs.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: 2 items + Supervisor 2026-09-27 R2 redesign",
+          "title": "환경별 확인 상태 섞임 고치기"
+        },
+        {
+          "taskId": "ACTL-BOARD-ALL-ENVS-R2-R3",
+          "scope": "R2 QA 3건 수정(tui.py 표면 문구만): live pane-쉬운 한글, OpenCode·pane-한글 명칭·원문보기, CPU+pane tail-쉬운 성능 문구. 그룹핑 헬퍼·단일 그룹 호환·d.target 제거는 유지. state 키·전송 경로는 손대지 않음.",
+          "files": [
+            "src/actl/serve.py",
+            "src/actl/tui.py",
+            "tests/test_board_all_envs.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: 3 wording items + Supervisor 2026-09-27 R2 redesign",
+          "title": "터미널 영어 문구 한글로 바꾸기"
+        },
+        {
+          "taskId": "ACTL-ENV-SSH-WSL-R3",
+          "scope": "ssh-wsl 잠금 유지 수정: 잠금 유지 연결에서 flock을 전송 구간 동안 유지. argv 따옴표·셀프 별칭 제외·라벨은 유지. 전송 중 잠금 유지 회귀 테스트(가짜 러너) 추가.",
+          "files": [
+            "src/actl/core/sources.py",
+            "src/actl/core/tmux.py",
+            "src/actl/cli.py",
+            "tests/test_env_ssh_wsl.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings + Supervisor 2026-09-27 R2 redesign",
+          "title": "원격 리눅스 잠금 유지 고치기"
+        },
+        {
+          "taskId": "ACTL-LOVABLE-THEME-LAYOUT-R3",
+          "scope": "QA 지적 단일 결함 수정: 상태 카드를 요구된 다섯 줄 형식에서 한 줄로 되돌리는 쓰기를 제거·보존 처리. 테마 상수·3열·상단 상태 문장·새 환경 찾기·첫실행 힌트는 유지. 틱 후에도 다섯 줄 유지 assert 테스트 추가.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_lovable_theme_layout.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding + Supervisor 2026-09-27 R2 redesign",
+          "title": "상태 카드 줄바뀜 되돌림 고치기"
+        },
+        {
+          "taskId": "ACTL-LOVABLE-ENV-COLUMN-R3",
+          "scope": "QA 지적 2건 수정: 선택 환경에 창이 없을 때 선택 환경용 빈 메시지 표시; 환경 0개일 때 다음 행동(새 환경 찾기) 포함. 행 모델·필터 테스트에 두 케이스 추가.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_lovable_env_column.py"
+          ],
+          "tests": [
+            "python3 tests/test_lovable_env_column.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: 2 items + Supervisor 2026-09-27 R2 redesign",
+          "title": "환경별 빈 화면 안내 고치기"
+        },
+        {
+          "taskId": "ACTL-BOARD-ALL-ENVS-R2-R2-R2",
+          "scope": "2건 수정: (1) pane ID·경로·근거를 표면에서 원문 보기 뒤로, (2) 행 상태를 pane_id 단일 키-환경+pane 키로 격리. 그룹 묶음·amber 안내·단일 그룹 호환 유지. 전송·확인 키는 손대지 않음.",
+          "files": [
+            "src/actl/serve.py",
+            "src/actl/tui.py",
+            "tests/test_board_all_envs.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: 2 items + Supervisor 2026-09-27 R2 redesign",
+          "title": "환경 섞인 창 상태 분리하기"
+        },
+        {
+          "taskId": "ACTL-BOARD-EVENT-REFRESH-R3",
+          "scope": "이벤트 갱신 작업 유지 + 게이트 단일 실패 해소: 오래된 기대값이면 의도된 동작으로 갱신, 회귀면 수정. pane_activity 수집 계약 유지.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/serve.py",
+            "tests/test_board_event_refresh.py",
+            "tests/test_validation.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: TEST_GATE single + Supervisor 2026-09-27 R2 redesign",
+          "title": "이벤트 갱신 검사 실패 바로잡기"
+        },
+        {
+          "taskId": "ACTL-BOARD-READABLE-TONE-R3",
+          "scope": "본문 14px는 명시 범위 유지하되 Founder 최신 지시(글씨 큼)가 16px 규칙보다 우선임을 근거로, 첫실행 가이드 실패는 의도된 동작(긴 소개-도움말)으로 테스트를 갱신. 헤더·상태 점·8px 그리드 유지.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_board_look.py",
+            "tests/test_gui_korean_labels.py",
+            "tests/test_gui_readable_sizes.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: 2 items + Supervisor 2026-09-27 R2 redesign",
+          "title": "보드 글 톤 낡은 검사 고치기"
+        },
+        {
+          "taskId": "ACTL-OSS-LOCAL-DEFAULT-R3",
+          "scope": "감지 기반 환경명 작업 유지 + QA 지적 5개 기존 회귀 테스트의 낡은 문구 기대값을 의도된 일반 문구로 갱신(assertion 약화 금지). Founder 개인 설정은 코드 기본값이 아닌 로컬 config·env로 유지.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/core/sources.py",
+            "src/actl/live_card.py",
+            "src/actl/core/send_truth.py",
+            "src/actl/cli.py",
+            "tests/test_oss_local_default.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding: 5 stale tests + Supervisor 2026-09-27 R2 redesign",
+          "title": "낡은 환경 이름 검사 고치기"
+        },
+        {
+          "taskId": "ACTL-OSS-LOCAL-DEFAULT-R2-R3",
+          "scope": "R2 QA 단일 결함 수정: 잔여 ASUS 문구를 일반 문구로 교체하고, 테스트를 일반 문구에서 통과하는 기대값으로 수정. 탐지 로직은 손대지 않음.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_empty_error_states.py",
+            "tests/test_gui_unreachable_layout.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding + Supervisor 2026-09-27 R2 redesign",
+          "title": "남은 고유 환경 문구 지우기"
+        },
+        {
+          "taskId": "ACTL-STATUS-TRUTH-R3",
+          "scope": "QA 지적 단일 결함 수정: 낡은 기대값(OTHER+control_ready-쉬는 중)을 의도 동작(확인 중)으로 갱신. 배치 탐색·5초 재탐지·원격 pane 활동값·UNKNOWN-확인 중 폴백은 유지.",
+          "files": [
+            "src/actl/live_card.py",
+            "src/actl/core/activity.py",
+            "src/actl/core/live_observe.py",
+            "src/actl/serve.py",
+            "tests/test_status_truth.py",
+            "tests/test_live_card.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA finding + Supervisor 2026-09-27 R2 redesign",
+          "title": "상태 낡은 검사 바로잡기"
+        },
+        {
+          "taskId": "ACTL-BOARD-COMPACT-TEXT-R2",
+          "scope": "Founder 명시 지시(13-14px 본문·36px 행·15-16px 제목, 미연결 환경 한 줄 노출) 유지. QA 3건은 구 규칙과의 충돌이므로 보드 범위 기대값을 승인된 compact 값(클릭 타깃 32px)으로 갱신하고, 높이는 32px 계산에 맞게 조정.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_board_look.py",
+            "tests/test_gui_korean_labels.py",
+            "tests/test_gui_readable_sizes.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings: 3 items overridden by Founder compact order + Supervisor 2026-09-27 R2 redesign",
+          "title": "보드 글자 크기 지시 반영하기"
         }
       ],
       "qaRuntime": [
@@ -10310,6 +11026,153 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-COMMAND-R2",
+          "scope": "A-28 scan 좁은 수정. (1) 마지막 assistant 메시지만 Stop으로 바꾸고 중간 assistant 메시지는 세션을 끝내지 않게 고친다. (2) tool 인자·tool 응답을 기존 TOKEN 마스크로 감싸 비밀값이 남지 않게 한다. 중간-assistant 픽스처와 비밀값 포함 입·출력 픽스처 회귀 테스트 추가. 새 기능·다른 소스 변경 없음.",
+          "files": [
+            "src/sources/codex.ts",
+            "src/sources/scan.ts",
+            "tests/scan-command.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-command.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES findings (Stop 오인, 마스킹 누락) + Supervisor 2026-09-27 R2 redesign",
+          "title": "최근 작업 모으기의 끝 판단과 비밀값 가리기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-FOUNDER-UX-R4",
+          "scope": "영수증 보기 좁은 수정. branch·commit 해시·Git commit·영어 action type·evidence 표를 기본 접힘 원문 보기로 옮기고 바깥에는 쉬운 말만 둔다. 실패 작업은 무엇이 실패·왜·다음 할 일 3줄 한국어로 나눠 보인다. 본문 18px 이상·버튼 48px 이상. 원문 밖 Git 용어 부재·실패 원인+다음 존재 단언 테스트 추가.",
+          "files": [
+            "src/render/index.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/pipeline.test.ts",
+            "npm run build"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES findings (jargon exposure) + Supervisor 2026-09-27 R2 redesign",
+          "title": "영수증 확인 화면을 쉽게 다시 고치기"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-MEMORY-BOUND-R3",
+          "scope": "OpenCode cutoff 좁은 수정. 초·밀리초 OR 비교를 없애고 밀리초 하나로 정규화한 뒤 단일 cutoff로만 거른다(초 단위 오래된 행이 통과하지 않게). 초 단위 stale 행 제외+밀리초 fresh 행 포함 회귀 테스트 추가. 스트리밍·mtime 선건너뛰기·세션별 처리 동작 그대로.",
+          "files": [
+            "src/sources/opencode.ts",
+            "tests/scan-memory-bound.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-memory-bound.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES finding (OR 비교 stale 통과) + Supervisor 2026-09-27 R2 redesign",
+          "title": "오래된 기록이 메모리를 차지하지 않게 고치기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-CMD-PLAIN-OUTPUT-R3",
+          "scope": "daily 요약 drift 좁은 수정. koreanSummary를 task_id 접두 형식으로 되돌린다. 상태 줄 요구는 유지. receipt 성공 출력과 3줄 한국어 오류·exit 1은 그대로 두고 두 경로를 검증한다.",
+          "files": [
+            "src/daily/index.ts",
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-cli.test.ts",
+            "npm test",
+            "npx tsc -p tsconfig.json --noEmit"
+          ],
+          "ssotEvidence": "QA TEST_GATE finding (summary_ko 불일치) + Supervisor 2026-09-27 R2 redesign",
+          "title": "하루 요약 문구 어긋남 바로잡기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-FOUNDER-UX-R2-R2",
+          "scope": "R2 QA 3건 좁은 수정. (1) 원시 error/reason을 검토 화면에서 빼고 원문 보기 안으로만 두고 겉에는 쉬운 한국어 원인만 보인다. (2) not_evidenced 색을 amber로 바꾼다. (3) 검토 화면 맨 위에 목적·다음 행동 한 문장 안내를 넣는다. 세 가지 단언 추가.",
+          "files": [
+            "src/render/index.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/pipeline.test.ts",
+            "npm run build"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES 3 findings + Supervisor 2026-09-27 R2 redesign",
+          "title": "영수증 검토 화면의 오류 문구와 색 고치기"
+        },
+        {
+          "taskId": "JUCEIPT-SOURCES-RELATIVE-TIME-R2-R2",
+          "scope": "sources 상대시간 재시도(daily 미수정). 상대시간과 그대로 출력만 유지하고 경계·미래 회귀만 갱신한다. daily 테스트는 절대 손대지 않는다. npm test 전체 통과를 확인하고 남은 daily drift는 고치지 말고 보고만 한다.",
+          "files": [
+            "src/sources/discover.ts",
+            "src/cli/main.ts",
+            "tests/sources-cli.test.ts",
+            "tests/sources-discover.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-cli.test.ts tests/sources-discover.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "QA TEST_GATE finding (stale 기대값) + Supervisor 2026-09-27 R2 redesign",
+          "title": "기록 출처 시간 표시 다시 맞추기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-FOUNDER-UX-R3-R3",
+          "scope": "R3 화면전환 버그 좁은 수정(버튼 유지). show()가 level1까지 끄는 문제를 고쳐 level2·level3 폴드 안에서만 토글하고 level1은 항상 보이게 한다. 복귀가 level1을 숨기지 않게 고치고 되돌릴 길 없는 빈 폴드를 없앤다. 폴드 안 버튼 클릭 후에도 level1 표시·level2 복원 가능 단언.",
+          "files": [
+            "src/render/index.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/pipeline.test.ts",
+            "npm run build"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES 3 findings + Supervisor 2026-09-27 R2 redesign",
+          "title": "영수증 화면 전환 버튼이 내용을 가리지 않게"
+        },
+        {
+          "taskId": "JUCEIPT-CLI-RAW-PATHS-FOLDED-R3",
+          "scope": "scan 원문보기 테스트 보강. scan --show-raw 섹션에 SUMMARY.md 경로·영수증 폴더·각 entry receipt.json 경로가 모두 나오게(빠진 것만 채움) 하고 기본 출력은 경로 없이 둔다. --show-raw 호출과 기본 호출 테스트를 추가한다.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-scan-cli.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES finding (무테스트 섹션) + Supervisor 2026-09-27 R2 redesign",
+          "title": "스캔 원문 보기에 빠진 경로 테스트 채우기"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-PAGE-R3",
+          "scope": "open 오류안내 좁은 수정. catch가 daily일 때만 주는 첫실행·친절 오류를 open에도 똑같이 준다. 목록 렌더·정렬·문구는 그대로. 스캔 전 open 첫실행 안내 회귀를 추가한다.",
+          "files": [
+            "src/cli/main.ts",
+            "src/render/today.ts",
+            "test/today-page.test.ts"
+          ],
+          "tests": [
+            "npx vitest run test/today-page.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES findings (open 첫실행 안내 누락) + Supervisor 2026-09-27 R2 redesign",
+          "title": "오늘 화면 첫 실행 안내가 나오게 고치기"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-PAGE-R2-R3",
+          "scope": "R2 2건 좁은 수정. (1) open 출력의 원문 파일명 노출을 없애고 쉬운 말 안내로 바꾼다(경로는 --show-raw에서만). (2) color-scheme 선언에 맞는 다크모드 오버라이드를 넣어 일관되게 한다. 파일명 미노출·다크 CSS 존재 단언을 추가한다.",
+          "files": [
+            "src/cli/main.ts",
+            "src/render/today.ts",
+            "test/today-page.test.ts"
+          ],
+          "tests": [
+            "npx vitest run test/today-page.test.ts",
+            "npm test"
+          ],
+          "ssotEvidence": "QA REQUEST_CHANGES 2 findings + Supervisor 2026-09-27 R2 redesign",
+          "title": "오늘 화면 파일명과 다크 모드 고치기"
         }
       ],
       "skills": {
@@ -16858,6 +17721,88 @@
           ],
           "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];",
           "title": "기억 제안 안내 문구를 검사로 통일"
+        },
+        {
+          "taskId": "JCAPP-AI-ORDER-PLAIN-R3",
+          "scope": "코드는 HEAD 반영됨. node --test test/ 가 Node22에서 폴더 모듈 오류로 실패 - node --test test/*.mjs로 교체 후 전체 재실행. EROFS 차단 외 실패만 수정, 화면 문구 변경 금지.",
+          "files": [
+            "operator/public/app.js",
+            "lib/relayBoard.mjs",
+            "test/agent-relay-module.test.mjs",
+            "test/ai-routing-view.test.mjs"
+          ],
+          "tests": [
+            "node --test test/agent-relay-module.test.mjs test/ai-routing-view.test.mjs test/inline-actions.test.mjs test/home-working-line.test.mjs",
+            "node --test test/*.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings (test command form) + Supervisor 2026-09-27 R2 redesign",
+          "title": "AI 순서 화면은 그대로 두고 검사 명령어 고치기"
+        },
+        {
+          "taskId": "JCAPP-INTEGRATIONS-ASK-R3",
+          "scope": "홈 첫방문·connectedIds 실패 시 조용한 빈값 - 3줄 원인(꺼짐/켜짐-실패 구분)+다시 확인으로 정리. 기존 테스트 유지·추가, 조용한 설치 금지·오픈소스 규칙 유지.",
+          "files": [
+            "operator/public/app.js",
+            "test/integrations-ask.test.mjs"
+          ],
+          "tests": [
+            "node --test test/integrations-ask.test.mjs"
+          ],
+          "ssotEvidence": "QA findings (failure disguised as loading) + Supervisor 2026-09-27 R2 redesign",
+          "title": "연동 실패를 로딩과 구분해 다시 확인 제공"
+        },
+        {
+          "taskId": "JCAPP-PERSONA-TESTER-R3",
+          "scope": "runTester 완료 후 buildReviewRequest(페르소나 본문+실행 목록, 스크린샷 없음)-기존 directive 런타임-persona-reviews 저장-진행 시험 결과에 페르소나 검토+막힘 수 표시. 사용자 확인 없이 WBS 초안 금지, 예시 persona만 저장소 포함.",
+          "files": [
+            "lib/personaTester.mjs",
+            "lib/testerRuns.mjs",
+            "operator/server.mjs",
+            "operator/public/app.js",
+            "test/persona-tester.test.mjs"
+          ],
+          "tests": [
+            "node --test test/persona-tester.test.mjs"
+          ],
+          "ssotEvidence": "QA findings (no capture path) + Supervisor 2026-09-27 R2 redesign",
+          "title": "시험이 끝나면 페르소나 검토를 자동으로 붙이기"
+        },
+        {
+          "taskId": "JCAPP-NO-TYPING-PLAIN-WORDS-R3",
+          "scope": "새 helper를 추출 목록에 추가하거나 holdCard 독립화. 쉬운 말 단언 유지. 폴더 선택 감지 helper는 기존 operator/server.mjs에 둠(새 lib 파일 금지).",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "operator/server.mjs",
+            "test/no-typing-plain-words.test.mjs",
+            "test/home-cards-same-now.test.mjs"
+          ],
+          "tests": [
+            "node --test test/no-typing-plain-words.test.mjs test/home-cards-same-now.test.mjs"
+          ],
+          "ssotEvidence": "QA findings (helper extraction) + Supervisor 2026-09-27 R2 redesign",
+          "title": "입력창 없애고 쉬운 말로 정리한 화면 깨짐 고치기"
+        },
+        {
+          "taskId": "JCAPP-INSPECT-WORD-ONE-R2",
+          "scope": "5곳 검수-검사: mounted-skill 행, laneSkillsSentence, AI 순서 라벨, laneChainSentence 양쪽, Skill 다음 안내. 잔류 1건 수정 + 커버리지 추가. STAGE_KO·skill 제목은 변경 금지.",
+          "files": [
+            "operator/public/app.js",
+            "lib/relayBoard.mjs",
+            "test/lane-skills-api.test.mjs",
+            "test/agent-relay-module.test.mjs",
+            "test/review-line-ai-names.test.mjs",
+            "test/skill-draft-id.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lane-skills-api.test.mjs",
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/review-line-ai-names.test.mjs",
+            "node --test test/skill-draft-id.test.mjs"
+          ],
+          "ssotEvidence": "QA findings (residual wording) + Supervisor 2026-09-27 R2 redesign",
+          "title": "검수 안내를 검사로 통일하고 빠진 한 줄 고치기"
         }
       ],
       "skills": {
@@ -17927,6 +18872,17 @@
           ],
           "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:83 멈춤 — 사업 흐름 연결 공백 · M3 결정 대기, with the English join-gap sentence under 원문 보기; line 84 still shows MAPPING UNDECIDED · DECISION PENDING on the surface",
           "title": "지도에서 하루 가치 상태를 한글로 보기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-ROADMAP-M3-DIRECTIVE-NO-INFER",
+          "scope": "In docs/product/MASTER_ROADMAP.md §12 item 4 only (line 561), replace the clause that the M3 GO/DEFER/KILL decision is still to be recorded so it states a decision is recorded only for rows that have both a Claude final and a Receipt and is not inferred from the 0-join gap.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-27: record M3 GO, DEFER, or KILL only for joined rows; do not infer missing joins. docs/product/MASTER_ROADMAP.md:561 the M3 GO/DEFER/KILL decision is still to be recorded"
         }
       ],
       "skills": {
@@ -19720,6 +20676,77 @@
           ],
           "ssotEvidence": "docs/GLOSSARY_POLICY.md:76 React가 아닌 프로젝트에 React 전용 정의를 일반 규칙처럼 적용하지 않는다.",
           "title": "한 종류에만 쓰는 말을 전체에 적용하지 않아요"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-GLOSSARY-TIER-CAP-R2",
+          "scope": "코드 미반영 확인됨: context.ts buildContext의 glossaryTerms에 tier별 상한 적용 후 MAX_GLOSSARY로 자르기. tier별 상한 오프라인 테스트 추가. 새 기능·다른 parity 건드리지 않음.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "packages/cli/tests/context.test.ts"
+          ],
+          "tests": [
+            "npm test --prefix packages/cli -- --run tests/context.test.ts",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings (Missing script: test) + Supervisor 2026-09-27 R2 redesign",
+          "title": "작업 난이도에 맞는 용어 수 제한"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-10-2-INTERNAL-CHANGE-CHECKS-R2-R2",
+          "scope": "(1) 공백-only 검색 케이스 단언 없음 - 빈/공백/정상 검색어 3-way 단언 추가. (2) 근거 출처 필드 미검증 - 체크리스트 항목마다 근거 출처 줄을 픽스처에 넣고 구간 매치로 검증. 두 파일만 신규 작성, 제품 코드 변경 금지.",
+          "files": [
+            "tests/results/scenario-b/internal-change.fixture.md",
+            "tests/results/scenario-b/internal-change.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-b/internal-change.test.mjs",
+            "node --test tests/results/scenario-b/general-report.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings (whitespace case, source field) + Supervisor 2026-09-27 R2 redesign",
+          "title": "속 기능 변경 보고서의 빠진 검사 두 가지 채우기"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-TIER-PROFILE-LIMITS-PARITY-R3",
+          "scope": "(1) learning 누락 - 4개 프로필 전부 검사. (2) maxGlossaryTerms 미단언 - 함께 단언. classifyTier 쌍도 유지.",
+          "files": [
+            "tests/context-tier-profile-limits-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-tier-profile-limits-parity.test.mjs",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings (learning omitted, maxGlossaryTerms) + Supervisor 2026-09-27 R2 redesign",
+          "title": "네 가지 설정 모두와 용어 수까지 맞는지 검사"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-RISK-HINTS-HIGH-FIRST-R3",
+          "scope": "buildContext에 high-medium 안정 정렬을 slice 앞으로 재배치(새 배열 반환, 변이 금지). 오프라인 텍스트 검사 테스트 신규 작성. packages/cli 내장 tsc로 타입 검사. 범위 밖 루트 tsc·네트워크 의존 손대지 않음.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "tests/context-risk-hints-high-first.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/context-risk-hints-high-first.test.mjs",
+            "./packages/cli/node_modules/.bin/tsc -p packages/cli/tsconfig.json --noEmit",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings + Supervisor 2026-09-27 R2 redesign",
+          "title": "위험 큰 파일을 먼저 보여주고 검사 명령어 고치기"
+        },
+        {
+          "taskId": "JUTELL-CONTEXT-TRUNCATED-FILE-DISCLOSURE-R3",
+          "scope": "truncated일 때 잘림 공지 문구 노출 + 26개 픽스처로 플래그·문구 검증. 전체 스위트 실패는 변경 범위 밖 배포·복사 문제 - context.test.ts 필터로 고정, 범위 밖 실패는 손대지 않음.",
+          "files": [
+            "packages/cli/src/commands/context.ts",
+            "packages/cli/tests/context.test.ts"
+          ],
+          "tests": [
+            "npm test --prefix packages/cli -- --run tests/context.test.ts",
+            "git diff --check"
+          ],
+          "ssotEvidence": "QA findings + Supervisor 2026-09-27 R2 redesign",
+          "title": "변경 목록이 잘렸음을 알리고 관련 검사만 실행"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -21382,6 +22409,26 @@
           ],
           "ssotEvidence": "Founder Goal AIAGENTMARKE-GOAL-P2-CLOSEOUT-01 Task 5 + Founder HUMAN_GATE answer 2026-09-25 (Codex local connector); AI-Agent-marketplace-private docs/WBS_v0.4.md Phase 2 (첫 runtime adapter, heartbeat, capability, policy)",
           "title": "실제 Codex connector로 Phase 2 레드게이트 증거 스크립트"
+        },
+        {
+          "taskId": "AIAGENTMARKE-P2-PROFILE-POLICY-LINK-R2-R2",
+          "scope": "(1) nullable 컬럼 무백필 - 백필 유지, 순서 보장. (2) 업그레이드 경로 테스트 없음 - 마이그레이션 업그레이드 테스트 유지·통과. PGlite·postgres 양쪽 실행.",
+          "files": [
+            "migrations/0005_worker_policy_connector.sql",
+            "migrations/0006_worker_policy_connector_backfill.sql",
+            "src/server/owner.ts",
+            "src/server/owner-policy.ts",
+            "tests/integration/owner-policy.test.ts",
+            "tests/integration/owner-connector.test.ts",
+            "tests/integration/migration-upgrade.test.ts"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck",
+            "npm run test:pg"
+          ],
+          "ssotEvidence": "QA findings (backfill, upgrade test) + Supervisor 2026-09-27 R2 redesign",
+          "title": "예전 연결 정책이 새 연결 범위로 이어지게 묶기"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
