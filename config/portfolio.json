@@ -14145,6 +14145,28 @@
           ],
           "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:38 \"stale\": false",
           "title": "최신 상태가 정상으로 표시돼요"
+        },
+        {
+          "taskId": "JUCONTROLER-GUIDE-TABLE-SUMMARY-RUN",
+          "scope": "Add one offline test that reads the three summary rows of the docs/getting-started.md 상태판 안내 문장 table and asserts scripts/status-board.mjs prints those Korean sentences on temp fixtures, including 표에 없는 이유예요, without changing product code.",
+          "files": [
+            "tests/getting-started-summary-lines-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-summary-lines-run.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-28: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints. docs/getting-started.md:238"
+        },
+        {
+          "taskId": "JUCONTROLER-GUIDE-TABLE-ERRORS-RUN",
+          "scope": "Add one offline test that reads the empty-list, missing-file, bad-JSON, invalid-registry, unknown-id including 없음, and usage rows of that table and asserts scripts/status-board.mjs prints those Korean sentences on temp fixtures, without changing product code or adding a path for the unreachable catch-all row.",
+          "files": [
+            "tests/getting-started-error-lines-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-error-lines-run.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-28: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints. docs/getting-started.md:241"
         }
       ],
       "qaRuntime": [
