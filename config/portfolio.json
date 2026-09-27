@@ -19415,6 +19415,17 @@
           ],
           "ssotEvidence": "layout.mjs:48-49 ONBOARDING question/option definitions",
           "title": "가입 안내 문구 길이 지키기"
+        },
+        {
+          "taskId": "JUAI-CHECK-REDACT-DISCORD-TOKEN",
+          "scope": "check.mjs에 Discord 봇 토큰 형태가 redact()에서 가림 처리되고 주변 텍스트는 유지되는지 검증하는 자체 점검을 추가한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:43-45 \"AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다.\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
