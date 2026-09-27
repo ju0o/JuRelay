@@ -2634,6 +2634,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "AGENTRELAY-PROJECT-SCOPE-HEADER",
+          "scope": "When the Control Room is scoped by ?project=<id> (src/frontend/App.tsx projectFromSearch/controlRoomMode), show that project's Korean display name in the page header instead of the generic '관제실' title, reusing projectDisplayName from src/shared/projectLabels.ts, and extend the existing lovable-shell test to assert it.",
+          "files": [
+            "src/frontend/App.tsx",
+            "src/frontend/components.tsx",
+            "test/lovable-shell.test.mjs"
+          ],
+          "tests": [
+            "node test/lovable-shell.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Prior task AGENTRELAY-V2-PROJECT-SCOPE-R2 scope note: 'the page-header project name and the pause/resume control move to a later task' (pause/resume already shipped via ProjectPauseControl in src/frontend/controlRoom.tsx:1110; only the header name remains undone)"
         }
       ],
       "qaRuntime": [
