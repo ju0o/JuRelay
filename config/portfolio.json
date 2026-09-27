@@ -9710,6 +9710,20 @@
             "JUCEIPT-DAILY-BACKGROUND"
           ],
           "title": "JuCeipt: '오늘의 AI 영수증' 한 화면"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-BACKGROUND-R2",
+          "scope": "Add juceipt schedule on|off|status (systemd/launchd/Task Scheduler) plus init's opt-in prompt so the existing memory-bounded scan runs every 2h and writes .juceipt/daily/YYYY-MM-DD/ receipts+SUMMARY.md+index.html locally, verified only by the new schedule/daily-background test, not the full suite's unrelated slow scan-memory-bound check",
+          "files": [
+            "src/cli/main.ts",
+            "src/schedule/index.ts",
+            "src/daily/index.ts",
+            "tests/daily-background.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-background.test.ts"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 '비슷하게' 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan"
         }
       ],
       "skills": {
