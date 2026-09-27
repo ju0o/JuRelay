@@ -9861,6 +9861,19 @@
             "JUCEIPT-TODAY-PAGE"
           ],
           "title": "JuCeipt 영수증: '받아 주세요'에 버튼, CLI 안내 빼기"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-PAGE-R2",
+          "scope": "From base b50f76ed5c2ab0baefe69850521d8aa3f74b4e94, narrow `juceipt open` and the daily index.html to a static phone-readable today's receipt list only, newest first, showing verdict, agent · time, and '먼저 볼 것 N' at the top; defer the right detail view, and make test/today-page.test.ts cover this narrowed behavior so it fails on the base and passes after the change.",
+          "files": [
+            "src/render/today.ts",
+            "src/cli/main.ts",
+            "test/today-page.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 \"비슷하게\" 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan"
         }
       ],
       "skills": {
