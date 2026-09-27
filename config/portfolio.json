@@ -7740,6 +7740,23 @@
             "JUPLAN-EXISTING-FOLDER-PLAN-COMPLETE"
           ],
           "title": "JuPlan: 대화 답이 계획 칸마다 들어가게 (기능·화면·데이터 따로)"
+        },
+        {
+          "taskId": "JUPLAN-ERD-WBS-READABLE",
+          "scope": "Capture 2026-09-27 15:50 of the '동네 가게 예약' plan built from interview answers: (1) /view/diagrams/erd and wbs-dependency still use the old vertical-list renderer — boxes stacked in one column with all arrows piled on the left edge. Render both with packages/renderer-archify: ERD = entity boxes laid out in a grid, each listing its key fields, with labeled relation lines between the right boxes (e.g. 예약 → 손님 '누가 예약', 예약 → 가게 '어느 가게', 알림 → 예약 '어떤 예약'), no overlapping lines; WBS = left-to-right milestone lanes (the deadline answer becomes the final milestone, never a task), task boxes inside lanes, arrows only for real dependencies. (2) The top banner tells the user to run `juplan snapshot` — show only the [최종 확인하기] button; no CLI commands anywhere on Studio pages. (3) Remove '보기 전용' from the header now that Studio can start projects and run the interview. (4) Splitting interview feature answers must keep 'A/B' together (e.g. '사장님 예약 확인/취소' stays one feature; it became '취소').",
+          "files": [
+            "packages/renderer-archify/src/index.ts",
+            "packages/runtime/src/diagrams.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/src/interview.ts",
+            "packages/runtime/test/erd-wbs-readable.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 'WBS나 ERD구조 같은것도 물론 알아보기 쉽게'. Test: 4-entity fixture ERD SVG places boxes in ≥2 columns, every relation edge has a label and connects the two named entities; WBS SVG has a milestone lane per deadline/milestone and no task node labeled with the deadline; Studio HTML contains no 'juplan snapshot' and no '보기 전용'; feature answer '사장님 예약 확인/취소' yields one feature.",
+          "title": "JuPlan: ERD·WBS 그림을 알아보기 쉽게 + 명령어 안내 빼기"
         }
       ],
       "qaRuntime": [
