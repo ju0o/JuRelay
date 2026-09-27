@@ -2660,7 +2660,8 @@
             "npm test",
             "npm run typecheck"
           ],
-          "ssotEvidence": "package.json scripts.test omits test/controlroom-automation-toggle.test.mjs and test/controlroom-plain-2.test.mjs, which already cover Founder direction 2026-09-27 (controlRoom automationOn/automationOff/automationStatus UI toggle, already built per AGENTRELAY-CONTROLROOM-AUTOMATION-TOGGLE done); same wiring pattern as AGENTRELAY-TEST-WIRE-AUTOMATION-UI (done)"
+          "ssotEvidence": "package.json scripts.test omits test/controlroom-automation-toggle.test.mjs and test/controlroom-plain-2.test.mjs, which already cover Founder direction 2026-09-27 (controlRoom automationOn/automationOff/automationStatus UI toggle, already built per AGENTRELAY-CONTROLROOM-AUTOMATION-TOGGLE done); same wiring pattern as AGENTRELAY-TEST-WIRE-AUTOMATION-UI (done)",
+          "title": "관제실 자동전환 점검 자동화"
         }
       ],
       "qaRuntime": [
@@ -9873,7 +9874,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 \"비슷하게\" 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan"
+          "ssotEvidence": "Founder 2026-09-27: 'ssh환경 접속은 다 선택임 … 다른 사람들은 그냥 PC하나로도 진행할 수도 있음 … JuCeipt (Agent-Relay영수증이아닌, 각자 본인 컴퓨터에 설치 되어 있는 Agent 영수증임 AI랑) … Artifact인가? 그 스킬이랑 \"비슷하게\" 다이어그램 형식이 자연스럽게 그려지는 기술도 구현해야 함. JuPlan",
+          "title": "오늘 결과 우선순위로 보기"
         }
       ],
       "skills": {
@@ -18461,7 +18463,8 @@
           "tests": [
             "node --test tests/results/scenario-q/internal-change.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:603 '### 10.2 보조 시나리오 — 내부 기능 변경'"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:603 '### 10.2 보조 시나리오 — 내부 기능 변경'",
+          "title": "내부 기능 변경 보고서 품질 검사"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
