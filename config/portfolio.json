@@ -15937,6 +15937,21 @@
           ],
           "ssotEvidence": "Founder 2026-09-27: '지금까지 대화 기반으로 나를 페르소나로 만든 Tester도 돌리면 좋을 거 같음 (이거는 나중에 JuControler 에 들어가는 슈퍼바이저 및 테스터의 페르소나)'. First persona written locally at ~/.claude-team/skills/founder-persona/PERSONA.md (private; never in the repo). Founder 2026-09-27 narrowed the rework to the review request only, no screen saving. Test: buildReviewRequest's output contains the persona text and each stub run's heading/result with no screenshot path; loadActivePersona with no active.json returns the skip signal; the repo ships only docs/personas/example.md, no .jucontroler-state/personas files.",
           "title": "테스트 요청에 성격 설명 자동 첨부"
+        },
+        {
+          "taskId": "JCAPP-INTEGRATIONS-ASK-POLISH",
+          "scope": "Tester capture of 01b93a9 (fresh state): (1) each '감지됐어요. 연동할까요?' card stacks [연동] [나중에] [안 함] vertically, one per line — put them on one row, 연동 primary; (2) JuPlan and JuCeipt were not detected although installed on this machine: JuPlan only via JUPLAN_PROJECTS_ROOT, JuCeipt only via JUCEIPT_ROOT/m2/tasks — also detect them by their CLIs on PATH (`juplan`, `juceipt`) and by their data folders (~/.juplan, a .juceipt folder in the home or configured roots), and when still not found show '없어요. 설치할까요? [설치 방법 보기]'; (3) the first-visit card repeats 'Agent Relay 연동 안 됨 · 연동하기' three times across home (첫 방문 안내, 지금 상황, AI 창) — when a companion is not connected show one '연동 안 된 프로그램 N개 · 연동하기' line instead of one per section. No personal paths in code defaults.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "lib/integrations.mjs",
+            "test/integrations-ask-polish.test.mjs"
+          ],
+          "tests": [
+            "node --test test/integrations-ask-polish.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 integrations request (감지→연동할까요/설치할까요, 없는 기능 빼고 동작). Hub Tester run-20260927-1249 screenshots of 01b93a9. Test: card buttons render in one row container; fake PATH with a `juplan` binary detects JuPlan; home model with 2 unconnected companions has exactly one 연동 안 됨 summary line.",
+          "title": "허브 연동 카드: 버튼 한 줄 · JuPlan/JuCeipt 자동 감지 · 첫 방문 안내 정리"
         }
       ],
       "skills": {
