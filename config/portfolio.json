@@ -8791,7 +8791,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder choice 2026-09-28: While PM transport is disconnected, record one Result Inbox entry for AR-JUPLAN-001 with state HOLD, an empty QA slot, and dispatch none."
+          "ssotEvidence": "Founder choice 2026-09-28: While PM transport is disconnected, record one Result Inbox entry for AR-JUPLAN-001 with state HOLD, an empty QA slot, and dispatch none.",
+          "title": "연결 끊겨도 작업 안전 보관"
         }
       ],
       "qaRuntime": [
@@ -14167,7 +14168,8 @@
           "tests": [
             "node --test tests/getting-started-summary-lines-run.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-28: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints. docs/getting-started.md:238"
+          "ssotEvidence": "Founder direction 2026-09-28: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints. docs/getting-started.md:238",
+          "title": "상태판 요약 안내가 맞아요"
         },
         {
           "taskId": "JUCONTROLER-GUIDE-TABLE-ERRORS-RUN",
@@ -14178,7 +14180,8 @@
           "tests": [
             "node --test tests/getting-started-error-lines-run.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-28: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints. docs/getting-started.md:241"
+          "ssotEvidence": "Founder direction 2026-09-28: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints. docs/getting-started.md:241",
+          "title": "상태판 오류 안내가 잘 보여요"
         }
       ],
       "qaRuntime": [
@@ -19245,7 +19248,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:36 What is the one-screen complete picture? | 05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:36 What is the one-screen complete picture? | 05_BUSINESS_SYSTEM_COMPLETE_MAP.html",
+          "title": "진행과 대기 상태를 표시"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-DEFER-STATUS-SYNC",
@@ -19258,7 +19262,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:162-175 'No M3 decision is recorded' 및 'Record the M3 GO / DEFER / KILL decision'; Founder direction 2026-09-23"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:162-175 'No M3 decision is recorded' 및 'Record the M3 GO / DEFER / KILL decision'; Founder direction 2026-09-23",
+          "title": "결정된 보류 상태를 일관되게 기록"
         }
       ],
       "skills": {
@@ -21185,7 +21190,8 @@
           "tests": [
             "node --test tests/no-evidence-as-fact-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:245 근거가 없는 내용을 확인된 사실처럼 작성하지 않는다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:245 근거가 없는 내용을 확인된 사실처럼 작성하지 않는다.",
+          "title": "확인된 내용만 사실로 안내"
         },
         {
           "taskId": "JUTELL-GLOSSARY-TERM-STATE-PARITY",
@@ -21197,7 +21203,8 @@
           "tests": [
             "node --test tests/glossary-term-state-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:110 용어 설명 자체에는 보고서 상태를 붙이지 않는다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:110 용어 설명 자체에는 보고서 상태를 붙이지 않는다.",
+          "title": "용어 설명을 일관되게 안내"
         },
         {
           "taskId": "JUTELL-MINIMAL-PROFILE-KEEP-PARITY",
@@ -21209,7 +21216,8 @@
           "tests": [
             "node --test tests/minimal-profile-keep-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:918 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동은 유지한다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:918 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동은 유지한다.",
+          "title": "최소 설정을 안전하게 유지"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -22672,7 +22680,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 30자 이상 피드백 보너스; bot.mjs:130 feedback/showcase and ownerId !== author; layout.mjs:120 다른 사람의 쇼케이스·피드백 글"
+          "ssotEvidence": "README.md:49 30자 이상 피드백 보너스; bot.mjs:130 feedback/showcase and ownerId !== author; layout.mjs:120 다른 사람의 쇼케이스·피드백 글",
+          "title": "남의 글에 댓글 달면 보너스"
         },
         {
           "taskId": "JUAI-GUIDE-DM-QUOTA",
@@ -22684,7 +22693,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:207 하루 질문 횟수 공유; layout.mjs:130 1:1로 답해요 (공개가 부담스러울 때)"
+          "ssotEvidence": "bot.mjs:207 하루 질문 횟수 공유; layout.mjs:130 1:1로 답해요 (공개가 부담스러울 때)",
+          "title": "개인 질문도 하루 한도에 포함"
         },
         {
           "taskId": "JUAI-TALK-TOPIC-MAX",
@@ -22699,7 +22709,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:355 trim().slice(0, 100); README.md:8 봇수다 주제는 4자 이상·1인 대기 2개까지"
+          "ssotEvidence": "bot.mjs:355 trim().slice(0, 100); README.md:8 봇수다 주제는 4자 이상·1인 대기 2개까지",
+          "title": "대화 주제 길이 기준 안내"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
