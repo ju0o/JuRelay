@@ -15,6 +15,24 @@
 배포: `https://portfolio-people-bizrate-genuine.trycloudflare.com`
 (Quick Tunnel 일회성 URL. ChatGPT connector 재지정 필요.)
 
+## P2 live E2E (scratch e2e-probe, opencode/big-pickle worker)
+
+Scenario A — TASK-0003: create→READY, owner-dispatch→RUNNING(pid),
+worker writes hello.txt=HELLO-NATIVE-PM, RESULT_RECEIVED/VERIFYING,
+delivery PENDING→wake SENT(AGENT_RELAY_PM_WAKE)→verification context→
+judgment ACCEPT→pmState ACCEPTED. Stale-CAS accept correctly CONFLICTed.
+Goal-closure denied in PLAN mode (gate working as designed).
+
+Scenario B — TASK-0004/0005: judgment CHANGES→auto retry-prep (run seq 2,
+retry-context.json)→worker with recomposed retry prompt→file rewritten→
+judgment ACCEPT→ACCEPTED. (Found + fixed: wrapper initially rejected retry
+prompt.md as DIFFERENT; now recomposes via dist retry-prompt.js.)
+
+Evidence IDs: goal GOAL-0001; runs 5f05ff15(→ACCEPT), df92294a(→CHANGES),
+80bff134/b88e2599(→CHANGES→retry→ACCEPT); deliveries PMD-TASK-*/PENDING→judged;
+worker e2e-opencode-1 (observationAdapterId opencode); QA mechanics covered by
+v1-qa-loop (6/6) + phase-h-closed-loop (PASS) on current build.
+
 ## Regression tests (current branch build, 2026-09-27)
 
 | test | result |
@@ -27,11 +45,12 @@
 | `node --test test/v1-qa-loop.test.mjs` | PASS 6/6 |
 | `node --test test/phase-h-closed-loop.test.mjs` | PASS 1/1 |
 
+| `node --test test/relay-worker-opencode-impl.test.mjs` | PASS 14/14 |
+
 ## Not yet proven (Founder gate)
 
 - ChatGPT에서 `relay_pm_open_widget` 호출 → 렌더링 (connector URL 재지정 필요).
 - ChatGPT PM 판단 ACCEPT/CHANGES → VERIFIED_DONE → NEXT (연결 후).
-- 라이브 구현-워커 dispatch (Claude 구독 복구 또는 opencode 구현 래퍼 결정 필요).
 
 ## Provenance
 

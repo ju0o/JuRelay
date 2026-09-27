@@ -109,13 +109,33 @@ intake/dispatch/verification/judgment/retry/execution-plan + wake + widget:
 - `dist/`는 gitignored이므로 `git status` clean 유지. 되돌리려면 브랜치 HEAD(`4658448`)에서 재빌드.
 - portfolio-runner(nightly)는 손대지 않음. `/tmp/native-pm-e2e/` scratch는 삭제 가능.
 
+## Implementation worker (Founder-approved scope exception, 2026-09-27)
+
+- `scripts/relay-worker-opencode-impl.mjs` (new): Builder relay path for OpenCode,
+  mirroring `relay-worker-claude.mjs` discipline (relay args only, bounded 16 KiB
+  prompt, prompt.md idempotency incl. retry-prompt recompute via dist composer,
+  no MCP/evidence writes, exit-code failure path).
+- Billing: FREE TIER ONLY (`-free`/`big-pickle` allowlist). Default
+  `opencode/big-pickle` (verified live; `nemotron-3-ultra-free` returned empty,
+  `mimo-v2.5-free` errored on this host that day).
+- Test: `test/relay-worker-opencode-impl.test.mjs` (14 tests PASS).
+
 ## Known limitations (2026-09-27)
 
 1. ChatGPT connector가 stale URL을 가리키고 있어 PM 연결은 Founder 재지정 전까지 DOWN.
    (`relay_pm_open_widget` internal error = 죽은 서버/stale tunnel이지 핸들러 버그가 아님.)
-2. 라이브 구현-워커 dispatch 미검증: `relay-worker-claude.mjs`는 Claude 구독 필요
-   (Team 비활성 + Pro 주간한도). opencode 구현 래퍼는 없음(범위 외로 보류).
+2. ~~라이브 구현-워커 dispatch 미검증~~ 해소됨(아래 P2 E2E). 남은 것은 ChatGPT-UI 단계.
 3. `night-runtime`에서 MCP를 빌드할 수 없음(소스 부재). SSOT는 Core/Agent-Relay 브랜치.
+
+## P2 E2E (live, scratch project e2e-probe, 2026-09-27)
+
+Scenario A (ACCEPT): `create → owner-dispatch → opencode worker(hello.txt) →
+RESULT_RECEIVED → delivery → wake claim → verification context →
+judgment ACCEPT → pmState ACCEPTED`. (goal-closure는 PLAN-mode gate가 정상 거부.)
+
+Scenario B (CHANGES/RETRY): `... → judgment CHANGES → auto retry-prep(run seq 2) →
+worker(retry prompt) → bye/retry.txt → judgment ACCEPT → ACCEPTED`.
+중간에 래퍼의 retry-prompt 미대응 버그 발견 → dist composer 재사용으로 수정 후 재검증 PASS.
 
 ## Exact test evidence
 
