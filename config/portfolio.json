@@ -10284,6 +10284,18 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "업무 확인과 문서 정리를 알기 쉽게 표시"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-ROLLBACK-PLAIN-R2",
+          "scope": "In src/render/index.ts only, stop copying presentation.rollback_summary.detail into the visible #rollback-detail panel and show the existing 해요체 rollback sentence there, using \"저장된 이전 상태로 되돌릴 수 있어요. 저장된 복원 지점이 있어도 컴퓨터 밖에서 생긴 영향은 되돌아가지 않아요\" when status is available, and render that detail only inside the 원문 보기 rollback block, by adding the test \"keeps rollback guidance plain and scopes outside-computer effects\" in tests/receipt-render-founder.test.ts that fails while the panel still contains Git commit or 관찰 범위 and passes when those strings occur only after 원문 보기.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — 영수증 보기에서 개발자 글자는 원문 보기 안으로"
         }
       ],
       "skills": {
