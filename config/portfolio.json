@@ -13999,6 +13999,28 @@
           ],
           "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:104 | Runner | `agent-relay` | `agent-relay/runner` | `day=<day>;night=<night>` | — |",
           "title": "Agent Relay 현황이 실제와 같은지"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-BULLET-CLAIMS-SYNC",
+          "scope": "Add one offline test that each docs/getting-started.md e2e step bullet's backtick-quoted status, stale boolean, reason code, and 종료 코드 digit appears in that step's scripts/e2e.sh function, covering the non-Korean tokens the existing quote sync skips, without changing the script or the doc.",
+          "files": [
+            "tests/e2e-bullet-claims-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-bullet-claims-sync.test.mjs"
+          ],
+          "ssotEvidence": "tests/e2e-step-quote-sync.test.mjs:22 if (!/[가-힣]/u.test(quote) || quote.includes('…')) continue;"
+        },
+        {
+          "taskId": "JUCONTROLER-PROJECTION-FIELDS-SCHEMA-SYNC",
+          "scope": "Add one offline test that the fields and sourceFields allow-lists in src/project-status.mjs match the property names in docs/integration/project-status.schema.json, without changing projection behavior.",
+          "files": [
+            "tests/projection-fields-schema-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/projection-fields-schema-sync.test.mjs"
+          ],
+          "ssotEvidence": "src/project-status.mjs:15 const fields = new Set(['schema', 'projectId', 'status', 'observedAt', 'generatedAt', 'stale', 'source', 'sourceRevision', 'reason']);"
         }
       ],
       "qaRuntime": [
