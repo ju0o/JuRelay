@@ -16594,6 +16594,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "계획에서 검사 기준을 확인"
+        },
+        {
+          "taskId": "JCAPP-ENV-METER-KO",
+          "scope": "On the 홈 실행 환경 meters, replace the visible labels CPU and RAM and the note CPU 바쁨 with 사용량, 메모리 and 사용량이 높아요, and update the two tests that lock the English strings.",
+          "files": [
+            "operator/public/app.js",
+            "test/lovable-env-panel.test.mjs",
+            "test/lovable-home-order.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lovable-env-panel.test.mjs",
+            "node --test test/lovable-home-order.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JCAPP-RESULT-FOLD-KO",
+          "scope": "On 결과, rename the card JSON fold 원본 결과 기록 and the legacy details label to 원문 보기, replace notes durable index and last verified result with 예전 색인 and 마지막으로 확인된 결과, and leave the 예전 기록 N건 더 보기 fold unchanged.",
+          "files": [
+            "operator/public/app.js",
+            "test/results-recent.test.mjs"
+          ],
+          "tests": [
+            "node --test test/results-recent.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
