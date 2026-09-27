@@ -14068,6 +14068,28 @@
           ],
           "ssotEvidence": "src/project-status.mjs:15 const fields = new Set(['schema', 'projectId', 'status', 'observedAt', 'generatedAt', 'stale', 'source', 'sourceRevision', 'reason']);",
           "title": "상태 정보 항목을 정확히 일치"
+        },
+        {
+          "taskId": "JUCONTROLER-GUIDE-ERROR-LINE-RUN",
+          "scope": "Add one offline test that runs scripts/status-board.mjs on a missing registry and on an unknown project id, and asserts the live exit code and second stderr line match the 종료 코드 1 and the two English error examples quoted in docs/getting-started.md section 상태판 안내 문장 읽는 법.",
+          "files": [
+            "tests/getting-started-error-line-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-error-line-run.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:250 영어 줄(예: `Unable to read project registry: …`, `Unknown projectId: …`)"
+        },
+        {
+          "taskId": "JUCONTROLER-STATUS-CLI-INVALID-REQUEST-LINE",
+          "scope": "Add one offline test that runs scripts/status-board.mjs on a temp repository status file with status UNKNOWN and reason invalid-request, and asserts stderr contains the live parenthetical 요청 값이 잘못됐어요 from reasonWords.",
+          "files": [
+            "tests/status-cli-invalid-request-line.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/status-cli-invalid-request-line.test.mjs"
+          ],
+          "ssotEvidence": "scripts/status-board.mjs:9 'invalid-request': '요청 값이 잘못됐어요'"
         }
       ],
       "qaRuntime": [
