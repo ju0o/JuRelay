@@ -19620,6 +19620,20 @@
           ],
           "ssotEvidence": "setup.mjs:79 ...(ch.topic && ch.type !== \"voice\" ? { topic: ch.topic } : {}) silently drops a voice channel's topic with no test to catch a future mismatch",
           "title": "음성 채널 설정 오류를 미리 막기"
+        },
+        {
+          "taskId": "JUAI-SUB-LIMIT-CONST",
+          "scope": "Export SUB_MAX/SUB_DAILY from lib.mjs (mirroring LIMITS), use them in bot.mjs, and interpolate them into layout.mjs GUIDE's two hardcoded subscription-limit lines, plus a check.mjs assertion",
+          "files": [
+            "lib.mjs",
+            "bot.mjs",
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:325 const SUB_MAX = 5, SUB_DAILY = 3 (private, not shared); layout.mjs:137 hardcodes (최대 5개) and layout.mjs:159 hardcodes (하루 최대 3회) while layout.mjs:120 already correctly interpolates ${LIMITS.bonusMax}"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
