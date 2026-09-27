@@ -5023,6 +5023,70 @@
           ],
           "ssotEvidence": "Founder 2026-09-27: '오픈소스용으로 공개 되는 것을 염두 … 내 환경인 ssh 연동 및 이런 건 선택사항인거임 일반 오픈소스 사용 하는 유저들은 그거 사용하지 않고 본인 컴퓨터 내에서만 사용할 수도 있음'. Canvas 'Ju 제품군 완성 설계' phase 2 (혼자 쓰기). Test in tests/test_oss_local_default.py: no user-facing string in src/actl contains 'ASUS' or 'MainPC'; an ssh alias 'asus' is labelled from the alias like any other host. | R1 and R2 held 2026-09-27 on leftover ASUS strings and old test expectations; this -R2-R2 is hand-written.",
           "title": "actl: ASUS·MainPC 이름 빼고 '내 컴퓨터' 기본 (마지막 — 남은 3줄 + 시험 문구)"
+        },
+        {
+          "taskId": "ACTL-NO-CONSOLE-EVERYWHERE",
+          "scope": "ACTL-BOARD-NO-CONSOLE-WINDOWS only covered some calls; on Windows the board still pops console windows at start and on '새 환경 찾기'. Unwrapped subprocess calls remain in core/sources.py:92 (env scan: wsl.exe/ssh), core/remote.py (ssh runtime calls at ~65,138,254,319,453,481), tokens.py:33, utils/clipboard.py:32, core/tmux.py:203/596/797/905, tui.py:97/113. Fix at the root: core/proc.py gets install_no_window_default() which, on os.name=='nt', wraps subprocess.Popen so every child gets CREATE_NO_WINDOW + hidden STARTUPINFO unless the caller set creationflags; call it first thing in the gui, serve and tui entry points (and the PyInstaller entry). Keep the explicit helper for clarity. No change on Linux/macOS.",
+          "files": [
+            "src/actl/core/proc.py",
+            "src/actl/gui.py",
+            "src/actl/cli.py",
+            "tests/test_no_console_everywhere.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 16:40 on MainPC with board 8c37b8e: 'actl켰을 때, 터미널이 여러개 뜨는 거 백그라운드로 못 숨김? … 새환경찾기 눌러도 여러개 뜨는 거', 'actl창 지금 -> 글씨랑 너무 큼', 'Claude Team 1, 2, Cursor 다 작업중인데 왜 상태가 쉬는중으로 나옴?', 'MainPC -> wsl 환경은? 연동 안됨 아직?'. Test: with os.name patched to 'nt' and install_no_window_default() active, calls made by sources.scan, remote runtime request, tokens and clipboard helpers all receive CREATE_NO_WINDOW (spy on Popen).",
+          "title": "actl: 켤 때·새 환경 찾기 때 까만 창 하나도 안 뜨게 (전체 적용)"
+        },
+        {
+          "taskId": "ACTL-STATUS-TRUTH",
+          "scope": "Board showed Claude Team 1, Claude Team 2 and Cursor as '쉬는 중' while all three were working (Claude Team 1 was actively running tools). `actl --status` on ASUS reports activity '미확인' for them, and live_card.py maps any unknown activity with control_ready to '쉬는 중'. Fix: (1) unknown activity must render '확인 중', never '쉬는 중'; (2) activity must actually be measured for every mapped pane, local and remote (SSH/WSL), in one cheap batched probe per refresh: pane content changed in the last ~10 s or a working marker in the tail (Claude Code 'esc to interrupt'/spinner, Cursor/Codex generating lines) → 일하는 중; prompt waiting for approval → 답 기다림; stable screen with an input prompt → 쉬는 중; keep CPU as a secondary signal; (3) event-driven refresh must still re-probe activity periodically (activity is not a content event) — every 5 s while the board is visible, batched.",
+          "files": [
+            "src/actl/live_card.py",
+            "src/actl/core/activity.py",
+            "src/actl/core/live_observe.py",
+            "src/actl/serve.py",
+            "tests/test_status_truth.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 16:40 on MainPC with board 8c37b8e: 'actl켰을 때, 터미널이 여러개 뜨는 거 백그라운드로 못 숨김? … 새환경찾기 눌러도 여러개 뜨는 거', 'actl창 지금 -> 글씨랑 너무 큼', 'Claude Team 1, 2, Cursor 다 작업중인데 왜 상태가 쉬는중으로 나옴?', 'MainPC -> wsl 환경은? 연동 안됨 아직?'. Test: row with activity UNKNOWN → '확인 중'; fixture tails with Claude spinner / 'esc to interrupt' → 일하는 중; unchanged prompt tail for 30 s → 쉬는 중; remote pane rows get an activity value from the batched probe.",
+          "dependsOn": [
+            "ACTL-NO-CONSOLE-EVERYWHERE"
+          ],
+          "title": "actl: 일하는 AI를 '쉬는 중'으로 잘못 보이던 것 고치기"
+        },
+        {
+          "taskId": "ACTL-BOARD-COMPACT-TEXT",
+          "scope": "Founder: '글씨랑 너무 큼' (this overrides the earlier 16px rule for this board). Body text 13–14px, row height ~36px, headings 15–16px, tighter padding, so more windows fit; keep ≥32px click targets. Also the found-environment prompt was collapsed so the Founder never saw 'WSL Ubuntu 연결하기' — when a reachable environment is not enabled, show it as one visible line in the window list area: 'WSL Ubuntu 찾았어요 · [연결] [숨기기]'.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_board_look.py",
+            "tests/test_gui_korean_labels.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 16:40 on MainPC with board 8c37b8e: 'actl켰을 때, 터미널이 여러개 뜨는 거 백그라운드로 못 숨김? … 새환경찾기 눌러도 여러개 뜨는 거', 'actl창 지금 -> 글씨랑 너무 큼', 'Claude Team 1, 2, Cursor 다 작업중인데 왜 상태가 쉬는중으로 나옴?', 'MainPC -> wsl 환경은? 연동 안됨 아직?'. Test: body font size 13–14 and row height ≤ 40 in the board style constants; an unenabled reachable environment renders a visible connect line (not inside a collapsed section).",
+          "dependsOn": [
+            "ACTL-STATUS-TRUTH"
+          ],
+          "title": "actl 보드: 글씨·여백 작게 + 찾은 환경 연결 버튼 잘 보이게"
+        },
+        {
+          "taskId": "ACTL-CLI-WINDOWS-UTF8",
+          "scope": "On MainPC `JuActl.exe envs list` crashes: UnicodeEncodeError 'cp949' codec can't encode '\\u2014' (cli.py _envs line ~1243). At CLI start on Windows reconfigure stdout/stderr to UTF-8 with errors='replace' (sys.stdout.reconfigure), and avoid em-dash in user-facing CLI text (use '·' or '-'). All commands must print on a cp949 console without crashing.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_windows_utf8.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 16:40 on MainPC with board 8c37b8e: 'actl켰을 때, 터미널이 여러개 뜨는 거 백그라운드로 못 숨김? … 새환경찾기 눌러도 여러개 뜨는 거', 'actl창 지금 -> 글씨랑 너무 큼', 'Claude Team 1, 2, Cursor 다 작업중인데 왜 상태가 쉬는중으로 나옴?', 'MainPC -> wsl 환경은? 연동 안됨 아직?'. Verified 2026-09-27 16:45 via ssh on MainPC. Test: running the envs list printer against a cp949 text stream does not raise.",
+          "title": "actl: Windows에서 `envs list` 한글·특수문자 오류로 죽는 문제"
         }
       ],
       "qaRuntime": [
