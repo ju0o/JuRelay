@@ -7399,6 +7399,21 @@
           ],
           "ssotEvidence": "docs/roadmap/MASTER_WBS.md:215 \"Required Evidence: exact SSOT/WBS task identity, Agent Relay Result Inbox record, Worker RESULT_PACKET, independent QA_PACKET, and restart/reconcile evidence.\"",
           "title": "재시작해도 중복 작업 방지"
+        },
+        {
+          "taskId": "JUPLAN-WINDOWS-LAUNCHER-BOM",
+          "scope": "scripts/juplan-studio.ps1 is UTF-8 without BOM; Windows PowerShell 5.1 reads it as CP949, the Korean strings break parsing (3 parse errors) and the double-click launcher closes instantly. Save scripts/*.ps1 as UTF-8 with BOM, add a .gitattributes rule so they stay CRLF/BOM-safe, and keep node's server window minimized with a Korean title line ('JuPlan 실행 중 — 이 창을 닫으면 JuPlan이 꺼져요').",
+          "files": [
+            "scripts/juplan-studio.ps1",
+            ".gitattributes",
+            "packages/runtime/test/windows-launcher.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 09:40: '바탕화면에 있는 JuPlan 실행 안됨'. Verified on MainPC: PowerShell Parser.ParseFile reports 3 errors without BOM, 0 after re-saving with BOM (hotfixed in F:\\MainPC_Projects\\JuPlan). Test in windows-launcher.test.ts: every scripts/*.ps1 starts with EF BB BF.",
+          "title": "바탕화면 JuPlan이 한글 때문에 안 켜지던 것 고치기"
         }
       ],
       "qaRuntime": [
