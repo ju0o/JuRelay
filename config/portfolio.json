@@ -5111,6 +5111,21 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "상태 확인이 멈추지 않아요"
+        },
+        {
+          "taskId": "ACTL-STATUS-TRUTH-R2",
+          "scope": "Narrow to the label only: when live_card has no mapped status and control_ready is true, return '확인 중' instead of '쉬는 중' (IDLE and DONE stay '쉬는 중'; not control_ready stays '연결 안 됨'), map that same word in gui._short_status, and update the assertions in tests/test_live_card.py::test_live_card_maps_statuses (fails on 87490553c5a9bc1903ed926afbab5958e54d3476 until the expected status is '확인 중', then passes), tests/test_gui_card_ai_folder.py::test_card_header_uses_live_card_fallback_for_unknown_runtime, and tests/test_board_remote_mapping_truth.py::test_remote_match_is_connected_without_local_mapping, without probing pane activity.",
+          "files": [
+            "src/actl/live_card.py",
+            "src/actl/gui.py",
+            "tests/test_live_card.py",
+            "tests/test_gui_card_ai_folder.py",
+            "tests/test_board_remote_mapping_truth.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 16:40 on MainPC with board 8c37b8e: 'actl켰을 때, 터미널이 여러개 뜨는 거 백그라운드로 못 숨김? … 새환경찾기 눌러도 여러개 뜨는 거', 'actl창 지금 -> 글씨랑 너무 큼', 'Claude Team 1, 2, Cursor 다 작업중인데 왜 상태가 쉬는중으로 나옴?', 'MainPC -> wsl 환경은? 연동 안됨 아직?'. Test: live_card row with runtime_state OTHER or UNKNOWN and control_ready true → '확인 중' (tests/test_live_card.py::test_live_card_maps_statuses fails on 87490553c5a9bc1903ed926afbab5958e54d3476 until this assertion is updated); IDLE and DONE stay '쉬는 중'; do not measure pane activity."
         }
       ],
       "qaRuntime": [
