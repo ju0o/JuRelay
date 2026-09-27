@@ -19234,6 +19234,19 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:36 What is the one-screen complete picture? | 05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-DEFER-STATUS-SYNC",
+          "scope": "Founder-decided M3=DEFER와 0-of-7 joined Claude-final/Receipt 근거를 로드맵·상태판·결정 로그에 일관되게 기록하되 제품 구현과 M4 게이트 경계는 유지한다.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md",
+            "docs/operations/PM_STATUS_BOARD.md",
+            "docs/decisions/DECISION_LOG.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:162-175 'No M3 decision is recorded' 및 'Record the M3 GO / DEFER / KILL decision'; Founder direction 2026-09-23"
         }
       ],
       "skills": {
