@@ -22492,6 +22492,53 @@
             "npm run check"
           ],
           "ssotEvidence": "README.md:20 \"입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와\""
+        },
+        {
+          "taskId": "JUAI-GUIDE-TALK-SLOTS",
+          "scope": "Move bot.mjs's TALK_OFFSETS_MIN array to lib.mjs without changing its values [30, 270, 510], use that export in the existing talk due calculation, and render GUIDE's daily talk count from the array length, with check.mjs asserting both the values and the guide phrase.",
+          "files": [
+            "lib.mjs",
+            "bot.mjs",
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:105 하루 3번 주제 하나로 수다를 떨어요"
+        },
+        {
+          "taskId": "JUAI-CHECK-NAME-MAX",
+          "scope": "Add check.mjs assertions only that every role name, category name, and channel name is at most 100 characters, matching the Discord name limit setup.mjs sends when creating roles, categories, and channels.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "setup.mjs:79 name: ch.name"
+        },
+        {
+          "taskId": "JUAI-CHECK-CHUNK-DEFAULT",
+          "scope": "Add check.mjs assertions only, leaving lib.mjs unchanged, that chunk() with its default max keeps a 1900-character string as one chunk and splits a 1901-character string so every piece is at most 1900.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:109 export function chunk(text, max = 1900)"
+        },
+        {
+          "taskId": "JUAI-CHECK-BESTFAQ-MIN-HIT",
+          "scope": "Add a check.mjs assertion only, leaving lib.mjs unchanged, that bestFaq keeps a row whose similarity equals the min argument.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:169 if (s >= score) { best = r; score = s; }"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
