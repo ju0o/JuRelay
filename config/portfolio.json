@@ -7771,6 +7771,27 @@
           ],
           "ssotEvidence": "Founder 2026-09-27: 'WBS나 ERD구조 같은것도 물론 알아보기 쉽게'. Test: 4-entity fixture ERD SVG places boxes in ≥2 columns, every relation edge has a label and connects the two named entities; WBS SVG has a milestone lane per deadline/milestone and no task node labeled with the deadline; Studio HTML contains no 'juplan snapshot' and no '보기 전용'; feature answer '사장님 예약 확인/취소' yields one feature.",
           "title": "JuPlan: ERD·WBS 그림을 알아보기 쉽게 + 명령어 안내 빼기"
+        },
+        {
+          "taskId": "JUPLAN-OWN-DIAGRAM-ENGINE",
+          "scope": "Founder decision: the diagrams must look and read like Archify-quality auto-laid-out diagrams, but JuPlan must NOT contain MIT-licensed code or notices. packages/renderer-archify currently adapts part of Archify's layout math and mirrors its spec field names, with an Archify MIT section in THIRD_PARTY_NOTICES.md. Replace it with JuPlan's own engine written from scratch: new package packages/diagram-engine (@juplan/diagram-engine) with JuPlan's own spec types (Korean-friendly names of our choosing, no Archify type/field names like ArchifyComponentType, messagebus, variant), our own layout (layered left-to-right layout: assign ranks by longest path, order nodes within a rank to reduce crossings with a simple median pass, orthogonal edge routing with label boxes, grid placement for ERD entities, lane layout for WBS milestones, ≤12 primary nodes per view with linked sub-views), and SVG output. Do NOT open or copy from ~/.agents/skills/archify or any Archify source. Move all callers (Studio plan map, architecture, user flow, data flow, screen flow, lifecycle, ERD, WBS) to the new package, delete packages/renderer-archify, and remove the Archify section from THIRD_PARTY_NOTICES.md (delete the file if nothing else remains). Keep every existing visual test passing by porting them to the new package.",
+          "files": [
+            "packages/diagram-engine/src/index.ts",
+            "packages/diagram-engine/src/layout.ts",
+            "packages/diagram-engine/test/engine.test.ts",
+            "packages/diagram-engine/package.json",
+            "packages/runtime/src/diagrams.ts",
+            "THIRD_PARTY_NOTICES.md"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 16:20: 'JuPlan은 아키택처 스킬? … 그거랑 완전 비슷한 구조로 만드는 거맞지? MIT는 사용하지말고'. Test: repo contains no 'renderer-archify', no 'Archify' string and no MIT license text outside node_modules; a 9-node plan's SVG has non-overlapping boxes with every edge endpoint on its nodes; ERD places 4 entities in ≥2 columns with labeled relations; WBS has one lane per milestone; output identical across two runs.",
+          "dependsOn": [
+            "JUPLAN-ERD-WBS-READABLE"
+          ],
+          "title": "JuPlan 그림 엔진을 100% 자체 코드로 (MIT 코드·표시 제거)"
         }
       ],
       "qaRuntime": [
