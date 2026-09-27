@@ -12209,6 +12209,17 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-27: docs/getting-started.md's giant sample JSON block 'is still a hand-transcribed doc quote, not run for real'; tests/e2e-docs-sync.test.mjs's real-run test asserts only Object.keys/projects/statuses/steps, never message/ok/schema values",
           "title": "설명서 실행결과 값 일치 검사"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-NEXT-ALL-STEPS-REAL",
+          "scope": "tests/e2e-failure-output.test.mjs에 54개 e2e 스텝 전체를 순회하며 각 스텝의 실패를 재현해 실측 next 값이 scripts/e2e.sh의 commands 맵과 일치하는지 검증하는 test 1개를 추가한다",
+          "files": [
+            "tests/e2e-failure-output.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-failure-output.test.mjs"
+          ],
+          "ssotEvidence": "tests/e2e-docs-sync.test.mjs test 2 compares doc next text only against scripts/e2e.sh source text (string match), while tests/e2e-failure-output.test.mjs only real-executes 2 of 54 steps; Founder direction 2026-09-27 asks the steps/next JSON block to be verified for real like offline-acceptance-sync.test.mjs did for the 5 checklist commands"
         }
       ],
       "qaRuntime": [
