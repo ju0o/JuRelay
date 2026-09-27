@@ -19801,6 +19801,50 @@
           ],
           "ssotEvidence": "bot.mjs:325 const SUB_MAX = 5, SUB_DAILY = 3 (private, not shared); layout.mjs:137 hardcodes (최대 5개) and layout.mjs:159 hardcodes (하루 최대 3회) while layout.mjs:120 already correctly interpolates ${LIMITS.bonusMax}",
           "title": "이용 한도를 한눈에 안내"
+        },
+        {
+          "taskId": "JUAI-README-MENTOR-MATCH",
+          "scope": "Add a short README bullet describing bot.mjs's beginner-to-mentor matching feature in the Q&A channel, which currently has no documentation.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:303-304 mentorPing() pings up to two experienced members with a matching interest tag for a beginner-role member's post, once per mentor per day; undocumented in README.md"
+        },
+        {
+          "taskId": "JUAI-README-COMMANDCODE-PREREQ",
+          "scope": "Update README's prerequisites line and sandboxing bullet to name the commandcode CLI alongside claude/codex/opencode, matching ai.mjs's engine list.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "ai.mjs:42-43 spawns a commandcode CLI process through the same bwrap sandbox used for codex/opencode, but README.md:32 and README.md:45 name only claude/codex/opencode"
+        },
+        {
+          "taskId": "JUAI-CHECK-STAFF-GAP-REPEAT",
+          "scope": "Add a check.mjs assertion that two staff takeQuota calls within LIMITS.gapMs of each other both succeed, proving the staff bypass holds on a repeat call, not just the first.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:56 takeQuota's staff guard skips the gap-rejection branch entirely, but check.mjs only calls staff takeQuota once and never proves the bypass on a second immediate call"
+        },
+        {
+          "taskId": "JUAI-CHECK-TIMEOUT-ZERO-FALLBACK",
+          "scope": "Add a check.mjs assertion that validateAdminPlan's timeout action falls back minutes:0 to the default 60, mirroring the existing delete_messages last:0-to-20 test.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:144 timeout's minutes uses a Number(x) or 60 fallback; check.mjs tests -1 and an invalid string but never the exact 0 value that triggers the fallback"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
