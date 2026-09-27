@@ -2621,6 +2621,19 @@
             "AGENTRELAY-STANDALONE-NO-HUB"
           ],
           "title": "Agent Relay: 이 컴퓨터에서 바로 실행을 기본으로 (SSH는 선택)"
+        },
+        {
+          "taskId": "AGENTRELAY-OSS-LOCAL-RUN-BASEFIX",
+          "scope": "`npm test` already fails on the integration tip c4fdc8c before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output: 304365/src/v2/portfolio-runner/index.mjs:77:3)\n    async PortfolioRunner.enqueue (file:///home/skkse12/.local/share/AgentRelay/data/portfolio-execution/worktrees/agent-relay-agentrelay-oss-local-run-1790473304365/src/v2/portfolio-runner/index.mjs:347:170)\n    async TestContext.<anonymous> (file:///home/skkse12/.local/share/AgentRelay/data/portfolio-execution/worktrees/agent-relay-agentrelay-oss-local-run-1790473304365/test/v2/portfolio-runner.test.mjs:412:3)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: core-v1 snapshot reports the runtime that actually runs QA\nok 28 - core-v1 snapshot reports the runtime that actually runs QA\n  ---\n  duration_ms: 1.133966\n  type: 'test'\n  ...\n1..28\n# tests 28\n# suites 0\n# pass 8\n# fail 20\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 246.118619\n",
+          "files": [
+            "test/oss-local-run.test.mjs"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "qaRuntime": [
