@@ -12620,6 +12620,28 @@
           ],
           "ssotEvidence": "docs/getting-started.md:257 names the three adapter files; git ls-tree confirms src/adapters/ currently has exactly those three files with no existing test comparing them",
           "title": "안내서의 연동 목록이 실제와 같은지 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-CONTRACT-ERROR-CODES-SYNC",
+          "scope": "docs/integration/PROJECT_STATUS_CONTRACT.md가 나열하는 AgentRelayBoardError/JuPlanStatusError/JuCeiptReceiptError의 code 목록이 src/adapters/*.mjs의 실제 throw 코드와 같은 순서로 일치하는지 검사하는 오프라인 테스트를 추가한다.",
+          "files": [
+            "tests/contract-error-codes-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-error-codes-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:138-140,194-195,245-246 lists AgentRelayBoardError/JuPlanStatusError/JuCeiptReceiptError code tuples with no tests/*-sync.test.mjs referencing PROJECT_STATUS_CONTRACT.md (confirmed via git grep at 02fe2c67f)"
+        },
+        {
+          "taskId": "JUCONTROLER-CONTRACT-FRESHNESS-SYNC",
+          "scope": "docs/integration/PROJECT_STATUS_CONTRACT.md의 세 어댑터 section이 각각 적어놓은 freshnessMs 기본값 리터럴 300000이 src/adapters/agent-relay.mjs, src/adapters/juplan.mjs, src/adapters/juceipt.mjs의 실제 기본값 표현식(5 * 60 * 1000)과 일치하는지 검사하는 오프라인 테스트를 추가한다.",
+          "files": [
+            "tests/contract-freshness-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/contract-freshness-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md lines with 'freshnessMs' (default: `300000`...) at ~136,191,243 vs src/adapters/agent-relay.mjs:45, src/adapters/juplan.mjs:30, src/adapters/juceipt.mjs:32 freshnessMs = 5 * 60 * 1000; existing tests/docs-default-freshness-sync.test.mjs only checks src/project-status.mjs vs README/getting-started, not this doc or these adapters (confirmed by reading both at 02fe2c67f)"
         }
       ],
       "qaRuntime": [
