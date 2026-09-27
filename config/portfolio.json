@@ -18522,6 +18522,18 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:603 '### 10.2 보조 시나리오 — 내부 기능 변경'",
           "title": "내부 기능 변경 보고서 품질 검사"
+        },
+        {
+          "taskId": "JUTELL-BROWSER-NO-NEW-TOOLS-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §13's rule that a missing browser tool must not be worked around by installing a new tool or connecting an external service, as one sub-bullet under SKILL.md step 8's browser bullets, plus an offline parity test.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/browser-no-new-tools-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/browser-no-new-tools-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:575 '브라우저 도구가 없으면 새 도구를 설치하거나 별도 서비스를 연결하지 않는다.' (§13, present in SPEC only)"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
