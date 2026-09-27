@@ -19201,6 +19201,17 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 ACTIVE — integrated 10-task Daily Value summary; 10/10 receipts at 402d3ee; validation register complete; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED; decision pending",
           "title": "검토 중인 상태를 보여줘요"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-LOCKED-STATE-KO",
+          "scope": "On docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html replace only the visible English labels P0 ACTIVE, the hero pills B2+ BLOCKED and SECOND RUNTIME BLOCKED, and the M4 M5 B2 B3 B4 B5 B6 BLOCKED cells with Korean 진행 중 or 대기 and put the English under 원문 보기, leaving the M3 decision text unchanged and recording no GO, DEFER, or KILL.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:36 What is the one-screen complete picture? | 05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
         }
       ],
       "skills": {
