@@ -8714,7 +8714,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:120 An ACCEPT that fails the runner test gate is rewritten to REQUEST_CHANGES with the gate finding. That rewrite does not promote the candidate."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:120 An ACCEPT that fails the runner test gate is rewritten to REQUEST_CHANGES with the gate finding. That rewrite does not promote the candidate.",
+          "title": "시험이 실패하면 반영하지 않음"
         },
         {
           "taskId": "JUPLAN-AR-SCOPE-HOLD",
@@ -8728,7 +8729,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-scope-hold.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
+          "title": "이미 정한 제품 범위 밖은 멈춤"
         }
       ],
       "qaRuntime": [
@@ -13983,7 +13985,8 @@
           "tests": [
             "node --test tests/contract-offline-usage-run.test.mjs"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:144 Offline usage, from a saved snapshot:"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:144 Offline usage, from a saved snapshot:",
+          "title": "꺼져도 작업판·계획·영수증 현황"
         },
         {
           "taskId": "JUCONTROLER-CONTRACT-RELAY-ENTRY-SYNC",
@@ -13994,7 +13997,8 @@
           "tests": [
             "node --test tests/contract-relay-entry-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:104 | Runner | `agent-relay` | `agent-relay/runner` | `day=<day>;night=<night>` | — |"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:104 | Runner | `agent-relay` | `agent-relay/runner` | `day=<day>;night=<night>` | — |",
+          "title": "Agent Relay 현황이 실제와 같은지"
         }
       ],
       "qaRuntime": [
@@ -17879,7 +17883,8 @@
           "tests": [
             "node --test test/persona-rebuild.test.mjs"
           ],
-          "ssotEvidence": "Founder 2026-09-27: 페르소나 Tester가 항상 건너뜀; persona 원본 부재 실측. Supervisor 결정: Agent-Relay WBS로 복원 (Aside 아님)."
+          "ssotEvidence": "Founder 2026-09-27: 페르소나 Tester가 항상 건너뜀; persona 원본 부재 실측. Supervisor 결정: Agent-Relay WBS로 복원 (Aside 아님).",
+          "title": "공개 소개가 갖춰졌고 비밀 없는지"
         }
       ],
       "skills": {
@@ -22150,7 +22155,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:236 if (question.length < 5)"
+          "ssotEvidence": "bot.mjs:236 if (question.length < 5)",
+          "title": "익명 질문은 다섯 글자부터 안내"
         },
         {
           "taskId": "JUAI-TALK-LIMITS",
@@ -22164,7 +22170,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:358 topic.length < 4; bot.mjs:359 n >= 2"
+          "ssotEvidence": "bot.mjs:358 topic.length < 4; bot.mjs:359 n >= 2",
+          "title": "봇수다 주제 네 글자, 대기 두 건"
         },
         {
           "taskId": "JUAI-CHECK-DELETE-MSG-BLANK",
@@ -22175,7 +22182,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:146 delete_messages requires channel"
+          "ssotEvidence": "lib.mjs:146 delete_messages requires channel",
+          "title": "메시지 삭제는 빈 채널 거절, 스무 개"
         },
         {
           "taskId": "JUAI-CHECK-SCHEMA-COLUMNS",
@@ -22186,7 +22194,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "db.mjs:5 CREATE TABLE IF NOT EXISTS usage(user_id TEXT, day TEXT, count INTEGER, last_at INTEGER, PRIMARY KEY(user_id, day))"
+          "ssotEvidence": "db.mjs:5 CREATE TABLE IF NOT EXISTS usage(user_id TEXT, day TEXT, count INTEGER, last_at INTEGER, PRIMARY KEY(user_id, day))",
+          "title": "기록에 필요한 칸이 다 있는지 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
