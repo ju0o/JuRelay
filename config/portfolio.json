@@ -7573,6 +7573,21 @@
             "JUPLAN-IMPORT-EXISTING-DOCS"
           ],
           "title": "JuPlan: '어떤 프로젝트를 만드나요?'부터 대화로 기획"
+        },
+        {
+          "taskId": "JUPLAN-OFFLINE-PLAN-FROM-IDEA-FIX",
+          "scope": "Regression despite JUPLAN-V1-OFFLINE-USES-IDEA: in an empty folder `init --name \"동네 가게 예약\" --idea \"손님이 시간을 골라 예약하는 웹앱\"` then `plan --offline` produced nodes from JuPlan's own template ('JuPlan 실행기', '대표님 계획 여정') with no 가게/예약 content, and validation still said 6/6 통과. Fix the offline planner so every pass derives names from the project's name/idea (and interview answers when present) and never emits JuPlan-self or Founder nodes; add a validation check that fails when the plan's goal/features don't reference the idea. Also: the first-run page must return HTTP 200 (it returned 404), and the Studio final-confirm must work inside JuPlan alone (no 'JuControler에서 말해 달라').",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/plan-core/src/validate.ts",
+            "packages/runtime/test/offline-plan-from-idea.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder-persona Tester review 2026-09-27 (persona file ~/.claude-team/skills/founder-persona/PERSONA.md; report TESTER_persona_20260927.md, headless captures of integration builds): JuPlan 막힘 3 (first-run no start button → JUPLAN-STUDIO-START-SCREEN; offline plan ignores idea; confirm requires JuControler). Test: the 가게 예약 fixture yields goal/feature nodes containing 예약, no node label contains 'JuPlan' or '대표님'; GET / with no project → 200; a plan whose goal ignores the idea fails validation.",
+          "title": "JuPlan: 인터넷 없이 만든 계획에 내 아이디어가 안 들어가는 문제"
         }
       ],
       "qaRuntime": [
