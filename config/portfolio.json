@@ -8744,7 +8744,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-packet-schema.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task.",
+          "title": "연결이 끊기면 작업을 멈춤"
         },
         {
           "taskId": "JUPLAN-AR-INTAKE-PACKAGE-API",
@@ -8761,7 +8762,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-transport-hold.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:159 An exact authorized task can be received and routed."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:159 An exact authorized task can be received and routed.",
+          "title": "검사 기능을 한곳에서 사용"
         },
         {
           "taskId": "JUPLAN-AR-BLOCKED-NO-QA",
@@ -8775,7 +8777,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:91 BLOCKED holds the task. It does not invent a substitute Product task and does not continue to QA."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:91 BLOCKED holds the task. It does not invent a substitute Product task and does not continue to QA.",
+          "title": "막힌 작업은 검수 없이 보류"
         }
       ],
       "qaRuntime": [
@@ -14078,7 +14081,8 @@
           "tests": [
             "node --test tests/getting-started-error-line-run.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:250 영어 줄(예: `Unable to read project registry: …`, `Unknown projectId: …`)"
+          "ssotEvidence": "docs/getting-started.md:250 영어 줄(예: `Unable to read project registry: …`, `Unknown projectId: …`)",
+          "title": "상태판 오류 안내를 쉽게 확인해요"
         },
         {
           "taskId": "JUCONTROLER-STATUS-CLI-INVALID-REQUEST-LINE",
@@ -14089,7 +14093,8 @@
           "tests": [
             "node --test tests/status-cli-invalid-request-line.test.mjs"
           ],
-          "ssotEvidence": "scripts/status-board.mjs:9 'invalid-request': '요청 값이 잘못됐어요'"
+          "ssotEvidence": "scripts/status-board.mjs:9 'invalid-request': '요청 값이 잘못됐어요'",
+          "title": "잘못된 요청 안내를 확인해요"
         }
       ],
       "qaRuntime": [
@@ -19108,7 +19113,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation.",
+          "title": "다음 단계 승인 범위를 분명히 함"
         },
         {
           "taskId": "JUCEIPTPLAN-P0-REPORT-NONUNLOCK-SYNC",
@@ -19119,7 +19125,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation.",
+          "title": "추가 결정과 실행 권한을 명확히 함"
         }
       ],
       "skills": {
@@ -22334,7 +22341,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 lists !익명 and !봇수다 without length or waiting caps; README.md:49 says 피드백 보너스 최대 +3 without the length minimum; bot.mjs:236 rejects a shorter anonymous question"
+          "ssotEvidence": "README.md:8 lists !익명 and !봇수다 without length or waiting caps; README.md:49 says 피드백 보너스 최대 +3 without the length minimum; bot.mjs:236 rejects a shorter anonymous question",
+          "title": "질문과 의견 이용 기준을 안내해요"
         },
         {
           "taskId": "JUAI-CHECK-REDACT-GH-PREFIX",
@@ -22345,7 +22353,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "lib.mjs:97 /gh[pousr]_ token pattern; README.md:47 AI output redacts tokens before they reach Discord"
+          "ssotEvidence": "lib.mjs:97 /gh[pousr]_ token pattern; README.md:47 AI output redacts tokens before they reach Discord",
+          "title": "비밀 인증정보를 안전하게 가려요"
         },
         {
           "taskId": "JUAI-CHECK-ONBOARD-CHANNELS",
@@ -22356,7 +22365,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "setup.mjs:155 default_channel_ids passed to Discord onboarding; README.md:28 setup creates the join questions"
+          "ssotEvidence": "setup.mjs:155 default_channel_ids passed to Discord onboarding; README.md:28 setup creates the join questions",
+          "title": "안내 공간을 안전하게 확인해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
