@@ -12769,6 +12769,18 @@
             "node --test tests/contract-example-run.test.mjs"
           ],
           "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:29 Minimal example:"
+        },
+        {
+          "taskId": "JUCONTROLER-GETTING-STARTED-E2E-SAMPLE-SYNC-R2",
+          "scope": "기존 tests/e2e-docs-sync.test.mjs의 'getting-started ```json example matches real bash scripts/e2e.sh output without ms'만 기준으로, docs/getting-started.md에 이미 있는 bash 결과 예시 JSON steps 배열을 bash scripts/e2e.sh 실측 steps와 같게 맞춘다. 새 테스트·새 단계·새 샘플은 만들지 않는다.",
+          "files": [
+            "docs/getting-started.md",
+            "tests/e2e-docs-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-docs-sync.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: docs/getting-started.md의 giant sample JSON steps 배열을 실제 실행 결과와 동기화하는 검사를 추가"
         }
       ],
       "qaRuntime": [
