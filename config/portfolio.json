@@ -10243,6 +10243,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 오류 3줄, 개발자 글자와 enum 단어는 화면에 두지 않음",
           "title": "일정을 모를 때 쉬운 말로 안내"
+        },
+        {
+          "taskId": "JUCEIPT-ROLLBACK-DETAIL-PLAIN",
+          "scope": "In buildPresentation, set rollback_summary.detail to the plain 해요체 sentence for each status (available: 저장된 이전 상태로 되돌릴 수 있어요, partial: 일부만 되돌릴 수 있어요, unknown: 되돌릴 방법이 기록에 없어요, unavailable: 되돌릴 수 없어요) so the receipt panel and today page no longer show Git commit or 관찰 범위 내, and assert those four strings in tests/pipeline.test.ts.",
+          "files": [
+            "src/receipt/index.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-TASK-TITLE-REVIEW-WORDS",
+          "scope": "In taskTitle, add whole-word keywords investigate, audit, and validate to the existing 작업 결과 확인 group and draft to the existing 문서 정리 group, with tests/daily.test.ts cases, leaving unmatched text such as ship it on the generic fallback.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
