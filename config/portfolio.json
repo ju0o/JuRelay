@@ -13029,7 +13029,8 @@
           "tests": [
             "node --test tests/contract-reason-table-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:111 `reason` values:"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:111 `reason` values:",
+          "title": "상태 이유 문구를 실제와 맞춰요"
         },
         {
           "taskId": "JUCONTROLER-CONTRACT-SOURCE-FIELD-SYNC",
@@ -13040,7 +13041,8 @@
           "tests": [
             "node --test tests/contract-source-field-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:163 Source fields read (all others are ignored):"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:163 Source fields read (all others are ignored):",
+          "title": "JuPlan·JuCeipt 출처를 실제와 맞춰요"
         },
         {
           "taskId": "JUCONTROLER-E2E-FAILURE-MESSAGE-DOC-SYNC",
@@ -13051,7 +13053,8 @@
           "tests": [
             "node --test tests/e2e-failure-message-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:27 실패하면 처음 멈춘 단계를 알려 줍니다(예: `상태판 실행 단계에서 멈췄어요 — next의"
+          "ssotEvidence": "docs/getting-started.md:27 실패하면 처음 멈춘 단계를 알려 줍니다(예: `상태판 실행 단계에서 멈췄어요 — next의",
+          "title": "시작 안내의 실패 문구를 실제와 맞춰요"
         },
         {
           "taskId": "JUCONTROLER-QUICKSTART-STALE-MINUTES-SYNC",
@@ -13062,7 +13065,8 @@
           "tests": [
             "node --test tests/docs-default-freshness-sync.test.mjs"
           ],
-          "ssotEvidence": "README.md:67 그대로 두면 5분이 지난 오래된 상태로 보입니다."
+          "ssotEvidence": "README.md:67 그대로 두면 5분이 지난 오래된 상태로 보입니다.",
+          "title": "그대로 두면 지난 시간을 실제와 맞춰요"
         }
       ],
       "qaRuntime": [
@@ -16839,7 +16843,8 @@
           "tests": [
             "node --test test/tester-runs.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];"
+          "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];",
+          "title": "시험 결과 화면 제목을 쉬운 말로 정리"
         },
         {
           "taskId": "JCAPP-MEMORY-INSPECT-LINE",
@@ -16851,7 +16856,8 @@
           "tests": [
             "node --test test/memory-proposals-plain.test.mjs"
           ],
-          "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];"
+          "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];",
+          "title": "기억 제안 안내 문구를 검사로 통일"
         }
       ],
       "skills": {
@@ -17907,7 +17913,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:30 BLOCKED — M2 GO (A-14) met; waiting on the M3 decision (0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED)"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:30 BLOCKED — M2 GO (A-14) met; waiting on the M3 decision (0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED)",
+          "title": "현황에도 하루 가치가 멈춘 이유를 같게 보기"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-M3-KO-SURFACE",
@@ -17918,7 +17925,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:83 멈춤 — 사업 흐름 연결 공백 · M3 결정 대기, with the English join-gap sentence under 원문 보기; line 84 still shows MAPPING UNDECIDED · DECISION PENDING on the surface"
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:83 멈춤 — 사업 흐름 연결 공백 · M3 결정 대기, with the English join-gap sentence under 원문 보기; line 84 still shows MAPPING UNDECIDED · DECISION PENDING on the surface",
+          "title": "지도에서 하루 가치 상태를 한글로 보기"
         }
       ],
       "skills": {
@@ -19672,7 +19680,8 @@
           "tests": [
             "node --test tests/length-reason-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:163 길이를 늘리는 이유가 있어야 한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:163 길이를 늘리는 이유가 있어야 한다.",
+          "title": "쓸데없이 긴 보고서를 막아요"
         },
         {
           "taskId": "JUTELL-CONFIRM-STATE-DEFINITIONS-PARITY",
@@ -19684,7 +19693,8 @@
           "tests": [
             "node --test tests/confirm-state-definitions-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:293 일부 근거는 확인했지만 전체 동작이나 필요한 모든 환경을 확인하지 못했다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:293 일부 근거는 확인했지만 전체 동작이나 필요한 모든 환경을 확인하지 못했다.",
+          "title": "어디까지 확인했는지 분명히 해요"
         },
         {
           "taskId": "JUTELL-FACT-ACCURACY-SCOPE-PARITY",
@@ -19695,7 +19705,8 @@
           "tests": [
             "node --test tests/fact-accuracy-scope-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:652 다음 정보가 실제 프로젝트 상태와 일치해야 한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:652 다음 정보가 실제 프로젝트 상태와 일치해야 한다.",
+          "title": "한 일과 검사 결과와 못 확인한 항목을 보여요"
         },
         {
           "taskId": "JUTELL-GLOSSARY-REACT-ONLY-PARITY",
@@ -19707,7 +19718,8 @@
           "tests": [
             "node --test tests/glossary-react-only-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:76 React가 아닌 프로젝트에 React 전용 정의를 일반 규칙처럼 적용하지 않는다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:76 React가 아닌 프로젝트에 React 전용 정의를 일반 규칙처럼 적용하지 않는다.",
+          "title": "한 종류에만 쓰는 말을 전체에 적용하지 않아요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -20899,7 +20911,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:331 \"구독할 단어를 2글자 이상 붙여주세요\" and bot.mjs:326 slice(0, 20); README.md:8 lists !구독 without that length limit"
+          "ssotEvidence": "bot.mjs:331 \"구독할 단어를 2글자 이상 붙여주세요\" and bot.mjs:326 slice(0, 20); README.md:8 lists !구독 without that length limit",
+          "title": "구독 단어는 2자에서 20자까지"
         },
         {
           "taskId": "JUAI-GUIDE-STAFF-EXEMPT",
@@ -20911,7 +20924,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 \"서버 주인(Founder)·운영진은 일일 제한 없음\"; layout.mjs:119 omits it"
+          "ssotEvidence": "README.md:49 \"서버 주인(Founder)·운영진은 일일 제한 없음\"; layout.mjs:119 omits it",
+          "title": "서버 주인과 운영진은 질문 무제한"
         },
         {
           "taskId": "JUAI-FEEDBACK-MIN",
@@ -20925,7 +20939,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:130 \"m.content.length >= 30\"; layout.mjs:120 \"30자 이상 피드백\""
+          "ssotEvidence": "bot.mjs:130 \"m.content.length >= 30\"; layout.mjs:120 \"30자 이상 피드백\"",
+          "title": "30자 이상 피드백에 질문 보너스"
         },
         {
           "taskId": "JUAI-CHECK-FORUM-TAG-CAP",
@@ -20936,7 +20951,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "setup.mjs:80 \"availableTags: ch.tags.map((name) => ({ name }))\""
+          "ssotEvidence": "setup.mjs:80 \"availableTags: ch.tags.map((name) => ({ name }))\"",
+          "title": "포럼 분류는 20개까지, 빈 이름 없음"
         },
         {
           "taskId": "JUAI-CHECK-REDACT-OPEN-KEY-R2",
@@ -20947,7 +20963,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다."
+          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다.",
+          "title": "안 닫힌 비밀키도 가리고 뒤 글은 남김"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
