@@ -19425,7 +19425,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:43-45 \"AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다.\""
+          "ssotEvidence": "README.md:43-45 \"AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다.\"",
+          "title": "봇 비밀정보만 가리고 내용은 지켜요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
