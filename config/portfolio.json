@@ -10298,6 +10298,18 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — 영수증 보기에서 개발자 글자는 원문 보기 안으로",
           "title": "되돌리기 안내를 쉽게 보여줘"
+        },
+        {
+          "taskId": "JUCEIPT-ROLLBACK-DETAIL-PLAIN-BASEFIX",
+          "scope": "`npm test` already fails on the integration tip 61f2b21 before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output: ck=(event)=>{event.stopPropagation();document.querySelector('.detail-panel[data-detail-id=''+row.dataset.select+''] [data-accept]').click()};row.querySelector('[data-row-rollback]').onclick=(event)=>{event.stopPropagation();select(row.dataset.select);document.querySelector('.detail-panel[data-detail-id=''+row.dataset.select+''] [data-rollback]').click()}});</script></body></html>'\n\n ❯ test/today-page.test.ts:16:18\n     14|     ]);\n     15| \n     16|     expect(html).toContain('먼저 볼 것 1');\n       |                  ^\n     17|     expect(html.indexOf('Codex ·')).toBeLessThan(html.indexOf('Claude …\n     18|     expect(html).toContain('확인 후 받기');\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n\n Test Files  1 failed | 31 passed (32)\n      Tests  1 failed | 322 passed (323)\n   Start at  20:18:00\n   Duration  22.73s (transform 6.01s, setup 0ms, collect 14.50s, tests 21.56s, environment 40ms, prepare 18.50s)\n\n",
+          "files": [
+            "test/today-page.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "skills": {
