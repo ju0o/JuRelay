@@ -7618,6 +7618,19 @@
           ],
           "ssotEvidence": "Founder-persona Tester review 2026-09-27 (persona file ~/.claude-team/skills/founder-persona/PERSONA.md; report TESTER_persona_20260927.md, headless captures of integration builds): JuPlan 막힘 3 (first-run no start button → JUPLAN-STUDIO-START-SCREEN; offline plan ignores idea; confirm requires JuControler). Test: the 가게 예약 fixture yields goal/feature nodes containing 예약, no node label contains 'JuPlan' or '대표님'; GET / with no project → 200; a plan whose goal ignores the idea fails validation.",
           "title": "JuPlan: 인터넷 없이 만든 계획에 내 아이디어가 안 들어가는 문제"
+        },
+        {
+          "taskId": "JUPLAN-STANDALONE-NO-JUCONTROLER-BASEFIX",
+          "scope": "`pnpm -r test` already fails on the integration tip aa9d4ef before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output: hunks/coverage.DfSpMS-b.js:2479:4\npackages/plan-core test:  ❯ EventEmitter.onMessage ../../../../../../../../../Desktop/Projects/Team/JuPlan/node_modules/.pnpm/vitest@3.2.7_@types+node@22.20.4_tsx@4.23.13/node_modules/vitest/dist/chunks/index.B521nVV-.js:103:20\npackages/plan-core test: ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\npackages/plan-core test:  Test Files   (2)\npackages/plan-core test:       Tests  no tests\npackages/plan-core test:      Errors  2 errors\npackages/plan-core test:    Start at  11:28:09\npackages/plan-core test:    Duration  1.26s (transform 86ms, setup 0ms, collect 0ms, tests 0ms, environment 0ms, prepare 0ms)\npackages/plan-core test: Failed\n/home/skkse12/.local/share/AgentRelay/data/portfolio-execution/worktrees/juplan-juplan-standalone-no-jucontroler-1790474886976/packages/plan-core:\n ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @juplan/plan-core@0.1.0 test: `vitest run`\nExit status 1\n",
+          "files": [
+            "packages/runtime/test/standalone-hints.test.ts"
+          ],
+          "tests": [
+            "pnpm -r test",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "qaRuntime": [
