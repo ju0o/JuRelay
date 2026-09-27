@@ -22234,6 +22234,40 @@
           ],
           "ssotEvidence": "db.mjs:5 CREATE TABLE IF NOT EXISTS usage(user_id TEXT, day TEXT, count INTEGER, last_at INTEGER, PRIMARY KEY(user_id, day))",
           "title": "기록에 필요한 칸이 다 있는지 확인"
+        },
+        {
+          "taskId": "JUAI-README-MIN-CLAUSES",
+          "scope": "Add one short plain-Korean clause to README's member-commands line and the quota safety line stating the anonymous-question minimum, the bot-talk topic minimum and waiting cap, and the feedback-bonus length minimum that bot.mjs already enforces, and assert those limits from check.mjs.",
+          "files": [
+            "README.md",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 lists !익명 and !봇수다 without length or waiting caps; README.md:49 says 피드백 보너스 최대 +3 without the length minimum; bot.mjs:236 rejects a shorter anonymous question"
+        },
+        {
+          "taskId": "JUAI-CHECK-REDACT-GH-PREFIX",
+          "scope": "Add check.mjs assertions only, leaving lib.mjs unchanged, that redact masks GitHub tokens prefixed gho_, ghu_, ghs_, and ghr_ and leaves a gh prefix outside that set unchanged, building the samples at runtime the way the existing token tests do.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "lib.mjs:97 /gh[pousr]_ token pattern; README.md:47 AI output redacts tokens before they reach Discord"
+        },
+        {
+          "taskId": "JUAI-CHECK-ONBOARD-CHANNELS",
+          "scope": "Add check.mjs assertions only, leaving setup.mjs unchanged, that every key in setup.mjs's default_channel_ids list exists on channelByKey, is not private, and is a text or forum channel.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "setup.mjs:155 default_channel_ids passed to Discord onboarding; README.md:28 setup creates the join questions"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
