@@ -14009,7 +14009,8 @@
           "tests": [
             "node --test tests/e2e-bullet-claims-sync.test.mjs"
           ],
-          "ssotEvidence": "tests/e2e-step-quote-sync.test.mjs:22 if (!/[가-힣]/u.test(quote) || quote.includes('…')) continue;"
+          "ssotEvidence": "tests/e2e-step-quote-sync.test.mjs:22 if (!/[가-힣]/u.test(quote) || quote.includes('…')) continue;",
+          "title": "시작 안내와 실행 결과 일치"
         },
         {
           "taskId": "JUCONTROLER-PROJECTION-FIELDS-SCHEMA-SYNC",
@@ -14020,7 +14021,8 @@
           "tests": [
             "node --test tests/projection-fields-schema-sync.test.mjs"
           ],
-          "ssotEvidence": "src/project-status.mjs:15 const fields = new Set(['schema', 'projectId', 'status', 'observedAt', 'generatedAt', 'stale', 'source', 'sourceRevision', 'reason']);"
+          "ssotEvidence": "src/project-status.mjs:15 const fields = new Set(['schema', 'projectId', 'status', 'observedAt', 'generatedAt', 'stale', 'source', 'sourceRevision', 'reason']);",
+          "title": "상태 정보 항목을 정확히 일치"
         }
       ],
       "qaRuntime": [
@@ -19027,7 +19029,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-27: M3 최종 판정은 DEFER; DEFER 근거는 Claude final과 Receipt가 모두 있는 joined rows evidence만 사용"
+          "ssotEvidence": "Founder direction 2026-09-27: M3 최종 판정은 DEFER; DEFER 근거는 Claude final과 Receipt가 모두 있는 joined rows evidence만 사용",
+          "title": "진행 보류 결정과 근거 정리"
         }
       ],
       "skills": {
