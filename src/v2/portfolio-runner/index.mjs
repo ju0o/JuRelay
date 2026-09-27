@@ -42,6 +42,7 @@ function packetLine(text, prefix) {
 // A quota/rate-limit failure moves the lane to the next runtime in its chain instead of holding the task.
 export const QUOTA_ERROR = /\b402\b|Payment Required|balance exhausted|rate.?limit|quota|usage limit|limit (reached|exceeded)|hit your [a-z ]*limit|weekly limit|too many requests|\b429\b|insufficient[_ ]quota|out of credits|credit balance|exceeded your/i;
 // Provider-side outages (free models overload): the next runtime in the chain takes the turn, like a quota hit.
+export const isRedoOf = (taskId, id) => taskId === id || (taskId.startsWith(`${id}-R`) && /^(-R\d+)+$/.test(taskId.slice(id.length)));
 export const ENV_MISSING = /Test timed out in \d+ ?ms|timed out after \d+|not the tsc command|command not found|Cannot find module|ERR_MODULE_NOT_FOUND|Cannot find package|No module named|npm ERR! missing|EDQUOT|ENOSPC|system error -122|disk quota exceeded|No space left on device/i;  // full disk/quota is the machine, not the base (2026-09-27: /tmp quota parked agent-relay)
 export const TRANSIENT_ERROR = /\b50[234]\b|\b426\b|Upgrade Required|failed to connect to websocket|ECONNREFUSED|stream disconnected|error sending request|overloaded|temporarily unavailable|service unavailable|upstream error|ECONNRESET|ETIMEDOUT|socket hang up|model not found|hook dispatch failed|session not found/i; // last two: a misconfigured runtime (cline 2026-09-23) — the next runtime takes over; cline "session not found" 2026-09-26
 // Lane config: runtime / qaRuntime may be one id or an ordered fallback list, e.g. ["opencode", "codex"].
@@ -400,7 +401,8 @@ export class PortfolioRunner {
     for (const project of this.manifest.projects.filter((item) => item.active !== false)) {
       // A task that ended in HOLD/gate is settled for now: report it, and let the lane continue with the next definition.
       // dependsOn (R-09): a definition waits until every listed task (or its -R2 redesign) is VERIFIED_DONE, so a HOLD upstream never lets dependents run
-      const done = (id) => state.tasks.some((task) => (task.taskId === id || task.taskId === `${id}-R2`) && task.state === "VERIFIED_DONE");
+      // any redesign depth counts (2026-09-27: JUCEIPT-TODAY-PAGE finished as -R2-R2 and its dependent waited forever)
+      const done = (id) => state.tasks.some((task) => isRedoOf(task.taskId, id) && task.state === "VERIFIED_DONE");
       // a parked lane (base broken) queues its -BASEFIX first, otherwise the parked task in front would block it forever
       const defs = state.baseBroken?.[project.id] ? [...definitions(project)].sort((a, b) => /-BASEFIX(-R\d+)?$/.test(b.taskId) - /-BASEFIX(-R\d+)?$/.test(a.taskId)) : definitions(project);
       const next = defs.find((definition) => !state.tasks.some((task) => task.taskId === definition.taskId && SETTLED.has(task.state)) && (definition.dependsOn || []).every(done));

@@ -534,3 +534,9 @@ test("a full disk or quota is an environment problem, not a broken base", async 
   assert.ok(ENV_MISSING.test("ENOSPC: no space left on device, write"));
   assert.ok(!ENV_MISSING.test("AssertionError: expected 2 to equal 3"));
 });
+
+test("a dependency is met by the task or any depth of its redesign", async () => {
+  const { isRedoOf } = await import("../../src/v2/portfolio-runner/index.mjs");
+  assert.ok(isRedoOf("A-B", "A-B")); assert.ok(isRedoOf("A-B-R2", "A-B")); assert.ok(isRedoOf("A-B-R2-R2", "A-B")); assert.ok(isRedoOf("A-B-R3", "A-B"));
+  assert.ok(!isRedoOf("A-B-RENAME", "A-B")); assert.ok(!isRedoOf("A-B-BASEFIX", "A-B")); assert.ok(!isRedoOf("A-BC", "A-B"));
+});
