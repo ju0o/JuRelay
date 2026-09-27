@@ -5005,6 +5005,24 @@
           ],
           "ssotEvidence": "Founder 2026-09-27: '오픈소스용으로 공개 되는 것을 염두 … 내 환경인 ssh 연동 및 이런 건 선택사항인거임 일반 오픈소스 사용 하는 유저들은 그거 사용하지 않고 본인 컴퓨터 내에서만 사용할 수도 있음'. Canvas 'Ju 제품군 완성 설계' phase 2 (혼자 쓰기). Founder 2026-09-27 narrowing: 화면 문구만 먼저, 확인 절차는 그대로. Test in tests/test_gui_empty_error_states.py (5 asserts) + tests/test_gui_unreachable_layout.py: expect new non-ASUS wording for gui.py's loading/unreachable/empty/status messages — fails against unmodified base 8aa2994dc50a56a74dc25773b91445789456c01d, passes once gui.py wording changes.",
           "title": "어디서든 연결 상태를 알려줘"
+        },
+        {
+          "taskId": "ACTL-OSS-LOCAL-DEFAULT-R2-R2",
+          "scope": "Remove Founder-host special cases from user-facing code: gui.py strings 'ASUS에서 에이전트를 찾는 중 / ASUS에 연결할 수 없습니다 / ASUS 연결됨 / ASUS 화면 전환 / ASUS가 다른 작업 중', core/sources.py host 'asus'→'ASUS (SSH)' and 'main'→'MainPC' mapping, live_card.py treating any target containing asus/ssh/@ as 'ASUS (SSH)', send_truth.py/activity.py 'ASUS 화면' text, cli.py doctor/help examples using --ssh asus / MainPC. Environment names come from detection (ssh config alias, WSL distro, '내 컴퓨터' for local); first run with no remote shows '내 컴퓨터' only. The Founder's own setup must keep working unchanged through explicit config/env (set it in his local config, not in code defaults). FINAL attempt, start from commit 85c3acdc47503badd1ebbfb7ba352fe9494e596b (R2, everything else accepted). QA left exactly: src/actl/gui.py lines ~264-266 and ~286 still say ASUS in the connection/error messages — word them from the detected environment name ('내 컴퓨터' when local, else the environment's own label); and tests/test_gui_empty_error_states.py:62-67 asserts the old ASUS text — update those assertions to the new wording (the first attempt also broke 5 regression tests the same way: update expectations, never re-add ASUS). Run python3 tests/run_tests.py (pytest is not installed).",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/core/sources.py",
+            "src/actl/live_card.py",
+            "src/actl/core/send_truth.py",
+            "src/actl/cli.py",
+            "tests/test_oss_local_default.py",
+            "tests/test_gui_empty_error_states.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: '오픈소스용으로 공개 되는 것을 염두 … 내 환경인 ssh 연동 및 이런 건 선택사항인거임 일반 오픈소스 사용 하는 유저들은 그거 사용하지 않고 본인 컴퓨터 내에서만 사용할 수도 있음'. Canvas 'Ju 제품군 완성 설계' phase 2 (혼자 쓰기). Test in tests/test_oss_local_default.py: no user-facing string in src/actl contains 'ASUS' or 'MainPC'; an ssh alias 'asus' is labelled from the alias like any other host. | R1 and R2 held 2026-09-27 on leftover ASUS strings and old test expectations; this -R2-R2 is hand-written.",
+          "title": "actl: ASUS·MainPC 이름 빼고 '내 컴퓨터' 기본 (마지막 — 남은 3줄 + 시험 문구)"
         }
       ],
       "qaRuntime": [
