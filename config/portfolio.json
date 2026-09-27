@@ -7874,6 +7874,47 @@
             "JUPLAN-ERD-WBS-READABLE"
           ],
           "title": "JuPlan 그림 엔진을 100% 자체 코드로 (MIT 코드·표시 제거)"
+        },
+        {
+          "taskId": "JUPLAN-AR-ACCEPT-NEXT",
+          "scope": "Add an offline authorized-task manifest whose only entry is AR-JUPLAN-001 and a pure selector that, after ACCEPT, returns the next listed task only when that id is already on the list, and returns dispatch none with no invented product task when AR-JUPLAN-001 is the last entry.",
+          "files": [
+            "docs/agent-relay/authorized-tasks.json",
+            "packages/runtime/src/agentRelayAcceptNext.ts",
+            "packages/runtime/test/agent-relay-accept-next.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:68 `ACCEPT` may select only the next task already authorized for this lane. It does not create new Product scope."
+        },
+        {
+          "taskId": "JUPLAN-AR-TRANSPORT-HOLD",
+          "scope": "Add a machine-readable PM-transport manifest and a pure offline decision that holds the juplan lane with dispatch none and no invented product task when the PM channel is disconnected, and allows only the already-authorized AR-JUPLAN-001 task when that channel is connected.",
+          "files": [
+            "docs/agent-relay/transport-hold.json",
+            "packages/runtime/src/agentRelayTransportHold.ts",
+            "packages/runtime/test/agent-relay-transport-hold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-transport-hold.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
+        },
+        {
+          "taskId": "JUPLAN-AR-RESULT-SCOPE",
+          "scope": "Add a pure check that a RESULT_PACKET is accepted only when every changedFiles path and every tests command is already in the authorized task's declared files and tests, rejecting any extra path or command as a scope mismatch without changing Product behavior.",
+          "files": [
+            "packages/runtime/src/agentRelayResultScope.ts",
+            "packages/runtime/test/agent-relay-result-scope.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-result-scope.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:66 Workers execute only the declared files and tests. They do not widen scope, invent Product work, touch other repositories, or push."
         }
       ],
       "qaRuntime": [
