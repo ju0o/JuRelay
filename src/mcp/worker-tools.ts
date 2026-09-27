@@ -21,6 +21,7 @@
  */
 import * as goalTask from '../backend/goal-task.js';
 import * as evidenceKernel from '../backend/evidence.js';
+import * as assetKernel from '../backend/asset-request.js';
 import { McpError } from './errors.js';
 import {
   objectSchema,
@@ -295,6 +296,105 @@ export function buildWorkerWriteTools(ctx: WorkerServerContext): McpTool[] {
           metadata: buildMeta({ ...userMeta, resultClaim: true }),
           source: { kind: 'worker' },
         });
+      },
+    },
+    {
+      name: 'relay_worker_request_asset',
+      description:
+        'Request an image/asset for the bound run (Image Asset Harness). ' +
+        'Creates a Task-scoped ASSET_REQUEST (idempotent: same kind+path+prompt ' +
+        'returns the existing record). Does NOT generate anything itself; ' +
+        'Relay routes it to the configured generation backend. ' +
+        'output_path must stay inside the run workspace. ' +
+        'Does NOT mutate Task executionState/pmState.',
+      inputSchema: objectSchema(
+        {
+          asset_kind: { type: 'string' },
+          purpose: { type: 'string' },
+          prompt: { type: 'string' },
+          negative_prompt: { type: 'string' },
+          style: { type: 'string' },
+          aspect_ratio: { type: 'string' },
+          transparent_background: { type: 'boolean' },
+          output_path: { type: 'string' },
+          reference_asset_ids: { type: 'array', items: { type: 'string' } },
+          edit_target_asset_id: { type: 'string' },
+          count: { type: 'number' },
+          priority: { type: 'string' },
+        },
+        ['asset_kind', 'purpose', 'prompt', 'output_path'],
+      ),
+      handler: async (args) => {
+        rejectUnknownFields(args, [
+          'asset_kind', 'purpose', 'prompt', 'negative_prompt', 'style',
+          'aspect_ratio', 'transparent_background', 'output_path',
+          'reference_asset_ids', 'edit_target_asset_id', 'count', 'priority',
+        ]);
+        const count = args.count;
+        if (count !== undefined && (!Number.isInteger(count) || (count as number) < 1)) {
+          throw new McpError('INVALID_ARGUMENT', '잘못된 인자 형식: count');
+        }
+        const transparent = args.transparent_background;
+        if (transparent !== undefined && typeof transparent !== 'boolean') {
+          throw new McpError('INVALID_ARGUMENT', '잘못된 인자 형식: transparent_background');
+        }
+        const refs = args.reference_asset_ids;
+        if (refs !== undefined && (!Array.isArray(refs) || !refs.every((x) => typeof x === 'string'))) {
+          throw new McpError('INVALID_ARGUMENT', '잘못된 인자 형식: reference_asset_ids');
+        }
+        try {
+          const workspaceRoot = assetKernel.workspaceRootForRun(dataRoot, project, taskId, runId);
+          const { record, created } = assetKernel.createAssetRequest(dataRoot, project, {
+            asset_kind: requireString(args, 'asset_kind'),
+            purpose: requireString(args, 'purpose'),
+            prompt: requireString(args, 'prompt'),
+            negative_prompt: optionalString(args, 'negative_prompt'),
+            style: optionalString(args, 'style'),
+            aspect_ratio: optionalString(args, 'aspect_ratio'),
+            transparent_background: transparent as boolean | undefined,
+            output_path: requireString(args, 'output_path'),
+            reference_asset_ids: refs as string[] | undefined,
+            edit_target_asset_id: optionalString(args, 'edit_target_asset_id'),
+            count: count as number | undefined,
+            priority: optionalString(args, 'priority'),
+            owner_task_id: taskId,
+            requester_run_id: runId,
+            workspaceRoot,
+          });
+          return { assetId: record.assetId, status: record.status, created };
+        } catch (err) {
+          if (err instanceof assetKernel.AssetRequestError) {
+            throw new McpError(err.code === 'NOT_FOUND' ? 'NOT_FOUND' : 'INVALID_ARGUMENT', err.message);
+          }
+          throw err;
+        }
+      },
+    },
+    {
+      name: 'relay_worker_get_asset',
+      description:
+        'Read one ASSET_REQUEST bound to this run (status, result path, failure). ' +
+        'Workers can only read assets of their own taskId/runId. Pure read.',
+      inputSchema: objectSchema({ assetId: { type: 'string' } }, ['assetId']),
+      handler: async (args) => {
+        rejectUnknownFields(args, ['assetId']);
+        const assetId = requireString(args, 'assetId');
+        try {
+          const rec = assetKernel.getAssetRequest(dataRoot, project, assetId);
+          if (rec.taskId !== taskId || rec.runId !== runId) {
+            throw new McpError('FORBIDDEN', `Asset belongs to another run; access is FORBIDDEN.`);
+          }
+          return {
+            assetId: rec.assetId, status: rec.status, assetKind: rec.assetKind,
+            outputPath: rec.outputPath, result: rec.result ?? null,
+            failureReason: rec.failureReason ?? null, attempts: rec.attempts,
+          };
+        } catch (err) {
+          if (err instanceof assetKernel.AssetRequestError) {
+            throw new McpError(err.code === 'NOT_FOUND' ? 'NOT_FOUND' : 'INVALID_ARGUMENT', err.message);
+          }
+          throw err;
+        }
       },
     },
   ];
