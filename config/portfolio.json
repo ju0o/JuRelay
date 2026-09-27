@@ -11292,6 +11292,18 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "되돌리기 안내를 쉽게 보여줘"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-MEMORY-BOUND-BASEFIX",
+          "scope": "`npm test` already fails on the integration tip b3acca4 before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output: section><section class='meta-row'><div class='meta'><span class='meta-label'>되돌리기</span><span class='meta-val'>되돌릴 방법이 기록에 없어요</span></div><div class='meta'><span class='meta-label'>비용</span><span class='meta-val'>비용 기록이 없어요 — 0원이라는 뜻은 아니에요</span></div><div class='meta'><span class='meta-label'>최종 결과</span><span class='meta-val'>최종 결과가 아직 없어요 — AI에게 최종 결과를 다시 물어보세요</span></div></section></div>\n\n ❯ tests/receipt-render-founder.test.ts:329:21\n    327|     const visible = html.slice(0, detailsStart);\n    328| \n    329|     expect(visible).toContain(`<p class='notice ${color}'><strong>${AC…\n       |                     ^\n    330|   });\n    331| \n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯\n\n Test Files  1 failed | 32 passed (33)\n      Tests  3 failed | 333 passed (336)\n   Start at  01:07:53\n   Duration  29.77s (transform 5.39s, setup 0ms, collect 17.24s, tests 36.18s, environment 113ms, prepare 28.70s)\n\n",
+          "files": [
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "skills": {
