@@ -5125,7 +5125,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder 2026-09-27 16:40 on MainPC with board 8c37b8e: 'actl켰을 때, 터미널이 여러개 뜨는 거 백그라운드로 못 숨김? … 새환경찾기 눌러도 여러개 뜨는 거', 'actl창 지금 -> 글씨랑 너무 큼', 'Claude Team 1, 2, Cursor 다 작업중인데 왜 상태가 쉬는중으로 나옴?', 'MainPC -> wsl 환경은? 연동 안됨 아직?'. Test: live_card row with runtime_state OTHER or UNKNOWN and control_ready true → '확인 중' (tests/test_live_card.py::test_live_card_maps_statuses fails on 87490553c5a9bc1903ed926afbab5958e54d3476 until this assertion is updated); IDLE and DONE stay '쉬는 중'; do not measure pane activity."
+          "ssotEvidence": "Founder 2026-09-27 16:40 on MainPC with board 8c37b8e: 'actl켰을 때, 터미널이 여러개 뜨는 거 백그라운드로 못 숨김? … 새환경찾기 눌러도 여러개 뜨는 거', 'actl창 지금 -> 글씨랑 너무 큼', 'Claude Team 1, 2, Cursor 다 작업중인데 왜 상태가 쉬는중으로 나옴?', 'MainPC -> wsl 환경은? 연동 안됨 아직?'. Test: live_card row with runtime_state OTHER or UNKNOWN and control_ready true → '확인 중' (tests/test_live_card.py::test_live_card_maps_statuses fails on 87490553c5a9bc1903ed926afbab5958e54d3476 until this assertion is updated); IDLE and DONE stay '쉬는 중'; do not measure pane activity.",
+          "title": "현재 상태를 정확히 알려드려요"
         }
       ],
       "qaRuntime": [
@@ -10295,7 +10296,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — 영수증 보기에서 개발자 글자는 원문 보기 안으로"
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX — 영수증 보기에서 개발자 글자는 원문 보기 안으로",
+          "title": "되돌리기 안내를 쉽게 보여줘"
         }
       ],
       "skills": {
@@ -17801,7 +17803,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:96 M3 status: 10-receipt register filled; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED per M3_DAILY_VALUE_VALIDATION §2.2/§7; M3 decision pending"
+          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:96 M3 status: 10-receipt register filled; 0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED per M3_DAILY_VALUE_VALIDATION §2.2/§7; M3 decision pending",
+          "title": "계획과 진행 상황을 헷갈리지 않게 해요"
         }
       ],
       "skills": {
@@ -20719,7 +20722,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 서버 전체 하루 300회"
+          "ssotEvidence": "README.md:49 서버 전체 하루 300회",
+          "title": "하루 전체 질문 한도 안내"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
