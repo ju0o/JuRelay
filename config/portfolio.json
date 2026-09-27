@@ -10153,7 +10153,8 @@
           "tests": [
             "npx vitest run tests/daily-background.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "접힌 영수증 내용을 쉽게 보기"
         },
         {
           "taskId": "JUCEIPT-TODAY-LIST-PLAIN-SURFACE",
@@ -10165,7 +10166,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "오늘 요청과 비용을 쉽게 보기"
         }
       ],
       "skills": {
@@ -12836,7 +12838,8 @@
           "tests": [
             "node --test tests/quickstart-next-sync.test.mjs"
           ],
-          "ssotEvidence": "README.md:83 마지막에 `fail 0`이면; docs/offline-acceptance.md:13 # fail 0은 그 몇 줄 위에; Founder direction 2026-09-26 Korean Quickstart"
+          "ssotEvidence": "README.md:83 마지막에 `fail 0`이면; docs/offline-acceptance.md:13 # fail 0은 그 몇 줄 위에; Founder direction 2026-09-26 Korean Quickstart",
+          "title": "빠른 시작 성공 기준 바로잡기"
         },
         {
           "taskId": "JUCONTROLER-CONTRACT-FIELDS-SCHEMA-SYNC",
@@ -12849,7 +12852,8 @@
           "tests": [
             "node --test tests/contract-fields-schema-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:14 | `schema` | yes |"
+          "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:14 | `schema` | yes |",
+          "title": "상태 정보 기준 일치 확인"
         }
       ],
       "qaRuntime": [
@@ -16529,7 +16533,8 @@
           "tests": [
             "node --test test/approvals-module.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "검사 담당 상태를 쉽게 확인"
         },
         {
           "taskId": "JCAPP-JUPLAN-G4-KO",
@@ -16541,7 +16546,8 @@
           "tests": [
             "node --test test/juplan-module.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "계획에서 검사 기준을 확인"
         }
       ],
       "skills": {
@@ -17526,7 +17532,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 No GO / DEFER / KILL decision is recorded. Founder direction 2026-09-27: record M3 GO, DEFER, or KILL only for joined rows; do not infer missing joins."
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 No GO / DEFER / KILL decision is recorded. Founder direction 2026-09-27: record M3 GO, DEFER, or KILL only for joined rows; do not infer missing joins.",
+          "title": "현재 진행 단계와 결정 상태 정리"
         },
         {
           "taskId": "JUCEIPTPLAN-HANDOFF-M2-CURRENT-CHECK",
@@ -17537,7 +17544,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md:7 Note: This milestone line reflects the state when the handoff was issued; PM_STATUS_BOARD.md now shows M2 GO with M3 active."
+          "ssotEvidence": "docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md:7 Note: This milestone line reflects the state when the handoff was issued; PM_STATUS_BOARD.md now shows M2 GO with M3 active.",
+          "title": "다음 실행 단계와 결정 상태 안내"
         }
       ],
       "skills": {
@@ -19214,7 +19222,8 @@
           "tests": [
             "node --test tests/low-risk-still-test-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:353 낮은 위험도라고 해서 테스트가 필요 없는 것은 아니다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:353 낮은 위험도라고 해서 테스트가 필요 없는 것은 아니다.",
+          "title": "위험이 낮아도 검사를 안내해요"
         },
         {
           "taskId": "JUTELL-VERIFY-RECORD-FIELDS-PARITY-R2",
@@ -19226,7 +19235,8 @@
           "tests": [
             "node --test tests/verify-record-fields-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:406 검증 결과에는 가능한 경우 다음을 함께 기록한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:406 검증 결과에는 가능한 경우 다음을 함께 기록한다.",
+          "title": "확인 내용을 빠짐없이 기록해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
