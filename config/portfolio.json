@@ -16695,6 +16695,38 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "결과 기록을 쉽게 찾아보기"
+        },
+        {
+          "taskId": "JCAPP-BLOCKED-WORK-AMBER",
+          "scope": "Make a BLOCKED work row (the liveness chip and the reason sentence) use amber warn tokens instead of red, and keep .truth-blocked red for real failures.",
+          "files": [
+            "operator/public/app.js",
+            "operator/public/app.css",
+            "test/result-state-changes-amber.test.mjs"
+          ],
+          "tests": [
+            "node --test test/result-state-changes-amber.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JCAPP-INSPECT-WORD-ONE",
+          "scope": "Change only the 진행 role word 검수 to 검사 in the mounted-skill row, laneSkillsSentence, the AI-order label, laneChainSentence, and the Skill 만들기 next hint, and leave STAGE_KO and skill titles unchanged.",
+          "files": [
+            "operator/public/app.js",
+            "lib/relayBoard.mjs",
+            "test/lane-skills-api.test.mjs",
+            "test/agent-relay-module.test.mjs",
+            "test/review-line-ai-names.test.mjs",
+            "test/skill-draft-id.test.mjs"
+          ],
+          "tests": [
+            "node --test test/lane-skills-api.test.mjs",
+            "node --test test/agent-relay-module.test.mjs",
+            "node --test test/review-line-ai-names.test.mjs",
+            "node --test test/skill-draft-id.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];"
         }
       ],
       "skills": {
