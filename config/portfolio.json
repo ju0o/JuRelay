@@ -19098,6 +19098,28 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-27: M3 최종 판정은 DEFER; DEFER 근거는 Claude final과 Receipt가 모두 있는 joined rows evidence만 사용",
           "title": "진행 보류 결정과 근거 정리"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-P0-EXIT-NONUNLOCK-SYNC",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md, keep the P0 exit audit and PM disposition sentence and align its non-unlock clause with PM_STATUS_BOARD.md line 103, leaving the P0 state ACTIVE — PLANNING ONLY.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-REPORT-NONUNLOCK-SYNC",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md lines 47, 80, and 233, extend the P0 non-unlock wording so it includes the board boundary that a P0 pass does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation, keeping the existing quarantine-extraction clause on line 47.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
         }
       ],
       "skills": {
