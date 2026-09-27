@@ -22600,6 +22600,45 @@
           ],
           "ssotEvidence": "lib.mjs:169 if (s >= score) { best = r; score = s; }",
           "title": "기준만큼 비슷한 질문도 예전 답을 보여요"
+        },
+        {
+          "taskId": "JUAI-README-BONUS-WHERE",
+          "scope": "Add one short clause to README's quota safety line stating the feedback bonus applies only to a comment on someone else's showcase or feedback post, matching bot.mjs and GUIDE, and assert that clause in check.mjs.",
+          "files": [
+            "README.md",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 30자 이상 피드백 보너스; bot.mjs:130 feedback/showcase and ownerId !== author; layout.mjs:120 다른 사람의 쇼케이스·피드백 글"
+        },
+        {
+          "taskId": "JUAI-GUIDE-DM-QUOTA",
+          "scope": "Add one short clause to GUIDE's existing DM bullet that a personal-message question shares the daily AI quota, matching bot.mjs DM_HELP, and assert that phrase in check.mjs without changing HELP_TEXT.",
+          "files": [
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:207 하루 질문 횟수 공유; layout.mjs:130 1:1로 답해요 (공개가 부담스러울 때)"
+        },
+        {
+          "taskId": "JUAI-TALK-TOPIC-MAX",
+          "scope": "Export TALK_TOPIC_MAX 100 from lib.mjs, use it at both bot.mjs talk-topic slice sites without changing behavior, and name that maximum next to the existing 4-character minimum in README, GUIDE, and HELP_TEXT, asserting those phrases in check.mjs.",
+          "files": [
+            "lib.mjs",
+            "bot.mjs",
+            "layout.mjs",
+            "README.md",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:355 trim().slice(0, 100); README.md:8 봇수다 주제는 4자 이상·1인 대기 2개까지"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
