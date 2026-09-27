@@ -4921,6 +4921,18 @@
             "ACTL-BOARD-READABLE-TONE"
           ],
           "title": "actl 웹 보드도 같은 말투·새로 고침 방식으로"
+        },
+        {
+          "taskId": "ACTL-BOARD-EVENT-REFRESH-R2",
+          "scope": "From base 7346d9cc1587ccc477ce4fafdc6ac99e4a5801c1, narrow this retry to the manual '새로 고침' button: remove the header auto-refresh toggle and automatic event/hash detection wiring, preserve manual refresh behavior, and add test_manual_refresh_button_present_and_auto_toggle_absent; defer automatic detection and action-triggered refresh.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_board_event_refresh.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-27 09:40 on MainPC after opening JuActlBoard 8242078: ''새로고침' 자동갱신도 오히려 이벤트성으로 바꾸면 좋겠고'. Test: unchanged hashes cause no redraw; a changed hash redraws only that row."
         }
       ],
       "qaRuntime": [
