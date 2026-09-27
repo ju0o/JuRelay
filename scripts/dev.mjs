@@ -41,6 +41,7 @@ const TSC_BIN = path.join(ROOT, 'node_modules', 'typescript', 'bin', 'tsc');
 const ELECTRON_CLI = path.join(ROOT, 'node_modules', 'electron', 'cli.js');
 const MAIN_OUT = path.join(ROOT, 'dist', 'server', 'backend', 'main.js');
 const PRELOAD_OUT = path.join(ROOT, 'dist', 'server', 'backend', 'preload.js');
+const CLIENT_OUT = path.join(ROOT, 'dist', 'client', 'index.html');
 
 const children = new Set();
 let electronProc = null;
@@ -92,6 +93,15 @@ function waitForFile(file, timeoutMs) {
     };
     probe();
   });
+}
+
+function buildClient() {
+  log('vite', 'initial build (fallback files)');
+  const built = spawnSync(process.execPath, [VITE_BIN, 'build'], { stdio: 'inherit' });
+  if (built.status !== 0 || !fs.existsSync(CLIENT_OUT)) {
+    console.error('[dev] initial Vite build failed — fix client errors and retry.');
+    process.exit(built.status ?? 1);
+  }
 }
 
 function startElectron(devUrl) {
@@ -181,6 +191,7 @@ async function main() {
     console.error('[dev] initial tsc build failed — fix type errors and retry.');
     process.exit(built.status ?? 1);
   }
+  buildClient();
 
   // 2. Frontend HMR server (localhost only — works offline).
   spawnTracked('vite', process.execPath, [VITE_BIN, '--port', String(PORT), '--strictPort'], {
