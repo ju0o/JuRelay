@@ -22855,6 +22855,43 @@
             "node check.mjs"
           ],
           "ssotEvidence": "layout.mjs:41 topic: AI 봇 4명만 대화하는 곳 (구경 전용). 주제 신청: 아무 채널에서 !봇수다 주제"
+        },
+        {
+          "taskId": "JUAI-README-ANON-DM",
+          "scope": "Add one short clause to README's existing member-commands line stating that !익명 works only as an OpenCode personal message, matching onDirect, and assert that clause in check.mjs.",
+          "files": [
+            "README.md",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 \"!익명 질문\""
+        },
+        {
+          "taskId": "JUAI-CHECK-BONUS-NOGLOBAL",
+          "scope": "Add check.mjs assertions only, leaving lib.mjs unchanged, on a fresh in-memory DB built from SCHEMA, that grantBonus leaves an existing global usage row for user id * unchanged while recording the bonus:<user> row.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 \"서버 전체 하루 300회\""
+        },
+        {
+          "taskId": "JUAI-SPAM-RULES",
+          "scope": "Export SPAM_WINDOW_MS 120000, SPAM_MIN_LEN 10, SPAM_REPEAT_CHANNELS 3, SPAM_LINK_MIN 4, and SPAM_TIMEOUT_MS 3600000 plus isSpam() from lib.mjs, use them in bot.mjs spam detection and the matching recent-map cleanup without changing who is timed out, and add one GUIDE clause in plain Korean naming those rules and that staff are exempt.",
+          "files": [
+            "lib.mjs",
+            "bot.mjs",
+            "layout.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:14 \"스팸 관리\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
