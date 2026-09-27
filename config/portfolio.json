@@ -19661,6 +19661,53 @@
           ],
           "ssotEvidence": "docs/TEST_SCENARIOS.md:961 검증 실패가 있는데 확인 완료로 표시하지 않는다.",
           "title": "검증 실패를 완료로 착각하지 않기"
+        },
+        {
+          "taskId": "JUTELL-LENGTH-REASON-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §5.3's two sentences, 길이를 늘리는 이유가 있어야 한다 and 단순히 정해진 양식을 채우기 위해 보고서를 길게 만들지 않는다, after the simple-work length paragraph in report-format.md, plus an offline node:test that both sentences stay in §5.3 and in report-format.md.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/length-reason-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/length-reason-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:163 길이를 늘리는 이유가 있어야 한다."
+        },
+        {
+          "taskId": "JUTELL-CONFIRM-STATE-DEFINITIONS-PARITY",
+          "scope": "Under the 확인 상태 bullet in SKILL.md step 10, add the §8.2 sentence 일부 근거는 확인했지만 전체 동작이나 필요한 모든 환경을 확인하지 못했다 and the §8.3 sentence 필요한 근거를 확보하지 못했다, plus an offline node:test that both sentences stay in the spec and in SKILL.md.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/confirm-state-definitions-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/confirm-state-definitions-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:293 일부 근거는 확인했지만 전체 동작이나 필요한 모든 환경을 확인하지 못했다."
+        },
+        {
+          "taskId": "JUTELL-FACT-ACCURACY-SCOPE-PARITY",
+          "scope": "Add a test-only offline node:test that maps each PRODUCT_SCOPE §11.2 bullet onto existing report-format.md wording: 주요 수정 파일, 새로 생성된 파일 and 삭제된 파일, 실행한 명령, 검증 결과, and 확인하지 못한 항목.",
+          "files": [
+            "tests/fact-accuracy-scope-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/fact-accuracy-scope-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:652 다음 정보가 실제 프로젝트 상태와 일치해야 한다."
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-REACT-ONLY-PARITY",
+          "scope": "Add GLOSSARY_POLICY §4.1's sentence React가 아닌 프로젝트에 React 전용 정의를 일반 규칙처럼 적용하지 않는다 to glossary-ko.md's opening paragraph, plus an offline node:test that the sentence stays in §4.1 and in glossary-ko.md.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-react-only-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-react-only-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:76 React가 아닌 프로젝트에 React 전용 정의를 일반 규칙처럼 적용하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
