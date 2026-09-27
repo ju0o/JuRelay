@@ -5099,6 +5099,17 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "ACTL-STATUS-TRUTH-BASEFIX-R2",
+          "scope": "On base 0e87005, do not run the full suite: tests/test_rows_op_budget.py::test_rows_batches_process_group_cpu_snapshot never returns because its threading.Barrier(4) pane_field wait has no timeout, so make that one test return while keeping every assertion, failing on the old unbounded wait and passing once the wait matches the current batched snapshot behaviour.",
+          "files": [
+            "tests/test_rows_op_budget.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild)."
         }
       ],
       "qaRuntime": [
