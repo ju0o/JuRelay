@@ -12878,6 +12878,28 @@
           ],
           "ssotEvidence": "docs/integration/PROJECT_STATUS_CONTRACT.md:14 | `schema` | yes |",
           "title": "상태 정보 기준 일치 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-REGISTRY-FIELDS-DOC-SYNC",
+          "scope": "Add one offline test that docs/getting-started.md lists registry required fields in requiredFields order and the optional entry fields, and that the omitted sourceKind default matches src/project-status.mjs.",
+          "files": [
+            "tests/docs-registry-fields-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/docs-registry-fields-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:195 항목 칸은 projectId, workspaceRoot, dataRoot, sourceRef(필수)와 sourceKind, freshnessMs(선택)뿐입니다"
+        },
+        {
+          "taskId": "JUCONTROLER-REASON-EMITTERS-SYNC",
+          "scope": "Add one offline test, passing at base without edits to src or the glossary, that the projection reason strings under src/ equal the reasonWords keys in scripts/status-board.mjs and adapter throw codes are not treated as reasons.",
+          "files": [
+            "tests/reason-emitters-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/reason-emitters-sync.test.mjs"
+          ],
+          "ssotEvidence": "scripts/status-board.mjs:54 reasonWords[row.reason ?? 'stale'] ?? '표에 없는 이유예요'"
         }
       ],
       "qaRuntime": [
