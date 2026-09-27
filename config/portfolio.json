@@ -42,10 +42,11 @@
       "ssot": "repository:BACKLOG.md + config/portfolio.json",
       "owner": "codex",
       "runtime": [
-        "claude-pro",
+        "codex",
         "cursor",
         "cline",
-        "claude"
+        "claude",
+        "opencode"
       ],
       "state": "QUEUED",
       "tasks": [
@@ -2667,7 +2668,6 @@
       "qaRuntime": [
         "cursor",
         "opencode",
-        "claude-pro",
         "codex"
       ],
       "autoContinue": true,
@@ -7996,8 +7996,7 @@
         "M2 PM REVIEW remains open"
       ],
       "qaRuntime": [
-        "claude-pro",
-        "claude-team",
+        "codex",
         "opencode"
       ],
       "tasks": [
@@ -10229,7 +10228,8 @@
           "tests": [
             "npx vitest run tests/daily-background.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장, 빈 화면 이유+다음 행동, 대상은 daily 출력과 영수증 보기 화면"
+          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장, 빈 화면 이유+다음 행동, 대상은 daily 출력과 영수증 보기 화면",
+          "title": "영수증 없는 날과 있는 날 안내"
         },
         {
           "taskId": "JUCEIPT-SCHEDULE-UNKNOWN-THREE-LINES",
@@ -10241,7 +10241,8 @@
           "tests": [
             "npx vitest run tests/daily-cli.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 오류 3줄, 개발자 글자와 enum 단어는 화면에 두지 않음"
+          "ssotEvidence": "Founder direction 2026-09-25: 오류 3줄, 개발자 글자와 enum 단어는 화면에 두지 않음",
+          "title": "일정을 모를 때 쉬운 말로 안내"
         }
       ],
       "skills": {
@@ -10268,9 +10269,8 @@
       "ssot": "/home/skkse12/Desktop/Projects/Core/JuControler-Private",
       "owner": "codex",
       "runtime": [
-        "claude-team",
-        "claude-pro",
-        "codex"
+        "codex",
+        "opencode"
       ],
       "state": "FOUNDER_ACCEPTANCE",
       "blockers": [
@@ -12955,7 +12955,6 @@
         }
       ],
       "qaRuntime": [
-        "claude-pro",
         "codex",
         "cline",
         "opencode"
@@ -12984,12 +12983,10 @@
       "ssot": "/home/skkse12/Desktop/Projects/Core/JuControler-Private/founder",
       "owner": "codex",
       "runtime": [
-        "claude-team",
-        "claude-pro",
-        "codex"
+        "codex",
+        "opencode"
       ],
       "qaRuntime": [
-        "claude-pro",
         "codex",
         "cline",
         "opencode"
@@ -16706,8 +16703,7 @@
         "opencode"
       ],
       "qaRuntime": [
-        "claude-pro",
-        "claude-team",
+        "codex",
         "opencode"
       ],
       "state": "QUEUED",
@@ -17682,7 +17678,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27-28 Active product milestone is M3 — Daily Agent Value Decision and product decision is M2 GO; docs/business/GROWTH_MONETIZATION_GTM.md:339 B1 state is BLOCKED — M2 GO (A-14) met; waiting on the M3 decision (0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED)"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:27-28 Active product milestone is M3 — Daily Agent Value Decision and product decision is M2 GO; docs/business/GROWTH_MONETIZATION_GTM.md:339 B1 state is BLOCKED — M2 GO (A-14) met; waiting on the M3 decision (0 Founder seven-task rows join both a Claude final and a Receipt; mapping UNDECIDED)",
+          "title": "사업 계획에 지금 단계와 대기 이유를 맞춘다"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-B0-B1-STATE-SYNC",
@@ -17693,7 +17690,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:199 B0 state is ACTIVE — M2 GO (A-14); docs/business/GROWTH_MONETIZATION_GTM.md:338-339 B0 is ACTIVE — M2 GO (A-14) and B1 is blocked because 0 Founder seven-task rows join both artifacts and the mapping is UNDECIDED"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:199 B0 state is ACTIVE — M2 GO (A-14); docs/business/GROWTH_MONETIZATION_GTM.md:338-339 B0 is ACTIVE — M2 GO (A-14) and B1 is blocked because 0 Founder seven-task rows join both artifacts and the mapping is UNDECIDED",
+          "title": "사업 지도에 승인된 단계와 대기 이유를 맞춘다"
         }
       ],
       "skills": {
@@ -17720,11 +17718,10 @@
       "owner": "codex",
       "runtime": [
         "codex",
-        "claude-team"
+        "opencode"
       ],
       "qaRuntime": [
-        "claude-pro",
-        "claude-team",
+        "codex",
         "cline",
         "opencode"
       ],
@@ -19396,7 +19393,8 @@
           "tests": [
             "node --test tests/results/scenario-t/could-not-run.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:396 도구, 권한, 설정 또는 환경 문제로 실행하지 못했다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:396 도구, 권한, 설정 또는 환경 문제로 실행하지 못했다.",
+          "title": "실행하지 못한 일은 보류라고 알리기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -19431,11 +19429,10 @@
       "owner": "codex",
       "runtime": [
         "codex",
-        "claude-team"
+        "opencode"
       ],
       "qaRuntime": [
-        "claude-pro",
-        "claude-team",
+        "codex",
         "cline",
         "opencode"
       ],
@@ -20536,7 +20533,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "setup.mjs:156 single_select: q.single, required: q.required"
+          "ssotEvidence": "setup.mjs:156 single_select: q.single, required: q.required",
+          "title": "처음 질문이 하나만 고르고 필수인지 확인"
         },
         {
           "taskId": "JUAI-CHECK-REDACT-OPEN-KEY",
@@ -20547,7 +20545,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다."
+          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다.",
+          "title": "안 끝난 비밀 키는 끝까지 가리고 뒤 글은 남김"
         },
         {
           "taskId": "JUAI-CHECK-PEEK-NOWRITE",
@@ -20558,7 +20557,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:135 !남은횟수 오늘 남은 AI 질문 수 확인 (횟수 안 씀)"
+          "ssotEvidence": "layout.mjs:135 !남은횟수 오늘 남은 AI 질문 수 확인 (횟수 안 씀)",
+          "title": "사용량을 보기만 해도 기록은 그대로"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
@@ -20586,11 +20586,10 @@
       "owner": "codex",
       "runtime": [
         "codex",
-        "claude-team"
+        "opencode"
       ],
       "qaRuntime": [
-        "claude-pro",
-        "claude-team",
+        "codex",
         "cline",
         "opencode"
       ],
@@ -21005,11 +21004,10 @@
       "owner": "codex",
       "runtime": [
         "codex",
-        "claude-team"
+        "opencode"
       ],
       "qaRuntime": [
-        "claude-pro",
-        "claude-team",
+        "codex",
         "cline",
         "opencode"
       ],
@@ -21132,8 +21130,6 @@
   "pool": {
     "subscribed": [
       "codex",
-      "claude-team",
-      "claude-pro",
       "cursor",
       "opencode",
       "cline",
