@@ -24,15 +24,22 @@ Agent-Relay Delivery → Wake → PM Judgment (ACCEPT/CHANGES) → Retry/NEXT
 - 배포 바이트는 브랜치 빌드 + ephemeral tunnel URL을 따라간다. `night-runtime`에는
   `src/mcp/`이 없어서 여기서 MCP를 빌드할 수 없다.
 
-## Deployment path
+## Deployment path (2026-09-27 확정: 유료 고정 주소)
 
 ```text
 GitHub SSOT (ar/chatgpt-goal-relay)
 ↓  npx tsc -p tsconfig.server.json  (dist/는 gitignored, 배포 시 재빌드)
-MCP App  127.0.0.1:3899  (npm run mcp:app / app-server-main.js --dataRoot --project)
-↓  cloudflared Quick Tunnel (URL은 매번 바뀜, uptime 보장 없음)
-ChatGPT Connector → /mcp
+MCP App  127.0.0.1:3899, project=ws, dataRoot=~/.local/share/AgentRelay/data/ws
+↓  Cloudflare Tunnel `agent-relay-production` (Healthy, 고정)
+ChatGPT Connector → https://mcp.relay-agent.site/mcp
 ```
+
+- 유료 주소(`mcp.relay-agent.site`, relay-agent.site Free Plan) 기준으로 고정됨.
+  Quick Tunnel(trycloudflare) 임시 주소는 폐기함.
+- Billing 실측(Aside, Cloudflare 대시보드): 이번 사이클 $0.00, 송장 없음.
+  R2 Paid 플랜이나 무료 한도 내라 과금 $0. (한도 초과 시 첫 과금 발생 가능.)
+- 구동: `node dist/server/mcp/app-server-main.js --dataRoot <ws> --project ws
+  --port 3899 --allow-unauthenticated` (인증 토큰 도입은 Founder 결정 후).
 
 - 배포 리비전(2026-09-27): `4658448` 소스에서 `dist/` 재빌드됨(빌드 전 dist는 09-25).
 - 배포에만 있던 코드는 없다. 단 `dist/`가 소스보다 이틀 stale했던 것이 drift vector였음(해소).
