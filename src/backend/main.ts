@@ -10,10 +10,11 @@ import { app, BrowserWindow, dialog, ipcMain, nativeImage, shell } from 'electro
 import * as fs from 'fs';
 import * as path from 'path';
 import * as relay from './fs.js';
-import { ControlRoomError, runControlRoom, runControlRoomApprovalAdd, runControlRoomApprovalEdit, runControlRoomApprovalRemove, runControlRoomEnvs, runControlRoomTokens, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneAdd, runControlRoomLaneSet, runControlRoomNightReports, runControlRoomPause, runControlRoomPromoteHub, runControlRoomScheduleCancel, runControlRoomScheduleList, runControlRoomScheduleSet, runControlRoomResume, isValidProjectId, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
+import { ControlRoomError, configureRunLocation, runControlRoom, runControlRoomApprovalAdd, runControlRoomApprovalEdit, runControlRoomApprovalRemove, runControlRoomEnvs, runControlRoomTokens, runControlRoomAutomationOff, runControlRoomAutomationOn, runControlRoomAutomationStatus, runControlRoomHoldChoose, runControlRoomLaneAdd, runControlRoomLaneSet, runControlRoomNightReports, runControlRoomPause, runControlRoomPromoteHub, runControlRoomScheduleCancel, runControlRoomScheduleList, runControlRoomScheduleSet, runControlRoomResume, isValidProjectId, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioRequest, runPlanStudioSave } from './controlRoom.js';
 import { migrateSettings } from './migrate.js';
 import { CaptureReport, captureLoadingError, parseCapturePath } from '../shared/capture.js';
 import { projectWindowKey, projectWindowTitle } from '../shared/projectLabels.js';
+import { normalizeRunLocation, resolveRunLocation, runLocationProblem } from '../shared/projectManager.js';
 import { checkForUpdates, downloadUpdate, initUpdater, installUpdate, updaterSupported } from './updater.js';
 import {
   AppSettings,
@@ -60,6 +61,14 @@ function currentSettings(): AppSettings {
 }
 function saveSettings(s: AppSettings): void {
   relay.saveSettings(baseDir, s);
+}
+/**
+ * 실행 위치(AI가 일하는 컴퓨터)를 관제실 호출에 적용한다.
+ * settings.json의 runLocation → 환경 변수(AGENT_RELAY_RUN_LOCATION 등) → '이 컴퓨터'.
+ * 코드에는 특정 별칭·경로가 없다. 시작할 때와 설정을 바꿀 때 부른다.
+ */
+function applyRunLocation(): void {
+  configureRunLocation(resolveRunLocation(currentSettings(), process.env));
 }
 
 /**
@@ -123,8 +132,19 @@ async function handleRequest(req: RelayRequest): Promise<unknown> {
         defaultDataRoot: path.join(app.getPath('documents'), 'Agent Relay'),
         appVersion: app.getVersion(),
         dataRootExists: relay.dataRootExists(s.dataRoot),
+        runLocation: resolveRunLocation(s, process.env),
       };
       return view;
+    }
+
+    case 'settings:setRunLocation': {
+      const problem = runLocationProblem(req.location ?? {});
+      if (problem) throw new Error(problem);
+      const s = currentSettings();
+      s.runLocation = normalizeRunLocation(req.location);
+      saveSettings(s);
+      applyRunLocation();
+      return s.runLocation;
     }
 
     case 'settings:setLastProject': {
@@ -736,6 +756,7 @@ app.whenReady().then(() => {
   baseDir = resolveBaseDir();
   fs.mkdirSync(baseDir, { recursive: true });
   migrateLegacySettings();
+  applyRunLocation();
   registerIpc();
   createWindow();
 

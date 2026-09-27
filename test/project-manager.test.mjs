@@ -1,16 +1,20 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { ControlRoomError, runControlRoomLaneAdd } from "../dist/server/backend/controlRoom.js";
+import { ControlRoomError, runControlRoomLaneAdd, configureRunLocation } from "../dist/server/backend/controlRoom.js";
 import {
   decodeLaneNames, encodeLaneNames, isLaneOn, laneErrorKind, laneErrorLines, laneErrorRaw, laneResultRaw, laneRowLabel, laneRowName,
   newLaneIdFor, newLaneProblem, suggestLaneId,
 } from "../dist/server/shared/projectManager.js";
 
+// 이 시험은 다른 컴퓨터(SSH) 위치를 가정한다 — 별칭은 시험이 직접 넣는다(코드 기본값이 아니다).
+configureRunLocation({ kind: "ssh", alias: "asus" });
+
 const BASE = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=5", "asus", "~/.agents/skills/auto-night-orchestrator/scripts/night"];
 
 test("row label and on/off from a board lane", () => {
-  assert.equal(laneRowLabel(true), "켜짐 · ASUS 켤 때 자동으로 돌아요");
+  assert.equal(laneRowLabel(true), "켜짐 · 이 컴퓨터 켤 때 자동으로 돌아요");
+  assert.equal(laneRowLabel(true, "ASUS"), "켜짐 · ASUS 켤 때 자동으로 돌아요");
   assert.equal(laneRowLabel(false), "쉬는 중");
   assert.equal(isLaneOn({ project: "x" }), true);
   assert.equal(isLaneOn({ project: "x", paused: true }), false);
@@ -60,9 +64,11 @@ test("error is three lines and tells offline from failure", () => {
   assert.equal(off.length, 3);
   assert.equal(off[0], "추가하지 못했어요.");
   assert.match(off[1], /꺼져 있거나 네트워크/);
-  assert.match(off[2], /ASUS를 켠 뒤/);
-  const remote = laneErrorLines("켜지", REMOTE);
-  assert.match(remote[1], /켜져 있는데/);
+  assert.match(off[2], /이 컴퓨터를 켠 뒤/);
+  assert.match(laneErrorLines("추가하지", OFFLINE, "ASUS")[2], /ASUS를 켠 뒤/);
+  const remote = laneErrorLines("켜지", REMOTE, "ASUS");
+  assert.match(remote[1], /ASUS는 켜져 있는데/);
+  assert.match(laneErrorLines("켜지", REMOTE)[1], /이 컴퓨터에서 요청을 처리하다 오류가 났어요/);
   assert.match(remote[2], /잠시 뒤/);
   assert.match(laneErrorLines("추가하지", "오류")[2], /잠시 뒤/);
   assert.equal(laneErrorKind(OFFLINE), "offline");
@@ -142,7 +148,9 @@ test("settings screen wires the manager with Korean confirm, no native dialogs",
   // 파일 경로가 화면에 예시로 나오지 않는다(원문 보기 밖).
   assert.doesNotMatch(block, /placeholder="\/home/);
   assert.doesNotMatch(block, /\/home\/…/);
-  assert.match(block, /placeholder="ASUS에 있는 프로젝트 폴더 위치"/);
+  // 위치 이름은 설정에서 오고, 문구는 그 이름으로 말한다.
+  assert.match(block, /placeholder=\{`\$\{locationName\}에 있는 프로젝트 폴더 위치`\}/);
+  assert.doesNotMatch(block, /ASUS/);
   const css = await readFile(new URL("../src/frontend/style.css", import.meta.url), "utf8");
   assert.match(css, /\.project-manager \.btn \{ min-height: 44px/);
   assert.match(css, /\.project-manager \.inline-confirm p \{ font-size: 16px/);

@@ -3,7 +3,10 @@ import test from "node:test";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { runPlanStudioGet } from "../dist/server/backend/controlRoom.js";
+import { runPlanStudioGet, configureRunLocation } from "../dist/server/backend/controlRoom.js";
+
+// 이 시험은 다른 컴퓨터(SSH) 위치를 가정한다 — 별칭은 시험이 직접 넣는다(코드 기본값이 아니다).
+configureRunLocation({ kind: "ssh", alias: "asus" });
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const source = fs.readFileSync(path.join(here, "..", "src", "frontend", "planStudio.tsx"), "utf8");

@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { ControlRoomError, presentNightReports, runControlRoom, runControlRoomApprovalAdd, runControlRoomLaneSet, runControlRoomNightReports, runControlRoomResume, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioSave, shQuote } from "../dist/server/backend/controlRoom.js";
+import { ControlRoomError, presentNightReports, runControlRoom, runControlRoomApprovalAdd, runControlRoomLaneSet, runControlRoomNightReports, runControlRoomResume, runGateAnswer, runGatesList, runPlanStudioApprove, runPlanStudioChat, runPlanStudioGet, runPlanStudioSave, shQuote, configureRunLocation } from "../dist/server/backend/controlRoom.js";
+
+// 이 시험은 다른 컴퓨터(SSH) 위치를 가정한다 — 별칭은 시험이 직접 넣는다(코드 기본값이 아니다).
+configureRunLocation({ kind: "ssh", alias: "asus" });
 
 test("board uses the fixed ssh command and parses JSON", async () => {
   let call;

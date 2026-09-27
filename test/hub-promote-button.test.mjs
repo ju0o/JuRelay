@@ -11,10 +11,10 @@ test("settings hub card confirms inline, then calls promoteHub, never window.con
   const pageStart = src.indexOf('className="settings-page"');
   const pageEnd = src.indexOf("function ProjectManager");
   const page = src.slice(pageStart, pageEnd);
-  const managerAt = page.indexOf("<ProjectManager />");
+  const managerAt = page.indexOf("<ProjectManager ");
   const cardAt = page.indexOf("<HubPromoteCard />");
   assert.ok(managerAt >= 0 && cardAt > managerAt, "card sits after ProjectManager");
-  assert.ok(cardAt - managerAt < 80, "card is next to ProjectManager");
+  assert.ok(cardAt - managerAt < 120, "card is next to ProjectManager");
 
   assert.match(block, /op: 'controlRoom:promoteHub'/);
   assert.match(block, /반영했어요 ✓/);

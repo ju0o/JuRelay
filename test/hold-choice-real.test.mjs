@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { normalizeHoldEntry } from "../dist/server/shared/projectLabels.js";
-import { runControlRoomHoldChoose, ControlRoomError } from "../dist/server/backend/controlRoom.js";
+import { runControlRoomHoldChoose, ControlRoomError, configureRunLocation } from "../dist/server/backend/controlRoom.js";
+
+// 이 시험은 다른 컴퓨터(SSH) 위치를 가정한다 — 별칭은 시험이 직접 넣는다(코드 기본값이 아니다).
+configureRunLocation({ kind: "ssh", alias: "asus" });
 
 const root = new URL("..", import.meta.url);
 const read = file => readFile(new URL(file, root), "utf8");

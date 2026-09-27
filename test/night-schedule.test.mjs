@@ -5,7 +5,11 @@ import {
   runControlRoomScheduleCancel,
   runControlRoomScheduleList,
   runControlRoomScheduleSet,
+  configureRunLocation,
 } from "../dist/server/backend/controlRoom.js";
+
+// 이 시험은 다른 컴퓨터(SSH) 위치를 가정한다 — 별칭은 시험이 직접 넣는다(코드 기본값이 아니다).
+configureRunLocation({ kind: "ssh", alias: "asus" });
 
 const BASE = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=5", "asus", "~/.agents/skills/auto-night-orchestrator/scripts/night"];
 const ok = (calls) => async (...args) => {

@@ -24,6 +24,7 @@ import {
 import { shellEnvLine, shellFailureLine, shellPageCopy, shellToggleLabel, type ShellNavId } from './components.js';
 import {
   decodeLaneNames, encodeLaneNames, isLaneOn, LANE_NAMES_STORAGE_KEY, laneErrorKind, laneErrorLines, laneErrorRaw, laneResultRaw, laneRowLabel, laneRowName, launchPickSkipClear, launchPickSkipRead, newLaneIdFor, newLaneProblem,
+  LOCAL_RUN_LOCATION, runLocationName, runLocationProblem, runLocationSavedLine, runLocationSentence, type RunLocation,
 } from '../shared/projectManager.js';
 import { approvalFailureLines, approvalGroupHeading, approvalUsedCount, dedupeApprovalRules, groupRulesByCategory, partitionSupersededApprovalRules, ApprovalAddForm, ApprovalRuleCard, SupersededApprovals, UnusedApprovalRules } from './approvals.js';
 import type { ApprovalRuleJson } from '../shared/types.js';
@@ -1760,7 +1761,11 @@ function AppInner(): React.ReactElement {
             />
           ) : showSettings && settings ? (
             <div className="settings-page">
-              <SettingsEnvSection rows={envRows} phase={envPhase} summary={shellEnvLine(envLabels, envPhase)} />
+              <RunLocationSection
+                location={settings.runLocation ?? LOCAL_RUN_LOCATION}
+                onSaved={() => { void must<SettingsView>({ op: 'settings:get' }).then(s => applySettings(s)).catch(() => undefined); }}
+              />
+              <SettingsEnvSection rows={envRows} phase={envPhase} summary={shellEnvLine(envLabels, envPhase)} location={settings.runLocation ?? LOCAL_RUN_LOCATION} />
               <section className="settings-section settings-card-lv" aria-label="화면 밝기">
                 <h3>화면</h3>
                 <p className="muted">밝은 화면과 어두운 화면 중에서 고를 수 있어요.</p>
@@ -1805,7 +1810,7 @@ function AppInner(): React.ReactElement {
                   </p>
                 </details>
               </div>
-              <ProjectManager />
+              <ProjectManager locationName={runLocationName(settings.runLocation)} />
               <HubPromoteCard />
               <NightScheduleCard />
               <div className="settings-section shell-advanced">
@@ -2680,8 +2685,11 @@ function pmSaveName(id: string, name: string): void {
 
 const pmMessage = (e: unknown): string => (e instanceof Error ? e.message : String(e));
 
-/** 설정 → 프로젝트 관리: 프로젝트별 자동 진행 켜기/쉬기, 새 프로젝트 추가. */
-function ProjectManager(): React.ReactElement {
+/**
+ * 설정 → 프로젝트 관리: 프로젝트별 자동 진행 켜기/쉬기, 새 프로젝트 추가.
+ * @param locationName 실행 위치 이름('이 컴퓨터' 또는 다른 컴퓨터 이름) — 모든 문구가 이 이름으로 말한다.
+ */
+function ProjectManager({ locationName }: { locationName: string }): React.ReactElement {
   const [lanes, setLanes] = useState<PmLane[] | null>(null);
   const [loadError, setLoadError] = useState<{ message: string; detail?: string } | null>(null);
   const [confirmId, setConfirmId] = useState<string | null>(null);
@@ -2714,7 +2722,7 @@ function ProjectManager(): React.ReactElement {
     } catch (e) {
       const message = pmMessage(e);
       const raw = laneErrorRaw(message, (e as { detail?: string })?.detail);
-      setNotes(prev => ({ ...prev, [lane.id]: { kind: 'err', lines: laneErrorLines(on ? '켜지' : '쉬게 하지', message), raw } }));
+      setNotes(prev => ({ ...prev, [lane.id]: { kind: 'err', lines: laneErrorLines(on ? '켜지' : '쉬게 하지', message, locationName), raw } }));
     } finally {
       setBusyId(null);
     }
@@ -2725,7 +2733,7 @@ function ProjectManager(): React.ReactElement {
     if (adding) return;
     const knownIds = (lanes ?? []).map(l => l.id);
     const id = idOverride.trim() || newLaneIdFor(name, knownIds);
-    const problem = newLaneProblem({ id, path, name }, knownIds);
+    const problem = newLaneProblem({ id, path, name }, knownIds, locationName);
     if (problem) { setAddNote({ kind: 'err', lines: [problem] }); return; }
     setAdding(true);
     setAddNote(null);
@@ -2737,7 +2745,7 @@ function ProjectManager(): React.ReactElement {
       await load();
     } catch (err) {
       const message = pmMessage(err);
-      setAddNote({ kind: 'err', lines: laneErrorLines('추가하지', message), raw: laneErrorRaw(message, (err as { detail?: string })?.detail) });
+      setAddNote({ kind: 'err', lines: laneErrorLines('추가하지', message, locationName), raw: laneErrorRaw(message, (err as { detail?: string })?.detail) });
     } finally {
       setAdding(false);
     }
@@ -2763,7 +2771,7 @@ function ProjectManager(): React.ReactElement {
       <LaunchPickAskAgain />
       {loadError && (
         <div className="pm-note err" role="status">
-          {laneErrorLines('프로젝트 목록을 불러오지', loadError.message).map((line, i) => <p key={i}>{line}</p>)}
+          {laneErrorLines('프로젝트 목록을 불러오지', loadError.message, locationName).map((line, i) => <p key={i}>{line}</p>)}
           {rawView(laneErrorRaw(loadError.message, loadError.detail))}
           <button className="btn" type="button" onClick={() => void load()}>다시 시도</button>
         </div>
@@ -2775,7 +2783,7 @@ function ProjectManager(): React.ReactElement {
           <div className="pm-row-main">
             <div className="pm-row-text">
               <strong>{lane.name}</strong>
-              <span className={`pm-state${lane.on ? ' on' : ''}`}>{laneRowLabel(lane.on)}</span>
+              <span className={`pm-state${lane.on ? ' on' : ''}`}>{laneRowLabel(lane.on, locationName)}</span>
             </div>
             <button
               className={`pm-switch${lane.on ? ' on' : ''}`}
@@ -2807,8 +2815,8 @@ function ProjectManager(): React.ReactElement {
           id="pm-name" type="text" value={name} placeholder="예: 영수증 앱"
           onChange={e => setName(e.target.value)}
         />
-        <label className="flabel" htmlFor="pm-path">프로젝트 폴더 (ASUS 경로)</label>
-        <input id="pm-path" type="text" value={path} placeholder="ASUS에 있는 프로젝트 폴더 위치" onChange={e => setPath(e.target.value)} />
+        <label className="flabel" htmlFor="pm-path">프로젝트 폴더 ({locationName} 경로)</label>
+        <input id="pm-path" type="text" value={path} placeholder={`${locationName}에 있는 프로젝트 폴더 위치`} onChange={e => setPath(e.target.value)} />
         <details className="pm-advanced">
           <summary>고급 (개발용)</summary>
           <label className="flabel" htmlFor="pm-id">짧은 이름 (영문 id) — 비우면 알아서 정해요</label>
@@ -2848,18 +2856,45 @@ export function settingsRamLine(free: number | null, total: number | null): stri
   return total !== null ? `${gbText(free)}/${gbText(total)} GB 남음` : `${gbText(free)} GB 남음`;
 }
 
-/** 환경 행 → 설정 카드. ASUS만 고를 수 있고, MainPC는 원격 실행 보류, 클라우드는 곧 지원. Pure. */
-export function settingsEnvCards(rows: readonly EnvRow[]): SettingsEnvCard[] {
+/** 지금 위치가 아닌 컴퓨터 카드의 버튼 문구 — 바꾸는 곳은 실행 위치 카드 하나다. */
+export const ENV_CARD_CHANGE_HINT = '실행 위치에서 바꿀 수 있어요';
+
+/**
+ * 지금 실행 위치와 같은 환경 행을 고른다. ssh면 별칭(또는 정한 이름)과 같은 id, 이 컴퓨터면
+ * 엔진이 첫 줄로 보내는 자기 자신. 아무 행도 없으면 null. Pure.
+ */
+export function activeEnvId(rows: readonly EnvRow[], location: Pick<RunLocation, 'kind' | 'alias' | 'name'>): string | null {
   const key = (id: string): string => id.trim().toLowerCase().replace(/[-_\s]/g, '');
+  if (rows.length === 0) return null;
+  if (location.kind === 'ssh') {
+    const wanted = [location.alias, location.name].map(key).filter(Boolean);
+    const hit = rows.find(row => wanted.includes(key(row.id)));
+    return hit ? hit.id : null;
+  }
+  const self = rows.find(row => /이 컴퓨터|\blocal\b|\bself\b/i.test(`${row.id} ${row.label}`));
+  return (self ?? rows[0]!).id;
+}
+
+/**
+ * 환경 행 → 설정 카드. 지금 실행 위치에 해당하는 행만 '지금 여기서 일해요',
+ * 다른 컴퓨터는 실행 위치 카드에서 바꾸라고 안내, 클라우드는 곧 지원. Pure.
+ */
+export function settingsEnvCards(
+  rows: readonly EnvRow[],
+  location: Pick<RunLocation, 'kind' | 'alias' | 'name'> = LOCAL_RUN_LOCATION,
+): SettingsEnvCard[] {
+  const key = (id: string): string => id.trim().toLowerCase().replace(/[-_\s]/g, '');
+  const active = activeEnvId(rows, location);
   const cards = rows.map((row): SettingsEnvCard => {
     const k = key(row.id);
+    const here = row.id === active;
     const busy = (row.cpuPct !== null && row.cpuPct >= SETTINGS_CPU_WARN_PCT)
       || (row.ramFreeGb !== null && row.ramFreeGb < SETTINGS_RAM_WARN_GB);
     return {
       id: row.id,
       label: row.label,
-      selectable: k === 'asus',
-      holdLabel: k === 'asus' ? '' : k === 'cloud' ? '곧 지원' : '준비 중 — 원격 실행은 보류 중이에요',
+      selectable: here,
+      holdLabel: here ? '' : k === 'cloud' ? '곧 지원' : ENV_CARD_CHANGE_HINT,
       tone: !row.ok || busy ? 'amber' : 'teal',
       cpuPct: row.cpuPct,
       cpuBar: barPercent(row.cpuPct),
@@ -2886,12 +2921,117 @@ export function settingsParallelLine(board: unknown): string {
     : '아직 알 수 없어요 — 관제실이 연결되면 보여요';
 }
 
-function SettingsEnvSection({ rows, phase, summary }: { rows: EnvRow[]; phase: ConnectionPhase; summary: string }): React.ReactElement {
-  const cards = settingsEnvCards(rows);
+// ── 설정 → 실행 위치 (AI가 일하는 컴퓨터) ───────────────────────────────────
+/** 실행 위치 카드의 두 선택지. 추천(이 컴퓨터)이 먼저. */
+export const RUN_LOCATION_CHOICES: ReadonlyArray<{ kind: RunLocation['kind']; label: string; hint: string }> = [
+  { kind: 'local', label: '이 컴퓨터 (추천)', hint: '따로 준비할 게 없어요. 이 컴퓨터에 설치된 작업 엔진을 바로 써요.' },
+  { kind: 'ssh', label: '다른 컴퓨터 (SSH로 연결)', hint: '연결 이름과 그 컴퓨터의 데이터 폴더만 적으면 돼요.' },
+];
+
+/**
+ * 설정 → 실행 위치. 기본은 '이 컴퓨터', 선택으로 '다른 컴퓨터(SSH)'.
+ * 저장 결과는 누른 자리에 한 줄로, 실패는 세 줄로. 개발자 글자(별칭·경로)는 고급 (개발용) 아래에만 둔다.
+ * @param location 지금 쓰는 위치
+ * @param onSaved 저장 뒤 설정을 다시 읽게 하는 콜백
+ */
+function RunLocationSection({ location, onSaved }: { location: RunLocation; onSaved: () => void }): React.ReactElement {
+  const [kind, setKind] = useState<RunLocation['kind']>(location.kind);
+  const [alias, setAlias] = useState(location.alias);
+  const [dataRoot, setDataRoot] = useState(location.dataRoot);
+  const [name, setName] = useState(location.name);
+  const [engine, setEngine] = useState(location.engine);
+  const [saving, setSaving] = useState(false);
+  const [note, setNote] = useState<PmNote | null>(null);
+  useEffect(() => {
+    setKind(location.kind); setAlias(location.alias); setDataRoot(location.dataRoot); setName(location.name); setEngine(location.engine);
+  }, [location.kind, location.alias, location.dataRoot, location.name, location.engine]);
+
+  const draft: RunLocation = { kind, alias: alias.trim(), dataRoot: dataRoot.trim(), engine: engine.trim(), name: name.trim() };
+  const dirty = draft.kind !== location.kind || draft.alias !== location.alias || draft.dataRoot !== location.dataRoot
+    || draft.engine !== location.engine || draft.name !== location.name;
+
+  async function save(e: React.FormEvent): Promise<void> {
+    e.preventDefault();
+    if (saving) return;
+    const problem = runLocationProblem(draft);
+    if (problem) { setNote({ kind: 'err', lines: ['저장하지 못했어요.', problem, '고친 뒤 다시 저장해 주세요.'] }); return; }
+    setSaving(true);
+    setNote(null);
+    try {
+      const saved = await must<RunLocation>({ op: 'settings:setRunLocation', location: draft });
+      setNote({ kind: 'ok', lines: [runLocationSavedLine(saved)], raw: laneResultRaw(saved) });
+      onSaved();
+    } catch (err) {
+      const message = pmMessage(err);
+      setNote({ kind: 'err', lines: ['저장하지 못했어요.', message || '이유를 알 수 없어요.', '다시 시도해 주세요.'], raw: laneErrorRaw(message) });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <section className="settings-section settings-card-lv project-manager run-location" aria-label="실행 위치">
+      <h3>실행 위치</h3>
+      <p className="pm-lead">{runLocationSentence(location)}</p>
+      <form onSubmit={e => void save(e)} aria-label="실행 위치 고르기">
+        <div className="settings-env-grid" role="radiogroup" aria-label="어디서 일할까요">
+          {RUN_LOCATION_CHOICES.map(choice => (
+            <label key={choice.kind} className={`settings-env${kind === choice.kind ? ' on' : ' off'} tone-teal`}>
+              <span className="settings-env-head">
+                <input type="radio" name="run-location" value={choice.kind} checked={kind === choice.kind} onChange={() => setKind(choice.kind)} />
+                <strong>{choice.label}</strong>
+              </span>
+              <span className="settings-env-note">{choice.hint}</span>
+              {kind === choice.kind && location.kind === choice.kind && !dirty && (
+                <span className="settings-env-state">지금 여기서 일해요 ✓</span>
+              )}
+            </label>
+          ))}
+        </div>
+        {kind === 'ssh' && (
+          <div className="pm-add">
+            <label className="flabel" htmlFor="rl-alias">연결 이름 (ssh 별칭)</label>
+            <input id="rl-alias" type="text" value={alias} placeholder="예: work-pc" autoComplete="off" onChange={e => setAlias(e.target.value)} />
+            <label className="flabel" htmlFor="rl-root">그 컴퓨터의 Agent Relay 데이터 폴더</label>
+            <input id="rl-root" type="text" value={dataRoot} placeholder="그 컴퓨터 안의 전체 경로" autoComplete="off" onChange={e => setDataRoot(e.target.value)} />
+            <label className="flabel" htmlFor="rl-name">화면에 보일 이름 — 비우면 연결 이름을 써요</label>
+            <input id="rl-name" type="text" value={name} placeholder="예: 작업용 PC" autoComplete="off" onChange={e => setName(e.target.value)} />
+          </div>
+        )}
+        <details className="pm-advanced">
+          <summary>고급 (개발용)</summary>
+          <label className="flabel" htmlFor="rl-engine">작업 엔진 경로 — 비우면 기본 위치를 써요</label>
+          <input id="rl-engine" type="text" value={engine} placeholder="기본 위치 사용" autoComplete="off" onChange={e => setEngine(e.target.value)} />
+          {kind === 'local' && (
+            <>
+              <label className="flabel" htmlFor="rl-name-local">화면에 보일 이름 — 비우면 '이 컴퓨터'</label>
+              <input id="rl-name-local" type="text" value={name} placeholder="이 컴퓨터" autoComplete="off" onChange={e => setName(e.target.value)} />
+            </>
+          )}
+        </details>
+        <button className="btn primary" type="submit" disabled={saving || !dirty}>{saving ? '저장하는 중…' : '이대로 저장'}</button>
+        {note && (
+          <div className={`pm-note ${note.kind}`} role="status">
+            {note.lines.map((line, i) => <p key={i}>{line}</p>)}
+            {note.raw && (
+              <details className="pm-raw">
+                <summary className="pm-raw-summary">원문 보기</summary>
+                <pre className="mono">{note.raw}</pre>
+              </details>
+            )}
+          </div>
+        )}
+      </form>
+    </section>
+  );
+}
+
+function SettingsEnvSection({ rows, phase, summary, location }: { rows: EnvRow[]; phase: ConnectionPhase; summary: string; location: RunLocation }): React.ReactElement {
+  const cards = settingsEnvCards(rows, location);
   return (
     <section className="settings-section settings-card-lv" aria-label="실행 환경">
       <h3>실행 환경</h3>
-      <p className="muted">AI가 일할 컴퓨터예요. 지금은 이 컴퓨터(ASUS)에서만 일해요.</p>
+      <p className="muted">AI가 일할 컴퓨터예요. 지금은 {runLocationName(location)}에서 일해요.</p>
       <p className="settings-env-summary">{summary}</p>
       {rows.length === 0 && (
         <p className="settings-env-note">{shellEnvLine([], phase).replace(/^실행 환경: /, '')}</p>

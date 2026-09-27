@@ -1,4 +1,5 @@
 import { aiDisplayName, coolingItemText, projectDisplayName } from './projectLabels.js';
+import type { RunLocation } from './projectManager.js';
 
 /**
  * Shared type definitions for Agent Relay Log V0.
@@ -31,6 +32,11 @@ export interface AppSettings {
   agentOrder?: string[];
   /** Work Tab 표시 순서/개수 (에이전트 이름 배열). 편집 내용은 저장하지 않는다. */
   workTabOrder?: string[];
+  /**
+   * AI가 일하는 컴퓨터. 없으면 환경 변수(AGENT_RELAY_RUN_LOCATION 등) → '이 컴퓨터'.
+   * 특정 사람의 별칭·경로는 코드가 아니라 여기에만 둔다.
+   */
+  runLocation?: RunLocation;
 }
 
 /** A selectable project (a folder under DATA_ROOT/Projects). */
@@ -50,6 +56,8 @@ export interface SettingsView extends AppSettings {
   appVersion: string;
   /** Whether the persisted dataRoot currently exists on disk. */
   dataRootExists: boolean;
+  /** 실제로 쓰는 실행 위치 (settings.json → 환경 변수 → '이 컴퓨터' 순으로 정해진 값). */
+  runLocation: RunLocation;
 }
 
 /** project:view response — projects list + full history for the selected project. */
@@ -101,6 +109,7 @@ export interface StartViewResult {
 export type RelayRequest =
   | { op: 'settings:get' }
   | { op: 'settings:setDataRoot'; path: string }
+  | { op: 'settings:setRunLocation'; location: RunLocation }
   | { op: 'folder:pick' }
   | { op: 'projects:list'; dataRoot: string }
   | { op: 'projects:create'; dataRoot: string; name: string }

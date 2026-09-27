@@ -1,11 +1,74 @@
 import { execFile as nodeExecFile, ExecFileOptions } from 'node:child_process';
+import { homedir } from 'node:os';
 import { promisify } from 'node:util';
-import { newLaneProblem } from '../shared/projectManager';
+import {
+  RunLocation,
+  newLaneProblem,
+  normalizeRunLocation,
+  resolveRunLocation,
+  runLocationName,
+} from '../shared/projectManager';
 
 const execFile = promisify(nodeExecFile);
-const NIGHT_SCRIPT = '~/.agents/skills/auto-night-orchestrator/scripts/night';
-const SSH_BASE_ARGS: readonly string[] = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5', 'asus', NIGHT_SCRIPT];
+/** 엔진 CLI 기본 경로. ssh면 원격 셸이 `~`를 풀고, 이 컴퓨터면 여기서 홈 폴더로 바꾼다. */
+export const DEFAULT_ENGINE_PATH = '~/.agents/skills/auto-night-orchestrator/scripts/night';
+const SSH_OPTIONS: readonly string[] = ['-o', 'BatchMode=yes', '-o', 'ConnectTimeout=5'];
 const EXEC_TIMEOUT = 10_000;
+
+// ── 실행 위치 ────────────────────────────────────────────────────────────────
+// main.ts가 시작할 때(그리고 설정이 바뀔 때) 넣어 준다. 넣지 않으면 환경 변수 → '이 컴퓨터'.
+// 코드에는 특정 별칭·경로가 없다.
+
+let configuredLocation: RunLocation | null = null;
+
+/** 앱 설정(또는 시험)이 정한 실행 위치를 적용한다. 깨진 값은 '이 컴퓨터'가 된다. */
+export function configureRunLocation(location: unknown): RunLocation {
+  configuredLocation = normalizeRunLocation(location);
+  return configuredLocation;
+}
+
+/** 지금 쓰는 실행 위치. 설정이 없으면 환경 변수, 그것도 없으면 '이 컴퓨터'. */
+export function currentRunLocation(): RunLocation {
+  return configuredLocation ?? resolveRunLocation(null, process.env);
+}
+
+/** `~`로 시작하는 경로를 이 컴퓨터의 홈 폴더로. shell:false로 실행하므로 직접 풀어야 한다. */
+export function expandHomePath(value: string, home: string = homedir()): string {
+  if (value === '~') return home;
+  if (value.startsWith('~/')) return `${home}${value.slice(1)}`;
+  return value;
+}
+
+/** 사용자 글자가 든 인자 — ssh면 원격 셸용으로 따옴표를 치고, 이 컴퓨터면 그대로 넘긴다. */
+export class UserArg {
+  constructor(readonly value: string) {}
+}
+const user = (value: string): UserArg => new UserArg(value);
+export type EngineArg = string | UserArg;
+
+export interface EngineCommand {
+  file: string;
+  args: string[];
+}
+
+/**
+ * 엔진 명령 한 줄을 실행 위치에 맞는 실행 파일·인자로 바꾼다. Pure — 단위 시험 대상.
+ * - ssh: `ssh -o BatchMode=yes -o ConnectTimeout=5 <별칭> <엔진> <인자…>` (사용자 인자는 POSIX 따옴표)
+ * - local: `<엔진 경로> <인자…>` (따옴표 없이 그대로; shell:false)
+ */
+export function engineCommand(location: RunLocation, parts: readonly EngineArg[]): EngineCommand {
+  const engine = location.engine.trim() || DEFAULT_ENGINE_PATH;
+  if (location.kind === 'ssh') {
+    return {
+      file: 'ssh',
+      args: [...SSH_OPTIONS, location.alias, engine, ...parts.map(part => (part instanceof UserArg ? shQuote(part.value) : part))],
+    };
+  }
+  return {
+    file: expandHomePath(engine),
+    args: parts.map(part => (part instanceof UserArg ? part.value : part)),
+  };
+}
 /** PM `night plan request` is slow; override the default ssh timeout. */
 export const PLAN_REQUEST_TIMEOUT = 120_000;
 export const MAX_PLAN_REQUEST_TEXT_LENGTH = 1500;
@@ -232,36 +295,79 @@ function assertApprovalSummary(operation: ControlRoomOperation, summary: unknown
   }
 }
 
-const OFFLINE_MESSAGE = '작업 PC(ASUS)에 연결할 수 없습니다. 꺼져 있거나 네트워크가 끊겼을 수 있어요. 켜지면 자동으로 다시 불러옵니다.';
-const REMOTE_FAILED_MESSAGE = '작업 PC는 켜져 있는데 요청을 처리하다 오류가 났어요. 잠시 후 자동으로 다시 불러와요. 계속되면 원문 보기로 알려 주세요.';
-
-// ssh는 붙었는데 원격 명령이 실패한 경우(255 아닌 숫자 종료 코드, 또는 stderr에 Traceback)만 REMOTE_FAILED.
-function execFailure(operation: ControlRoomOperation, cause: unknown): ControlRoomError {
-  const record = cause && typeof cause === 'object' ? (cause as { code?: unknown; stderr?: unknown }) : {};
-  const stderr = typeof record.stderr === 'string' ? record.stderr : Buffer.isBuffer(record.stderr) ? record.stderr.toString('utf8') : '';
-  if ((typeof record.code === 'number' && record.code !== 255) || stderr.includes('Traceback')) {
-    return new ControlRoomError('REMOTE_FAILED', operation, REMOTE_FAILED_MESSAGE, cause, stderr.slice(-400));
-  }
-  return new ControlRoomError('EXEC_FAILED', operation, OFFLINE_MESSAGE, cause);
+// ── 실패 문구 — 실행 위치 이름으로 말한다 ──────────────────────────────────
+/** 다른 컴퓨터(ssh)에 닿지 못함. 꺼짐/네트워크. */
+export function offlineMessage(location: RunLocation): string {
+  return `작업 PC(${runLocationName(location)})에 연결할 수 없습니다. 꺼져 있거나 네트워크가 끊겼을 수 있어요. 켜지면 자동으로 다시 불러옵니다.`;
+}
+/** 다른 컴퓨터는 켜져 있는데 명령이 실패함. */
+export function remoteFailedMessage(location: RunLocation): string {
+  return `작업 PC(${runLocationName(location)})는 켜져 있는데 요청을 처리하다 오류가 났어요. 잠시 후 자동으로 다시 불러와요. 계속되면 원문 보기로 알려 주세요.`;
+}
+/** 이 컴퓨터에서 엔진 CLI를 실행할 수 없음(없거나 실행 권한이 없음). */
+export const LOCAL_ENGINE_MISSING_MESSAGE =
+  '이 컴퓨터에서 작업 엔진을 찾지 못했습니다. 아직 설치되지 않았거나 경로가 다를 수 있어요. 설정 → 실행 위치에서 엔진 경로를 확인해 주세요.';
+/** 이 컴퓨터에서 엔진이 돌았지만 실패함. */
+export const LOCAL_FAILED_MESSAGE =
+  '이 컴퓨터에서 요청을 처리하다 오류가 났어요. 잠시 후 자동으로 다시 불러와요. 계속되면 원문 보기로 알려 주세요.';
+/** 이 컴퓨터에서 엔진이 시간 안에 답하지 않음. */
+export const LOCAL_TIMEOUT_MESSAGE =
+  '이 컴퓨터의 작업 엔진이 시간 안에 답하지 않았어요. 잠시 후 자동으로 다시 시도합니다.';
+/** 응답이 JSON이 아님. */
+export function badReplyMessage(location: RunLocation): string {
+  return location.kind === 'ssh'
+    ? '작업 PC의 응답을 읽지 못했습니다. 잠시 후 자동으로 다시 시도합니다.'
+    : '작업 엔진의 응답을 읽지 못했습니다. 잠시 후 자동으로 다시 시도합니다.';
 }
 
-async function runSshJson(
+function stderrOf(record: { stderr?: unknown }): string {
+  return typeof record.stderr === 'string' ? record.stderr : Buffer.isBuffer(record.stderr) ? record.stderr.toString('utf8') : '';
+}
+
+/**
+ * 실행 실패를 위치에 맞게 가른다.
+ * - ssh: 붙었는데 원격 명령이 실패한 경우(255 아닌 숫자 종료 코드, 또는 stderr에 Traceback)만 REMOTE_FAILED, 나머지는 꺼짐.
+ * - local: 숫자 종료 코드(엔진이 돌았음) → REMOTE_FAILED, 시간 초과 → EXEC_FAILED(시간), 그 외(ENOENT 등) → EXEC_FAILED(엔진 없음).
+ */
+export function execFailure(operation: ControlRoomOperation, cause: unknown, location: RunLocation = currentRunLocation()): ControlRoomError {
+  const record = cause && typeof cause === 'object' ? (cause as { code?: unknown; stderr?: unknown; killed?: unknown; signal?: unknown }) : {};
+  const stderr = stderrOf(record);
+  const exited = typeof record.code === 'number';
+  if (location.kind === 'ssh') {
+    if ((exited && record.code !== 255) || stderr.includes('Traceback')) {
+      return new ControlRoomError('REMOTE_FAILED', operation, remoteFailedMessage(location), cause, stderr.slice(-400));
+    }
+    return new ControlRoomError('EXEC_FAILED', operation, offlineMessage(location), cause);
+  }
+  if (exited || stderr.includes('Traceback')) {
+    return new ControlRoomError('REMOTE_FAILED', operation, LOCAL_FAILED_MESSAGE, cause, stderr.slice(-400));
+  }
+  if (record.killed === true || typeof record.signal === 'string') {
+    return new ControlRoomError('EXEC_FAILED', operation, LOCAL_TIMEOUT_MESSAGE, cause);
+  }
+  return new ControlRoomError('EXEC_FAILED', operation, LOCAL_ENGINE_MISSING_MESSAGE, cause, stderr.slice(-400) || undefined);
+}
+
+/** 엔진 명령을 지금 실행 위치에서 돌리고 stdout JSON을 돌려준다. 모든 관제실 호출이 이 한 곳을 지난다. */
+async function runEngineJson(
   operation: ControlRoomOperation,
-  args: string[],
+  parts: readonly EngineArg[],
   execFileImpl: ControlRoomExec,
   options?: ControlRoomExecOptions,
 ): Promise<unknown> {
+  const location = currentRunLocation();
+  const command = engineCommand(location, parts);
   let stdout: string;
   try {
-    ({ stdout } = await execFileImpl('ssh', args, { shell: false, timeout: EXEC_TIMEOUT, ...options }));
+    ({ stdout } = await execFileImpl(command.file, command.args, { shell: false, timeout: EXEC_TIMEOUT, ...options }));
   } catch (cause) {
-    throw execFailure(operation, cause);
+    throw execFailure(operation, cause, location);
   }
 
   try {
     return JSON.parse(stdout);
   } catch (cause) {
-    throw new ControlRoomError('INVALID_JSON', operation, '작업 PC의 응답을 읽지 못했습니다. 잠시 후 자동으로 다시 시도합니다.', cause);
+    throw new ControlRoomError('INVALID_JSON', operation, badReplyMessage(location), cause);
   }
 }
 
@@ -269,31 +375,17 @@ export async function runControlRoom(
   operation: 'board' | 'approvals',
   execFileImpl: ControlRoomExec = execFile,
 ): Promise<unknown> {
-  const args = [...SSH_BASE_ARGS];
-  args.push(...(operation === 'board' ? ['board', '--json'] : ['approvals', 'list', '--json']));
-
-  let stdout: string;
-  try {
-    ({ stdout } = await execFileImpl('ssh', args, { shell: false, timeout: EXEC_TIMEOUT }));
-  } catch (cause) {
-    throw execFailure(operation, cause);
-  }
-
-  try {
-    return JSON.parse(stdout);
-  } catch (cause) {
-    throw new ControlRoomError('INVALID_JSON', operation, '작업 PC의 응답을 읽지 못했습니다. 잠시 후 자동으로 다시 시도합니다.', cause);
-  }
+  return runEngineJson(operation, operation === 'board' ? ['board', '--json'] : ['approvals', 'list', '--json'], execFileImpl);
 }
 
 /** 실행 환경(CPU·RAM·AI 프로그램) — `night envs --json`. 원격 점검이 느려 30초까지 기다린다. */
 export const ENVS_TIMEOUT = 30_000;
 export const runControlRoomEnvs = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
-  runSshJson('envs', [...SSH_BASE_ARGS, 'envs', '--json'], execFileImpl, { timeout: ENVS_TIMEOUT });
+  runEngineJson('envs', ['envs', '--json'], execFileImpl, { timeout: ENVS_TIMEOUT });
 
 /** 토큰 감지 — `night tokens --json`. */
 export const runControlRoomTokens = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
-  runSshJson('tokens', [...SSH_BASE_ARGS, 'tokens', '--json'], execFileImpl);
+  runEngineJson('tokens', ['tokens', '--json'], execFileImpl);
 
 export async function runPlanStudioGet(
   project: string,
@@ -301,7 +393,7 @@ export async function runPlanStudioGet(
 ): Promise<unknown> {
   const operation: ControlRoomOperation = 'planStudio:get';
   assertProjectId(operation, project);
-  return runSshJson(operation, [...SSH_BASE_ARGS, 'roadmap', 'get', project, '--json'], execFileImpl);
+  return runEngineJson(operation, ['roadmap', 'get', project, '--json'], execFileImpl);
 }
 
 export async function runPlanStudioSave(
@@ -312,9 +404,9 @@ export async function runPlanStudioSave(
   const operation: ControlRoomOperation = 'planStudio:save';
   assertProjectId(operation, project);
   assertPayloadString(operation, 'draft', draft);
-  return runSshJson(
+  return runEngineJson(
     operation,
-    [...SSH_BASE_ARGS, 'roadmap', 'save', project, '--json'],
+    ['roadmap', 'save', project, '--json'],
     execFileImpl,
     { input: draft },
   );
@@ -328,9 +420,9 @@ export async function runPlanStudioChat(
   const operation: ControlRoomOperation = 'planStudio:chat';
   assertProjectId(operation, project);
   assertPayloadString(operation, 'message', message);
-  return runSshJson(
+  return runEngineJson(
     operation,
-    [...SSH_BASE_ARGS, 'roadmap', 'chat', project, '--json'],
+    ['roadmap', 'chat', project, '--json'],
     execFileImpl,
     { input: message },
   );
@@ -344,9 +436,9 @@ export async function runPlanStudioRequest(
   const operation: ControlRoomOperation = 'planStudio:request';
   assertProjectId(operation, project);
   assertPlanRequestText(operation, text);
-  return runSshJson(
+  return runEngineJson(
     operation,
-    [...SSH_BASE_ARGS, 'plan', 'request', shQuote(project), shQuote(text), '--json'],
+    ['plan', 'request', user(project), user(text), '--json'],
     execFileImpl,
     { timeout: PLAN_REQUEST_TIMEOUT },
   );
@@ -358,12 +450,12 @@ export async function runPlanStudioApprove(
 ): Promise<unknown> {
   const operation: ControlRoomOperation = 'planStudio:approve';
   assertProjectId(operation, project);
-  return runSshJson(operation, [...SSH_BASE_ARGS, 'roadmap', 'approve', project, '--json'], execFileImpl);
+  return runEngineJson(operation, ['roadmap', 'approve', project, '--json'], execFileImpl);
 }
 
 export async function runGatesList(execFileImpl: ControlRoomExec = execFile): Promise<unknown> {
   const operation: ControlRoomOperation = 'gates:list';
-  return runSshJson(operation, [...SSH_BASE_ARGS, 'gate', 'list', '--json'], execFileImpl);
+  return runEngineJson(operation, ['gate', 'list', '--json'], execFileImpl);
 }
 
 export async function runGateAnswer(
@@ -374,9 +466,9 @@ export async function runGateAnswer(
   const operation: ControlRoomOperation = 'gates:answer';
   assertGateId(operation, gateId);
   assertOptionIndex(operation, optionIndex);
-  return runSshJson(
+  return runEngineJson(
     operation,
-    [...SSH_BASE_ARGS, 'gate', 'answer', gateId, String(optionIndex), '--json'],
+    ['gate', 'answer', gateId, String(optionIndex), '--json'],
     execFileImpl,
   );
 }
@@ -391,17 +483,9 @@ export async function runControlRoomLaneSet(
   assertProjectId(operation, project);
   assertLaneRole(operation, role);
   assertRuntimes(operation, runtimes);
-  return runSshJson(
+  return runEngineJson(
     operation,
-    [
-      ...SSH_BASE_ARGS,
-      'lane',
-      'set',
-      shQuote(project),
-      shQuote(role),
-      shQuote(runtimes.join(',')),
-      '--json',
-    ],
+    ['lane', 'set', user(project), user(role), user(runtimes.join(',')), '--json'],
     execFileImpl,
   );
 }
@@ -415,11 +499,11 @@ export async function runControlRoomLaneAdd(
   execFileImpl: ControlRoomExec = execFile,
 ): Promise<unknown> {
   const operation: ControlRoomOperation = 'controlRoom:laneAdd';
-  const problem = newLaneProblem({ id, path, name });
+  const problem = newLaneProblem({ id, path, name }, [], runLocationName(currentRunLocation()));
   if (problem) throw invalidInput(operation, problem);
-  return runSshJson(
+  return runEngineJson(
     operation,
-    [...SSH_BASE_ARGS, 'lane', 'add', shQuote(id), shQuote(path.trim()), shQuote(name.trim()), '--json'],
+    ['lane', 'add', user(id), user(path.trim()), user(name.trim()), '--json'],
     execFileImpl,
     { timeout: LANE_ADD_TIMEOUT },
   );
@@ -431,9 +515,9 @@ export async function runControlRoomResume(
 ): Promise<unknown> {
   const operation: ControlRoomOperation = 'controlRoom:resume';
   assertProjectId(operation, project);
-  return runSshJson(
+  return runEngineJson(
     operation,
-    [...SSH_BASE_ARGS, 'roadmap', 'resume', shQuote(project), '--json'],
+    ['roadmap', 'resume', user(project), '--json'],
     execFileImpl,
   );
 }
@@ -444,9 +528,9 @@ export async function runControlRoomPause(
 ): Promise<unknown> {
   const operation: ControlRoomOperation = 'controlRoom:pause';
   assertProjectId(operation, project);
-  return runSshJson(
+  return runEngineJson(
     operation,
-    [...SSH_BASE_ARGS, 'roadmap', 'pause', shQuote(project), '--json'],
+    ['roadmap', 'pause', user(project), '--json'],
     execFileImpl,
   );
 }
@@ -459,14 +543,14 @@ export async function runControlRoomScheduleSet(
   if (typeof time !== 'string' || !SCHEDULE_TIME_PATTERN.test(time)) {
     throw invalidInput(operation, '시간은 00:00부터 23:59 사이의 HH:MM 형식이어야 합니다.');
   }
-  return runSshJson(operation, [...SSH_BASE_ARGS, 'schedule', time, '--json'], execFileImpl);
+  return runEngineJson(operation, ['schedule', time, '--json'], execFileImpl);
 }
 
 export const runControlRoomScheduleList = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
-  runSshJson('controlRoom:scheduleList', [...SSH_BASE_ARGS, 'schedule', 'list', '--json'], execFileImpl);
+  runEngineJson('controlRoom:scheduleList', ['schedule', 'list', '--json'], execFileImpl);
 
 export const runControlRoomScheduleCancel = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
-  runSshJson('controlRoom:scheduleCancel', [...SSH_BASE_ARGS, 'schedule', 'cancel', '--json'], execFileImpl);
+  runEngineJson('controlRoom:scheduleCancel', ['schedule', 'cancel', '--json'], execFileImpl);
 
 export async function runControlRoomHoldChoose(
   taskId: string,
@@ -476,7 +560,7 @@ export async function runControlRoomHoldChoose(
   const operation: ControlRoomOperation = 'controlRoom:holdChoose';
   assertTaskId(operation, taskId);
   assertHoldOption(operation, option);
-  return runSshJson(operation, [...SSH_BASE_ARGS, 'hold', 'choose', shQuote(taskId), option, '--json'], execFileImpl);
+  return runEngineJson(operation, ['hold', 'choose', user(taskId), option, '--json'], execFileImpl);
 }
 
 export async function runControlRoomApprovalAdd(
@@ -487,9 +571,9 @@ export async function runControlRoomApprovalAdd(
   const operation: ControlRoomOperation = 'controlRoom:approvalAdd';
   assertApprovalCategory(operation, category);
   assertApprovalSummary(operation, summary);
-  return runSshJson(
+  return runEngineJson(
     operation,
-    [...SSH_BASE_ARGS, 'approvals', 'add', shQuote(category), shQuote(summary), '--source', 'app', '--json'],
+    ['approvals', 'add', user(category), user(summary), '--source', 'app', '--json'],
     execFileImpl,
   );
 }
@@ -508,7 +592,7 @@ export async function runControlRoomApprovalEdit(
   const operation: ControlRoomOperation = 'controlRoom:approvalEdit';
   assertApprovalRuleId(operation, id);
   assertApprovalSummary(operation, summary);
-  return runSshJson(operation, [...SSH_BASE_ARGS, 'approvals', 'edit', id, shQuote(summary), '--json'], execFileImpl);
+  return runEngineJson(operation, ['approvals', 'edit', id, user(summary), '--json'], execFileImpl);
 }
 
 export async function runControlRoomApprovalRemove(
@@ -517,12 +601,12 @@ export async function runControlRoomApprovalRemove(
 ): Promise<unknown> {
   const operation: ControlRoomOperation = 'controlRoom:approvalRemove';
   assertApprovalRuleId(operation, id);
-  return runSshJson(operation, [...SSH_BASE_ARGS, 'approvals', 'remove', id, '--json'], execFileImpl);
+  return runEngineJson(operation, ['approvals', 'remove', id, '--json'], execFileImpl);
 }
 
 // 자동 진행 켜기/끄기/상태 — 고정 명령, 사용자 인자 없음.
 const runAutomation = (operation: ControlRoomOperation, verb: string, execFileImpl: ControlRoomExec) =>
-  runSshJson(operation, [...SSH_BASE_ARGS, verb, '--json'], execFileImpl);
+  runEngineJson(operation, [verb, '--json'], execFileImpl);
 
 export const runControlRoomAutomationStatus = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
   runAutomation('controlRoom:automationStatus', 'status', execFileImpl);
@@ -534,7 +618,7 @@ export const runControlRoomAutomationOff = (execFileImpl: ControlRoomExec = exec
 /** 허브 승격 — `night promote hub --json`. 호출될 때만 실행되고 느려서 60초까지 기다린다. */
 export const PROMOTE_TIMEOUT = 60_000;
 export const runControlRoomPromoteHub = (execFileImpl: ControlRoomExec = execFile): Promise<unknown> =>
-  runSshJson('controlRoom:promoteHub', [...SSH_BASE_ARGS, 'promote', 'hub', '--json'], execFileImpl, { timeout: PROMOTE_TIMEOUT });
+  runEngineJson('controlRoom:promoteHub', ['promote', 'hub', '--json'], execFileImpl, { timeout: PROMOTE_TIMEOUT });
 
 // ── Control Room "오늘 끝난 일 / 지금 일하는 AI" (R5/R6) ───────────────────
 // Pure helpers — 단위 테스트 대상. board JSON 모양이 바뀌어도 깨지지 않게
@@ -1015,26 +1099,29 @@ export async function runControlRoomNightReports(
   nowMs: number = Date.now(),
 ): Promise<NightReportList> {
   const operation: ControlRoomOperation = 'controlRoom:nightReports';
-  const args = [...SSH_BASE_ARGS, 'review', '--json'];
+  const location = currentRunLocation();
+  const command = engineCommand(location, ['review', '--json']);
   const parseStdout = (stdout: string): NightReportList => {
     let parsed: unknown;
     try {
       parsed = JSON.parse(stdout);
     } catch (cause) {
-      throw new ControlRoomError('INVALID_JSON', operation, '작업 PC의 응답을 읽지 못했습니다. 잠시 후 자동으로 다시 시도합니다.', cause);
+      throw new ControlRoomError('INVALID_JSON', operation, badReplyMessage(location), cause);
     }
     return presentNightReports(parsed, nowMs);
   };
 
   try {
-    const { stdout } = await execFileImpl('ssh', args, { shell: false, timeout: EXEC_TIMEOUT });
+    const { stdout } = await execFileImpl(command.file, command.args, { shell: false, timeout: EXEC_TIMEOUT });
     return parseStdout(stdout);
   } catch (cause) {
     if (cause instanceof ControlRoomError) throw cause;
     const code = thrownCode(cause);
     const stdout = thrownStdout(cause).trim();
-    if (code !== null && code !== 255 && stdout) return parseStdout(stdout);
-    throw execFailure(operation, cause);
+    // ssh에서 255는 연결 실패라 stdout이 있어도 믿지 않는다. 이 컴퓨터에서는 어떤 종료 코드든 엔진이 낸 것이다.
+    const engineRan = code !== null && (location.kind === 'local' || code !== 255);
+    if (engineRan && stdout) return parseStdout(stdout);
+    throw execFailure(operation, cause, location);
   }
 }
 

@@ -36,14 +36,15 @@ async function loadModule(file) {
 const app = await loadModule('src/frontend/App.tsx');
 const labels = await loadModule('src/shared/projectLabels.ts');
 
-test('env cards: ASUS selectable, MainPC on hold, 클라우드 곧 지원', () => {
+test('env cards: the current location is selectable, other computers point to 실행 위치, 클라우드 곧 지원', () => {
   const rows = labels.normalizeEnvs({
     envs: [
       { id: 'asus', cpu_pct: 22.4, ram_free_gb: 9.24, ram_total_gb: 16, ais: ['codex', 'claude-team'] },
       { id: 'mainpc', cpu_pct: 40, ram_free_gb: 20, ram_total_gb: 32, ais: [] },
     ],
   });
-  const [asus, mainpc, cloud] = app.settingsEnvCards(rows);
+  const ssh = { kind: 'ssh', alias: 'asus', name: '' };
+  const [asus, mainpc, cloud] = app.settingsEnvCards(rows, ssh);
   assert.equal(asus.label, 'ASUS (이 컴퓨터)');
   assert.equal(asus.selectable, true);
   assert.equal(asus.tone, 'teal');
@@ -51,7 +52,13 @@ test('env cards: ASUS selectable, MainPC on hold, 클라우드 곧 지원', () =
   assert.equal(asus.ramLine, '9.2/16 GB 남음');
   assert.deepEqual(asus.ais, ['Codex', 'Claude Team']);
   assert.equal(mainpc.selectable, false);
-  assert.equal(mainpc.holdLabel, '준비 중 — 원격 실행은 보류 중이에요');
+  assert.equal(mainpc.holdLabel, app.ENV_CARD_CHANGE_HINT);
+  // 이 컴퓨터에서 돌리면 엔진이 첫 줄로 보내는 자기 자신이 '지금 여기서 일해요'.
+  const [first, second] = app.settingsEnvCards(rows);
+  assert.equal(first.selectable, true);
+  assert.equal(second.selectable, false);
+  // 다른 컴퓨터로 정했는데 그 별칭이 목록에 없으면 아무 행도 고르지 않는다.
+  assert.ok(app.settingsEnvCards(rows, { kind: 'ssh', alias: 'elsewhere', name: '' }).every(card => !card.selectable));
   assert.equal(mainpc.ramLine, '20/32 GB 남음');
   assert.equal(cloud.label, '클라우드');
   assert.equal(cloud.selectable, false);
@@ -60,7 +67,7 @@ test('env cards: ASUS selectable, MainPC on hold, 클라우드 곧 지원', () =
 });
 
 test('env cards turn amber at CPU ≥85% or RAM <3.5 GB, and when offline — never red', () => {
-  const card = (r) => app.settingsEnvCards(labels.normalizeEnvs([{ id: 'asus', ...r }]))[0];
+  const card = (r) => app.settingsEnvCards(labels.normalizeEnvs([{ id: 'asus', ...r }]), { kind: 'ssh', alias: 'asus', name: '' })[0];
   assert.equal(card({ cpu_pct: 84, ram_free_gb: 3.5 }).tone, 'teal');
   assert.equal(card({ cpu_pct: 85, ram_free_gb: 8 }).tone, 'amber');
   assert.equal(card({ cpu_pct: 10, ram_free_gb: 3.4 }).tone, 'amber');
@@ -88,11 +95,12 @@ test('동시에 일하는 AI 수 comes from board.capacity, never guessed', () =
 
 test('settings page keeps update, 저장 폴더, 프로젝트 관리 and 고급 (개발용) reachable', () => {
   const page = appSrc.slice(appSrc.indexOf('<div className="settings-page">'), appSrc.indexOf('<AutoWorklog />'));
-  for (const s of ['<SettingsEnvSection', '동시에 일하는 AI 수', '<UpdateSection', '저장 폴더', '<ProjectManager />', '고급 (개발용)', '개발 도구']) {
+  for (const s of ['<SettingsEnvSection', '동시에 일하는 AI 수', '<UpdateSection', '저장 폴더', '<ProjectManager ', '고급 (개발용)', '개발 도구']) {
     assert.ok(page.includes(s), `missing ${s}`);
   }
   assert.ok(page.indexOf('<SettingsEnvSection') < page.indexOf('고급 (개발용)'));
-  assert.doesNotMatch(appSrc, /원격 실행.*ssh|controlRoom:remoteRun/, 'remote execution stays on hold');
+  assert.ok(page.includes('<RunLocationSection'), 'run location is a setting on the same page');
+  assert.doesNotMatch(appSrc, /controlRoom:remoteRun/);
 });
 
 test('storage and settings-file paths sit only under 원문 보기', () => {

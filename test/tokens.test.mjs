@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { ControlRoomError, runControlRoomTokens } from "../dist/server/backend/controlRoom.js";
+import { ControlRoomError, runControlRoomTokens, configureRunLocation } from "../dist/server/backend/controlRoom.js";
 import { TOKENS_REFRESH_MS, formatTokens, normalizeTokens, topTokenProjects, tokensSummaryLine } from "../dist/server/shared/tokens.js";
+
+// 이 시험은 다른 컴퓨터(SSH) 위치를 가정한다 — 별칭은 시험이 직접 넣는다(코드 기본값이 아니다).
+configureRunLocation({ kind: "ssh", alias: "asus" });
 
 const BASE = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=5", "asus", "~/.agents/skills/auto-night-orchestrator/scripts/night"];
 const TOKENS = {
