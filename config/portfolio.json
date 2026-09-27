@@ -5087,6 +5087,18 @@
           ],
           "ssotEvidence": "Founder 2026-09-27 16:40 on MainPC with board 8c37b8e: 'actl켰을 때, 터미널이 여러개 뜨는 거 백그라운드로 못 숨김? … 새환경찾기 눌러도 여러개 뜨는 거', 'actl창 지금 -> 글씨랑 너무 큼', 'Claude Team 1, 2, Cursor 다 작업중인데 왜 상태가 쉬는중으로 나옴?', 'MainPC -> wsl 환경은? 연동 안됨 아직?'. Verified 2026-09-27 16:45 via ssh on MainPC. Test: running the envs list printer against a cp949 text stream does not raise.",
           "title": "actl: Windows에서 `envs list` 한글·특수문자 오류로 죽는 문제"
+        },
+        {
+          "taskId": "ACTL-STATUS-TRUTH-BASEFIX",
+          "scope": "`python3 tests/run_tests.py` already fails on the integration tip 0e87005 before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output: ",
+          "files": [
+            "tests/test_status_truth.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "qaRuntime": [
