@@ -21264,6 +21264,54 @@
           ],
           "ssotEvidence": "docs/TEST_SCENARIOS.md:918 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동은 유지한다.",
           "title": "최소 설정을 안전하게 유지"
+        },
+        {
+          "taskId": "JUTELL-ONE-FINAL-ANSWER-PARITY",
+          "scope": "Add PRODUCT_SCOPE §6.1's two sentences, that a technical report and a beginner report are not written separately and that the single final answer itself must be understandable, as one sub-bullet under SKILL.md step 13, plus an offline node:test that both sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/one-final-answer-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/one-final-answer-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:170 기술 보고서와 비개발자용 보고서를 따로 생성하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-SIMPLE-WORK-KINDS-PARITY",
+          "scope": "Add the six BEGINNER_REPORT_SPEC §5.1 simple-work kinds in order (문구 변경, 색상 변경, 간단한 여백 조정, 문서 수정, 주석 수정, 한 파일 안의 작은 화면 변경) as one bullet under report-format.md section 2, plus an offline node:test that the same six kinds stay in that order.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/simple-work-kinds-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/simple-work-kinds-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:120 * 문구 변경"
+        },
+        {
+          "taskId": "JUTELL-MAIN-FILE-OVERFLOW-PARITY",
+          "scope": "Add the three PRODUCT_SCOPE §6.5 overflow rules (at most five main files with role and change reason, remaining files as a path list or a count only, and created or settings files called out separately when needed) as one bullet under report-format.md section 3, plus an offline node:test that those three phrases stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/main-file-overflow-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/main-file-overflow-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:275 * 주요 파일 최대 5개: 역할과 변경 이유를 설명"
+        },
+        {
+          "taskId": "JUTELL-NO-UNRELATED-GLOSSARY-PARITY",
+          "scope": "Add PRODUCT_SCOPE §6.6's sentence that unrelated general development knowledge is not explained at length, and GLOSSARY_POLICY §10 scenario A's sentence that a button-text-and-color change adds no unnecessary development terms, as one sentence in glossary-ko.md's opening paragraph, plus an offline node:test that both sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/no-unrelated-glossary-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/no-unrelated-glossary-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:298 프로젝트와 무관한 일반 개발 지식을 길게 설명하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
