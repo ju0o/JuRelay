@@ -17841,6 +17841,18 @@
           ],
           "ssotEvidence": "QA findings (residual wording) + Supervisor 2026-09-27 R2 redesign",
           "title": "검수 안내를 검사로 통일하고 빠진 한 줄 고치기"
+        },
+        {
+          "taskId": "JCAPP-PERSONA-REBUILD-R2",
+          "scope": "실기기 founder.md 생성·active.json 기록은 미루고, 기준 트리에 없는 lib/personaInspect.mjs의 inspectPersonaFile(filePath)가 디스크의 공개 페르소나 마크다운을 직접 읽어 docs/personas/example.md의 네 ## 섹션(이 사람은 누구인가, 이 사람이 화면에서 기대하는 것, 결정 습관, 검토 방법) 존재와 비밀값·토큰·이메일·절대경로 없음을 판정하게 하며, test/persona-rebuild.test.mjs의 'inspectPersonaFile reads the public persona file and rejects SOURCE_FIXTURE'가 loadActivePersona가 아닌 그 함수로 공개 파일을 읽어 통과하고 SOURCE_FIXTURE 원문을 같은 함수에 넣어 거절함을 증명해 옛 코드에서는 실패하고 새 코드에서는 통과해야 한다.",
+          "files": [
+            "lib/personaInspect.mjs",
+            "test/persona-rebuild.test.mjs"
+          ],
+          "tests": [
+            "node --test test/persona-rebuild.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 페르소나 Tester가 항상 건너뜀; persona 원본 부재 실측. Supervisor 결정: Agent-Relay WBS로 복원 (Aside 아님)."
         }
       ],
       "skills": {
