@@ -21058,6 +21058,42 @@
             "node --test tests/confirmed-result-code-expectation-separation.test.mjs"
           ],
           "ssotEvidence": "Founder direction 2026-09-28: 확인된 결과와 코드 기반 예상의 분리에 대한 오프라인 테스트를 추가하고 테스트가 통과하면 완료"
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-CONTEXT-ROLE-PARITY",
+          "scope": "Add the GLOSSARY_POLICY §4.2 unconfirmed-role example sentence to glossary-ko.md section 7 and an offline node:test that the six context terms and that sentence stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-context-role-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-context-role-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:93 코드 구조상 검색 기능에 사용되는 Route로 예상되지만, 전체 연결 관계는 확인하지 못했습니다."
+        },
+        {
+          "taskId": "JUTELL-FEATURE-CENTERED-FILES-PARITY",
+          "scope": "Add one PRODUCT_SCOPE §7.4 bullet to report-format.md section 3 so files are explained with their feature, plus an offline node:test that both sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/feature-centered-files-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/feature-centered-files-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:426 파일은 해당 기능과 함께 설명한다."
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-OFF-OMIT-PARENS-PARITY",
+          "scope": "Add the TEST_SCENARIOS §14.2 glossary-off rules to the feature-registry glossary row and an offline node:test that those two sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/glossary-off-omit-parens-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-off-omit-parens-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:932 쉬운 용어 괄호 설명만 생략한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
