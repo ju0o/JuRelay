@@ -19462,6 +19462,42 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:396 도구, 권한, 설정 또는 환경 문제로 실행하지 못했다.",
           "title": "실행하지 못한 일은 보류라고 알리기"
+        },
+        {
+          "taskId": "JUTELL-MAIN-FILES-SELECT-PRIORITY-PARITY",
+          "scope": "Add one bullet under report-format.md section 3 listing the six BEGINNER_REPORT_SPEC §15 main-file selection priorities in order, starting with 사용자가 요청한 기능을 직접 구현한 파일, plus an offline node:test.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/main-files-select-priority-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/main-files-select-priority-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:618 선정 우선순위는 다음과 같다."
+        },
+        {
+          "taskId": "JUTELL-TERM-MEANING-KEEP-PARITY",
+          "scope": "Add GLOSSARY_POLICY §2.4 and PRODUCT_SCOPE §6.6's rule against distorting a term's technical meaning as one sentence in glossary-ko.md's opening paragraph, plus an offline node:test.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/term-meaning-keep-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/term-meaning-keep-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:38 쉽게 설명하더라도 용어의 범위를 다른 개념으로 바꾸지 않는다."
+        },
+        {
+          "taskId": "JUTELL-FEATURE-OFF-NO-CONFIRMED-PARITY",
+          "scope": "Add TEST_SCENARIOS §14.4's rule that a failed core test is not marked 확인 완료 when validationResults or riskAssessment is off, as one sentence in feature-registry.md, plus an offline node:test.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/feature-off-no-confirmed-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/feature-off-no-confirmed-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:961 검증 실패가 있는데 확인 완료로 표시하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
