@@ -20832,6 +20832,17 @@
             "node check.mjs"
           ],
           "ssotEvidence": "setup.mjs:80 \"availableTags: ch.tags.map((name) => ({ name }))\""
+        },
+        {
+          "taskId": "JUAI-CHECK-REDACT-OPEN-KEY-R2",
+          "scope": "In check.mjs only, leave lib.mjs and both existing RSA private-key assertions unchanged, and insert immediately after the unclosed RSA assertion (directly before the mail redact assertion) the same two concatenated BEGIN PRIVATE KEY checks: an unclosed block is redacted through the end of the string, and text after a closed END PRIVATE KEY marker is preserved.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다."
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
