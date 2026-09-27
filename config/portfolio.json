@@ -16816,6 +16816,42 @@
           ],
           "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];",
           "title": "검수 안내를 검사로 통일하기"
+        },
+        {
+          "taskId": "JCAPP-PERSONA-REBUILD",
+          "scope": "Founder persona 원본이 없어 페르소나 Tester가 항상 건너뛰어짐. 기기 내 대화 기록(.jucontroler-state/directive-dispatch archive + founder approvals ledger + DECISION_LOG)으로 초안을 만든다: .jucontroler-state/personas/founder.md (git 추적 안 됨, 절대 repo에 커밋 금지) + active.json에 경로 기록. Repo에는 fixture 기반 검증 test/persona-rebuild.test.mjs만 추가한다 (초안 구조가 docs/personas/example.md 섹션을 따르는지, 비밀값·토큰·개인정보 패턴이 없는지). 실제 대표님 문구는 QA가 FOUNDER_GATE로 승인 요청하고 자동 승인 금지.",
+          "files": [
+            "test/persona-rebuild.test.mjs"
+          ],
+          "tests": [
+            "node --test test/persona-rebuild.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-27: 페르소나 Tester가 항상 건너뜀; persona 원본 부재 실측. Supervisor 결정: Agent-Relay WBS로 복원 (Aside 아님).",
+          "title": "페르소나 복원 (대화 기록 기반 초안)"
+        },
+        {
+          "taskId": "JCAPP-TESTER-TRIAL-WORD",
+          "scope": "On the 시험 결과 tab only, say 시험 instead of 테스트, and keep Verdict/Result/Status prefixes, Hangul-free English tails, last.json, and TESTER_*.md names off the visible title.",
+          "files": [
+            "operator/public/app.js",
+            "test/tester-runs.test.mjs"
+          ],
+          "tests": [
+            "node --test test/tester-runs.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];"
+        },
+        {
+          "taskId": "JCAPP-MEMORY-INSPECT-LINE",
+          "scope": "Change the Korean one-liner for an English agent memory proposal from 검수가 to 검사가 so it uses the same step word as the live-status card.",
+          "files": [
+            "operator/public/app.js",
+            "test/memory-proposals-plain.test.mjs"
+          ],
+          "tests": [
+            "node --test test/memory-proposals-plain.test.mjs"
+          ],
+          "ssotEvidence": "operator/public/app.js:507 const LIVE_STEPS = ['계획', '만들기', '검사', '시험', '반영'];"
         }
       ],
       "skills": {
