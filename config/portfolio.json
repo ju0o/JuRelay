@@ -24465,6 +24465,50 @@
           ],
           "ssotEvidence": "README.md:17 환영 인사·프로필 폼",
           "title": "가입할 때 내 정보 간단히 등록"
+        },
+        {
+          "taskId": "JUAI-CHECK-SUB-GATES",
+          "scope": "Add check.mjs assertions only that subscribe returns the existing SUB_MAX cap reply before inserting a new keyword, and that notifySubs skips the author and a count already at SUB_DAILY before writing subsent.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 키워드 구독은 2~20글자, 최대 5개, 매칭 알림은 1인 하루 3회"
+        },
+        {
+          "taskId": "JUAI-CHECK-ANON-HIDE",
+          "scope": "Add check.mjs assertions only that anonymousQuestion's public thread content omits the author id and sends no pings, while the ops log line keeps the author id.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 `!익명`은 OpenCode 개인 메시지에서만 작동"
+        },
+        {
+          "taskId": "JUAI-CHECK-CARD-OWNER",
+          "scope": "Add check.mjs assertions only that a non-owner card press is rejected before the card changes, that 보류 stores HOLD with a 7-day remind_at, and that tick turns a due HOLD card into a new card.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-FREE-MODELS",
+          "scope": "Add check.mjs assertions only by reading ai.mjs as text, not importing it, that every default OPENCODE_MODELS entry contains free, that the member claude command defaults to haiku, and that sonnet appears only on the claude-dev command.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
