@@ -21383,6 +21383,28 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:20 Live milestone/PR/SHA truth remains in PM_STATUS_BOARD.md; stale operational paragraphs in MASTER_ROADMAP do not override the status board.",
           "title": "최신 진행 상황은 현황판 기준으로 안내"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-QA-AUTHORITY-PROTOCOL-AUDIT-NOTE",
+          "scope": "Add the same dated audit-time note pattern used in the other seven docs/qa/P0_*.md audit docs to docs/qa/PM_AUTHORITY_PROTOCOL_QA.md, clarifying that its STATUS-01 stale-status finding belongs to that audit's checkout and that the board now shows M2 GO with M3 UNDECIDED (not the older PM REVIEW/P0 ACTIVE baseline it describes).",
+          "files": [
+            "docs/qa/PM_AUTHORITY_PROTOCOL_QA.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/qa/PM_AUTHORITY_PROTOCOL_QA.md:20 (STATUS-01 finding, no audit-time note) vs docs/qa/P0_WBS_ENTITY_GATE_MATRIX_AUDIT.md:7 (existing audit-time note pattern); docs/operations/PM_STATUS_BOARD.md:58 current M3 UNDECIDED state"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-INDEX-LAST-UPDATED-DATE-SYNC",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_INDEX.md, correct the header 'Last updated: 2026-09-25' (line 4) to the file's actual last edit date 2026-09-28, changing no other content.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_INDEX.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:4 ('> Last updated: 2026-09-25') vs `git log -1 --format=%ad --date=short 557e53c1f4b99559fcaa5ae4a730d29c0caec83a -- docs/planning/BUSINESS_SYSTEM_INDEX.md` = 2026-09-28"
         }
       ],
       "skills": {
