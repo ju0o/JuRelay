@@ -21177,6 +21177,17 @@
           ],
           "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a captured row that has both a Claude final and a Receipt.",
           "title": "후속 작업 판단 조건을 남긴다"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-README-CANONICAL-INDEX-SYNC",
+          "scope": "README의 PM 읽기 순서를 현재 canonical artifact index와 M3 joined-evidence 검증 문서까지 포함하도록 동기화한다.",
+          "files": [
+            "README.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "README.md:9-13 'The PM must continuously maintain and use these control documents'; docs/planning/BUSINESS_SYSTEM_INDEX.md:8-18 canonical read order includes M3_DAILY_VALUE_VALIDATION.md"
         }
       ],
       "skills": {
