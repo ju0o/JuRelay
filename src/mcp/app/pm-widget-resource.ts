@@ -50,6 +50,28 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .dot.fail{background:var(--err);} .dot.sent{background:var(--mut);}
   .state { font-size:14px; }
   .sub { color: var(--muted); font-size:12px; }
+  .counts { display:flex; gap:8px; margin:10px 0 4px; }
+  .count { flex:1; border:1px solid var(--border); border-radius:8px; padding:8px 10px; text-align:center; }
+  .count b { display:block; font-size:20px; }
+  .count span { font-size:11px; color: var(--muted); }
+  .steps { display:flex; align-items:center; gap:6px; margin:10px 0 4px; font-size:11px; color: var(--muted); }
+  .step { display:flex; align-items:center; gap:4px; }
+  .step i { width:9px; height:9px; border-radius:50%; background: var(--border); flex:none; }
+  .step.on i { background: var(--ok); }
+  .step.doing i { background: var(--wait); }
+  .step.off { opacity:.55; }
+  .step-sep { flex:1; height:1px; background: var(--border); min-width:8px; }
+  .cards { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+  .dcard { border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12px; }
+  .dcard .row { display:flex; align-items:center; gap:8px; }
+  .dcard .id { font-weight:700; }
+  .dcard .task { color: var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pill { margin-left:auto; font-size:11px; border:1px solid var(--border); border-radius:20px; padding:1px 8px; flex:none; }
+  .pill.wait { color: var(--wait); border-color: var(--wait); }
+  .pill.doing { color: var(--mut); border-color: var(--mut); }
+  .pill.done { color: var(--ok); border-color: var(--ok); }
+  .dcard summary { cursor:pointer; }
+  .dcard .meta { color: var(--muted); font-size:11px; margin-top:4px; }
   details { margin-top:10px; }
   summary { cursor:pointer; color:var(--muted); font-size:12px; user-select:none; }
   #log { margin:6px 0 0; padding:8px; border:1px solid var(--border); border-radius:6px;
@@ -64,6 +86,17 @@ const WIDGET_HTML = `<!DOCTYPE html>
     <div class="title">Agent Relay</div>
     <div class="statusline"><span class="dot waiting" id="dot"></span><span class="state" id="status">Connecting…</span></div>
     <div class="sub" id="sub"></div>
+    <div class="counts">
+      <div class="count"><b id="cWait">0</b><span>대기 중</span></div>
+      <div class="count"><b id="cDoing">0</b><span>검토 중</span></div>
+      <div class="count"><b id="cDone">0</b><span>완료</span></div>
+    </div>
+    <div class="steps" id="steps">
+      <span class="step off" data-s="wait"><i></i>대기</span><span class="step-sep"></span>
+      <span class="step off" data-s="doing"><i></i>검토 요청</span><span class="step-sep"></span>
+      <span class="step off" data-s="done"><i></i>판정 완료</span>
+    </div>
+    <div class="cards" id="cards"></div>
     <details>
       <summary>debug log</summary>
       <div id="log"></div>
@@ -76,6 +109,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var statusEl = document.getElementById('status');
       var subEl = document.getElementById('sub');
       var logEl = document.getElementById('log');
+      var cardsEl = document.getElementById('cards');
+      var cWaitEl = document.getElementById('cWait');
+      var cDoingEl = document.getElementById('cDoing');
+      var cDoneEl = document.getElementById('cDone');
+      var stepsEl = document.getElementById('steps');
+      var doneCount = 0;
+      var lastDeliveries = [];
       var sessionHandled = {};
       var claiming = false;
       var POLL_MS = 1500;
@@ -85,6 +125,47 @@ const WIDGET_HTML = `<!DOCTYPE html>
         statusEl.textContent = text;
         subEl.textContent = sub || '';
       }
+      function esc(text) {
+        return String(text == null ? '' : text).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function shortId(id) {
+        var s = String(id || '');
+        var dash = s.lastIndexOf('-');
+        return dash >= 0 ? s.slice(dash + 1, dash + 7) : s.slice(0, 8);
+      }
+      // Visual board only: counts, stepper, per-delivery cards.
+      // No judgment here — identity (deliveryId/taskId/kind) only.
+      function renderBoard(deliveries) {
+        var list = Array.isArray(deliveries) ? deliveries : [];
+        var doing = 0;
+        var html = '';
+        for (var i = 0; i < list.length; i++) {
+          var d = list[i] || {};
+          if (!d.deliveryId) continue;
+          var claimed = !!sessionHandled[d.deliveryId];
+          if (claimed) doing++;
+          var pill = claimed ? 'doing' : 'wait';
+          var label = claimed ? '검토 중' : '대기 중';
+          html += '<details class="dcard"><summary><span class="row">'
+            + '<span class="id">…' + esc(shortId(d.deliveryId)) + '</span>'
+            + '<span class="task">' + esc(d.taskId || d.kind || 'delivery') + '</span>'
+            + '<span class="pill ' + pill + '">' + label + '</span>'
+            + '</span></summary>'
+            + '<div class="meta">delivery ' + esc(d.deliveryId)
+            + (d.createdAt ? '<br>생성 ' + esc(d.createdAt) : '') + '</div></details>';
+        }
+        cardsEl.innerHTML = html;
+        cWaitEl.textContent = String(list.length - doing);
+        cDoingEl.textContent = String(doing);
+        cDoneEl.textContent = String(doneCount);
+        var steps = stepsEl.querySelectorAll('.step');
+        setStep(steps[0], list.length > 0 ? 'on' : 'off');
+        setStep(steps[1], doing > 0 ? 'doing' : (list.length > 0 ? 'off' : 'off'));
+        setStep(steps[2], doneCount > 0 ? 'on' : 'off');
+      }
+      function setStep(el, cls) { if (el) el.className = 'step ' + cls; }
       function logLine(text) {
         var d = document.createElement('div');
         var t = document.createElement('span');
@@ -148,6 +229,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
         try {
           var list = await callTool('relay_pm_list_pending_deliveries', {});
           var deliveries = (list && list.deliveries) || [];
+          lastDeliveries = deliveries;
+          renderBoard(deliveries);
           if (deliveries.length === 0) {
             setStatus('waiting', 'Connected', 'Waiting for Agent result…');
             return;
@@ -193,7 +276,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
             content: [ { type: 'text', text: instruction } ]
           }, 20000);
           logLine('ui/message accepted: ' + JSON.stringify(r));
+          doneCount++;
           setStatus('sent', 'PM review ready', 'Wake sent — GPT notified');
+          renderBoard(lastDeliveries);
         } catch (e) {
           logLine('ui/message error: ' + e.message);
           setStatus('fail', 'Wake failed', delivery.deliveryId);
