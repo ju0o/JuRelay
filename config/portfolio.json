@@ -9327,6 +9327,33 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work.",
           "title": "멈춘 작업은 보내지 않아요"
+        },
+        {
+          "taskId": "JUPLAN-AR-BLOCKED-QUEUE",
+          "scope": "Refuse an otherwise authorized TASK_PACKET inside validateTaskPacket when a supplied blocked-result fact says the Worker returned BLOCKED, with dispatch none and no invented Product task, while an omitted fact still accepts only AR-JUPLAN-001, and export that fact type from the runtime public entry without changing decideBlockedResultHold.",
+          "files": [
+            "packages/runtime/src/agentRelayPackets.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-blocked-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-blocked-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED."
+        },
+        {
+          "taskId": "JUPLAN-AR-SCOPE-INBOX",
+          "scope": "Thread an optional scope-hold fact through parseResultInbox as a function argument into validateTaskPacket's existing scopeHold slot so an out-of-scope fact refuses intake with dispatch none and no invented Product task, while an omitted fact still parses today's inbox JSON and the validateTaskPacket call still ends with founderGate, pause.",
+          "files": [
+            "packages/runtime/src/agentRelayResultInbox.ts",
+            "packages/runtime/test/agent-relay-scope-hold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-scope-hold.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
         }
       ],
       "qaRuntime": [
