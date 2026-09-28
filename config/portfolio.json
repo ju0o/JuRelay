@@ -6301,7 +6301,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25"
+          "ssotEvidence": "Founder direction 2026-09-25",
+          "title": "보낼 창 이름을 확인해요"
         },
         {
           "taskId": "ACTL-TUI-REFRESH-WORD",
@@ -6313,7 +6314,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "ROOT_CAUSE_REPORT.md:95 The GUI uses 12 seconds while no agent is classified RUNNING and 3 seconds"
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:95 The GUI uses 12 seconds while no agent is classified RUNNING and 3 seconds",
+          "title": "목록이 알아서 새로워져요"
         },
         {
           "taskId": "ACTL-TK-REMAP-NOTICE",
@@ -6325,7 +6327,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25"
+          "ssotEvidence": "Founder direction 2026-09-25",
+          "title": "연결할 창이 없음을 알려줘요"
         }
       ],
       "qaRuntime": [
@@ -12434,7 +12437,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "src/render/today.ts:79 presentation.rollback_summary.detail is copied onto the today surface; Founder direction 2026-09-25 개발자 글자는 원문 보기 안"
+          "ssotEvidence": "src/render/today.ts:79 presentation.rollback_summary.detail is copied onto the today surface; Founder direction 2026-09-25 개발자 글자는 원문 보기 안",
+          "title": "되돌리기 가능 여부를 쉽게 확인"
         },
         {
           "taskId": "JUCEIPT-LIST-EMPTY-FINISH-SENTENCE",
@@ -12448,7 +12452,8 @@
           "tests": [
             "npx vitest run tests/daily.test.ts tests/scan-summary.test.ts"
           ],
-          "ssotEvidence": "src/daily/index.ts:91 끝난 시각 기록 없음 vs src/render/index.ts:44 끝난 시각 기록이 없어요; Founder direction 2026-09-25 scan·daily 빈 화면은 이유와 다음 행동"
+          "ssotEvidence": "src/daily/index.ts:91 끝난 시각 기록 없음 vs src/render/index.ts:44 끝난 시각 기록이 없어요; Founder direction 2026-09-25 scan·daily 빈 화면은 이유와 다음 행동",
+          "title": "영수증에서 끝난 시각을 쉽게 확인"
         }
       ],
       "skills": {
@@ -21038,7 +21043,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-28: Collect only captured rows containing both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL only for those joined rows."
+          "ssotEvidence": "Founder direction 2026-09-28: Collect only captured rows containing both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL only for those joined rows.",
+          "title": "다음 단계 판단 근거를 모은다"
         },
         {
           "taskId": "JUCEIPTPLAN-UNPLANNED-NOTE-JOIN-ONLY",
@@ -21049,7 +21055,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a captured row that has both a Claude final and a Receipt."
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a captured row that has both a Claude final and a Receipt.",
+          "title": "후속 작업 판단 조건을 남긴다"
         }
       ],
       "skills": {
