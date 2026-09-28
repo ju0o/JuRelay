@@ -12732,6 +12732,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "할 일이 없으면 제목의 0건을 빼기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-DELIVERED-READ-COMMAND",
+          "scope": "In deliveredItemText, use plain Korean for a file that was only opened, a command that was run, and an outside page that was opened, and stop calling those a file change, without showing the command, address, or file name.",
+          "files": [
+            "src/receipt/index.ts",
+            "tests/receipt-delivered-plain.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-delivered-plain.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-INDEX-INTRO-RAW",
+          "scope": "In dailyIndexHtml, choose the top sentence from the summary before 원문 보기 so request text inside that fold cannot say there is nothing to do when the visible summary still needs a look.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily-background.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-background.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
