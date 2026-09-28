@@ -20132,6 +20132,28 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:245 Add a capture to the Section 2.3 table only when the same task has both a Claude final and a Receipt; record GO, DEFER, or KILL only for that retained joined row.",
           "title": "판정에 필요한 근거를 보여줍니다"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-OPEN-ITEM-JOIN-ONLY",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md change only unresolved item 6 so it no longer asks to record an M3 decision from the 0-join gap and instead copies the settled rule that GO, DEFER, or KILL is recorded only for a validation §2.3 row with both a Claude final and a Receipt.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 Use only docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.3 to intake a row containing both a Claude final and a Receipt; do not record M3 GO / DEFER / KILL from the 0-join gap."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-B1-UNDECIDED-HOLD",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md change only the business-track B1 state cell so it copies the WBS undecided hold (daily report held for V1, 0 joined Claude-final-and-Receipt rows, no GO/DEFER/KILL recorded) and does not say the track is waiting on an M3 decision.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:42 DECISION UNDECIDED — DAILY REPORT HELD FOR V1; 0 Founder seven-task rows join both a Claude final and a Receipt; no GO / DEFER / KILL recorded"
         }
       ],
       "skills": {
