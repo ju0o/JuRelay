@@ -6160,6 +6160,42 @@
           ],
           "ssotEvidence": "src/actl/tui.py:423 row detail printed on the AI-window line — Founder direction 2026-09-23 no English errors on the surface",
           "title": "답을 못 읽으면 쉬운 말로 보여요"
+        },
+        {
+          "taskId": "ACTL-CLI-UNMAP-PLAIN",
+          "scope": "In cli._unmap only, replace the English 'is already unmapped', 'Backup:', and 'unmapped' lines with plain Korean what-happened and next-step lines, put the backup path under 원문 보기, and add a regression test that fails while those English strings remain.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_map_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화"
+        },
+        {
+          "taskId": "ACTL-CLI-DISCOVER-TABLE-PLAIN",
+          "scope": "In cli._discover human output only, replace the English pane_id table with one Korean line per window (AI, folder, 연결됨 or 연결 안 됨) and move pane id, path, command, confidence, and evidence under 원문 보기, leaving --json and the existing apply summary unchanged, with a regression test that the old header is gone.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_discover_apply_korean.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화"
+        },
+        {
+          "taskId": "ACTL-WEB-COPY-EMPTY-PLAIN",
+          "scope": "When actl serve /api/copy has no answer text, return the CLI sentence '아직 새 답이 없어요 — 작업이 끝나면 다시 해 보세요' and do not return extractor detail or '응답 없음', keeping that detail only in the audit record, with a regression test.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_errors_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화"
         }
       ],
       "qaRuntime": [
