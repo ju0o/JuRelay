@@ -8889,6 +8889,45 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane.",
           "title": "대표님 승인 요청 안전 처리"
+        },
+        {
+          "taskId": "JUPLAN-AR-GATE-PUBLIC-ENTRY",
+          "scope": "Re-export parseFounderGatePacket and its types from the runtime public entry, and import that parser from the entry in the Founder Gate test, so a stop for only this lane is callable outside the module file.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-gate-packet.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-gate-packet.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane."
+        },
+        {
+          "taskId": "JUPLAN-AR-GATE-BEFORE-QUEUE",
+          "scope": "Refuse an otherwise authorized TASK_PACKET inside validateTaskPacket when a supplied Founder Gate fact says this lane is stopped, leaving dispatch none and inventing no product task, while calls that omit the fact stay accepted.",
+          "files": [
+            "packages/runtime/src/agentRelayPackets.ts",
+            "packages/runtime/test/agent-relay-founder-gate-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-founder-gate-queue.test.ts",
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-packet-schema.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:147 Independent QA returned `FOUNDER_GATE`"
+        },
+        {
+          "taskId": "JUPLAN-AR-INBOX-PUBLIC-ENTRY",
+          "scope": "Import parseResultInbox from the runtime public entry in the result-inbox test so the disconnected-PM record for AR-JUPLAN-001 (HOLD, empty QA, dispatch none) fails if that export is dropped.",
+          "files": [
+            "packages/runtime/test/agent-relay-result-inbox.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-28: While PM transport is disconnected, record one Result Inbox entry for AR-JUPLAN-001 with state HOLD, an empty QA slot, and dispatch none."
         }
       ],
       "qaRuntime": [
