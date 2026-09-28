@@ -21571,6 +21571,42 @@
             "node --test tests/screen-internal-separation-parity.test.mjs"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:397-409 화면 변화와 내부 변화 구분 원칙"
+        },
+        {
+          "taskId": "JUTELL-RISK-UNRUN-DISTINCT-PARITY",
+          "scope": "Add the BEGINNER_REPORT_SPEC §12.4 sentence that an unrun check is not the same as an unknown risk to risk-level-guide.md section 4, plus an offline node:test that the sentence stays aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/risk-level-guide.md",
+            "tests/risk-unrun-distinct-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/risk-unrun-distinct-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:545 실행하지 못한 것과 위험도를 판단하지 못하는 것은 다르다."
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-PAREN-DEFAULT-PARITY",
+          "scope": "Add GLOSSARY_POLICY §3.1's default short parenthetical sentence to the glossary-ko.md opening block before the 목차 heading, without a new heading, plus an offline node:test.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-paren-default-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-paren-default-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:44 일반 작업 보고서는 짧은 괄호 설명을 기본으로 한다."
+        },
+        {
+          "taskId": "JUTELL-COMPLEX-WORK-DETAIL-PARITY",
+          "scope": "Add the ten BEGINNER_REPORT_SPEC §5.3 complex-work kinds in order, with the sentence that those tasks may add detail, as one bullet in report-format.md section 2, plus an offline node:test.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/complex-work-detail-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/complex-work-detail-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:150 다음과 같은 작업은 세부 설명을 추가할 수 있다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
