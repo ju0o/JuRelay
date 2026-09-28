@@ -12484,6 +12484,30 @@
           ],
           "ssotEvidence": "src/daily/index.ts:91 끝난 시각 기록 없음 vs src/render/index.ts:44 끝난 시각 기록이 없어요; Founder direction 2026-09-25 scan·daily 빈 화면은 이유와 다음 행동",
           "title": "영수증에서 끝난 시각을 쉽게 확인"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-IMPACT-EMPTY-WHY",
+          "scope": "In koreanSummary, replace the bare empty impact line with the receipt view's plain Korean reason, using the ready sentence only when nothing needs a look and the not-ready sentence otherwise.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 빈 화면은 이유와 다음 행동을 말한다"
+        },
+        {
+          "taskId": "JUCEIPT-INIT-NO-ENGLISH-ON",
+          "scope": "Change the juceipt init decline line so it no longer shows the English word on, keep the folded help line as it is, and cover 예 and 아니오 with a readline mock that never reads real stdin.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-background.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-background.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 개발자 글자는 원문 보기 안에만 둔다"
         }
       ],
       "skills": {
