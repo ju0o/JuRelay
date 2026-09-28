@@ -19440,7 +19440,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 \"M3 DEFER · 10-RECEIPT REGISTER FILLED · SEVEN-TASK FINAL+RECEIPT JOIN MISSING (0 ROWS) · DAILY REPORT DEFERRED TO V1\""
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 \"M3 DEFER · 10-RECEIPT REGISTER FILLED · SEVEN-TASK FINAL+RECEIPT JOIN MISSING (0 ROWS) · DAILY REPORT DEFERRED TO V1\"",
+          "title": "성장 계획과 할 일에 하루 정리 미룸 표시"
         },
         {
           "taskId": "JUCEIPTPLAN-P0-HANDOFF-M3-DEFER-AGREE",
@@ -19452,7 +19453,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 \"M3 DEFER · 10-RECEIPT REGISTER FILLED · SEVEN-TASK FINAL+RECEIPT JOIN MISSING (0 ROWS) · DAILY REPORT DEFERRED TO V1\""
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 \"M3 DEFER · 10-RECEIPT REGISTER FILLED · SEVEN-TASK FINAL+RECEIPT JOIN MISSING (0 ROWS) · DAILY REPORT DEFERRED TO V1\"",
+          "title": "기획 결과와 넘김에 하루 정리 미룸 적기"
         }
       ],
       "skills": {
@@ -21559,7 +21561,8 @@
           "tests": [
             "node --test tests/local-only-boundary-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:491-502 `낮은 운영 비용 원칙`; README.md:126-130 외부 전송 및 Telemetry 미구현 설명"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:491-502 `낮은 운영 비용 원칙`; README.md:126-130 외부 전송 및 Telemetry 미구현 설명",
+          "title": "내 작업이 밖으로 안 나가는지 확인"
         },
         {
           "taskId": "JUTELL-SCREEN-INTERNAL-SEPARATION-PARITY",
@@ -21570,7 +21573,8 @@
           "tests": [
             "node --test tests/screen-internal-separation-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:397-409 화면 변화와 내부 변화 구분 원칙"
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:397-409 화면 변화와 내부 변화 구분 원칙",
+          "title": "본 것은 사실로, 안 본 것은 예상으로"
         },
         {
           "taskId": "JUTELL-RISK-UNRUN-DISTINCT-PARITY",
@@ -21582,7 +21586,8 @@
           "tests": [
             "node --test tests/risk-unrun-distinct-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:545 실행하지 못한 것과 위험도를 판단하지 못하는 것은 다르다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:545 실행하지 못한 것과 위험도를 판단하지 못하는 것은 다르다.",
+          "title": "안 해본 확인을 모르는 위험과 구분"
         },
         {
           "taskId": "JUTELL-GLOSSARY-PAREN-DEFAULT-PARITY",
@@ -21594,7 +21599,8 @@
           "tests": [
             "node --test tests/glossary-paren-default-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:44 일반 작업 보고서는 짧은 괄호 설명을 기본으로 한다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:44 일반 작업 보고서는 짧은 괄호 설명을 기본으로 한다.",
+          "title": "어려운 말 옆에 짧은 뜻을 붙이기"
         },
         {
           "taskId": "JUTELL-COMPLEX-WORK-DETAIL-PARITY",
@@ -21606,7 +21612,8 @@
           "tests": [
             "node --test tests/complex-work-detail-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:150 다음과 같은 작업은 세부 설명을 추가할 수 있다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:150 다음과 같은 작업은 세부 설명을 추가할 수 있다.",
+          "title": "복잡한 일은 설명을 더 자세히 적기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -23302,7 +23309,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:42 quote, or Founder direction 2026-09-23"
+          "ssotEvidence": "README.md:42 quote, or Founder direction 2026-09-23",
+          "title": "여러 번 실패하면 이전으로 되돌리고 기록"
         },
         {
           "taskId": "JUAI-CHECK-APPROVAL-ACTIONS",
@@ -23313,7 +23321,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:48 quote, or Founder direction 2026-09-23"
+          "ssotEvidence": "README.md:48 quote, or Founder direction 2026-09-23",
+          "title": "답변과 채널 설명만 바로 하고 나머지는 승인"
         },
         {
           "taskId": "JUAI-CHECK-README-COMMAND-SYNC",
@@ -23324,7 +23333,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 quote, or Founder direction 2026-09-23"
+          "ssotEvidence": "README.md:8 quote, or Founder direction 2026-09-23",
+          "title": "멤버에게 보이는 명령이 실제와 같음"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
