@@ -6290,6 +6290,42 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "복사할 수 있는지 쉬운 말로 봐요"
+        },
+        {
+          "taskId": "ACTL-WEB-SEND-DISPLAY",
+          "scope": "In src/actl/serve.py doSend only, the non-busy confirm must name the selected row display (fallback '선택한 AI 창') and must not interpolate the raw agent key SEL, with a regression assert in tests/test_serve_plain_cards.py.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25"
+        },
+        {
+          "taskId": "ACTL-TUI-REFRESH-WORD",
+          "scope": "In src/actl/tui.py _render only, replace the false header note 자동갱신 5초 with 목록은 스스로 갱신돼요 and leave the 3s/12s/60s refresh timing unchanged, asserting the rendered header no longer contains 5초.",
+          "files": [
+            "src/actl/tui.py",
+            "tests/test_tui.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:95 The GUI uses 12 seconds while no agent is classified RUNNING and 3 seconds"
+        },
+        {
+          "taskId": "ACTL-TK-REMAP-NOTICE",
+          "scope": "In Board.on_remap only, when no connectable window exists, call notify with the existing Korean explanation instead of messagebox.showinfo, and assert that empty path does not open a native dialog.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_visible_feedback.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25"
         }
       ],
       "qaRuntime": [
