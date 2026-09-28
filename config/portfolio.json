@@ -26197,6 +26197,50 @@
           ],
           "ssotEvidence": "layout.mjs:98 한동안 소식이 없으면 진행 상황을 물어봐요.",
           "title": "잠잠한 의견을 놓치지 않게 알림"
+        },
+        {
+          "taskId": "JUAI-CHECK-PROFILE-PIN",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that ensureProfileButton returns when the stored intro button message still exists and otherwise pins a 프로필 작성 button then deletes the pin notice, that a profile button opens the modal before any card handling, that profile fields keep the SNS 100, making 500, and GitHub 200 limits, that welcome schedules loungeWelcome for #자유대화 after 60 seconds and loungeWelcome returns when the member is missing, and that suggestUsage returns before ai when the shared forum quota fails and offers 리뷰해줘 only when the saved GitHub link contains github.com.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:89 입장하면 뜨는 **[프로필 작성]** 버튼으로 SNS 닉네임과 지금 만드는 걸 등록하면 자기소개가 자동으로 올라가요. 버튼을 다시 누르면 수정돼요."
+        },
+        {
+          "taskId": "JUAI-CHECK-REVIEW-RESOLVE",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that githubContext tries at most three links, that repoContext returns null when the repo is missing or private, that resolveRepo selects the first public non-fork from the pushed-sorted user repository list, that the review prompt says the code body was not read and asks for two strengths and three improvements, and that a resolveRepo miss replies 저장소를 못 찾았어요 before calling ai.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:135 `리뷰해줘 https://github.com/아이디/저장소` → 🔵 OpenCode가 저장소를 보고 코드 리뷰 (1회). 프로필에 GitHub를 적어두면 `리뷰해줘`만 써도 돼요"
+        },
+        {
+          "taskId": "JUAI-CHECK-THREAD-MEMORY",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that a picks-thread reply prepends the starter as [추천 글] before the fetched history, that labQuestion opens a thread with a 50-character name and a 1440-minute archive before the FAQ reply, and that summarizeThread asks for a three-line 스레드 요약 plus 남은 질문 and caps the transcript at the last 9000 characters.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:104 **여기 글을 쓰면 🔵 OpenCode가 스레드를 열고 답해요.** 스레드 안에서 계속 대화하면 앞 내용을 기억해요."
+        },
+        {
+          "taskId": "JUAI-CHECK-ADMIN-MISS",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that set_topic and delete_messages return the existing channel-not-found reply before any channel change or card, that delete_messages returns 조건에 맞는 메시지를 못 찾았어요 before createCard when nothing matches, and that a card created from outside #운영진 replies that the card was posted in the staff channel.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:198 \"자유대화 광고 글 지워줘\" / \"OO 1시간 타임아웃\" / \"채널 만들어줘·삭제해줘\" → 확인 카드"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
