@@ -8806,7 +8806,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:1-4 'It describes how JuPlan is exposed as an Agent Relay CORE V1 managed project' plus the established sibling pattern (packages/runtime/src/agentRelayTransportHold.ts exported and re-exported from src/index.ts:4716-4729) that Result Inbox alone does not yet follow"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:1-4 'It describes how JuPlan is exposed as an Agent Relay CORE V1 managed project' plus the established sibling pattern (packages/runtime/src/agentRelayTransportHold.ts exported and re-exported from src/index.ts:4716-4729) that Result Inbox alone does not yet follow",
+          "title": "결과함을 안정적으로 확인"
         }
       ],
       "qaRuntime": [
@@ -19337,7 +19338,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation.",
+          "title": "아침 계획 상태를 정확히 알기"
         },
         {
           "taskId": "JUCEIPTPLAN-HANDOFF-P0-NONUNLOCK-CHECK",
@@ -19348,7 +19350,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation.",
+          "title": "사업 진행 기준을 헷갈리지 않기"
         }
       ],
       "skills": {
@@ -21366,7 +21369,8 @@
           "tests": [
             "node --test tests/invalid-config-c3-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:944 * 작업을 불필요하게 중단하지 않는다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:944 * 작업을 불필요하게 중단하지 않는다.",
+          "title": "잘못된 설정도 같은 기준으로 안내"
         },
         {
           "taskId": "JUTELL-RISK-WITHOUT-RUNTIME-PARITY",
@@ -21378,7 +21382,8 @@
           "tests": [
             "node --test tests/risk-without-runtime-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:468 테스트, 브라우저 또는 실행 환경이 없더라도 코드와 변경 범위를 확인할 수 있다면 위험도를 판단할 수 있다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:468 테스트, 브라우저 또는 실행 환경이 없더라도 코드와 변경 범위를 확인할 수 있다면 위험도를 판단할 수 있다.",
+          "title": "실행 없이도 변경 위험을 판단"
         },
         {
           "taskId": "JUTELL-MINIMAL-PROFILE-KEEP-PARITY-R2",
@@ -21390,7 +21395,8 @@
           "tests": [
             "node --test tests/minimal-profile-keep-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:918 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동은 유지한다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:918 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동은 유지한다.",
+          "title": "최소 설정도 필요한 항목을 지킴"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -22988,7 +22994,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "layout.mjs:120 quote, or Founder direction 2026-09-23"
+          "ssotEvidence": "layout.mjs:120 quote, or Founder direction 2026-09-23",
+          "title": "스팸 기준을 정확히 안내해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
