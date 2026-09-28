@@ -21525,6 +21525,17 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:694 \"## 12. V0.1 완료 조건\"",
           "title": "첫 버전 완료 기준을 함께 확인"
+        },
+        {
+          "taskId": "JUTELL-LOCAL-ONLY-BOUNDARY-PARITY",
+          "scope": "V0.1의 중앙 서버·별도 AI API 없이 로컬 파일과 명령을 우선한다는 제품 경계가 README의 외부 전송 금지 설명과 일치하는지 오프라인 테스트로 검증한다.",
+          "files": [
+            "tests/local-only-boundary-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/local-only-boundary-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:491-502 `낮은 운영 비용 원칙`; README.md:126-130 외부 전송 및 Telemetry 미구현 설명"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -23834,6 +23845,7 @@
   "pool": {
     "subscribed": [
       "codex",
+      "codex-terra",
       "cursor",
       "opencode",
       "cline",
