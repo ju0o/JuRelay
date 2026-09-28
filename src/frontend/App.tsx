@@ -14,6 +14,7 @@ import { sharedSeatsView } from '../shared/projectScope.js';
 import {
   automationResultText,
   automationFailureLine,
+  automationToggleLabel,
   automationToggleOp,
   classifyConnectionFailure,
   connectionStatusText,
@@ -576,7 +577,7 @@ function ShellConnectionProvider({ children }: { children: React.ReactNode }): R
     }
   }
 
-  const label = shellToggleLabel(enabled, phase);
+  const label = phase === 'checking' ? shellToggleLabel(enabled, phase) : automationToggleLabel(enabled, phase);
   const value: ShellConnectionValue = {
     phase, enabled, statusText, pollRaw, result, busy, label, onToggle: () => { void onToggle(); },
   };

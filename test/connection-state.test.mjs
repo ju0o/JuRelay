@@ -98,6 +98,14 @@ test("missing always.mode is unknown, known modes parse", () => {
   assert.equal(automationToggleOp(missing.enabled), "controlRoom:automationOn");
 });
 
+test("null status is treated as off and offers to turn automation on", () => {
+  const missing = connectionViewFromStatus(null);
+  assert.equal(missing.phase, "ok");
+  assert.equal(missing.enabled, null);
+  assert.equal(automationToggleLabel(missing.enabled, missing.phase), "자동 실행 켜기");
+  assert.equal(automationToggleOp(missing.enabled), "controlRoom:automationOn");
+});
+
 test("toggle failure shows the Korean message inline and keeps raw detail aside", () => {
   const line = automationFailureLine(REMOTE, "Traceback: boom");
   assert.equal(line.text, REMOTE);
