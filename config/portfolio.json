@@ -11751,6 +11751,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 빈 화면은 이유와 다음 행동, 빠진 확인은 쉬운 설명",
           "title": "오늘 할 일을 쉽게 확인하기"
+        },
+        {
+          "taskId": "JUCEIPT-CLI-NEXT-NO-FLAGS",
+          "scope": "In src/cli/main.ts default stdout for run, receipt, scan, and daily, drop founder-visible --show-raw, SUMMARY.md, and juceipt scan --since 7d from the next-action lines; keep path lines only in the existing --show-raw block and do not change koreanSummary or buildScanSummary.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts",
+            "tests/daily-cli.test.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: juceipt 명령 출력(scan, daily, receipt)에서 개발자 글자는 원문 보기 안에만"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-EMPTY-BY-VERDICT",
+          "scope": "In renderTodayList, when the verdict is not ready and a section is empty, use the receipt view not-ready sentences for 빠진 확인, 중요한 영향, and 받기 전 할 일, and keep the current ready sentences.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 빠진 확인을 과장 없이 쉬운 말로"
         }
       ],
       "skills": {
