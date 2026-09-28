@@ -12858,6 +12858,35 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "영수증 제목을 쉽게 표시"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-DAILY-HIDE-ZERO-COUNTS",
+          "scope": "scan 명령 첫 줄, daily 요약 첫 줄, SUMMARY.md 첫 줄과 AI별 줄에서 개수가 0인 받아도 됨·확인 후 받기·문제 있음은 빼고 1개 이상인 판정만 기존 순서로 이어 보여 주며, 모두 받아도 됨일 때의 안내 문장과 ## 전체 합계 줄은 그대로 둔다.",
+          "files": [
+            "src/cli/main.ts",
+            "src/daily/index.ts",
+            "src/sources/summary.ts",
+            "tests/daily.test.ts",
+            "tests/scan-summary.test.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 — scan·daily 첫 문장이 0건 판정으로 어긋나지 않게"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-VIEW-LIGHT-CONTRAST",
+          "scope": "영수증 HTML 밝은 화면에서 완료 색은 #087f6c, 확인이 필요한 색(판정 알약·경고·아직 확인 안 됨·판단 어려움)은 #a16207, 원문 바닥 글자는 #475569로 바꾸고, 어두운 화면 알약·체크·경고의 기존 #4ade80/#fbbf24는 유지하되 근거 표의 완료·확인 필요 글자도 그 색으로 맞춘다.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts",
+            "tests/pipeline.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 — 영수증 보기 밝은 화면 대비와 확인 필요 노랑"
         }
       ],
       "skills": {
