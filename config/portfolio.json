@@ -9788,6 +9788,45 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:136 They do not dispatch unauthorized work.",
           "title": "애매한 재시작은 다음 일을 안 고르기"
+        },
+        {
+          "taskId": "JUPLAN-AR-ACCEPT-RETRY",
+          "scope": "Append an optional TaskPacketRetryQueue argument after restartQueue on selectNextAfterAccept and applyAcceptNext so a past-bound REQUEST_CHANGES fact returns dispatch none and a null next id, an omitted or not-past-bound fact keeps the next listed task, and the accept-next signature assertions are updated without changing the retry policy runner.",
+          "files": [
+            "packages/runtime/src/agentRelayAcceptNext.ts",
+            "packages/runtime/test/agent-relay-accept-next.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:147 Independent QA returned FOUNDER_GATE, or REQUEST_CHANGES after the retry bound."
+        },
+        {
+          "taskId": "JUPLAN-AR-QA-TRANSPORT",
+          "scope": "Pass an optional TaskPacketTransportHold through decideQaTestGate so a disconnected pm/juplan fact does not promote a passing ACCEPT and dispatches none, while an omitted or connected fact keeps today's promotion and validateQaPacket stays unchanged.",
+          "files": [
+            "packages/runtime/src/agentRelayQaGate.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-TRANSPORT",
+          "scope": "Pass an optional TaskPacketTransportHold through applyRetryPolicy and runSameTaskRetry so a disconnected pm/juplan fact does not retry and dispatches none, while an omitted or connected fact keeps the same-task retry and no substitute task is invented.",
+          "files": [
+            "packages/runtime/src/agentRelayRetryPolicy.ts",
+            "packages/runtime/test/agent-relay-retry-policy.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
         }
       ],
       "qaRuntime": [
