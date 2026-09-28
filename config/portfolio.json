@@ -6041,7 +6041,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/core/config.py:48 Agent is not currently mapped to a tmux pane; Founder direction 2026-09-25 비개발자 UX"
+          "ssotEvidence": "src/actl/core/config.py:48 Agent is not currently mapped to a tmux pane; Founder direction 2026-09-25 비개발자 UX",
+          "title": "설정 문제와 해결 방법 안내"
         }
       ],
       "qaRuntime": [
@@ -11735,7 +11736,8 @@
           "tests": [
             "npx vitest run tests/daily-cli.test.ts tests/receipt-cli.test.ts tests/sources-scan-cli.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 개발자 글자는 원문 보기 안, 오류는 쉬운 한국어 3줄"
+          "ssotEvidence": "Founder direction 2026-09-23: 개발자 글자는 원문 보기 안, 오류는 쉬운 한국어 3줄",
+          "title": "오류 안내를 쉽게 확인하기"
         },
         {
           "taskId": "JUCEIPT-TODAY-DETAIL-EMPTY-REASON",
@@ -11747,7 +11749,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 빈 화면은 이유와 다음 행동, 빠진 확인은 쉬운 설명"
+          "ssotEvidence": "Founder direction 2026-09-23: 빈 화면은 이유와 다음 행동, 빠진 확인은 쉬운 설명",
+          "title": "오늘 할 일을 쉽게 확인하기"
         }
       ],
       "skills": {
@@ -20155,7 +20158,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 Use only docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.3 to intake a row containing both a Claude final and a Receipt; do not record M3 GO / DEFER / KILL from the 0-join gap."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 Use only docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.3 to intake a row containing both a Claude final and a Receipt; do not record M3 GO / DEFER / KILL from the 0-join gap.",
+          "title": "결정 기록 기준 바로잡기"
         },
         {
           "taskId": "JUCEIPTPLAN-BOARD-B1-UNDECIDED-HOLD",
@@ -20166,7 +20170,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:42 DECISION UNDECIDED — DAILY REPORT HELD FOR V1; 0 Founder seven-task rows join both a Claude final and a Receipt; no GO / DEFER / KILL recorded"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:42 DECISION UNDECIDED — DAILY REPORT HELD FOR V1; 0 Founder seven-task rows join both a Claude final and a Receipt; no GO / DEFER / KILL recorded",
+          "title": "사업 진행 상태 정확히 표시"
         },
         {
           "taskId": "JUCEIPTPLAN-DECISION-LOG-JOIN-ONLY",
@@ -20177,7 +20182,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-28: Collect only captured rows containing both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL only for those joined rows. docs/decisions/DECISION_LOG.md:369 records no decision but omits that limit, while docs/operations/PM_STATUS_BOARD.md:174 already states it."
+          "ssotEvidence": "Founder direction 2026-09-28: Collect only captured rows containing both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL only for those joined rows. docs/decisions/DECISION_LOG.md:369 records no decision but omits that limit, while docs/operations/PM_STATUS_BOARD.md:174 already states it.",
+          "title": "미정 상태와 판단 기준 정리"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-M3-PILL-JOIN-ONLY",
@@ -20188,7 +20194,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:126 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집합니다. The line-17 pill and line-84 M3 gate omit that clause."
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:126 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집합니다. The line-17 pill and line-84 M3 gate omit that clause.",
+          "title": "화면에 참여 조건 명확히 표시"
         }
       ],
       "skills": {
@@ -22489,7 +22496,8 @@
           "tests": [
             "node --test tests/glossary-plain-word-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:34 문맥상 이해할 수 있는 일반 단어에는 설명을 붙이지 않는다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:34 문맥상 이해할 수 있는 일반 단어에는 설명을 붙이지 않는다.",
+          "title": "필요한 말만 쉽게 설명해요"
         },
         {
           "taskId": "JUTELL-LENGTH-NO-FIXED-COUNT-PARITY",
@@ -22501,7 +22509,8 @@
           "tests": [
             "node --test tests/length-no-fixed-count-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:674 기본 보고서는 가능한 한 짧게 작성하며, 상세 기술 정보는 필요한 경우에만 추가한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:674 기본 보고서는 가능한 한 짧게 작성하며, 상세 기술 정보는 필요한 경우에만 추가한다.",
+          "title": "짧고 알맞게 보고해요"
         },
         {
           "taskId": "JUTELL-RISK-VERIFICATION-STATE-SEPARATE-PARITY",
@@ -22513,7 +22522,8 @@
           "tests": [
             "node --test tests/risk-verification-state-separate-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:493 위험도는 검증 상태와 별도로 판단한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:493 위험도는 검증 상태와 별도로 판단한다.",
+          "title": "위험과 확인 상태를 나눠 알려요"
         },
         {
           "taskId": "JUTELL-SYSTEM-INSTRUCTION-PRIORITY-PARITY",
@@ -22525,7 +22535,8 @@
           "tests": [
             "node --test tests/system-instruction-priority-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:895 현재 사용하는 AI Agent의 시스템 지침과 상위 지침은 이 문서보다 우선한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:895 현재 사용하는 AI Agent의 시스템 지침과 상위 지침은 이 문서보다 우선한다.",
+          "title": "더 중요한 안내를 먼저 따라요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -24558,7 +24569,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 키워드 구독은 2~20글자, 최대 5개, 매칭 알림은 1인 하루 3회"
+          "ssotEvidence": "README.md:8 키워드 구독은 2~20글자, 최대 5개, 매칭 알림은 1인 하루 3회",
+          "title": "구독 한도를 지켜드려요"
         },
         {
           "taskId": "JUAI-CHECK-ANON-HIDE",
@@ -24569,7 +24581,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 `!익명`은 OpenCode 개인 메시지에서만 작동"
+          "ssotEvidence": "README.md:8 `!익명`은 OpenCode 개인 메시지에서만 작동",
+          "title": "익명 질문을 안전하게 보호해요"
         },
         {
           "taskId": "JUAI-CHECK-CARD-OWNER",
@@ -24580,7 +24593,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다."
+          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다.",
+          "title": "카드를 안전하게 관리해요"
         },
         {
           "taskId": "JUAI-CHECK-FREE-MODELS",
@@ -24591,7 +24605,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만"
+          "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만",
+          "title": "무료 인공지능을 기본으로 써요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
