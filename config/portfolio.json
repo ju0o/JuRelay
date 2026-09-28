@@ -21510,6 +21510,17 @@
           ],
           "ssotEvidence": "docs/GLOSSARY_POLICY.md:140 설명 단위는 한 줄이 아니라 다음과 같은 기능 블록으로 묶는다.",
           "title": "변경 내용을 단위별로 쉽게 보기"
+        },
+        {
+          "taskId": "JUTELL-V01-COMPLETION-CONDITIONS-PARITY",
+          "scope": "PRODUCT_SCOPE §12의 V0.1 완료 조건이 TEST_SCENARIOS의 기술·비개발자 평가 기준에 대응하는지 오프라인 parity 테스트로 확인한다.",
+          "files": [
+            "tests/v01-completion-conditions-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/v01-completion-conditions-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:694 \"## 12. V0.1 완료 조건\""
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
