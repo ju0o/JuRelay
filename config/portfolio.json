@@ -24066,6 +24066,54 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:620 다음 시나리오는 V0.1 필수 검증에서 제외한다.",
           "title": "필수 확인 범위를 한눈에 알아요"
+        },
+        {
+          "taskId": "JUTELL-EVIDENCE-GROUP-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §7.7's sentence that claims sharing one evidence source may be grouped into one item, as one line in report-format.md section 1, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/evidence-group-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/evidence-group-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:260 같은 근거로 이어지는 여러 문장은 하나의 항목으로 묶을 수 있다."
+        },
+        {
+          "taskId": "JUTELL-UNCHECKED-SCREEN-EXAMPLE-PARITY",
+          "scope": "Add PRODUCT_SCOPE §3.3's correct unrun-screen sentence as one line under report-format.md section 2, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/unchecked-screen-example-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/unchecked-screen-example-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:90 코드상 버튼이 표시될 것으로 예상됩니다. 실제 화면은 확인하지 못했습니다."
+        },
+        {
+          "taskId": "JUTELL-ORIGIN-NO-ASSUME-PARITY",
+          "scope": "Add the two BEGINNER_REPORT_SPEC §14 principles still missing from SKILL.md step 4, do not assume change origin and report only files the AI Agent clearly edited as this task, as sub-bullets, plus an offline node:test that both phrases stay in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/origin-no-assume-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/origin-no-assume-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:601 변경 출처를 자동으로 단정하지 않음"
+        },
+        {
+          "taskId": "JUTELL-REPORT-ONLY-NO-EDIT-PARITY",
+          "scope": "Add PRODUCT_SCOPE §8.2 and §8.3 sentences, that an explain-only request does not edit project code and a code-explain request does not force a full completion report, under the matching bullets in SKILL.md 작업 유형별 출력, plus an offline node:test that both sentences stay in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/report-only-no-edit-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/report-only-no-edit-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:516 이 경우 프로젝트 코드를 수정하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
