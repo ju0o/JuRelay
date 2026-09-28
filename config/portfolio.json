@@ -26725,6 +26725,50 @@
           ],
           "ssotEvidence": "README.md:8 `!익명`은 OpenCode 개인 메시지에서만 작동",
           "title": "개인 메시지를 안정적으로 받기"
+        },
+        {
+          "taskId": "JUAI-CHECK-SUMMARY-POST",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that dailySummary returns the existing quiet-day sentence on the summary channel before calling ai, and that a parsed summary caps each channel at three lines and is posted with sayLong only after the channels JSON check.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:14 | Claude | 공지·규칙 초안 → 승인 카드, 어제 요약, 건의 정리, 스팸 관리, 서버 주인 명령 실행 | Claude Code CLI (Haiku) |"
+        },
+        {
+          "taskId": "JUAI-CHECK-WEEKLY-CARDS",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that weekly sends the suggestion TOP list and each notice or rule proposal through createCard and does not call say or sayLong.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:14 | Claude | 공지·규칙 초안 → 승인 카드, 어제 요약, 건의 정리, 스팸 관리, 서버 주인 명령 실행 | Claude Code CLI (Haiku) |"
+        },
+        {
+          "taskId": "JUAI-CHECK-AI-SPAWN-ENV",
+          "scope": "Add check.mjs source assertions only, leaving ai.mjs unchanged, that run spawns the AI CLI with env set to CHILD_ENV so the child does not inherit process.env.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:46 자식 프로세스에는 봇 토큰이 없습니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-PICKS-CAP",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs and layout.mjs unchanged, that dailyPicks asks for 1 to 3 repositories, keeps at most three parsed picks, throws the existing unreadable-picks error before posting, and the Codex guide bullet still says 1~3개.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:15 | Codex | 매일 서버 대화에 맞춘 오픈소스 추천 | Codex CLI |"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
