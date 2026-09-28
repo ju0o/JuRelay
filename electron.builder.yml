@@ -22,7 +22,7 @@ publish:
   releaseType: release
 win:
   icon: build/icon.ico
-  signAndEditExecutable: true
+  signAndEditExecutable: false
   target:
     - target: nsis
       arch:
