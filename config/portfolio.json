@@ -22032,6 +22032,30 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:668 * 사용자 승인과 정상 작동 여부를 동일하게 취급하지 않는다.",
           "title": "승인만으로 작업이 성공한 것은 아닙니다"
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-NO-REPEAT-PARITY",
+          "scope": "Add GLOSSARY_POLICY §2.2's sentence that the same term is not explained again in one report, and that only the original term is used afterward, as one sentence in glossary-ko.md's opening before the 목차 heading, plus an offline node:test that the full sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-no-repeat-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-no-repeat-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:23 같은 보고서에서 같은 용어를 반복해서 설명하지 않는다. 이후에는 원래 용어만 사용할 수 있다."
+        },
+        {
+          "taskId": "JUTELL-RISK-NOT-SUCCESS-PARITY",
+          "scope": "Add PRODUCT_SCOPE §6.7's sentence that a risk level does not mean the change works correctly as one line in risk-level-guide.md, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/risk-level-guide.md",
+            "tests/risk-not-success-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/risk-not-success-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:351 위험도는 정상 작동 여부를 의미하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
