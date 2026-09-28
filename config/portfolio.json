@@ -5894,7 +5894,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "ROOT_CAUSE_REPORT.md:71 | tmux capture-pane | 1 |; Founder direction 2026-09-26"
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:71 | tmux capture-pane | 1 |; Founder direction 2026-09-26",
+          "title": "화면 상태를 한 번에 확인"
         },
         {
           "taskId": "ACTL-ROWS-ONE-EXTRACT",
@@ -5907,7 +5908,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "ROOT_CAUSE_REPORT.md:91 -> response extraction / correlation; Founder direction 2026-09-26"
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:91 -> response extraction / correlation; Founder direction 2026-09-26",
+          "title": "새 정보로 원격 화면 갱신"
         },
         {
           "taskId": "ACTL-CLI-DOCTOR-PLAIN",
@@ -5919,7 +5921,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25"
+          "ssotEvidence": "Founder direction 2026-09-25",
+          "title": "고장 원인을 쉽게 확인"
         }
       ],
       "qaRuntime": [
@@ -8939,7 +8942,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-gate-packet.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane.",
+          "title": "중단 확인 기능을 넓혀 쓰기"
         },
         {
           "taskId": "JUPLAN-AR-GATE-BEFORE-QUEUE",
@@ -8953,7 +8957,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-packet-schema.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:147 Independent QA returned `FOUNDER_GATE`"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:147 Independent QA returned `FOUNDER_GATE`",
+          "title": "멈춘 작업은 보내지 않기"
         },
         {
           "taskId": "JUPLAN-AR-INBOX-PUBLIC-ENTRY",
@@ -8965,7 +8970,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-28: While PM transport is disconnected, record one Result Inbox entry for AR-JUPLAN-001 with state HOLD, an empty QA slot, and dispatch none."
+          "ssotEvidence": "Founder direction 2026-09-28: While PM transport is disconnected, record one Result Inbox entry for AR-JUPLAN-001 with state HOLD, an empty QA slot, and dispatch none.",
+          "title": "결과 기록이 빠지면 바로 알기"
         }
       ],
       "qaRuntime": [
@@ -19747,7 +19753,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:561 It must not be inferred from that 0-join gap; any future decision must use rows containing both artifacts."
+          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:561 It must not be inferred from that 0-join gap; any future decision must use rows containing both artifacts.",
+          "title": "결정 기록 조건 바로잡기"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-NEXT-STEP-JOIN-ONLY",
@@ -19758,7 +19765,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-28: record M3 GO, DEFER, or KILL only for those joined rows."
+          "ssotEvidence": "Founder direction 2026-09-28: record M3 GO, DEFER, or KILL only for those joined rows.",
+          "title": "결정 전 확인 절차 정리"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-JOIN-STATE-CLEANUP",
@@ -19771,7 +19779,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 — record a decision only for a captured row with both a Claude final and a Receipt."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 — record a decision only for a captured row with both a Claude final and a Receipt.",
+          "title": "결정 상태를 보류로 맞추기"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-JOINED-EVIDENCE-INTAKE",
@@ -19782,7 +19791,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 — record a decision only for a captured row with both a Claude final and a Receipt."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 — record a decision only for a captured row with both a Claude final and a Receipt.",
+          "title": "검증 자료 수집 기준 세우기"
         }
       ],
       "skills": {
@@ -23869,7 +23879,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다."
+          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다.",
+          "title": "인공지능 답변을 안전하게 가려요"
         },
         {
           "taskId": "JUAI-CHECK-MENTOR-GATE",
@@ -23880,7 +23891,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:20 #질문-답변에 입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다."
+          "ssotEvidence": "README.md:20 #질문-답변에 입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다.",
+          "title": "맞춤 멘토를 안전하게 연결해요"
         },
         {
           "taskId": "JUAI-CHECK-REVIEW-QUOTA",
@@ -23891,7 +23903,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:16 질문 답변, 스레드 대화, GitHub 코드 리뷰, 활용 예시"
+          "ssotEvidence": "README.md:16 질문 답변, 스레드 대화, GitHub 코드 리뷰, 활용 예시",
+          "title": "리뷰 링크를 확인해 질문을 아껴요"
         },
         {
           "taskId": "JUAI-CHECK-PROJECTS-REFRESH",
@@ -23902,7 +23915,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신"
+          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신",
+          "title": "새 작품을 매일 빠르게 보여줘요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
