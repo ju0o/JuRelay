@@ -14438,6 +14438,28 @@
           ],
           "ssotEvidence": "Founder 2026-09-28: Dogfood 자동화 (권고대로)",
           "title": "공개 상태판 자동 실사용 연기"
+        },
+        {
+          "taskId": "JUCONTROLER-GUIDE-UNKNOWN-ACTION-RUN",
+          "scope": "Add one offline test that runs scripts/status-board.mjs on a fixture with one freshness-stale project and one held Agent Relay lane and asserts stderr is exactly the getting-started unknown-summary sentence followed by the needs-action sentence.",
+          "files": [
+            "tests/getting-started-unknown-action-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-unknown-action-run.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:240 위 줄 아래에 한 줄 더 나옵니다(human-gate·hold)"
+        },
+        {
+          "taskId": "JUCONTROLER-GUIDE-USAGE-EXIT-RUN",
+          "scope": "Add one offline test that runs scripts/status-board.mjs with no arguments, a blank --project-id, and -h, and checks the getting-started usage row plus the following English Usage line, exit 2 for bad arguments and exit 0 for help.",
+          "files": [
+            "tests/getting-started-usage-exit-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-usage-exit-run.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:247 아래에 영어 Usage 줄이 하나 더 나오고, 종료 코드는 2입니다"
         }
       ],
       "qaRuntime": [
