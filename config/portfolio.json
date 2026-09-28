@@ -5882,6 +5882,44 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — pane id·경로·명령은 원문 보기 뒤로",
           "title": "상태 글은 쉬운 말만 먼저 보이기"
+        },
+        {
+          "taskId": "ACTL-ROWS-ONE-CAPTURE",
+          "scope": "When a pane snapshot is already active, one board refresh must share a single capture-pane wrapper across every hydrated pane, and a call with no snapshot must still use capture_pane.",
+          "files": [
+            "src/actl/core/activity.py",
+            "src/actl/core/tmux.py",
+            "tests/test_rows_op_budget.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:71 | tmux capture-pane | 1 |; Founder direction 2026-09-26"
+        },
+        {
+          "taskId": "ACTL-ROWS-ONE-EXTRACT",
+          "scope": "A remote _rows refresh must prefetch every hydrated pane with one ssh actl extract, then clear that cache so a later copy still extracts fresh.",
+          "files": [
+            "src/actl/core/remote.py",
+            "src/actl/tui.py",
+            "tests/test_remote.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:91 -> response extraction / correlation; Founder direction 2026-09-26"
+        },
+        {
+          "taskId": "ACTL-CLI-DOCTOR-PLAIN",
+          "scope": "actl doctor text mode must say the result in plain Korean and put the raw exception under 원문 보기, while the JSON check names and ok field stay unchanged.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_doctor.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25"
         }
       ],
       "qaRuntime": [
@@ -8947,7 +8985,8 @@
           "founder-ux",
           "founder-gate-relay"
         ]
-      }
+      },
+      "pmJudge": "chatgpt"
     },
     {
       "id": "juceipt",
@@ -14372,7 +14411,8 @@
           "founder-ux",
           "founder-gate-relay"
         ]
-      }
+      },
+      "pmJudge": "chatgpt"
     },
     {
       "id": "jucontroler-app",
