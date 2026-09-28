@@ -11918,6 +11918,31 @@
             "npx vitest run tests/daily-background.test.ts"
           ],
           "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-TASK-ID-FOLDED",
+          "scope": "Remove task ids from the visible daily 작업 제목 and 검토 필요 작업 lines in koreanSummary, keep those ids inside the existing 원문 보기 block, and update the daily tests so default stdout no longer contains them.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/daily-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts tests/daily-cli.test.ts"
+          ],
+          "ssotEvidence": "src/daily/index.ts:200 `${task.task_id}: ${taskTitle(task.request)}` on the Founder-visible daily summary; Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-SUMMARY-PLAIN-ROWS",
+          "scope": "Replace the AI verdict markdown table in buildScanSummary with one plain Korean line per AI and update the scan summary test so pipe-table syntax is gone.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts"
+          ],
+          "ssotEvidence": "src/sources/summary.ts:110 `| AI | 작업 | 받아도 됨 | 확인 후 받기 | 문제 있음 |`; Founder direction 2026-09-23"
         }
       ],
       "skills": {
