@@ -19697,6 +19697,28 @@
           ],
           "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:83 0 Founder seven-task rows join both a Claude final and a Receipt",
           "title": "하루 가치는 영수증 연결이 0건"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-M3-RECORD-JOIN-ONLY",
+          "scope": "In PM_STATUS_BOARD.md change only Next steps item 2 and Next PM Moves row 4 so an M3 GO/DEFER/KILL is not recorded from the 0-join gap and can be recorded only for a captured row that has both a Claude final and a Receipt.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:561 It must not be inferred from that 0-join gap; any future decision must use rows containing both artifacts."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-NEXT-STEP-JOIN-ONLY",
+          "scope": "In M3_DAILY_VALUE_VALIDATION.md change only the Section 7 Next authorized step cell so it does not tell the PM to record an M3 decision while 0 rows join, and instead waits for a captured row that contains both a Claude final and a Receipt.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-28: record M3 GO, DEFER, or KILL only for those joined rows."
         }
       ],
       "skills": {
