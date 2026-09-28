@@ -15,10 +15,10 @@
  * The HTML is embedded so the compiled dist needs no asset-copy step.
  */
 
-export const PM_WIDGET_RESOURCE_URI = 'ui://agent-relay/pm-widget-v4';
+export const PM_WIDGET_RESOURCE_URI = 'ui://agent-relay/pm-widget-v5';
 export const PM_WIDGET_RESOURCE_NAME = 'Agent Relay PM';
 export const PM_WIDGET_MIME_TYPE = 'text/html;profile=mcp-app';
-export const PM_WIDGET_RESOURCE_VERSION = '2026-09-28-v4';
+export const PM_WIDGET_RESOURCE_VERSION = '2026-09-28-v5';
 
 export function pmWidgetHtml(): string {
   return WIDGET_HTML;
@@ -219,12 +219,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
               wakeFail: '전송 실패', initFail: '시작 실패', wait: '대기 중', doing: '검토 중',
               done: '완료', sWait: '대기', sDoing: '검토 요청', sDone: '판정 완료',
               working: '일하는 중', resting: '쉬는 중', qaDoing: '검사하는 중',
+              modelUnknown: '모델 정보 없음',
               remaining: '남은 일', goals: '목표', noAgents: '일하는 AI 없음' },
         en: { connecting: 'Connecting…', connected: 'Connected', waiting: 'Waiting for Agent result…',
               reviewReady: 'PM review ready', waking: 'Waking GPT…', wakeSent: 'Wake sent — GPT notified',
               wakeFail: 'Wake failed', initFail: 'Initialization failed', wait: 'Waiting', doing: 'Reviewing',
               done: 'Done', sWait: 'Wait', sDoing: 'Review', sDone: 'Judged',
               working: 'working', resting: 'resting', qaDoing: 'inspecting',
+              modelUnknown: 'model unknown',
               remaining: 'Remaining', goals: 'Goals', noAgents: 'No active AI' },
       };
       function t(key) { return (I18N[lang] && I18N[lang][key]) || I18N.ko[key] || key; }
@@ -285,7 +287,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
           var a = agents[i] || {};
           var kind = agentKind(a);
           var line = esc(a.displayName || a.workerId || '?');
-          if (a.model) line += ' · ' + esc(a.model);
+          line += ' · ' + esc(a.model || t('modelUnknown'));
           line += ' — ' + esc(agentStateLabel(a));
           if (a.taskTitle) line += ' · ' + esc(a.taskTitle);
           html += '<div class="agent">' + charSvg(kind)

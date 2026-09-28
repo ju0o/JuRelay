@@ -390,8 +390,8 @@ console.log('\n-- widget pending-delivery behavior unchanged --');
     check(names.includes(want), `17/chat app exposes ${want}`);
   }
   const resources = await client.listResources();
-  check(resources.resources.some((resource) => resource.uri === 'ui://agent-relay/pm-widget-v4'), '17 widget resource unchanged');
-  const read = await client.readResource({ uri: 'ui://agent-relay/pm-widget-v4' });
+  check(resources.resources.some((resource) => resource.uri === 'ui://agent-relay/pm-widget-v5'), '17 widget resource unchanged');
+  const read = await client.readResource({ uri: 'ui://agent-relay/pm-widget-v5' });
   const html = read.contents[0].text;
   check(html.includes('relay_pm_list_pending_deliveries') && html.includes('relay_pm_claim_wake'), '17 widget still polls pending deliveries');
   check(!html.includes('relay_pm_create_execution_plan'), '17 widget has no Plan-specific wake channel');
