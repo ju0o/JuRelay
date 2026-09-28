@@ -22612,6 +22612,30 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:895 현재 사용하는 AI Agent의 시스템 지침과 상위 지침은 이 문서보다 우선한다.",
           "title": "더 중요한 안내를 먼저 따라요"
+        },
+        {
+          "taskId": "JUTELL-SCOPE-6-1-LENGTH-SCALE-PARITY",
+          "scope": "Add PRODUCT_SCOPE §6.1's two sentences, 보고서는 작업 규모에 맞게 길이를 조절한다 and 단순한 작업에 불필요하게 긴 보고서를 생성하지 않는다, as one sub-bullet under SKILL.md 실행 절차 step 13, plus an offline node:test that both sentences stay in §6.1 and in that step.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/scope-6-1-length-scale-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/scope-6-1-length-scale-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:174 보고서는 작업 규모에 맞게 길이를 조절한다."
+        },
+        {
+          "taskId": "JUTELL-REPORT-STATE-NOT-APPROVAL-PARITY",
+          "scope": "Add PRODUCT_SCOPE §6.8's sentence 보고서 상태는 사용자의 승인이나 배포 결정을 대신하지 않는다 as one line under the 보고서 상태 bullet in report-format.md §1, without changing the five state labels or the existing §11.5 paragraph, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/report-state-not-approval-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/report-state-not-approval-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:367 보고서 상태는 사용자의 승인이나 배포 결정을 대신하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
