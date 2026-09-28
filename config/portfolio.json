@@ -9596,6 +9596,50 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a",
           "title": "JuPlan과 연결이 끊기면 다음 일 멈춤"
+        },
+        {
+          "taskId": "JUPLAN-AR-NIGHT-DRAIN-INBOX",
+          "scope": "Append an optional night-drain argument after retryQueue on parseResultInbox, pass it into validateTaskPacket's existing nightDrain slot, extend the inbox signature assertions that currently end at retryQueue, and add the draining and not-draining inbox cases in the retry-queue test so a night-run drain refuses intake with dispatch none while an omitted or not-draining fact keeps today's inbox.",
+          "files": [
+            "packages/runtime/src/agentRelayResultInbox.ts",
+            "packages/runtime/test/agent-relay-blocked-queue.test.ts",
+            "packages/runtime/test/agent-relay-pause-queue.test.ts",
+            "packages/runtime/test/agent-relay-retry-queue.test.ts",
+            "packages/runtime/test/agent-relay-scope-hold.test.ts",
+            "packages/runtime/test/agent-relay-transport-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts test/agent-relay-blocked-queue.test.ts test/agent-relay-pause-queue.test.ts test/agent-relay-retry-queue.test.ts test/agent-relay-scope-hold.test.ts test/agent-relay-transport-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched."
+        },
+        {
+          "taskId": "JUPLAN-AR-ACCEPT-NIGHT-DRAIN",
+          "scope": "Pass an optional night-drain fact after the existing transport argument on selectNextAfterAccept and applyAcceptNext so a night-run drain returns dispatch none and a null next id, while an omitted or not-draining fact keeps the next listed task and a disconnected pm/juplan fact still dispatches none.",
+          "files": [
+            "packages/runtime/src/agentRelayAcceptNext.ts",
+            "packages/runtime/test/agent-relay-accept-next.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched."
+        },
+        {
+          "taskId": "JUPLAN-AR-RESTART-QUEUE",
+          "scope": "Refuse an otherwise authorized TASK_PACKET inside validateTaskPacket when a supplied inline fact after providerFailure says a restart is ambiguous, with dispatch none and no invented Product task, and do not import or name the restart reconcile module from the packet checker.",
+          "files": [
+            "packages/runtime/src/agentRelayPackets.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-restart-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-queue.test.ts test/agent-relay-provider-failure-queue.test.ts test/agent-relay-night-drain-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch."
         }
       ],
       "qaRuntime": [
