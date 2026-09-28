@@ -19403,7 +19403,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:28 | Product decision | **M2 GO** |"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:28 | Product decision | **M2 GO** |",
+          "title": "검토 기준과 진행 상태 확인"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-NEXT-AGENT-KO",
@@ -19414,7 +19415,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 M3 decision is pending"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 M3 decision is pending",
+          "title": "다음 작업 가능 범위를 쉽게 확인"
         },
         {
           "taskId": "JUCEIPTPLAN-CANONICAL-HTML-M3-DEFER-SYNC",
@@ -19425,7 +19427,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: M3 최종 판정은 DEFER; 0 of 7 Founder register rows have both a Claude final and a Receipt"
+          "ssotEvidence": "Founder direction 2026-09-23: M3 최종 판정은 DEFER; 0 of 7 Founder register rows have both a Claude final and a Receipt",
+          "title": "다음 단계 진행 여부를 한눈에 확인"
         }
       ],
       "skills": {
@@ -21520,7 +21523,8 @@
           "tests": [
             "node --test tests/v01-completion-conditions-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:694 \"## 12. V0.1 완료 조건\""
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:694 \"## 12. V0.1 완료 조건\"",
+          "title": "첫 버전 완료 기준을 함께 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -23130,7 +23134,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:120 가입 1일 이내에 링크 4개 이상·@everyone·@here"
+          "ssotEvidence": "layout.mjs:120 가입 1일 이내에 링크 4개 이상·@everyone·@here",
+          "title": "새 계정 도배를 막아요"
         },
         {
           "taskId": "JUAI-CHECK-AI-SANDBOX",
@@ -23141,7 +23146,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:46 Claude는 도구를 끄고, OpenCode·Codex·CommandCode는 bwrap 임시 홈에서만 실행. 자식 프로세스에는 봇 토큰이 없습니다."
+          "ssotEvidence": "README.md:46 Claude는 도구를 끄고, OpenCode·Codex·CommandCode는 bwrap 임시 홈에서만 실행. 자식 프로세스에는 봇 토큰이 없습니다.",
+          "title": "외부 명령을 안전하게 실행해요"
         },
         {
           "taskId": "JUAI-CHECK-ROLE-LOOKUP",
@@ -23152,7 +23158,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:38 setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)"
+          "ssotEvidence": "README.md:38 setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)",
+          "title": "역할과 문의방 표시를 맞춰요"
         },
         {
           "taskId": "JUAI-ANON-QUOTA-SKIP",
@@ -23164,7 +23171,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 익명 질문은 5자 이상"
+          "ssotEvidence": "README.md:8 익명 질문은 5자 이상",
+          "title": "짧은 익명 질문은 차감 없이 안내해요"
         },
         {
           "taskId": "JUAI-DM-STAFF-LEFT",
@@ -23176,7 +23184,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 서버 주인(Founder)·운영진은 일일 제한 없음"
+          "ssotEvidence": "README.md:49 서버 주인(Founder)·운영진은 일일 제한 없음",
+          "title": "운영진은 질문 제한 없이 안내해요"
         },
         {
           "taskId": "JUAI-CHECK-SPAM-AGED-REPEAT",
@@ -23187,7 +23196,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:120 같은 글을 ${SPAM_REPEAT_CHANNELS}개 채널에 올리거나, 가입 ${DAY_MS / 86_400_000}일 이내에 링크"
+          "ssotEvidence": "layout.mjs:120 같은 글을 ${SPAM_REPEAT_CHANNELS}개 채널에 올리거나, 가입 ${DAY_MS / 86_400_000}일 이내에 링크",
+          "title": "오래된 계정의 반복 도배도 막아요"
         },
         {
           "taskId": "JUAI-CHECK-ACCESS-OVERWRITES",
@@ -23198,7 +23208,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:16 botsonly = only the bots talk, private = staff + agents only"
+          "ssotEvidence": "layout.mjs:16 botsonly = only the bots talk, private = staff + agents only",
+          "title": "채널 공개 범위와 권한을 안전하게 지켜요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
