@@ -23504,6 +23504,51 @@
           ],
           "ssotEvidence": "README.md:8 quote, or Founder direction 2026-09-23",
           "title": "회원 명령 안내를 실제와 맞추기"
+        },
+        {
+          "taskId": "JUAI-SUMMARY-THREAD-GUARD",
+          "scope": "When !요약해줘 is used outside a thread, reply 요약은 스레드 안에서만 돼요. 스레드에 !요약해줘라고 남겨 주세요. and return before labQuestion so the lab channel does not spend a daily question, and assert that order while in-thread summarizeThread still calls takeQuota.",
+          "files": [
+            "bot.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 스레드 전용 `!요약해줘`"
+        },
+        {
+          "taskId": "JUAI-CHECK-LEFT-NOQUOTA",
+          "scope": "Add check.mjs assertions only that the guild !남은횟수 branch uses peekQuota, tells staff there is no daily limit, and does not call takeQuota.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:115 !남은횟수 → 오늘 남은 AI 질문 수 (횟수 안 씀)"
+        },
+        {
+          "taskId": "JUAI-CHECK-FAQ-NOQUOTA",
+          "scope": "Add check.mjs assertions only that labQuestion calls faqReply and returns before answer, and that GUIDE says a reused similar answer does not spend a question.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:143 예전에 해결된 비슷한 질문이 있으면 그 답을 먼저 보여줘요 (횟수 안 씀)"
+        },
+        {
+          "taskId": "JUAI-CHECK-SPAM-STAFF-SKIP",
+          "scope": "Add check.mjs assertions only that spam returns before isSpam for staff, and that GUIDE says the owner and staff are exempt from spam handling.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:120 서버 주인과 운영진은 제외돼요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
