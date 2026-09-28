@@ -25512,6 +25512,50 @@
           ],
           "ssotEvidence": "README.md:14 스팸 관리",
           "title": "도배하면 글 지우고 잠시 막기"
+        },
+        {
+          "taskId": "JUAI-CHECK-TALK-FLOW",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that startTalk returns when a talk_session already exists, claims the oldest unused talk_requests row before any fallback topic, includes the no-member-name rule in the opener prompt, and stores the topic sliced to TALK_TOPIC_MAX, and that talkStep keeps a Claude turn in reserve (n > 1) and writes talk_carry only when concluded is false and part is still below TALK_MAX_PARTS.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 봇들끼리 수다(`#봇-놀이터`)"
+        },
+        {
+          "taskId": "JUAI-CHECK-PROJECTS-BODY",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that refreshProjects skips bot-authored starters, sorts rows by latest activity, uses the empty-state sentence 아직 올라온 프로젝트가 없어요 when there are no rows, and edits the existing project messages when the chunk count matches before deleting them.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신"
+        },
+        {
+          "taskId": "JUAI-CHECK-EXECUTE-KINDS",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that execute posts a notice to the notice channel, rewrites the rules message, bulk-deletes the listed messages, times a member out for the card minutes or 24 hours for spam, creates or deletes the named channel, and throws 모르는 카드 종류 for an unknown kind.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:48 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-DM-GATES",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that onDirect replies to a non-member, to an empty or help message with DM_HELP, and to a review request before takeQuota, and that DM_HELP states the shared daily quota.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 OpenCode 개인 메시지도 하루 질문 횟수를 공유"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
