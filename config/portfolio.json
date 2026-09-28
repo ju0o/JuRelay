@@ -8793,6 +8793,20 @@
           ],
           "ssotEvidence": "Founder choice 2026-09-28: While PM transport is disconnected, record one Result Inbox entry for AR-JUPLAN-001 with state HOLD, an empty QA slot, and dispatch none.",
           "title": "연결 끊겨도 작업 안전 보관"
+        },
+        {
+          "taskId": "JUPLAN-AR-RESULT-INBOX-MODULE",
+          "scope": "Extract the Result Inbox parser and PM-transport-disconnected validator into an exported packages/runtime/src/agentRelayResultInbox.ts module (matching the existing agentRelayTransportHold.ts pattern) and update its test to import from src instead of redefining the parser locally, without changing any validated value.",
+          "files": [
+            "packages/runtime/src/agentRelayResultInbox.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-result-inbox.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:1-4 'It describes how JuPlan is exposed as an Agent Relay CORE V1 managed project' plus the established sibling pattern (packages/runtime/src/agentRelayTransportHold.ts exported and re-exported from src/index.ts:4716-4729) that Result Inbox alone does not yet follow"
         }
       ],
       "qaRuntime": [
