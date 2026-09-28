@@ -6093,7 +6093,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:06: 비개발자 UX 고도화"
+          "ssotEvidence": "Founder direction 2026-09-25 13:06: 비개발자 UX 고도화",
+          "title": "붙여넣기 안내의 다음 할 일"
         },
         {
           "taskId": "ACTL-CLI-MAP-PLAIN",
@@ -6105,7 +6106,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:14 웹 보드와 TUI 보드 모두 한국어 상태 라벨을 사용한다."
+          "ssotEvidence": "BACKLOG.md:14 웹 보드와 TUI 보드 모두 한국어 상태 라벨을 사용한다.",
+          "title": "화면 배치 안내의 다음 할 일"
         },
         {
           "taskId": "ACTL-WEB-VALIDATE-PLAIN",
@@ -6117,7 +6119,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25 13:06: 비개발자 UX 고도화"
+          "ssotEvidence": "Founder direction 2026-09-25 13:06: 비개발자 UX 고도화",
+          "title": "웹 보내기·다시 연결의 다음 할 일"
         },
         {
           "taskId": "ACTL-CLI-HELP-PLAIN",
@@ -9294,7 +9297,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-transport-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task.",
+          "title": "연결이 끊기면 작업을 안 보내요"
         },
         {
           "taskId": "JUPLAN-AR-SCOPE-FACT-TYPE",
@@ -9306,7 +9310,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-scope-hold.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
+          "title": "범위 밖 작업은 보내지 않아요"
         },
         {
           "taskId": "JUPLAN-AR-PAUSE-QUEUE",
@@ -9320,7 +9325,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-pause-queue.test.ts",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work.",
+          "title": "멈춘 작업은 보내지 않아요"
         }
       ],
       "qaRuntime": [
@@ -11941,7 +11947,8 @@
           "tests": [
             "npx vitest run tests/sources-scan-cli.test.ts tests/scan-summary.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "검색이 비면 더 긴 기간으로 다시 찾기"
         },
         {
           "taskId": "JUCEIPT-DAILY-INDEX-READY-INTRO",
@@ -11953,7 +11960,8 @@
           "tests": [
             "npx vitest run tests/daily-background.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "할 일 없으면 새 작업 뒤 다시 열기"
         },
         {
           "taskId": "JUCEIPT-DAILY-TASK-ID-FOLDED",
@@ -11966,7 +11974,8 @@
           "tests": [
             "npx vitest run tests/daily.test.ts tests/daily-cli.test.ts"
           ],
-          "ssotEvidence": "src/daily/index.ts:200 `${task.task_id}: ${taskTitle(task.request)}` on the Founder-visible daily summary; Founder direction 2026-09-23"
+          "ssotEvidence": "src/daily/index.ts:200 `${task.task_id}: ${taskTitle(task.request)}` on the Founder-visible daily summary; Founder direction 2026-09-23",
+          "title": "하루 목록을 작업 번호 없이 보기"
         },
         {
           "taskId": "JUCEIPT-SCAN-SUMMARY-PLAIN-ROWS",
@@ -11978,7 +11987,8 @@
           "tests": [
             "npx vitest run tests/scan-summary.test.ts"
           ],
-          "ssotEvidence": "src/sources/summary.ts:110 `| AI | 작업 | 받아도 됨 | 확인 후 받기 | 문제 있음 |`; Founder direction 2026-09-23"
+          "ssotEvidence": "src/sources/summary.ts:110 `| AI | 작업 | 받아도 됨 | 확인 후 받기 | 문제 있음 |`; Founder direction 2026-09-23",
+          "title": "검색 결과를 인공지능마다 한 줄로"
         }
       ],
       "skills": {
@@ -14941,7 +14951,8 @@
           "tests": [
             "node --test tests/getting-started-fallback-line-run.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-28: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints."
+          "ssotEvidence": "Founder direction 2026-09-28: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints.",
+          "title": "이유를 몰라도 상태판 안내가 안내문과 같아요"
         }
       ],
       "qaRuntime": [
@@ -20459,7 +20470,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-28: Collect only captured rows containing both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL only for those joined rows."
+          "ssotEvidence": "Founder direction 2026-09-28: Collect only captured rows containing both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL only for those joined rows.",
+          "title": "현황판 하루 가치가 계획과 같고 결정은 없어요"
         },
         {
           "taskId": "JUCEIPTPLAN-ROADMAP-M3-STATUS-JOIN-ONLY",
@@ -20470,7 +20482,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:561 Use only `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.3 to intake a row containing both a Claude final and a Receipt; do not record the M3 GO/DEFER/KILL milestone decision from the 0-join gap."
+          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:561 Use only `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.3 to intake a row containing both a Claude final and a Receipt; do not record the M3 GO/DEFER/KILL milestone decision from the 0-join gap.",
+          "title": "일정 세 줄이 모으기만 하고 결정은 없어요"
         }
       ],
       "skills": {
@@ -22849,7 +22862,8 @@
           "tests": [
             "node --test tests/file-role-evidence-link-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:154 중요한 파일 역할 주장에는 가능한 경우 근거를 연결함"
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:154 중요한 파일 역할 주장에는 가능한 경우 근거를 연결함",
+          "title": "중요한 파일 설명에 근거를 붙임"
         },
         {
           "taskId": "JUTELL-LIMIT-RANGE-SAFETY-PARITY",
@@ -22861,7 +22875,8 @@
           "tests": [
             "node --test tests/limit-range-safety-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:81 `maxMainFiles`는 1~10, `maxGlossaryTerms`는 0~10, `compactReportMaxSentences`는 4~30의 정수만 허용한다. 이 제한은 선택 정보에 적용하며 안전상 강제되는 정보에는 적용하지 않는다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:81 `maxMainFiles`는 1~10, `maxGlossaryTerms`는 0~10, `compactReportMaxSentences`는 4~30의 정수만 허용한다. 이 제한은 선택 정보에 적용하며 안전상 강제되는 정보에는 적용하지 않는다.",
+          "title": "분량 제한은 안전 안내에 안 적용"
         },
         {
           "taskId": "JUTELL-EVAL-PARTIAL-SCORE-PARITY",
@@ -22873,7 +22888,8 @@
           "tests": [
             "node --test tests/eval-partial-score-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:546 부분 통과는 최종 통과 점수에 포함하지 않는다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:546 부분 통과는 최종 통과 점수에 포함하지 않는다.",
+          "title": "부분 통과는 0점, 둘 다 6점 이상"
         },
         {
           "taskId": "JUTELL-SCOPE-DOC-BOUNDARY-PARITY",
@@ -22885,7 +22901,8 @@
           "tests": [
             "node --test tests/scope-doc-boundary-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:789 AI Agent는 사용자 승인 없이 이 문서의 제품 방향을 임의로 확대하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:789 AI Agent는 사용자 승인 없이 이 문서의 제품 방향을 임의로 확대하지 않는다.",
+          "title": "제품 범위만 승인, 평소 작업은 계속"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -25014,7 +25031,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:17 \"공동 프로젝트 알림\""
+          "ssotEvidence": "README.md:17 \"공동 프로젝트 알림\"",
+          "title": "공동프로젝트 알림은 관심사만 먼저 가요"
         },
         {
           "taskId": "JUAI-CHECK-FEEDBACK-FIRST",
@@ -25025,7 +25043,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:17 \"피드백 첫 코멘트\""
+          "ssotEvidence": "README.md:17 \"피드백 첫 코멘트\"",
+          "title": "피드백은 좋은 점과 개선, 질문은 답을 받아요"
         },
         {
           "taskId": "JUAI-CHECK-SUB-LIST-CANCEL",
@@ -25036,7 +25055,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 \"!구독목록\" \"!구독취소 단어\""
+          "ssotEvidence": "README.md:8 \"!구독목록\" \"!구독취소 단어\"",
+          "title": "구독 목록과 취소는 없을 때도 안내해요"
         },
         {
           "taskId": "JUAI-CHECK-THREAD-CHAT",
@@ -25047,7 +25067,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:16 \"스레드 대화\""
+          "ssotEvidence": "README.md:16 \"스레드 대화\"",
+          "title": "연구실과 오픈소스 글은 대화를 이어서 답해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
