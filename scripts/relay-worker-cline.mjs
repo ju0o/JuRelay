@@ -184,7 +184,10 @@ async function main() {
     const run = linkedRun(task, args.runId);
     runFolder = run.folder;
     const meta = JSON.parse(fs.readFileSync(path.join(runFolder, 'meta.json'), 'utf8'));
-    if (meta.workerId !== 'builder-cline') throw new Error(`Run meta workerId mismatch: expected builder-cline, got ${String(meta.workerId)}`);
+    // Any registry cline worker may run here; run binding is already proven by
+    // linkedRuns/current-attempt above. (Was: hardcoded 'builder-cline', which
+    // failed every other cline workerId. Fixed 2026-09-28.)
+    if (!meta.workerId || typeof meta.workerId !== 'string') throw new Error(`Run meta workerId missing for run ${String(args.runId)}`);
     const workerId = meta.workerId;
     const prompt = promptForRun(task, runFolder, args.runId);
     writePrompt(runFolder, prompt);
