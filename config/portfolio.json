@@ -6132,7 +6132,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/cli.py:1284 live pane 감지 목록 — Founder direction 2026-09-23 non-developer surface"
+          "ssotEvidence": "src/actl/cli.py:1284 live pane 감지 목록 — Founder direction 2026-09-23 non-developer surface",
+          "title": "actl 도움말을 쉬운 말로 봐요"
         },
         {
           "taskId": "ACTL-TK-FOCUS-NOTICE",
@@ -6144,7 +6145,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/gui.py:1810 FOCUS disabled: validated tmux mapping required — Founder direction 2026-09-23 show the click result"
+          "ssotEvidence": "src/actl/gui.py:1810 FOCUS disabled: validated tmux mapping required — Founder direction 2026-09-23 show the click result",
+          "title": "창을 화면으로 옮기면 결과를 알려요"
         },
         {
           "taskId": "ACTL-TUI-HIDE-ROW-DETAIL",
@@ -6156,7 +6158,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/tui.py:423 row detail printed on the AI-window line — Founder direction 2026-09-23 no English errors on the surface"
+          "ssotEvidence": "src/actl/tui.py:423 row detail printed on the AI-window line — Founder direction 2026-09-23 no English errors on the surface",
+          "title": "답을 못 읽으면 쉬운 말로 보여요"
         }
       ],
       "qaRuntime": [
@@ -9340,7 +9343,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-blocked-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED.",
+          "title": "작업이 막히면 새 일을 안 만듦"
         },
         {
           "taskId": "JUPLAN-AR-SCOPE-INBOX",
@@ -9353,7 +9357,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-scope-hold.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
+          "title": "계획 밖 결과는 일로 받지 않음"
         }
       ],
       "qaRuntime": [
@@ -12027,7 +12032,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "오늘 받으면 받았어요가 바로 보여요"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-WHO-PARTICLE",
@@ -12039,7 +12045,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "누가 했는지가 자연스럽고 항상 보여요"
         }
       ],
       "skills": {
@@ -20545,7 +20552,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:96 collect only same-task Claude-final/Receipt joins per §2.3; M3 decision pending"
+          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:96 collect only same-task Claude-final/Receipt joins per §2.3; M3 decision pending",
+          "title": "진행 현황에서 하루 가치는 결정 없이 모아 둠"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-FUNNEL-JOIN-ONLY",
@@ -20556,7 +20564,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집"
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집",
+          "title": "사업 흐름에서 하루 가치도 결정 없이 모아 둠"
         }
       ],
       "skills": {
