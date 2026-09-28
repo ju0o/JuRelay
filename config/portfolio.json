@@ -9957,6 +9957,45 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work.",
           "title": "일시정지 중엔 실패한 작업 다시 시도 안 함"
+        },
+        {
+          "taskId": "JUPLAN-AR-ACCEPT-BLOCKED",
+          "scope": "Append an optional TaskPacketBlockedResult after pause on selectNextAfterAccept and applyAcceptNext so a Worker BLOCKED fact returns dispatch none and a null next id, while an omitted fact or a status other than BLOCKED keeps today's next-listed result and a paused lane still dispatches none.",
+          "files": [
+            "packages/runtime/src/agentRelayAcceptNext.ts",
+            "packages/runtime/test/agent-relay-accept-next.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test test/agent-relay-accept-next.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED."
+        },
+        {
+          "taskId": "JUPLAN-AR-QA-BLOCKED",
+          "scope": "Append an optional TaskPacketBlockedResult after pause on decideQaTestGate so a Worker BLOCKED fact does not promote a passing ACCEPT and dispatches none, while an omitted fact or a status other than BLOCKED keeps today's promotion and a paused lane still does not promote.",
+          "files": [
+            "packages/runtime/src/agentRelayQaGate.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test test/agent-relay-qa-gate.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:91 BLOCKED holds the task. It does not invent a substitute Product task and does not continue to QA."
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-BLOCKED",
+          "scope": "Append an optional TaskPacketBlockedResult after pause on decideRetry, applyRetryPolicy, and runSameTaskRetry so a Worker BLOCKED fact does not retry and dispatches none, while an omitted fact or a status other than BLOCKED keeps the same-task retry and a paused lane still does not retry.",
+          "files": [
+            "packages/runtime/src/agentRelayRetryPolicy.ts",
+            "packages/runtime/test/agent-relay-retry-policy.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test test/agent-relay-retry-policy.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED."
         }
       ],
       "qaRuntime": [
