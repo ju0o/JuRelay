@@ -14834,6 +14834,17 @@
           ],
           "ssotEvidence": "docs/getting-started.md:247 아래에 영어 Usage 줄이 하나 더 나오고, 종료 코드는 2입니다",
           "title": "사용법을 쉽게 안내해줘"
+        },
+        {
+          "taskId": "JUCONTROLER-GUIDE-TABLE-FALLBACK-RUN",
+          "scope": "Add one offline test that reads the catch-all row `상태판을 불러오지 못했어요 — 아래 내용을 확인하세요` from docs/getting-started.md's 상태판 안내 문장 table and asserts scripts/status-board.mjs prints that exact first stderr line (exit 1, empty stdout) when load fails with an unclassified Error; use a temp --import preload or temp script copy so JSON.stringify/load throws a non-registry message, since every current src throw is already classified.",
+          "files": [
+            "tests/getting-started-fallback-line-run.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-fallback-line-run.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-28: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints."
         }
       ],
       "qaRuntime": [
