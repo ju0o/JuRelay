@@ -9887,6 +9887,45 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 FOUNDER_GATE: This lane stops. Other Agent Relay lanes are not stopped by this verdict.",
           "title": "승인 대기 작업과 다른 작업 분리"
+        },
+        {
+          "taskId": "JUPLAN-AR-QA-FOUNDER-GATE",
+          "scope": "Append an optional Founder Gate fact after nightDrain on decideQaTestGate so a stopped lane does not promote a passing ACCEPT and dispatches none, while an omitted fact or DEC-G012 isolation keeps today's promotion.",
+          "files": [
+            "packages/runtime/src/agentRelayQaGate.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- test/agent-relay-qa-gate.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 This lane stops. Other Agent Relay lanes are not stopped by this verdict."
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-FOUNDER-GATE",
+          "scope": "Append an optional Founder Gate fact after nightDrain on applyRetryPolicy and runSameTaskRetry so a stopped lane does not retry and dispatches none, while an omitted fact or DEC-G012 isolation keeps the same-task retry.",
+          "files": [
+            "packages/runtime/src/agentRelayRetryPolicy.ts",
+            "packages/runtime/test/agent-relay-retry-policy.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- test/agent-relay-retry-policy.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:130 FOUNDER_GATE is not retried as Worker work; the lane waits for Founder"
+        },
+        {
+          "taskId": "JUPLAN-AR-ACCEPT-PAUSE",
+          "scope": "Append an optional PAUSE fact after founderGate on selectNextAfterAccept and applyAcceptNext so a paused lane returns dispatch none and a null next id, while an omitted or not-paused fact keeps the next listed task.",
+          "files": [
+            "packages/runtime/src/agentRelayAcceptNext.ts",
+            "packages/runtime/test/agent-relay-accept-next.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- test/agent-relay-accept-next.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1"
         }
       ],
       "qaRuntime": [
