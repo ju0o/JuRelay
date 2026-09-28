@@ -23791,6 +23791,54 @@
           ],
           "ssotEvidence": "docs/GLOSSARY_POLICY.md:177 Submit handler에 validation guard를 추가했습니다.",
           "title": "잘못된 입력을 미리 막습니다"
+        },
+        {
+          "taskId": "JUTELL-CONFIG-ERROR-CASES-PARITY",
+          "scope": "Add FEATURE_CONFIGURATION §7's do-not-stop sentence and its eight config-error situation rows to feature-registry.md, plus an offline node:test that those strings stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/config-error-cases-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/config-error-cases-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:113 설정 오류가 있어도 작업 자체를 불필요하게 중단하지 않는다. 오류가 있는 설정 전체를 추측해 보정하지 않고 `balanced` 기본값으로 진행한다."
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-INTERNAL-DOC-NOT-FACT-PARITY",
+          "scope": "Add GLOSSARY_POLICY §6's sentence that an internal-doc explanation is not accepted as fact when it conflicts with code and actual behavior to glossary-ko.md's opening block, plus an offline node:test that the full sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-internal-doc-not-fact-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-internal-doc-not-fact-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:124 프로젝트 내부 문서의 설명을 참고할 수 있지만, 코드와 실제 동작에 어긋나는 설명을 무조건 사실로 받아들이지 않는다."
+        },
+        {
+          "taskId": "JUTELL-BROWSER-NO-AUTOMATION-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §13's sentence that V0.1 does not provide a separate browser-automation feature as one sub-bullet under SKILL.md step 8, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/browser-no-automation-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/browser-no-automation-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:571 V0.1은 별도의 브라우저 자동화 기능을 제공하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-SIMPLE-REPORT-STATE-INLINE-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §4's sentence that a simple task may write the report state inside item 6 as one line under report-format.md section 2, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/simple-report-state-inline-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/simple-report-state-inline-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:104 단순한 작업에서는 보고서 상태를 6번 항목에 함께 작성할 수 있다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
