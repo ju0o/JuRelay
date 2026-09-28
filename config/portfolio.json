@@ -19477,6 +19477,28 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 보류 — 영수증 10개 등록 완료 · 일곱 작업의 최종본과 영수증 연결 없음 (0건) · 일일 보고는 V1로 미룸"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-FUNNEL-SOURCE-MATCH",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html change only the funnel 원문 보기 English so it states the same facts as the Korean sentence already shown: B0 alias-versus-separate-gate unresolved, B1 deferred to V1 because 0 rows join a Claude final and a Receipt, and B2 waiting.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:31 B1은 연결된 행이 0건이라 일일 보고를 V1로 미룬 보류 상태이며, B2는 대기 중입니다 vs 원문 B1 follows the M3 decision"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-P0-LINE62-M3-DEFER-FACT",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md rewrite and check only the §2.1 bullet at line 62 so it records M2 GO and the Master WBS M3 DEFER state (daily report to V1, 0 joined rows) while keeping the §4.3 fact that the validation mapping stays UNDECIDED and is not GO or KILL.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 DEFER — 10-RECEIPT REGISTER FILLED; SEVEN-TASK FINAL+RECEIPT JOIN MISSING (0 ROWS); DAILY REPORT DEFERRED TO V1"
         }
       ],
       "skills": {
