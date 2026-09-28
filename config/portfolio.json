@@ -5843,6 +5843,42 @@
           ],
           "ssotEvidence": "QA findings: 3 items overridden by Founder compact order + Supervisor 2026-09-27 R2 redesign",
           "title": "보드 글자 크기 지시 반영하기"
+        },
+        {
+          "taskId": "ACTL-TK-SEND-INLINE-CONFIRM",
+          "scope": "In Board.on_send, replace the native messagebox.askyesno('전송 확인') with an inline confirm under the send button (취소 first, 보내기 highlighted) and point tests/test_send_commit_copy_truth.py at that bar, leaving the pane-board askyesno and the approval early-return as they are.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_send_commit_copy_truth.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 확인은 화면 안에서, native confirm 없이"
+        },
+        {
+          "taskId": "ACTL-TK-COPY-HIDE-PANE-WORD",
+          "scope": "Replace both copy-preview markers '--- LIVE PANE ---' in src/actl/gui.py with '지금 화면' and assert in tests/test_gui_plain_cards.py that the copy preview source no longer contains LIVE PANE.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 영어 개발자 문구는 화면에 두지 않음"
+        },
+        {
+          "taskId": "ACTL-CLI-STATUS-FOLD-RAW",
+          "scope": "In cli._print_status text mode, keep the surface line to the Korean name, connection word, and activity, and move target, command, and path onto a following '원문 보기' line, updating tests/test_cli_korean_messages.py so 명령= and 경로= are required only on that line while JSON output stays unchanged.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_korean_messages.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — pane id·경로·명령은 원문 보기 뒤로"
         }
       ],
       "qaRuntime": [
