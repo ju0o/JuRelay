@@ -9753,6 +9753,36 @@
           ],
           "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none.",
           "title": "일하는 쪽 없으면 다음 일 안 고름"
+        },
+        {
+          "taskId": "JUPLAN-AR-RESTART-INBOX",
+          "scope": "Append an optional restart-queue argument after providerFailure on parseResultInbox and expectTask, pass it into validateTaskPacket's existing restartQueue slot so an ambiguous restart refuses inbox intake with dispatch none and no invented Product task while an omitted or not-ambiguous fact still accepts today's inbox, and update the inbox signature assertions that currently end at providerFailure.",
+          "files": [
+            "packages/runtime/src/agentRelayResultInbox.ts",
+            "packages/runtime/test/agent-relay-blocked-queue.test.ts",
+            "packages/runtime/test/agent-relay-pause-queue.test.ts",
+            "packages/runtime/test/agent-relay-retry-queue.test.ts",
+            "packages/runtime/test/agent-relay-scope-hold.test.ts",
+            "packages/runtime/test/agent-relay-transport-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test packages/runtime/test/agent-relay-blocked-queue.test.ts packages/runtime/test/agent-relay-pause-queue.test.ts packages/runtime/test/agent-relay-retry-queue.test.ts packages/runtime/test/agent-relay-scope-hold.test.ts packages/runtime/test/agent-relay-transport-queue.test.ts packages/runtime/test/agent-relay-result-inbox.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch."
+        },
+        {
+          "taskId": "JUPLAN-AR-RESTART-ACCEPT",
+          "scope": "Pass an optional restart fact after the provider-failure argument on selectNextAfterAccept and applyAcceptNext so an ambiguous restart returns dispatch none and a null next id even when another authorized id is listed, while an omitted or not-ambiguous fact keeps the next-listed result, and update the accept-next signature assertions that currently end at providerFailure without changing the restart reconcile runner.",
+          "files": [
+            "packages/runtime/src/agentRelayAcceptNext.ts",
+            "packages/runtime/test/agent-relay-accept-next.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test packages/runtime/test/agent-relay-accept-next.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:136 They do not dispatch unauthorized work."
         }
       ],
       "qaRuntime": [
