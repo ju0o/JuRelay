@@ -17,6 +17,31 @@
  */
 
 import * as http from 'node:http';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+
+/** Repo assets dir (widgets/crew sprites). Resolved from this module location. */
+function assetDir(): string {
+  try {
+    // dist/server/mcp/app-server.js -> repo root -> assets/
+    const candidate = path.resolve(__dirname, '..', '..', '..', 'assets');
+    if (fs.existsSync(path.join(candidate, 'widgets', 'crew', 'idle-sheet.png'))) return candidate;
+  } catch {
+    // fall through
+  }
+  return path.resolve(process.cwd(), 'assets');
+}
+const ASSET_DIR = assetDir();
+
+function accessLog(line: string): void {
+  try {
+    const file = path.join(os.homedir(), '.local', 'share', 'AgentRelay', 'mcp-access.log');
+    fs.appendFileSync(file, `${new Date().toISOString()} ${line}\n`);
+  } catch {
+    // Logging never breaks serving.
+  }
+}
 import * as crypto from 'node:crypto';
 import type { PmServerContext } from './server.js';
 import { buildPmReadTools, buildPmWriteTools } from './pm-tools.js';
@@ -125,7 +150,11 @@ export function buildAppTools(ctx: PmServerContext): AppTool[] {
     _meta: { ui: { resourceUri: PM_WIDGET_RESOURCE_URI } },
     // Per-call unique URI in the PATH (not query — some hosts normalize
     // query strings away when caching renders). Every open is uncacheable.
-    handler: async () => ({ ok: true, widget: `${PM_WIDGET_RESOURCE_URI}--${Date.now()}` }),
+    handler: async () => {
+      const widget = `${PM_WIDGET_RESOURCE_URI}--${Date.now()}`;
+      accessLog(`open_widget -> ${widget}`);
+      return { ok: true, widget };
+    },
   });
   return tools;
 }
@@ -195,12 +224,15 @@ function newAppServer(tools: AppTool[]): SdkServerInstance {
       if (base !== PM_WIDGET_RESOURCE_URI) {
         throw new Error(`Unknown resource: ${uri}`);
       }
+      accessLog(`read_resource ${uri}`);
       return {
         contents: [
           {
             uri: PM_WIDGET_RESOURCE_URI,
             mimeType: PM_WIDGET_MIME_TYPE,
-            text: pmWidgetHtml(),
+            text: pmWidgetHtml(
+              process.env['WIDGET_ASSET_BASE'] || '',
+            ),
           },
         ],
       };
@@ -225,6 +257,27 @@ export async function startMcpAppServer(opts: McpAppServerOptions): Promise<http
       res.end(JSON.stringify({ ok: true, name: 'agent-relay-mcp-app' }));
       return;
     }
+    // Public sprite assets for the PM widget (img tags carry no bearer token,
+    // so this route is unauthenticated by design — fixed allowlist, PNG only).
+    if (req.method === 'GET' && url.pathname.startsWith('/widgets/crew/')) {
+      const name = url.pathname.slice('/widgets/crew/'.length);
+      if (/^(run|dig|climb|qa|done|blocked|sleep|idle)-sheet\.png$/.test(name)) {
+        try {
+          const file = path.join(ASSET_DIR, 'widgets', 'crew', name);
+          const data = fs.readFileSync(file);
+          res.writeHead(200, {
+            'content-type': 'image/png',
+            'cache-control': 'public, max-age=31536000, immutable',
+            'content-length': data.length,
+          });
+          res.end(data);
+          return;
+        } catch {
+          // fall through to 404
+        }
+      }
+      res.writeHead(404); res.end('not found'); return;
+    }
     if (req.method !== 'POST' || url.pathname !== '/mcp') {
       res.writeHead(404); res.end('not found'); return;
     }
@@ -247,8 +300,7 @@ export async function startMcpAppServer(opts: McpAppServerOptions): Promise<http
         void transport.close();
         void sdk.close();
       });
-    } catch (err) {
-      if (!res.headersSent) {
+    } catch (err) {      if (!res.headersSent) {
         res.writeHead(500, { 'content-type': 'application/json' });
         res.end(JSON.stringify({ error: { code: -32603, message: 'Internal server error' } }));
       }

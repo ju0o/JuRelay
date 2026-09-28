@@ -1,0 +1,37 @@
+/**
+ * Crew widget spec pins (handoff DECISIONS-LOCKED + SPEC-TECHNICAL).
+ * Sprite engine, forbidden patterns, tabs, asset-base injection.
+ */
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+
+const m = await import('../dist/server/mcp/app/pm-widget-resource.js');
+
+describe('crew widget spec', () => {
+  const html = m.pmWidgetHtml('https://example.invalid/w');
+  it('wires provided sprites only (no redraws)', () => {
+    assert.ok(html.includes('-sheet.png'));
+    for (const s of ['run:6', 'dig:4', 'climb:4', 'qa:4', 'done:4', 'blocked:4', 'sleep:4', 'idle:4']) {
+      const [state, frames] = s.split(':');
+      assert.match(html, new RegExp(state + ':\\s*' + frames), state);
+    }
+  });
+  it('uses display-width sheet math, durations, reduced motion', () => {
+    assert.match(html, /--sheetW.*\* displayW|n \* w/);
+    assert.ok(html.includes('0.62') && html.includes('2.6'));
+    assert.match(html, /prefers-reduced-motion/);
+  });
+  it('forbids css ladder, hue-rotate, scale maps', () => {
+    assert.doesNotMatch(html, /hue-rotate/);
+    assert.ok(!html.includes('ladder-rail') && !html.includes('ladder-rung'));
+  });
+  it('has 3 tabs + ladder geometry + wbs runner', () => {
+    assert.ok(html.includes('data-tab="crew"') && html.includes('data-tab="ladder"') && html.includes('data-tab="wbs"'));
+    assert.ok(html.includes('climber') && html.includes('trackFill') && html.includes('applySheet'));
+  });
+  it('injects asset base, keeps wake contract', () => {
+    assert.ok(html.includes('https://example.invalid/w/dig-sheet.png') || html.includes('example.invalid'));
+    assert.ok(html.includes('ui/initialize') && html.includes('relay_pm_claim_wake'));
+    assert.ok(!html.includes('AGENT_RELAY_PM_WAKE') && !html.includes('submit_judgment'));
+  });
+});

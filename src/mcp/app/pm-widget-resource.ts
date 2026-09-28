@@ -22,9 +22,10 @@ import { createHash } from 'node:crypto';
 
 export const PM_WIDGET_RESOURCE_VERSION = '2026-09-28-auto';
 
-export function pmWidgetHtml(): string {
+export function pmWidgetHtml(assetBase = ''): string {
   return WIDGET_HTML
     .replaceAll('__WIDGET_URI__', PM_WIDGET_RESOURCE_URI)
+    .replaceAll('__ASSET_BASE__', assetBase)
     .replaceAll('__WIDGET_BUILD__', `${WIDGET_HASH} ${BUILD_DATE}`);
 }
 
@@ -98,6 +99,47 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .update button { margin:0 6px; border:1px solid var(--text); background:transparent;
                    color:var(--text); border-radius:12px; padding:2px 10px; cursor:pointer;
                    font-size:12px; }
+  /* sprite engine (handoff spec: fixed cells, foot baseline, no scale maps) */
+  @keyframes play {
+    from { background-position-x: 0; }
+    to   { background-position-x: var(--sheetW); }
+  }
+  .crew-sp, .climber, .runner { background-repeat:no-repeat; }
+  @media (prefers-reduced-motion: reduce) {
+    .crew-sp, .climber, .runner { animation:none !important; }
+    .climber, .runner, .track-fill { transition:none !important; }
+  }
+  .tabs { display:flex; gap:6px; margin:10px 0 4px; }
+  .tabs button { flex:1; border:1px solid var(--border); background:transparent; color:var(--muted);
+                 border-radius:8px; padding:6px 4px; font-size:12px; cursor:pointer; }
+  .tabs button.on { color:var(--text); border-color:var(--text); font-weight:700; }
+  .tabpane { display:none; }
+  .tabpane.on { display:block; }
+  .crew-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; margin-top:8px; }
+  .agents { display:grid; grid-template-columns:repeat(2,111px); gap:8px; justify-content:center; margin:8px 0 2px; }
+  .crew-card { border:1px solid var(--border); border-radius:8px; padding:6px; text-align:center; }
+  .crew-card .stage { height:150px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; }
+  .crew-card .nm { font-size:12px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .crew-card .rl { font-size:11px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ladder-wrap { display:flex; gap:10px; margin-top:8px; }
+  .ladder-stage { position:relative; width:150px; flex:none; }
+  .climber { position:absolute; left:50%; transform:translateX(-50%); transition:bottom 1.1s ease; }
+  .tasklist { flex:1; font-size:12px; min-width:0; }
+  .tasklist .trow { padding:4px 6px; border-radius:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tasklist .trow.done { color:var(--muted); text-decoration:line-through; }
+  .tasklist .trow.cur { font-weight:700; border:1px solid var(--border); }
+  .goalbadge { display:inline-block; font-size:11px; border:1px solid var(--border);
+               border-radius:12px; padding:1px 8px; margin:6px 4px 0 0; }
+  .wbs-wrap { margin-top:8px; }
+  .track { position:relative; height:225px; border-bottom:2px solid var(--border); margin-top:24px; }
+  .track-fill { position:absolute; left:0; top:0; bottom:0;
+                background:linear-gradient(90deg,#3b82f6,#22c55e); opacity:.25; transition:width 1s ease; }
+  .runner { position:absolute; transition:left 1s ease; }
+  .wnode { position:absolute; bottom:0; width:9px; height:9px; border-radius:50%;
+           background:#3a4753; border:1px solid #6b7a89; transform:translate(-50%,50%); }
+  .wnode.hit { background:#22b573; border-color:#22b573; }
+  .wgoal { position:absolute; right:0; top:100%; transform:translateY(-50%); font-size:11px; font-weight:700; }
+  @media (max-width:820px) { .ladder-wrap { flex-direction:column; } }
   /* character animations (pure CSS/SVG, no assets) */
   @keyframes swing { 0%,100% { transform:rotate(-18deg); } 50% { transform:rotate(24deg); } }
   @keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-3px); } }
@@ -136,8 +178,25 @@ const WIDGET_HTML = `<!DOCTYPE html>
       <span class="step off" data-s="doing"><i></i><span data-i="sDoing">검토 요청</span></span><span class="step-sep"></span>
       <span class="step off" data-s="done"><i></i><span data-i="sDone">판정 완료</span></span>
     </div>
-    <div class="agents" id="agents"></div>
-    <div class="remain" id="remain"></div>
+    <div class="tabs" id="tabs">
+      <button data-tab="crew" class="on">Builder</button>
+      <button data-tab="ladder"><span data-i="tabLadder">사다리</span></button>
+      <button data-tab="wbs">WBS</button>
+    </div>
+    <div class="tabpane on" id="pane-crew">
+      <div class="agents" id="agents"></div>
+      <div class="remain" id="remain"></div>
+    </div>
+    <div class="tabpane" id="pane-ladder">
+      <div id="goalBadges"></div>
+      <div class="ladder-wrap">
+        <div class="ladder-stage" id="ladderStage"><div class="climber" id="climber"></div></div>
+        <div class="tasklist" id="taskList"></div>
+      </div>
+    </div>
+    <div class="tabpane" id="pane-wbs">
+      <div class="wbs-wrap"><div class="track" id="track"><div class="track-fill" id="trackFill"></div><div class="runner" id="runner"></div><div class="wgoal" id="wbsGoal"></div></div></div>
+    </div>
     <div class="update" id="update"></div>
     <div class="cards" id="cards"></div>
     <details>
@@ -297,42 +356,111 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
       langKoBtn.onclick = function () { lang = 'ko'; applyLang(); };
       langEnBtn.onclick = function () { lang = 'en'; applyLang(); };
-      // ---- characters (inline SVG, CSS-animated, no assets) ----
-      function charSvg(kind) {
-        var head = '<circle cx="22" cy="12" r="7" fill="#7a5af8"/>';
-        if (kind === 'working') {
-          return '<svg width="46" height="42" viewBox="0 0 60 50">' + head
-            + '<rect x="15" y="20" width="14" height="18" rx="4" fill="#7a5af8"/>'
-            + '<g class="pick"><line x1="46" y1="32" x2="30" y2="14" stroke="#b26a00" stroke-width="3"/>'
-            + '<line x1="30" y1="14" x2="24" y2="24" stroke="#888" stroke-width="2"/></g>'
-            + '<line x1="6" y1="42" x2="56" y2="42" stroke="#888" stroke-width="2"/></svg>';
-        }
-        if (kind === 'qa') {
-          return '<svg width="46" height="42" viewBox="0 0 60 50" class="bob">' + head
-            + '<rect x="15" y="20" width="14" height="18" rx="4" fill="#0a7d33"/>'
-            + '<g class="magn"><rect x="34" y="22" width="12" height="15" rx="1" fill="#fff" stroke="#555"/>'
-            + '<circle cx="44" cy="18" r="6" fill="none" stroke="#555" stroke-width="2"/>'
-            + '<line x1="48" y1="22" x2="53" y2="27" stroke="#555" stroke-width="2"/></g></svg>';
-        }
-        if (kind === 'done') {
-          return '<svg width="46" height="42" viewBox="0 0 60 50">'
-            + '<rect x="14" y="30" width="32" height="8" rx="1" fill="#0a7d33"/>'
-            + '<rect x="17" y="21" width="32" height="8" rx="1" fill="#0a7d33" opacity="0.75"/>'
-            + '<rect x="20" y="12" width="32" height="8" rx="1" fill="#0a7d33" opacity="0.5"/></svg>';
-        }
-        return '<svg width="46" height="42" viewBox="0 0 60 50">' + head
-          + '<rect x="15" y="26" width="18" height="12" rx="4" fill="#8a6d00"/>'
-          + '<text x="40" y="14" font-size="10" fill="#8a6d00" class="z1">z</text>'
-          + '<text x="46" y="22" font-size="12" fill="#8a6d00" class="z2">z</text>'
-          + '<text x="36" y="30" font-size="9" fill="#8a6d00" class="z3">z</text></svg>';
+      // ---- sprite engine (handoff spec: provided PNGs only, no redraws) ----
+      var ASSET_BASE = '__ASSET_BASE__';
+      var FRAMES = { run: 6, dig: 4, climb: 4, qa: 4, done: 4, blocked: 4, sleep: 4, idle: 4 };
+      var DURS = { run: 0.52, dig: 0.62, climb: 0.66, qa: 1.15, done: 0.9, blocked: 0.85, sleep: 2.4, idle: 2.6 };
+      var SHEET_W = { crew: 98, crewH: 150, climb: 140, climbH: 214 };
+      function applySheet(el, state, w, h) {
+        var n = FRAMES[state] || 4;
+        var dur = DURS[state] || 1;
+        el.style.backgroundImage = 'url(' + ASSET_BASE + '/' + state + '-sheet.png)';
+        el.style.backgroundRepeat = 'no-repeat';
+        el.style.backgroundSize = (n * w) + 'px ' + h + 'px';
+        el.style.setProperty('--sheetW', String(-(n * w)) + 'px');
+        el.style.width = w + 'px';
+        el.style.height = h + 'px';
+        el.style.animation = 'play ' + dur + 's steps(' + n + ') infinite';
       }
-      function agentKind(a) {
+      function agentSheet(a) {
         if (/qa/i.test(a.workerId || '')) return 'qa';
-        return a.state === 'working' ? 'working' : 'idle';
+        if (a.state === 'working') return 'dig';
+        return 'idle';
       }
       function agentStateLabel(a) {
         if (/qa/i.test(a.workerId || '')) return t('qaDoing');
         return a.state === 'working' ? t('working') : t('resting');
+      }
+      // ---- tabs ----
+      (function () {
+        var tabs = document.getElementById('tabs');
+        if (!tabs) return;
+        var btns = tabs.querySelectorAll('button');
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].onclick = (function (btn) {
+            return function () {
+              for (var j = 0; j < btns.length; j++) btns[j].className = '';
+              btn.className = 'on';
+              var panes = ['crew', 'ladder', 'wbs'];
+              for (var k = 0; k < panes.length; k++) {
+                document.getElementById('pane-' + panes[k]).className =
+                  'tabpane' + (btn.getAttribute('data-tab') === panes[k] ? ' on' : '');
+              }
+            };
+          })(btns[i]);
+        }
+      })();
+      function isDoneTask(task) {
+        return task && (task.pmState === 'ACCEPTED' || task.executionState === 'COMPLETED');
+      }
+      function taskTitleOf(task, i) {
+        var label = (task && (task.title || task.taskId)) || ('Task ' + (i + 1));
+        return esc(label);
+      }
+      function renderLadder(taskList, goals) {
+        var tasks = (taskList || []).slice(0, 20);
+        var stage = document.getElementById('ladderStage');
+        var list = document.getElementById('taskList');
+        var badges = document.getElementById('goalBadges');
+        var RH = 78;
+        stage.style.height = (tasks.length * RH + 48) + 'px';
+        var cur = -1;
+        for (var i = 0; i < tasks.length; i++) {
+          if (!isDoneTask(tasks[i])) { cur = i; break; }
+        }
+        if (cur < 0 && tasks.length) cur = tasks.length - 1;
+        var climber = document.getElementById('climber');
+        applySheet(climber, 'climb', SHEET_W.climb, SHEET_W.climbH);
+        climber.style.bottom = (16 + Math.max(cur, 0) * RH - 8) + 'px';
+        var html = '';
+        for (var j = 0; j < tasks.length; j++) {
+          var cls = isDoneTask(tasks[j]) ? 'done' : (j === cur ? 'cur' : 'todo');
+          html += '<div class="trow ' + cls + '">' + taskTitleOf(tasks[j], j) + '</div>';
+        }
+        list.innerHTML = html;
+        var g = '';
+        for (var k = 0; k < (goals || []).length; k++) {
+          g += '<span class="goalbadge">' + esc(goals[k].title || goals[k].goalId) + '</span>';
+        }
+        badges.innerHTML = g;
+      }
+      function renderWbs(taskList, goals) {
+        var tasks = (taskList || []).slice(0, 20);
+        var track = document.getElementById('track');
+        var fill = document.getElementById('trackFill');
+        var runner = document.getElementById('runner');
+        var wgoal = document.getElementById('wbsGoal');
+        var cur = -1;
+        for (var i = 0; i < tasks.length; i++) {
+          if (!isDoneTask(tasks[i])) { cur = i; break; }
+        }
+        if (cur < 0 && tasks.length) cur = tasks.length - 1;
+        var frac = tasks.length > 1 ? Math.max(cur, 0) / (tasks.length - 1) : 1;
+        fill.style.width = Math.round(frac * 100) + '%';
+        applySheet(runner, 'run', SHEET_W.crew, SHEET_W.crewH);
+        runner.style.top = '75px';
+        runner.style.left = 'calc(' + Math.round(frac * 100) + '% - 49px)';
+        var nodes = '';
+        for (var j = 0; j < tasks.length; j++) {
+          var done = isDoneTask(tasks[j]);
+          nodes += '<span class="wnode' + (done ? ' hit' : '') + '" title="' + taskTitleOf(tasks[j], j)
+            + '" style="left:' + Math.round(tasks.length > 1 ? j / (tasks.length - 1) * 100 : 0) + '%"></span>';
+        }
+        track.querySelectorAll('.wnode').forEach(function (el) { el.remove(); });
+        var tmp = document.createElement('div');
+        tmp.innerHTML = nodes;
+        while (tmp.firstChild) track.appendChild(tmp.firstChild);
+        wgoal.textContent = (goals && goals[0] && (goals[0].title || goals[0].goalId)) || '';
       }
       function renderAgents(dash) {
         var agents = (dash && dash.agents) || [];
@@ -340,17 +468,23 @@ const WIDGET_HTML = `<!DOCTYPE html>
         var html = '';
         for (var i = 0; i < agents.length; i++) {
           var a = agents[i] || {};
-          var kind = agentKind(a);
+          var sheet = agentSheet(a);
           var line = esc(a.displayName || a.workerId || '?');
           line += ' · ' + esc(a.model || t('modelUnknown'));
           line += ' — ' + esc(agentStateLabel(a));
           if (a.taskTitle) line += ' · ' + esc(a.taskTitle);
-          html += '<div class="agent">' + charSvg(kind)
-            + '<div class="who"><b>' + line + '</b>'
-            + '<span>' + esc(a.taskId || '') + '</span></div>'
-            + '<span class="st">' + (kind === 'working' || kind === 'qa' ? '●' : '○') + '</span></div>';
+          html += '<div class="crew-card"><div class="stage"><div class="crew-sp" data-sheet="' + sheet + '"></div></div>'
+            + '<div class="nm" title="' + esc((a.displayName || '') + ' ' + (a.workerId || '')) + '">' + esc(a.displayName || a.workerId || '?') + '</div>'
+            + '<div class="rl">' + esc(agentStateLabel(a)) + '</div></div>';
         }
         agentsEl.innerHTML = html;
+        var stages = agentsEl.querySelectorAll('.crew-sp');
+        for (var s = 0; s < stages.length; s++) {
+          var sh = stages[s].getAttribute('data-sheet');
+          if (sh === 'dig') applySheet(stages[s], 'dig', SHEET_W.crew, SHEET_W.crewH);
+          else if (sh === 'qa') applySheet(stages[s], 'qa', SHEET_W.crew, SHEET_W.crewH);
+          else applySheet(stages[s], 'idle', SHEET_W.crew, SHEET_W.crewH);
+        }
         var tasks = (dash && dash.tasks) || {};
         var open = (tasks.RUNNING || 0) + (tasks.DISPATCHED || 0) + (tasks.READY || 0) + (tasks.PENDING || 0);
         var goals = (dash && dash.goals) || [];
@@ -420,6 +554,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
           try {
             var dash = await callTool('relay_pm_get_dashboard', {});
             renderAgents(dash);
+            try {
+              var tl = await callTool('relay_pm_list_tasks', {});
+              var taskList = (tl && tl.tasks) || [];
+              var goals = (dash && dash.goals) || [];
+              renderLadder(taskList, goals);
+              renderWbs(taskList, goals);
+            } catch (e3) { /* task views best-effort */ }
           } catch (e2) { /* dashboard best-effort; deliveries already shown */ }
           if (deliveries.length === 0) {
             setStatus('waiting', t('connected'), t('waiting'));
