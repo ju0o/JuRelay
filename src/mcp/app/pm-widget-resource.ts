@@ -15,10 +15,10 @@
  * The HTML is embedded so the compiled dist needs no asset-copy step.
  */
 
-export const PM_WIDGET_RESOURCE_URI = 'ui://agent-relay/pm-widget-v2';
+export const PM_WIDGET_RESOURCE_URI = 'ui://agent-relay/pm-widget-v3';
 export const PM_WIDGET_RESOURCE_NAME = 'Agent Relay PM';
 export const PM_WIDGET_MIME_TYPE = 'text/html;profile=mcp-app';
-export const PM_WIDGET_RESOURCE_VERSION = '2026-01-26';
+export const PM_WIDGET_RESOURCE_VERSION = '2026-09-28';
 
 export function pmWidgetHtml(): string {
   return WIDGET_HTML;
