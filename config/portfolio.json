@@ -21355,6 +21355,30 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:298 프로젝트와 무관한 일반 개발 지식을 길게 설명하지 않는다.",
           "title": "불필요한 개발 용어 없이 이해"
+        },
+        {
+          "taskId": "JUTELL-INVALID-CONFIG-C3-PARITY",
+          "scope": "Add TEST_SCENARIOS §14.3's five invalid-config rules as one bullet under report-format.md §8, plus an offline node:test that those five sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/invalid-config-c3-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/invalid-config-c3-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:944 * 작업을 불필요하게 중단하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-RISK-WITHOUT-RUNTIME-PARITY",
+          "scope": "Add PRODUCT_SCOPE §7.7's two sentences, that risk can still be judged without a test or browser and that 판정 불가 applies when the change range itself is unknown, as lines in risk-level-guide.md §6, plus an offline node:test that both sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/risk-level-guide.md",
+            "tests/risk-without-runtime-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/risk-without-runtime-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:468 테스트, 브라우저 또는 실행 환경이 없더라도 코드와 변경 범위를 확인할 수 있다면 위험도를 판단할 수 있다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
