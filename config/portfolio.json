@@ -9844,6 +9844,45 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task.",
           "title": "JuPlan이 끊기면 같은 일을 다시 하지 않음"
+        },
+        {
+          "taskId": "JUPLAN-AR-QA-NIGHT-DRAIN",
+          "scope": "Append an optional night-drain fact after transportHold on decideQaTestGate so a night-run drain does not promote a passing ACCEPT and dispatches none, while an omitted or not-draining fact keeps today's promotion.",
+          "files": [
+            "packages/runtime/src/agentRelayQaGate.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- packages/runtime/test/agent-relay-qa-gate.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched."
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-NIGHT-DRAIN",
+          "scope": "Append an optional night-drain fact after transportHold on applyRetryPolicy and runSameTaskRetry so a night-run drain does not retry and dispatches none, while an omitted or not-draining fact keeps the same-task retry.",
+          "files": [
+            "packages/runtime/src/agentRelayRetryPolicy.ts",
+            "packages/runtime/test/agent-relay-retry-policy.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- packages/runtime/test/agent-relay-retry-policy.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched."
+        },
+        {
+          "taskId": "JUPLAN-AR-ACCEPT-FOUNDER-GATE",
+          "scope": "Append an optional Founder Gate fact after retryQueue on selectNextAfterAccept and applyAcceptNext so a stopped lane returns dispatch none and a null next id, while DEC-G012 isolation does not stop the lane.",
+          "files": [
+            "packages/runtime/src/agentRelayAcceptNext.ts",
+            "packages/runtime/test/agent-relay-accept-next.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- packages/runtime/test/agent-relay-accept-next.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 FOUNDER_GATE: This lane stops. Other Agent Relay lanes are not stopped by this verdict."
         }
       ],
       "qaRuntime": [
