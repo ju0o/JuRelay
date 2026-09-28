@@ -12548,6 +12548,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 개발자 글자는 원문 보기 안에만 둔다",
           "title": "JuCeipt 설정을 거절하면 한글로 안내하기"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-WON-DARK-READABLE",
+          "scope": "On the receipt view and today list, write a known won cost as N원이에요, and in the receipt view dark theme make the rollback panel and the 받았어요 line readable.",
+          "files": [
+            "src/render/index.ts",
+            "src/render/today.ts",
+            "tests/receipt-render-founder.test.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-INIT-SCHEDULE-FAIL-LINES",
+          "scope": "When juceipt init or schedule fails, print three plain Korean lines that the automatic receipt schedule could not be changed because this computer's scheduler is missing or refused, and do not blame a missing folder or show English scheduler words.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-background.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-background.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
