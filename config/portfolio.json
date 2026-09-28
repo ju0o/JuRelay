@@ -20352,6 +20352,28 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:142 A later GO / DEFER / KILL decision is recorded only for a M3 validation §2.3 captured row with both a Claude final and a Receipt.",
           "title": "확인된 결과로만 다음 결정을 기록"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-B1-JOIN-ONLY-CLAUSE",
+          "scope": "Add only the existing join-only clause to the board B1 state cell so it matches the WBS/GTM B1 wording and records no M3 GO, DEFER, or KILL.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-28: Collect only captured rows containing both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL only for those joined rows."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-ROADMAP-M3-STATUS-JOIN-ONLY",
+          "scope": "Add only the join-only collection clause to the three roadmap M3 status lines that still end at decision pending, without recording GO, DEFER, or KILL.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:561 Use only `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.3 to intake a row containing both a Claude final and a Receipt; do not record the M3 GO/DEFER/KILL milestone decision from the 0-join gap."
         }
       ],
       "skills": {
