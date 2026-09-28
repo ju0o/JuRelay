@@ -24213,6 +24213,50 @@
           ],
           "ssotEvidence": "README.md:16 GitHub 코드 리뷰",
           "title": "참여 글에 변경사항 검토를 연결해요"
+        },
+        {
+          "taskId": "JUAI-CHECK-SUMMARY-HOUR",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs and layout.mjs unchanged, that tick schedules dailySummary from KST hour 8, that the summary covers the previous KST day, and that the yesterday-summary channel topic still says it is posted at 8 a.m.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:14 어제 요약; layout.mjs:45 매일 오전 8시 Claude가 어제 대화를 요약해요."
+        },
+        {
+          "taskId": "JUAI-CHECK-PICKS-CONTEXT",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs and layout.mjs unchanged, that tick schedules dailyPicks from KST hour 9, that the Codex prompt includes recent server topics and earlier thumbs-up and thumbs-down counts, and that the picks channel topic still says the recommendation is posted at 9 a.m.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:15 매일 서버 대화에 맞춘 오픈소스 추천; layout.mjs:39 매일 오전 9시 Codex 추천."
+        },
+        {
+          "taskId": "JUAI-CHECK-USAGE-EXAMPLE",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that dailyPicks asks OpenCode for usage examples with a text flow diagram and posts that reply in the new recommendation thread.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:16 활용 예시; layout.mjs:103 OpenCode가 활용 예시와 흐름도를 달아요."
+        },
+        {
+          "taskId": "JUAI-CHECK-WELCOME-PROFILE",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs and layout.mjs unchanged, that a member-join message calls CommandCode welcome with a profile button before other handling, and that the profile form asks for an SNS name, what the member is making, and an optional GitHub link.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:17 환영 인사·프로필 폼"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
