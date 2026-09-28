@@ -34,7 +34,7 @@
 
 Windows 앱으로 쓰기:
 
-1. [Releases](https://github.com/ju0o/Agent-Relay/releases)에서 `AgentRelay-Setup-x.y.z.exe`를 받아 실행해요.
+1. [Releases](https://github.com/ju0o/JuRelay/releases)에서 `AgentRelay-Setup-x.y.z.exe`를 받아 실행해요.
    (코드 서명이 없어 처음에 Windows 경고가 뜰 수 있어요 — "추가 정보 → 실행")
 2. 처음 열면 기록을 저장할 폴더를 한 번만 고르세요. `[기본 폴더 사용]` 한 번이면 끝이에요.
 3. 위쪽 **관제실 → 승인 규칙 → 계획** 순서로 둘러보세요.
