@@ -26945,6 +26945,50 @@
           ],
           "ssotEvidence": "README.md:15 | Codex | 매일 서버 대화에 맞춘 오픈소스 추천 | Codex CLI |",
           "title": "오늘의 추천은 세 개까지, 못 읽으면 안 올림"
+        },
+        {
+          "taskId": "JUAI-CHECK-SPAM-WINDOW",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that spam() drops stored messages older than SPAM_WINDOW_MS before calling isSpam.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:120 스팸은 ${SPAM_WINDOW_MS / 60_000}분 안에 같은 글을 ${SPAM_REPEAT_CHANNELS}개 채널에 올리거나"
+        },
+        {
+          "taskId": "JUAI-CHECK-MENTOR-ONCE",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that mentorPing skips a mentor already stored for today and records each chosen mentor before the CommandCode ping.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:20 #질문-답변에 입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-THREAD-BOT-SKIP",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that onThread returns when the starter is missing or bot-authored before notifySubs and the shared forum quota.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 !익명은 OpenCode 개인 메시지에서만 작동"
+        },
+        {
+          "taskId": "JUAI-CHECK-FORUM-QUOTA-STOP",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that onThread returns when the shared bot:forum takeQuota fails, before choosing the reply bot or calling ai.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 서버 전체 하루 300회"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
