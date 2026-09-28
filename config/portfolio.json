@@ -23148,6 +23148,28 @@
           ],
           "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:109 이 규칙은 꺼진 Feature 전체를 다시 켜는 것이 아니라, 안전에 필요한 사실만 추가하는 규칙이다.",
           "title": "꺼진 기능은 안전 사실만 안내받기"
+        },
+        {
+          "taskId": "JUTELL-EVALUATION-MATERIALS-PARITY",
+          "scope": "평가 자료는 사용자 요청문·최종 보고서·필요한 화면만 허용하고 전체 diff·소스·내부 작업 기록은 제외한다는 규칙을 시나리오 자료에 고정하는 오프라인 테스트를 추가한다.",
+          "files": [
+            "tests/evaluation-materials-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/evaluation-materials-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:98-111 평가 자료 제한: 비개발자 평가자에게 제공할 자료와 제공하지 않을 자료를 구분한다."
+        },
+        {
+          "taskId": "JUTELL-EVALUATOR-INFO-SEPARATION-PARITY",
+          "scope": "평가 대상자가 기대 답변·채점 기준·기술 평가·자동 실패 조건을 미리 보지 않고 사용자 요청문과 최종 보고서만 읽도록 평가 템플릿과 시나리오 자료의 분리를 오프라인 테스트로 검증한다.",
+          "files": [
+            "tests/evaluator-info-separation-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/evaluator-info-separation-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:113-128 평가자 정보 분리: 기대 답변과 채점표는 진행자만 확인하고 평가 대상자는 요청문과 최종 보고서만 읽는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
