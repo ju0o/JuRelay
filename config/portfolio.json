@@ -23131,6 +23131,52 @@
             "node check.mjs"
           ],
           "ssotEvidence": "README.md:38 setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)"
+        },
+        {
+          "taskId": "JUAI-ANON-QUOTA-SKIP",
+          "scope": "In onDirect, when the !익명 body trims to fewer than ANON_MIN characters, send the existing too-short reply and return before takeQuota, and assert that order on the onDirect source slice in check.mjs.",
+          "files": [
+            "bot.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 익명 질문은 5자 이상"
+        },
+        {
+          "taskId": "JUAI-DM-STAFF-LEFT",
+          "scope": "In onDirect's !남은횟수 branch, reply to staff with the guild command's existing sentence 운영진은 AI 질문 횟수 제한이 없어요. while leaving the member sentence unchanged, and assert that sentence occurs inside onDirect in check.mjs.",
+          "files": [
+            "bot.mjs",
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 서버 주인(Founder)·운영진은 일일 제한 없음"
+        },
+        {
+          "taskId": "JUAI-CHECK-SPAM-AGED-REPEAT",
+          "scope": "Add check.mjs assertions only that isSpam still flags over-length text repeated across SPAM_REPEAT_CHANNELS channels when joinedTimestamp is missing or at least DAY_MS old, and does not flag that aged account one channel below the cap.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:120 같은 글을 ${SPAM_REPEAT_CHANNELS}개 채널에 올리거나, 가입 ${DAY_MS / 86_400_000}일 이내에 링크"
+        },
+        {
+          "taskId": "JUAI-CHECK-ACCESS-OVERWRITES",
+          "scope": "Add check.mjs assertions only, using the setup.mjs source already read there, that open overwrites are empty, readonly and botsonly deny everyone SendMessages, the botsonly branch does not deny ViewChannel, and private denies everyone ViewChannel.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:16 botsonly = only the bots talk, private = staff + agents only"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
