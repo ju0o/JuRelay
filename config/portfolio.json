@@ -23071,6 +23071,39 @@
           ],
           "ssotEvidence": "layout.mjs:120 quote, or Founder direction 2026-09-23",
           "title": "스팸 기준을 정확히 안내해요"
+        },
+        {
+          "taskId": "JUAI-CHECK-SPAM-FRESH",
+          "scope": "Add check.mjs assertions only, leaving lib.mjs unchanged, that isSpam flags @here for a fresh account, ignores a fresh account with one link under SPAM_LINK_MIN, and does not treat the account as fresh when joinedTimestamp is missing or exactly DAY_MS old.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:120 가입 1일 이내에 링크 4개 이상·@everyone·@here"
+        },
+        {
+          "taskId": "JUAI-CHECK-AI-SANDBOX",
+          "scope": "Add check.mjs assertions only by reading ai.mjs as text and not importing it, that the claude command disables tools, codex, opencode, and commandcode go through bwrap, the child env allowlist has no Discord token keys, and CommandCode defaults to the Laguna model then falls back to OpenCode.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:46 Claude는 도구를 끄고, OpenCode·Codex·CommandCode는 bwrap 임시 홈에서만 실행. 자식 프로세스에는 봇 토큰이 없습니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-ROLE-LOOKUP",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs and layout.mjs unchanged, that every role name bot.mjs looks up exists on ROLES, that its INTERESTS and ROLE_GROUPS lists match the int and lvl roles, and that the qa forum still has the 해결됨 tag.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:38 setup.mjs 그 구조를 서버에 적용 (이름으로 맞춰서 갱신, 중복 없음)"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
