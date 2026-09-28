@@ -25240,6 +25240,50 @@
           ],
           "ssotEvidence": "README.md:16 \"스레드 대화\"",
           "title": "연구실과 오픈소스 글은 대화를 이어서 답해요"
+        },
+        {
+          "taskId": "JUAI-CHECK-ANSWER-QUOTA",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that answer() passes the member staff flag to takeQuota and, when quota is refused, returns quotaMessage before calling ai().",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만, 1인 기본 하루 5회"
+        },
+        {
+          "taskId": "JUAI-CHECK-MENTION-ROUTE",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs and the existing threadChat assertion unchanged, that a founder @Claude mention calls adminCommand, a member @Claude mention returns the lab redirect without answer(), a member @Codex mention returns the picks redirect without answer(), and a founder @Codex mention or an OpenCode or CommandCode mention calls answer().",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:83 운영 전용이라 질문에는 답하지 않아요"
+        },
+        {
+          "taskId": "JUAI-CHECK-SUGGEST-TAGS",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that a 건의사항 thread asks Claude for at most two tags, sets them only when the thread has none, returns before the shared bot:forum takeQuota, and skips notifySubs.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:108 Claude가 태그를 달고"
+        },
+        {
+          "taskId": "JUAI-CHECK-SPAM-ENFORCE",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs, lib.mjs, and the existing staff-skip assertion unchanged, that once isSpam matches, spam() deletes the matching messages, times the member out for SPAM_TIMEOUT_MS, creates a spam card, returns true, and onMessage returns before member commands.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:14 스팸 관리"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
