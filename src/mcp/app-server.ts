@@ -227,8 +227,16 @@ function newAppServer(tools: AppTool[]): SdkServerInstance {
       const uri = req.params.uri;
       // Accept per-call nonce suffixes (--<ms> or legacy ?t=<ms>); identity is the base URI.
       const base = (uri || '').split(/[?]/)[0].split('--')[0];
-      if (base !== PM_WIDGET_RESOURCE_URI) {
+      // Stale-cache healing: conversations pinned to a previous content hash
+      // would otherwise get "Unknown resource" and render a white view.
+      // Any pm-widget-<8hex> URI serves the current bundle; the bundle's own
+      // version check then converges (banner, never auto-reload).
+      const staleWidget = /^ui:\/\/agent-relay\/pm-widget-[0-9a-f]{8}$/.test(base || '');
+      if (base !== PM_WIDGET_RESOURCE_URI && !staleWidget) {
         throw new Error(`Unknown resource: ${uri}`);
+      }
+      if (staleWidget && base !== PM_WIDGET_RESOURCE_URI) {
+        accessLog(`read_resource stale hash -> current bundle (${base})`);
       }
       accessLog(`read_resource ${uri}`);
       return {

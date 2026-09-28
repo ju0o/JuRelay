@@ -179,6 +179,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
     </div>
     <div class="statusline"><span class="dot waiting" id="dot"></span><span class="state" id="status">연결 중…</span></div>
     <div class="sub" id="sub"></div>
+    <div class="sub" id="diag">dashboard 상태 확인 중…</div>
     <div class="counts">
       <div class="count"><b id="cWait">0</b><span data-i="wait">대기 중</span></div>
       <div class="count"><b id="cDoing">0</b><span data-i="doing">검토 중</span></div>
@@ -273,6 +274,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var lastDeliveries = [];
       var agentsEl = document.getElementById('agents');
       var remainEl = document.getElementById('remain');
+      var diagEl = document.getElementById('diag');
+      function setDiag(text) {
+        try { if (diagEl) diagEl.textContent = text; } catch (e) {}
+      }
+      function diagTime() {
+        try { return new Date().toISOString().slice(11, 19); }
+        catch (e) { return ''; }
+      }
       var updateEl = document.getElementById('update');
       var OWN_URI = '__WIDGET_URI__';
       var updateNoticed = false;
@@ -436,10 +445,11 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (/qa/i.test(a.workerId || '')) return t('qaDoing');
         return a.state === 'working' ? t('working') : t('resting');
       }
-      // ---- tabs ----
-      (function () {
-        var tabs = document.getElementById('tabs');
-        if (!tabs) return;
+      // ---- tabs (guarded: a tab failure must never kill init) ----
+      try {
+        (function () {
+          var tabs = document.getElementById('tabs');
+          if (!tabs) return;
         var btns = tabs.querySelectorAll('button');
         for (var i = 0; i < btns.length; i++) {
           btns[i].onclick = (function (btn) {
@@ -452,9 +462,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
                   'tabpane' + (btn.getAttribute('data-tab') === panes[k] ? ' on' : '');
               }
             };
-          })(btns[i]);
-        }
-      })();
+            })(btns[i]);
+          }
+        })();
+      } catch (eTab) { /* tabs are progressive enhancement; core still renders */ }
       function isDoneTask(task) {
         return task && (task.pmState === 'ACCEPTED' || task.executionState === 'COMPLETED');
       }
@@ -609,15 +620,19 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (fp !== lastDeliveryFp) { lastDeliveryFp = fp; checkVersion(); }
           try {
             var dash = await callTool('relay_pm_get_dashboard', {});
-            renderAgents(dash);
+            setDiag('dashboard ok · ' + diagTime());
+            try { renderAgents(dash); } catch (eAgents) { logLine('render agents error: ' + eAgents.message); }
             try {
               var tl = await callTool('relay_pm_list_tasks', {});
               var taskList = (tl && tl.tasks) || [];
               var goals = (dash && dash.goals) || [];
-              renderLadder(taskList, goals);
-              renderWbs(taskList, goals);
+              try { renderLadder(taskList, goals); } catch (eL) { logLine('render ladder error: ' + eL.message); }
+              try { renderWbs(taskList, goals); } catch (eW) { logLine('render wbs error: ' + eW.message); }
             } catch (e3) { /* task views best-effort */ }
-          } catch (e2) { /* dashboard best-effort; deliveries already shown */ }
+          } catch (e2) {
+            setDiag('dashboard 실패: ' + String((e2 && e2.message) || e2).slice(0, 120));
+            /* dashboard best-effort; deliveries already shown */
+          }
           if (deliveries.length === 0) {
             setStatus('waiting', t('connected'), t('waiting'));
             return;
@@ -708,7 +723,11 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
       });
 
-      init();
+      try {
+        init();
+      } catch (eInit) {
+        showFallback('위젯 시작 실패', String((eInit && eInit.message) || eInit).slice(0, 300));
+      }
     })();
   </script>
 </body>

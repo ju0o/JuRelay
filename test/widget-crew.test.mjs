@@ -50,4 +50,10 @@ describe('crew widget spec', () => {
     assert.deepEqual(fallback.ui.csp.resourceDomains, ['https://mcp.relay-agent.site']);
     assert.equal(meta.ui.prefersBorder, true);
   });
+  it('always renders fallback shell + dashboard diag line', () => {
+    assert.ok(html.includes('id="fallback"'), 'static fallback shell');
+    assert.ok(html.includes('id="diag"'), 'dashboard status line element');
+    assert.ok(html.includes('dashboard ok ·') && html.includes('dashboard 실패:'), 'diag covers ok + fail');
+    assert.ok(html.includes('render agents error') && html.includes('render ladder error') && html.includes('render wbs error'), 'per-view render guards');
+  });
 });
