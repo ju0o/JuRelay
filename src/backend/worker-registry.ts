@@ -629,3 +629,72 @@ export function writeWorkerRegistryRecord(dataRoot: string, record: WorkerRegist
   fs.writeFileSync(filePath, JSON.stringify(validated, null, 2), 'utf8');
   return filePath;
 }
+
+/** First-run onboarding (Founder 2026-09-28): after a user connects their AI,
+ *  implementation just works. Probes well-known CLI binaries and registers
+ *  missing builder (+QA where a QA wrapper exists) rows. Existing rows are
+ *  never overwritten. Returns the workerIds it ensured. Best-effort: throws
+ *  nothing — callers log and continue. */
+export function ensureBuiltInWorkers(dataRoot: string): string[] {
+  const ensured: string[] = [];
+  let scriptsDir: string | null = null;
+  try {
+    // dist/server/backend/worker-registry.js -> repo scripts/
+    const candidate = path.resolve(__dirname, '..', '..', '..', 'scripts');
+    if (fs.existsSync(path.join(candidate, 'relay-worker-opencode-impl.mjs'))) {
+      scriptsDir = candidate;
+    }
+  } catch {
+    return ensured;
+  }
+  if (!scriptsDir) return ensured;
+  const onPath = (bin: string): boolean => {
+    if (path.isAbsolute(bin)) {
+      try { fs.accessSync(bin, fs.constants.X_OK); return true; } catch { return false; }
+    }
+    const dirs = (process.env['PATH'] || '').split(path.delimiter).filter(Boolean);
+    for (const dir of dirs) {
+      try { fs.accessSync(path.join(dir, bin), fs.constants.X_OK); return true; } catch { /* next */ }
+    }
+    return false;
+  };
+  const specs: Array<{
+    workerId: string; displayName: string; wrapper: string;
+    capabilities: string[]; observationAdapterId: string;
+  }> = [
+    ...(onPath('opencode') ? [
+      { workerId: 'builder-opencode', displayName: 'Builder via OpenCode (free tier only)', wrapper: 'relay-worker-opencode-impl.mjs', capabilities: ['opencode'], observationAdapterId: 'opencode' },
+      { workerId: 'qa-opencode', displayName: 'Semantic QA via OpenCode (free tier only)', wrapper: 'relay-worker-opencode.mjs', capabilities: ['opencode'], observationAdapterId: 'opencode' },
+    ] : []),
+    ...(onPath('codex') ? [
+      { workerId: 'builder-codex', displayName: 'Builder via Codex CLI (config default model)', wrapper: 'relay-worker-codex.mjs', capabilities: ['codex'], observationAdapterId: 'codex' },
+      { workerId: 'qa-codex', displayName: 'Semantic QA via Codex CLI (read-only)', wrapper: 'relay-worker-codex-qa.mjs', capabilities: ['codex'], observationAdapterId: 'codex' },
+    ] : []),
+  ];
+  let existing = new Set<string>();
+  try {
+    existing = new Set(listWorkerRegistryRecords(dataRoot).map((r) => r.workerId));
+  } catch {
+    return ensured;
+  }
+  for (const spec of specs) {
+    if (existing.has(spec.workerId)) continue;
+    if (!fs.existsSync(path.join(scriptsDir, spec.wrapper))) continue;
+    try {
+      writeWorkerRegistryRecord(dataRoot, {
+        schemaVersion: WORKER_REGISTRY_SCHEMA_VERSION,
+        workerId: spec.workerId,
+        displayName: spec.displayName,
+        launchCommand: 'node',
+        launchArgsPrefix: [path.join(scriptsDir, spec.wrapper)],
+        capabilities: spec.capabilities,
+        observationAdapterId: spec.observationAdapterId,
+        workingDirectory: '.',
+      });
+      ensured.push(spec.workerId);
+    } catch {
+      // One bad row must not block the rest.
+    }
+  }
+  return ensured;
+}

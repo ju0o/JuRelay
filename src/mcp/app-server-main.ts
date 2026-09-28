@@ -84,6 +84,16 @@ async function main(): Promise<void> {
     console.warn('WARNING: starting agent-relay-mcp-app with no authentication (--allow-unauthenticated)');
   }
 
+  // First-run onboarding: auto-register builder/QA rows for detected AI CLIs.
+  // Best-effort — never blocks startup, never overwrites existing rows.
+  try {
+    const { ensureBuiltInWorkers } = await import('../backend/worker-registry.js');
+    const ensured = ensureBuiltInWorkers(args.dataRoot);
+    if (ensured.length) console.log(`Auto-registered workers: ${ensured.join(', ')}`);
+  } catch (err) {
+    console.warn(`Worker auto-registration skipped: ${err instanceof Error ? err.message : err}`);
+  }
+
   const server = await startMcpAppServer({
     dataRoot: args.dataRoot,
     project: args.project,
