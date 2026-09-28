@@ -21419,6 +21419,42 @@
           ],
           "ssotEvidence": "docs/TEST_SCENARIOS.md:918 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동은 유지한다.",
           "title": "최소 설정도 필요한 항목을 지킴"
+        },
+        {
+          "taskId": "JUTELL-SIMPLE-LENGTH-LEFTOVER-PARITY",
+          "scope": "Add the three BEGINNER_REPORT_SPEC §5.1 restraint bullets still missing from report-format.md §2 (같은 내용을 다른 항목에서 반복하지 않음, 전체 파일 목록을 기본으로 출력하지 않음, 위험·실패·중요한 미확인 사항이 없으면 상세 설명을 추가하지 않음) as one bullet, plus an offline node:test that those three phrases stay aligned, without changing the length limits already asserted by tests/report-length-limits-parity.test.mjs.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/simple-length-leftover-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/simple-length-leftover-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:133 * 같은 내용을 다른 항목에서 반복하지 않음"
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-KEEP-ORIGINAL-PARITY",
+          "scope": "Add GLOSSARY_POLICY §2.1's sentence that a term is kept and given a short plain explanation only on first use to glossary-ko.md's opening paragraph, without a new heading, plus an offline node:test that the sentence stays aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-keep-original-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-keep-original-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:15 개발 용어를 완전히 없애지 않는다. 원래 용어를 유지하고 처음 등장할 때 짧고 쉬운 설명을 붙인다."
+        },
+        {
+          "taskId": "JUTELL-CODE-BLOCK-UNITS-PARITY",
+          "scope": "Add GLOSSARY_POLICY §7's five code-block units in order (하나의 함수, 하나의 조건문 묶음, 하나의 API 호출, 하나의 화면 Component, 하나의 데이터 처리 단계) as one bullet under explained-diff-format.md §6, plus an offline node:test that the list stays aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/explained-diff-format.md",
+            "tests/code-block-units-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/code-block-units-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:140 설명 단위는 한 줄이 아니라 다음과 같은 기능 블록으로 묶는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
