@@ -21536,6 +21536,17 @@
             "node --test tests/local-only-boundary-parity.test.mjs"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:491-502 `낮은 운영 비용 원칙`; README.md:126-130 외부 전송 및 Telemetry 미구현 설명"
+        },
+        {
+          "taskId": "JUTELL-SCREEN-INTERNAL-SEPARATION-PARITY",
+          "scope": "PRODUCT_SCOPE §7.3의 화면 변화·내부 변화 분리와 미실행 화면의 예상 표현이 Skill 및 report-format에 유지되는지 오프라인 테스트로 검증한다.",
+          "files": [
+            "tests/screen-internal-separation-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/screen-internal-separation-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:397-409 화면 변화와 내부 변화 구분 원칙"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
