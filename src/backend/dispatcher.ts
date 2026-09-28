@@ -49,6 +49,12 @@ import {
   WorkerRegistryError,
 } from './worker-registry.js';
 import { getAdapter } from '../integrations/core/registry.js';
+import {
+  classifyExitFailure,
+  pickFallbackWorker,
+  readFallbackRecord,
+  writeFallbackRecord,
+} from './worker-fallback.js';
 import { resolveClaudeConfigContext } from '../integrations/claude/profile.js';
 import { ensureDispatchCaptureManager } from './capture-service.js';
 import {
@@ -233,7 +239,14 @@ interface LiveDispatch {
   observationLock?: ObservationLockHandle;
   /** Idempotent cleanup guard for capture disarm + observation lock release. */
   observationCleanupDone?: boolean;
+  /** Bounded tail of worker stdout/stderr for exit classification (never prompts). */
+  outputTail?: string;
 }
+
+/** Process-local fallback attempts per Task (loop protection, max 2 auto-suggestions). */
+const fallbackTriedByTask = new Map<string, string[]>();
+const MAX_FALLBACK_SUGGESTIONS_PER_TASK = 2;
+const OUTPUT_TAIL_CAP = 32 * 1024;
 
 /** In-memory live dispatches: key = resolve(dataRoot)@@project::taskId */
 const activeDispatches = new Map<string, LiveDispatch>();
@@ -301,6 +314,7 @@ export function _resetDispatcherStateForTests(): void {
   activeDispatches.clear();
   recoveryRegistry.clear();
   recoveryScanned.clear();
+  fallbackTriedByTask.clear();
   spawnImpl = spawn;
   afterLinkHook = null;
   afterSpawnHook = null;
@@ -609,6 +623,51 @@ async function cleanupObservationLifecycle(live: LiveDispatch): Promise<void> {
   }
 }
 
+// ── Worker-fallback classification ─────────────────────────────────────────
+// Provider/runtime deaths (overload, quota, auth, timeout, spawn failure) must
+// not silently end the Task: classify the exit, persist a fallback.json
+// advisory (next worker to try) in the Run folder, and tag the run record.
+// NOTE: the dispatcher never auto-dispatches — the advisory is consumed by
+// the runner/operator. TASK-cause deaths stay FAILED with no suggestion.
+
+function appendOutputTail(live: LiveDispatch, chunk: unknown): void {
+  try {
+    const text = Buffer.isBuffer(chunk) ? chunk.toString('utf8') : String(chunk ?? '');
+    if (!text) return;
+    live.outputTail = ((live.outputTail ?? '') + text).slice(-OUTPUT_TAIL_CAP);
+  } catch { /* diagnostics never break the loop */ }
+}
+
+function recordExitClassification(args: {
+  taskKey: string;
+  taskId: string;
+  workerId: string;
+  runFolder?: string;
+  outputText: string;
+}): { kind: string; reason: string; fallbackTo: string } {
+  const classified = classifyExitFailure(args.outputText);
+  let fallbackTo = '';
+  if (classified.kind === 'provider' && args.runFolder) {
+    const tried = fallbackTriedByTask.get(args.taskKey) ?? [];
+    if (tried.length < MAX_FALLBACK_SUGGESTIONS_PER_TASK) {
+      const prior = readFallbackRecord(args.runFolder);
+      const seen = new Set([...tried, args.workerId, ...(prior ? [prior.fromWorkerId] : [])]);
+      const pick = pickFallbackWorker([...seen]);
+      if (pick) {
+        fallbackTo = pick;
+        fallbackTriedByTask.set(args.taskKey, [...tried, args.workerId]);
+        writeFallbackRecord(args.runFolder, {
+          taskId: args.taskId,
+          fromWorkerId: args.workerId,
+          toWorkerId: pick,
+          reason: classified.reason,
+        });
+      }
+    }
+  }
+  return { kind: classified.kind, reason: classified.reason, fallbackTo };
+}
+
 // ── Exit handling ────────────────────────────────────────────────────────────
 
 async function handleChildExit(
@@ -649,11 +708,19 @@ async function handleChildExit(
   }
 
   if (exitCode !== 0) {
+    const advice = recordExitClassification({
+      taskKey: live.key,
+      taskId: live.taskId,
+      workerId: live.workerId,
+      runFolder: live.captureFolder,
+      outputText: live.outputTail ?? '',
+    });
     try {
       await transitionTaskExecution(live.dataRoot, live.project, live.taskId, {
         expectedExecutionState: task.executionState,
         to: 'FAILED',
-        reason: `worker process exit code=${exitCode}` + (signal ? ` signal=${signal}` : ''),
+        reason: `worker process exit code=${exitCode}` + (signal ? ` signal=${signal}` : '')
+          + ` [${advice.kind}]` + (advice.fallbackTo ? ` suggest=${advice.fallbackTo}` : ''),
       });
     } catch {
       // CAS race — leave state as-is
@@ -665,7 +732,11 @@ async function handleChildExit(
         runId: live.runId,
         goalId: task.goalId,
         source: { kind: 'dispatcher', subsystem: 'process-exit' },
-        details: { exitCode, signal, runId: live.runId, workerId: live.workerId },
+        details: {
+          exitCode, signal, runId: live.runId, workerId: live.workerId,
+          failureKind: advice.kind, failureReason: advice.reason,
+          ...(advice.fallbackTo ? { fallbackTo: advice.fallbackTo } : {}),
+        },
       });
     } catch { /* ignore */ }
 
@@ -1247,7 +1318,9 @@ export async function dispatchTask(
     const spawnOpts: Parameters<typeof spawn>[2] = {
       shell: false,
       windowsHide: true,
-      stdio: 'ignore',
+      // Pipe (and drain) worker output into a bounded tail so a non-zero
+      // exit can be classified as provider/runtime vs task failure.
+      stdio: ['ignore', 'pipe', 'pipe'],
     };
     if (worker.workingDirectory) {
       spawnOpts.cwd = worker.workingDirectory;
@@ -1345,6 +1418,10 @@ export async function dispatchTask(
     // Spawn confirmed: install exit listener before yielding to event loop.
     live.child = child;
     live.pid = child.pid;
+    try {
+      child.stdout?.on('data', (chunk) => appendOutputTail(live, chunk));
+      child.stderr?.on('data', (chunk) => appendOutputTail(live, chunk));
+    } catch { /* test fakes may lack streams */ }
     child.on('exit', (code, signal) => {
       void handleChildExit(live, code, signal);
     });
