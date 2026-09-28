@@ -6054,7 +6054,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 진짜 비개발자도 보면 이해가 되게"
+          "ssotEvidence": "Founder direction 2026-09-25: 진짜 비개발자도 보면 이해가 되게",
+          "title": "답변이 없을 때도 보기 쉽게 확인"
         },
         {
           "taskId": "ACTL-WEB-CARD-HIDE-IDS",
@@ -6066,7 +6067,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: Live status card, no task ids on the card"
+          "ssotEvidence": "Founder direction 2026-09-25: Live status card, no task ids on the card",
+          "title": "필요한 정보만 한눈에 보기"
         },
         {
           "taskId": "ACTL-BOARD-FILTER-EMPTY",
@@ -6078,7 +6080,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "README.md:6 여러 AI 비서를 번갈아 쓰는 비개발자를 위한 도구입니다."
+          "ssotEvidence": "README.md:6 여러 AI 비서를 번갈아 쓰는 비개발자를 위한 도구입니다.",
+          "title": "맞는 인공지능 창만 쉽게 찾기"
         }
       ],
       "qaRuntime": [
@@ -11800,7 +11803,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: juceipt 명령 출력(scan, daily, receipt)에서 개발자 글자는 원문 보기 안에만"
+          "ssotEvidence": "Founder direction 2026-09-25: juceipt 명령 출력(scan, daily, receipt)에서 개발자 글자는 원문 보기 안에만",
+          "title": "결과를 쉽게 확인하기"
         },
         {
           "taskId": "JUCEIPT-TODAY-EMPTY-BY-VERDICT",
@@ -11812,7 +11816,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 빠진 확인을 과장 없이 쉬운 말로"
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 빠진 확인을 과장 없이 쉬운 말로",
+          "title": "오늘 목록을 상황에 맞게 안내하기"
         }
       ],
       "skills": {
@@ -20270,7 +20275,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:142 A later GO / DEFER / KILL decision is recorded only for a M3 validation §2.3 captured row with both a Claude final and a Receipt."
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:142 A later GO / DEFER / KILL decision is recorded only for a M3 validation §2.3 captured row with both a Claude final and a Receipt.",
+          "title": "확인된 결과로만 다음 결정을 기록"
         }
       ],
       "skills": {
@@ -22623,7 +22629,8 @@
           "tests": [
             "node --test tests/scope-6-1-length-scale-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:174 보고서는 작업 규모에 맞게 길이를 조절한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:174 보고서는 작업 규모에 맞게 길이를 조절한다.",
+          "title": "일에 맞는 길이로 보고받기"
         },
         {
           "taskId": "JUTELL-REPORT-STATE-NOT-APPROVAL-PARITY",
@@ -22635,7 +22642,8 @@
           "tests": [
             "node --test tests/report-state-not-approval-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:367 보고서 상태는 사용자의 승인이나 배포 결정을 대신하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:367 보고서 상태는 사용자의 승인이나 배포 결정을 대신하지 않는다.",
+          "title": "승인과 배포는 직접 결정하기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -24716,7 +24724,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:29-30 \"node check.mjs              # 로직 점검\""
+          "ssotEvidence": "README.md:29-30 \"node check.mjs              # 로직 점검\"",
+          "title": "중복 작업을 막고 실패를 알려요"
         },
         {
           "taskId": "JUAI-CHECK-CATCHUP-GUARD",
@@ -24727,7 +24736,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:42 \"guard.mjs 새 버전이 켜지지 않으면 이전 버전으로 자동 복구\""
+          "ssotEvidence": "README.md:42 \"guard.mjs 새 버전이 켜지지 않으면 이전 버전으로 자동 복구\"",
+          "title": "재시작 뒤 놓친 대화를 안전하게 따라잡아요"
         },
         {
           "taskId": "JUAI-CHECK-TICK-ROUTINES",
@@ -24738,7 +24748,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:19 \"봇들끼리 수다(`#봇-놀이터`) ... 주간 리포트, 월간 배지, 프로젝트 목록 자동 갱신\""
+          "ssotEvidence": "README.md:19 \"봇들끼리 수다(`#봇-놀이터`) ... 주간 리포트, 월간 배지, 프로젝트 목록 자동 갱신\"",
+          "title": "정기 작업을 제때 빠짐없이 실행해요"
         },
         {
           "taskId": "JUAI-CHECK-SETUP-RERUN",
@@ -24749,7 +24760,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:28 \"node setup.mjs              # 채널·역할·포럼 태그·입장 질문 생성 (여러 번 실행해도 안전)\""
+          "ssotEvidence": "README.md:28 \"node setup.mjs              # 채널·역할·포럼 태그·입장 질문 생성 (여러 번 실행해도 안전)\"",
+          "title": "기존 설정을 안전하게 다시 맞춰요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
