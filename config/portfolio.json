@@ -6043,6 +6043,42 @@
           ],
           "ssotEvidence": "src/actl/core/config.py:48 Agent is not currently mapped to a tmux pane; Founder direction 2026-09-25 비개발자 UX",
           "title": "설정 문제와 해결 방법 안내"
+        },
+        {
+          "taskId": "ACTL-CLI-COPY-DETAIL-FOLD",
+          "scope": "In src/actl/cli.py _copy, when there is no answer text, keep the Korean sentence and print the extractor detail only on the following 원문 보기 line, leaving the audit record raw, and update tests/test_cli_korean_messages.py so that English detail is not on the surface line.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_korean_messages.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 진짜 비개발자도 보면 이해가 되게"
+        },
+        {
+          "taskId": "ACTL-WEB-CARD-HIDE-IDS",
+          "scope": "On the actl serve card sub line, stop showing role, model profile, task id, and raw detail; keep the Korean preview and last-asked line, and put role, model, and task id only inside 원문 보기.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: Live status card, no task ids on the card"
+        },
+        {
+          "taskId": "ACTL-BOARD-FILTER-EMPTY",
+          "scope": "Replace both 조건에 맞는 에이전트 없음 strings in src/actl/gui.py with one pure helper that says no AI window matches and to choose 전체, without changing the existing environment and zero-window sentences.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_lovable_env_column.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "README.md:6 여러 AI 비서를 번갈아 쓰는 비개발자를 위한 도구입니다."
         }
       ],
       "qaRuntime": [
