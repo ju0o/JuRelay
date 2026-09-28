@@ -120,7 +120,12 @@
     "mcp:worker": "node dist/server/mcp/index.js --surface worker",
     "test": "npm run build && node scripts/run-mandatory-tests.mjs",
     "build:win": "vite build && tsc -p tsconfig.server.json && electron-builder --config electron.builder.yml",
-    "check:updater": "node scripts/verify-updater-deps.mjs"
+    "check:updater": "node scripts/verify-updater-deps.mjs",
+    "test:asset-request": "node --test test/asset-request.test.mjs",
+    "test:asset-harness": "node --test test/asset-harness.test.mjs",
+    "test:asset-chatgpt": "node --test test/asset-chatgpt.test.mjs",
+    "test:relay-worker-opencode-impl": "node --test test/relay-worker-opencode-impl.test.mjs",
+    "test:relay-worker-codex": "node --test test/relay-worker-codex.test.mjs"
   },
   "main": "dist/server/backend/main.js",
   "bin": {
