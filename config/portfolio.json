@@ -19415,6 +19415,17 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 M3 decision is pending"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-CANONICAL-HTML-M3-DEFER-SYNC",
+          "scope": "캐노니컬 사업 시스템 HTML에 Founder가 결정한 M3 DEFER와 0/7 joined-evidence 근거를 표시하고 B1 이후 게이트 상태를 일관되게 동기화한다.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: M3 최종 판정은 DEFER; 0 of 7 Founder register rows have both a Claude final and a Receipt"
         }
       ],
       "skills": {
