@@ -6,6 +6,7 @@ import * as path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { connectionStatusText } from '../dist/server/shared/connectionState.js';
+import { automationFailureLine, connectionViewFromLoadError } from '../dist/server/shared/connectionState.js';
 import { PROJECT_LABELS, projectDisplayName } from '../dist/server/shared/projectLabels.js';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -73,6 +74,20 @@ test('failure line is a different Korean sentence for each connection state', ()
   assert.equal(new Set([ok, offline, error]).size, 3);
   assert.equal(shellFailureLine('checking').includes('확인'), true);
   assert.match(app, /shellFailureLine\(view\.phase\)/);
+  assert.match(app, />다시 시도</);
+});
+
+test('failed status stays classified and toggle failure shows the backend Korean message', () => {
+  const offline = connectionViewFromLoadError('작업 PC에 연결할 수 없습니다', true);
+  const remoteFailure = connectionViewFromLoadError('작업 PC는 켜져 있지만 상태를 읽을 수 없습니다', true);
+  assert.equal(offline.phase, 'offline');
+  assert.equal(remoteFailure.phase, 'error');
+  assert.notEqual(remoteFailure.statusText, '작업 PC 연결을 확인하고 있어요');
+  assert.deepEqual(automationFailureLine('자동 실행을 켜지 못했습니다', '원문 오류'), {
+    text: '자동 실행을 켜지 못했습니다',
+    raw: '원문 오류',
+  });
+  assert.match(app, /automationFailureLine\(message, detail\)/);
   assert.match(app, />다시 시도</);
 });
 

@@ -13,6 +13,7 @@ import { applyUserProjectConfig, barPercent, envReasonText, hubCardVisible, norm
 import { sharedSeatsView } from '../shared/projectScope.js';
 import {
   automationResultText,
+  automationFailureLine,
   automationToggleOp,
   classifyConnectionFailure,
   connectionStatusText,
@@ -567,7 +568,9 @@ function ShellConnectionProvider({ children }: { children: React.ReactNode }): R
       const detail = connectionErrorDetail(e);
       const raw = [message, detail].map((part) => part?.trim()).filter(Boolean).join('\n');
       setPollRaw(undefined);
-      setResult({ ok: false, text: shellFailureLine(view.phase), raw: raw || undefined });
+      const failure = automationFailureLine(message, detail);
+      const fallback = shellFailureLine(view.phase);
+      setResult({ ok: false, text: failure.text || fallback, raw: failure.raw || raw || undefined });
     } finally {
       setBusy(false);
     }
