@@ -2838,6 +2838,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "AGENTRELAY-V1-EXPORT-DEEP-ASSERT",
+          "scope": "Add one assertion in test/vnext.test.mjs that exportRunMarkdown still names the run when the folder is nested deeper than four segments, and change the header parse in src/backend/fs.ts only if that assertion fails.",
+          "files": [
+            "src/backend/fs.ts",
+            "test/vnext.test.mjs"
+          ],
+          "tests": [
+            "npm run build:server",
+            "node test/vnext.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: Founder choice 2026-09-29: Add one assertion in test/vnext.test.mjs that exportRunMarkdown still names the run when the folder is nested deeper than four segments, and change the header parse in src/backend/fs.ts only if that assertion fails."
         }
       ],
       "qaRuntime": [
