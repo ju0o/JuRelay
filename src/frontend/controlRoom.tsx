@@ -552,17 +552,23 @@ function ChainEditor({ project, role, initial, workerChain, onRefresh }: {
   );
 }
 
+export function resumeFailureLines(message: string): [string, string, string] {
+  return laneErrorLines('다시 시작', message);
+}
+
 function ResumeControl({ project, onRefresh }: {
   project: string;
   onRefresh: () => Promise<void>;
 }): React.ReactElement {
   const [status, setStatus] = useState<ActionStatus>(null);
+  const [failure, setFailure] = useState<{ lines: [string, string, string]; raw?: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState(false);
 
   async function resume(): Promise<void> {
     if (busy) return;
     setBusy(true);
+    setFailure(null);
     setStatus({ state: 'pending', text: '다시 시작 중…' });
     try {
       await must({ op: 'controlRoom:resume', project });
@@ -570,7 +576,9 @@ function ResumeControl({ project, onRefresh }: {
       setPending(false);
       await onRefresh();
     } catch (err) {
-      setStatus({ state: 'error', text: err instanceof Error ? err.message : String(err) });
+      const message = err instanceof Error ? err.message : String(err);
+      setStatus({ state: 'error', text: '다시 시작하지 못했어요.' });
+      setFailure({ lines: resumeFailureLines(message), raw: laneErrorRaw(message, (err as { detail?: string }).detail) });
     } finally {
       setBusy(false);
     }
@@ -591,7 +599,12 @@ function ResumeControl({ project, onRefresh }: {
           onCancel={() => setPending(false)}
         />
       )}
-      {status && <p className={`control-status ${status.state}`} role="status">{statusText(status)}</p>}
+      {status && !failure && <p className={`control-status ${status.state}`} role="status">{statusText(status)}</p>}
+      {failure && <div className="cr-pause-err" role="status">
+        {failure.lines.map((line, index) => <p key={index}>{line}</p>)}
+        <button className="btn cr-outline-btn" type="button" onClick={() => void resume()}>다시 시도</button>
+        {failure.raw && <details><summary>원문 보기</summary><pre className="mono">{failure.raw}</pre></details>}
+      </div>}
     </div>
   );
 }

@@ -208,3 +208,22 @@ test("controlRoom.tsx — LaneView가 라이브 상태 카드를 그린다", asy
   const source = await read("src/frontend/controlRoom.tsx");
   assert.match(source, /<LiveStatusCard lane=\{lane\} \/>/);
 });
+
+test("ResumeControl — 꺼짐과 켜진 채 실패·응답 오류를 한국어 본문과 원문으로 나눈다", async () => {
+  const { resumeFailureLines } = await loadControlRoom();
+  const offline = resumeFailureLines("작업 PC에 연결할 수 없습니다. 꺼져 있거나 네트워크가 끊겼을 수 있어요.");
+  const failed = resumeFailureLines("작업 PC는 켜져 있는데 요청을 처리하다 오류가 났어요.");
+  const invalidJson = resumeFailureLines("작업 PC의 응답을 읽지 못했습니다.");
+  assert.match(offline[1], /꺼져 있거나 네트워크/);
+  assert.match(failed[1], /요청을 처리하다 오류가 났어요/);
+  assert.match(invalidJson[1], /답을 읽을 수 없는 모양/);
+  for (const lines of [offline, failed, invalidJson]) assert.ok(lines.every(line => !/INVALID_JSON|응답을 읽지 못했습니다/.test(line)));
+
+  const source = await read("src/frontend/controlRoom.tsx");
+  const block = source.slice(source.indexOf("function ResumeControl"), source.indexOf("function GateForm"));
+  assert.match(block, /resumeFailureLines\(message\)/);
+  assert.match(block, /laneErrorRaw\(message, \(err as \{ detail\?: string \}\)\.detail\)/);
+  assert.match(block, /다시 시작하지 못했어요\./);
+  assert.match(block, /원문 보기/);
+  assert.doesNotMatch(block, /setStatus\(\{ state: 'error', text: message \}\)/);
+});
