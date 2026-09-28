@@ -9049,6 +9049,43 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task.",
           "title": "JuPlan이 끊기면 일을 안 받음"
+        },
+        {
+          "taskId": "JUPLAN-AR-RESULT-SCOPE-ENTRY",
+          "scope": "Import validateResultScope and validateResultPacket from the runtime public entry in the result-scope test so a RESULT_PACKET outside the authorized files and tests is refused through that entry.",
+          "files": [
+            "packages/runtime/test/agent-relay-result-scope.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-result-scope.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:66 Workers execute only the declared files and tests."
+        },
+        {
+          "taskId": "JUPLAN-AR-SCOPE-HOLD-ENTRY",
+          "scope": "Import validateTaskPacket from the runtime public entry in the scope-hold test so out-of-scope work is refused through that entry with dispatch none.",
+          "files": [
+            "packages/runtime/test/agent-relay-scope-hold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-scope-hold.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+        },
+        {
+          "taskId": "JUPLAN-AR-GATE-FACT-TYPE",
+          "scope": "Re-export TaskPacketFounderGate from the runtime public entry and import it in the Founder Gate queue test so a stopped-lane fact is named there and still refuses the packet with dispatch none.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-founder-gate-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-founder-gate-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 FOUNDER_GATE This lane stops. Other Agent Relay lanes are not stopped by this verdict."
         }
       ],
       "qaRuntime": [
