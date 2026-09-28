@@ -9395,6 +9395,35 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
           "title": "계획 밖 결과는 일로 받지 않음"
+        },
+        {
+          "taskId": "JUPLAN-AR-TRANSPORT-INBOX",
+          "scope": "Append an optional transport-hold argument after scopeHold on parseResultInbox and pass it into validateTaskPacket's existing transportHold slot in place of undefined, so a disconnected pm/juplan refuses inbox intake with dispatch none while an omitted or connected fact still returns today's inbox, and retarget the scope-hold pin from undefined to that argument.",
+          "files": [
+            "packages/runtime/src/agentRelayResultInbox.ts",
+            "packages/runtime/test/agent-relay-transport-queue.test.ts",
+            "packages/runtime/test/agent-relay-scope-hold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-transport-queue.test.ts",
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-scope-hold.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a"
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-QUEUE",
+          "scope": "Refuse an otherwise authorized TASK_PACKET inside validateTaskPacket when a supplied fact says REQUEST_CHANGES is past the three-attempt bound, appending one optional argument after blockedResult and re-exporting that type from the runtime public entry, with dispatch none and no invented Product task, leaving callers that omit the fact unchanged.",
+          "files": [
+            "packages/runtime/src/agentRelayPackets.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-retry-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:128 After the bound is exhausted, the task is HOLD. The runner does not"
         }
       ],
       "qaRuntime": [
