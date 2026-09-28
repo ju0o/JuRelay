@@ -23,7 +23,9 @@ import { createHash } from 'node:crypto';
 export const PM_WIDGET_RESOURCE_VERSION = '2026-09-28-auto';
 
 export function pmWidgetHtml(): string {
-  return WIDGET_HTML.replaceAll('__WIDGET_URI__', PM_WIDGET_RESOURCE_URI);
+  return WIDGET_HTML
+    .replaceAll('__WIDGET_URI__', PM_WIDGET_RESOURCE_URI)
+    .replaceAll('__WIDGET_BUILD__', `${WIDGET_HASH} ${BUILD_DATE}`);
 }
 
 const WIDGET_HTML = `<!DOCTYPE html>
@@ -46,6 +48,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
          background: var(--bg); color: var(--text); }
   .card { border:1px solid var(--border); border-radius:10px; padding:14px; }
   .title { font-size:15px; font-weight:700; margin:0 0 4px; display:flex; align-items:center; gap:8px; }
+  #buildTag { font-size:10px; font-weight:400; }
   .lang { margin-left:auto; display:flex; gap:4px; }
   .lang button { font-size:11px; border:1px solid var(--border); background:transparent; color:var(--muted);
                  border-radius:12px; padding:1px 8px; cursor:pointer; }
@@ -118,6 +121,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
 <body>
   <div class="card">
     <div class="title"><span id="appName">Agent Relay</span>
+      <span class="sub" id="buildTag">__WIDGET_BUILD__</span>
       <span class="lang"><button id="langKo" class="on">한국어</button><button id="langEn">EN</button></span>
     </div>
     <div class="statusline"><span class="dot waiting" id="dot"></span><span class="state" id="status">연결 중…</span></div>
@@ -513,6 +517,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
 `;
 
 const WIDGET_HASH = createHash('sha256').update(WIDGET_HTML, 'utf8').digest('hex').slice(0, 8);
+const BUILD_DATE = new Date().toISOString().slice(0, 16).replace('T', ' ');
 export const PM_WIDGET_RESOURCE_URI = `ui://agent-relay/pm-widget-${WIDGET_HASH}`;
 export const PM_WIDGET_RESOURCE_NAME = 'Agent Relay PM';
 export const PM_WIDGET_MIME_TYPE = 'text/html;profile=mcp-app';
