@@ -21554,6 +21554,17 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision is collected only from a captured row that has both a Claude final and a Receipt. Founder direction 2026-09-28",
           "title": "나중 결정은 결론과 영수증이 있을 때"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-MOBILE-FOUNDER-UX",
+          "scope": "캐노니컬 HTML 05의 모바일 화면을 Founder UX 기준에 맞춰 본문·클릭 영역을 읽기 쉽게 키우고 가로 스크롤을 없애되, 현재 M3 연결 근거와 원문 보기 경계를 보존한다.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:16-31 \"이 05 문서가 현재 기준 시각화\" 및 M3 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집"
         }
       ],
       "skills": {
