@@ -8985,7 +8985,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-blocked-hold.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:91 BLOCKED holds the task. It does not invent a substitute Product task and does not continue to QA."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:91 BLOCKED holds the task. It does not invent a substitute Product task and does not continue to QA.",
+          "title": "막힌 결과는 대체 없이 멈춤"
         },
         {
           "taskId": "JUPLAN-AR-GATE-QUEUE-ENTRY",
@@ -8997,7 +8998,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-founder-gate-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 FOUNDER_GATE stops this lane and other Agent Relay lanes are not stopped by this verdict."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 FOUNDER_GATE stops this lane and other Agent Relay lanes are not stopped by this verdict.",
+          "title": "멈춘 작업은 대표 확인을 안 받음"
         },
         {
           "taskId": "JUPLAN-AR-TRANSPORT-QUEUE-ENTRY",
@@ -9009,7 +9011,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-transport-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task.",
+          "title": "JuPlan이 끊기면 일을 안 받음"
         }
       ],
       "qaRuntime": [
