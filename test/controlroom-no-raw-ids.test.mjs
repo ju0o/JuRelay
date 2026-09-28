@@ -29,8 +29,8 @@ test('cooling time is local HH:MM, not ISO', () => {
 });
 
 test('lane tab name and hold badge', () => {
-  assert.equal(projectDisplayName('jutell'), 'jutell');
-  assert.equal(projectDisplayName('JUTELL'), 'JUTELL');
+  assert.equal(projectDisplayName('jutell'), 'JuTell');
+  assert.equal(projectDisplayName('JUTELL'), 'JuTell');
   assert.equal(projectDisplayName('other'), 'other');
   assert.equal(holdBadgeText(2), '멈춘 작업 2');
   assert.equal(holdBadgeText(0), '멈춘 작업 1');
