@@ -19455,6 +19455,28 @@
           ],
           "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 \"M3 DEFER · 10-RECEIPT REGISTER FILLED · SEVEN-TASK FINAL+RECEIPT JOIN MISSING (0 ROWS) · DAILY REPORT DEFERRED TO V1\"",
           "title": "기획 결과와 넘김에 하루 정리 미룸 적기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-EVIDENCE-LINE-DEFER",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md change only the §4.3 evidence-register sentence at line 142 so it matches the already checked DEFER on line 147 and the M3 state cell on line 43: daily report deferred to V1 because 0 of the Founder's seven rows join a Claude final and a Receipt, without scoring unjoined rows as GO or KILL.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:147 [x] DEFER Daily Report productization to V1 — seven-task final+Receipt join is missing (0 rows)."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-FUNNEL-DEFER-KO",
+          "scope": "On docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html change only the overview sentence at line 31, folding the English under 원문 보기 and showing one Korean sentence that B0 stays active on M2 GO, B1 is already 보류 with the daily report deferred to V1 because 0 rows join, and B2 stays waiting, keeping the unresolved B0 alias fact.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 보류 — 영수증 10개 등록 완료 · 일곱 작업의 최종본과 영수증 연결 없음 (0건) · 일일 보고는 V1로 미룸"
         }
       ],
       "skills": {
