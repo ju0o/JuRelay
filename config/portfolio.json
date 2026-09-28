@@ -11583,6 +11583,32 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-SURFACE-FOLD",
+          "scope": "In renderTodayList, show the raw request only inside 원문 보기, use the empty-state sentence alone when there are no receipts, and color a failed verdict amber instead of red.",
+          "files": [
+            "src/render/today.ts",
+            "test/today-page.test.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run test/today-page.test.ts tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안, 빈 화면 이유+다음 행동, 막힘은 노랑"
+        },
+        {
+          "taskId": "JUCEIPT-HELP-DEV-TEXT-FOLDED",
+          "scope": "In the default juceipt help text, replace the developer flag list, file names, and on|off|status with plain Korean command lines, and print that flag list only under 원문 보기 when --show-raw or --show-paths is set.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts",
+            "tests/daily-background.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-cli.test.ts tests/daily-background.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장, 개발자 글자는 원문 보기 안, 첫 실행 3단계 안내"
         }
       ],
       "skills": {
