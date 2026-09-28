@@ -5854,7 +5854,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 확인은 화면 안에서, native confirm 없이"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 확인은 화면 안에서, native confirm 없이",
+          "title": "보내기 전에 그 자리에서 확인하기"
         },
         {
           "taskId": "ACTL-TK-COPY-HIDE-PANE-WORD",
@@ -5866,7 +5867,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 영어 개발자 문구는 화면에 두지 않음"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 영어 개발자 문구는 화면에 두지 않음",
+          "title": "복사 글에 지금 화면이라고 보이기"
         },
         {
           "taskId": "ACTL-CLI-STATUS-FOLD-RAW",
@@ -5878,7 +5880,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — pane id·경로·명령은 원문 보기 뒤로"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — pane id·경로·명령은 원문 보기 뒤로",
+          "title": "상태 글은 쉬운 말만 먼저 보이기"
         }
       ],
       "qaRuntime": [
@@ -19641,7 +19644,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:42 mapping UNDECIDED, not GO or KILL"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:42 mapping UNDECIDED, not GO or KILL",
+          "title": "하루 가치 범위를 같게 맞추기"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-B1-ZERO-JOIN-KO",
@@ -19652,7 +19656,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:83 0 Founder seven-task rows join both a Claude final and a Receipt"
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:83 0 Founder seven-task rows join both a Claude final and a Receipt",
+          "title": "하루 가치는 영수증 연결이 0건"
         }
       ],
       "skills": {
@@ -23691,7 +23696,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 피드백 보너스는 다른 사람의 쇼케이스·피드백 글에 피드백을 달 때만 적용"
+          "ssotEvidence": "README.md:49 피드백 보너스는 다른 사람의 쇼케이스·피드백 글에 피드백을 달 때만 적용",
+          "title": "남의 긴 피드백·쇼케이스에 질문 보너스"
         },
         {
           "taskId": "JUAI-CHECK-TALK-GATES",
@@ -23702,7 +23708,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 봇수다 주제는 4자 이상·최대 100자·1인 대기 2개까지"
+          "ssotEvidence": "README.md:8 봇수다 주제는 4자 이상·최대 100자·1인 대기 2개까지",
+          "title": "짧은 주제나 대기 한도면 수다 거절"
         },
         {
           "taskId": "JUAI-CHECK-FORUM-NOQUOTA",
@@ -23713,7 +23720,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 1인 기본 하루 5회"
+          "ssotEvidence": "README.md:49 1인 기본 하루 5회",
+          "title": "게시판 봇 답변은 내 횟수 안 깎음"
         },
         {
           "taskId": "JUAI-CHECK-VOTE-FAQ",
@@ -23724,7 +23732,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 답변 👍/👎"
+          "ssotEvidence": "README.md:19 답변 👍/👎",
+          "title": "답에 좋아요·싫어요, 질문자만 모아요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
