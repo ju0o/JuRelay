@@ -12423,6 +12423,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: juceipt daily 명령 출력에서 개발자 플래그를 빼고 평문 한국어만 보여 준다",
           "title": "기록이 없을 때 다시 찾아요"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-ROLLBACK-FOLD-RAW",
+          "scope": "In renderTodayList, stop showing rollback_summary.detail on the visible 되돌리기 line and panel, use the receipt-view status sentences (available 저장된 이전 상태로 되돌릴 수 있어요, partial 일부만 되돌릴 수 있어요, unknown 되돌릴 방법이 기록에 없어요, unavailable 되돌릴 수 없어요), and put a non-empty raw detail only inside the existing 원문 보기.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "src/render/today.ts:79 presentation.rollback_summary.detail is copied onto the today surface; Founder direction 2026-09-25 개발자 글자는 원문 보기 안"
+        },
+        {
+          "taskId": "JUCEIPT-LIST-EMPTY-FINISH-SENTENCE",
+          "scope": "In formatFinishedAt and the scan/daily finishedAtLabel checks, replace the empty label 끝난 시각 기록 없음 with the receipt-view sentence 끝난 시각 기록이 없어요 and do not append 에 끝남 to that sentence.",
+          "files": [
+            "src/daily/index.ts",
+            "src/sources/summary.ts",
+            "tests/daily.test.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts tests/scan-summary.test.ts"
+          ],
+          "ssotEvidence": "src/daily/index.ts:91 끝난 시각 기록 없음 vs src/render/index.ts:44 끝난 시각 기록이 없어요; Founder direction 2026-09-25 scan·daily 빈 화면은 이유와 다음 행동"
         }
       ],
       "skills": {
