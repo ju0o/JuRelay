@@ -9685,6 +9685,36 @@
           ],
           "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch.",
           "title": "재시작이 애매하면 작업 보류"
+        },
+        {
+          "taskId": "JUPLAN-AR-PROVIDER-INBOX",
+          "scope": "Append an optional provider-failure argument after nightDrain on parseResultInbox, pass it into validateTaskPacket's existing providerFailure slot, and update the inbox signature assertions so an empty runtime chain refuses intake with dispatch none while an omitted or configured fall-through fact keeps today's inbox.",
+          "files": [
+            "packages/runtime/src/agentRelayResultInbox.ts",
+            "packages/runtime/test/agent-relay-retry-queue.test.ts",
+            "packages/runtime/test/agent-relay-blocked-queue.test.ts",
+            "packages/runtime/test/agent-relay-pause-queue.test.ts",
+            "packages/runtime/test/agent-relay-scope-hold.test.ts",
+            "packages/runtime/test/agent-relay-transport-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-queue.test.ts test/agent-relay-blocked-queue.test.ts test/agent-relay-pause-queue.test.ts test/agent-relay-scope-hold.test.ts test/agent-relay-transport-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:133 Quota, timeout, or transient provider failures may fall through the configured runtime chain. They are not a license to change scope."
+        },
+        {
+          "taskId": "JUPLAN-AR-PROVIDER-ACCEPT",
+          "scope": "Pass an optional provider-failure fact after the night-drain argument on selectNextAfterAccept and applyAcceptNext so an empty runtime chain returns dispatch none and a null next id, while an omitted or configured fall-through fact keeps the next listed task and decideProviderFailure stays unchanged.",
+          "files": [
+            "packages/runtime/src/agentRelayAcceptNext.ts",
+            "packages/runtime/test/agent-relay-accept-next.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none."
         }
       ],
       "qaRuntime": [
