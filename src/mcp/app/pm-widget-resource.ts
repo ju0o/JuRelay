@@ -120,6 +120,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .crew-card { border:1px solid var(--border); border-radius:8px; padding:6px; text-align:center; }
   .crew-card .stage { height:150px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; }
   .crew-card .nm { font-size:12px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .crew-card .md { font-size:10px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .crew-card .rl { font-size:11px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .ladder-wrap { display:flex; gap:10px; margin-top:8px; }
   .ladder-stage { position:relative; width:150px; flex:none; }
@@ -158,10 +159,20 @@ const WIDGET_HTML = `<!DOCTYPE html>
          font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size:11px;
          white-space:pre-wrap; word-break:break-word; }
   #log .t { color: var(--muted); }
+  .fallback { border:1px solid #b26a00; background:#2a1f08; color:#ffd9a0;
+             border-radius:8px; padding:8px 10px; margin:8px 0; font-size:12px; }
+  .fallback.hide { display:none; }
+  .fallback b { color:#fff; }
+  .fallback .ver { color:var(--muted); font-size:11px; }
+  .fallback button { margin-top:6px; }
 </style>
 </head>
 <body>
   <div class="card">
+    <div class="fallback" id="fallback"><b>위젯 로드 중…</b><br>
+      <span class="ver">버전 __WIDGET_BUILD__ · 자바스크립트가 실행되면 이 박스는 사라집니다.</span><br>
+      <span class="ver">이 박스가 계속 보이면 위젯 스크립트가 막힌 것입니다. 새 대화에서 열어주세요.</span>
+    </div>
     <div class="title"><span id="appName">Agent Relay</span>
       <span class="sub" id="buildTag">__WIDGET_BUILD__</span>
       <span class="lang"><button id="langKo" class="on">한국어</button><button id="langEn">EN</button></span>
@@ -207,6 +218,48 @@ const WIDGET_HTML = `<!DOCTYPE html>
   <script>
     (function () {
       'use strict';
+      // Error boundary first: any uncaught failure must leave a visible
+      // fallback (version + error + retry), never a white screen.
+      var fallbackEl = document.getElementById('fallback');
+      function showFallback(title, detail) {
+        try {
+          if (!fallbackEl) return;
+          fallbackEl.className = 'fallback';
+          fallbackEl.innerHTML = '';
+          var b = document.createElement('b');
+          b.textContent = title || '위젯 로드 실패';
+          var br1 = document.createElement('br');
+          var ver = document.createElement('span');
+          ver.className = 'ver';
+          ver.textContent = '버전 __WIDGET_BUILD__';
+          var br2 = document.createElement('br');
+          var msg = document.createElement('span');
+          msg.textContent = detail || '새 대화에서 열어주세요.';
+          var br3 = document.createElement('br');
+          var btn = document.createElement('button');
+          btn.textContent = '다시 시도';
+          btn.onclick = function () { hideFallback(); init(); };
+          fallbackEl.appendChild(b);
+          fallbackEl.appendChild(br1);
+          fallbackEl.appendChild(ver);
+          fallbackEl.appendChild(br2);
+          fallbackEl.appendChild(msg);
+          fallbackEl.appendChild(br3);
+          fallbackEl.appendChild(btn);
+        } catch (e) { /* fallback must never throw */ }
+      }
+      function hideFallback() {
+        try { if (fallbackEl) fallbackEl.className = 'fallback hide'; } catch (e) {}
+      }
+      window.addEventListener('error', function (ev) {
+        var msg = (ev && ev.message) || (ev && ev.error && ev.error.message) || 'script error';
+        showFallback('위젯 로드 실패', String(msg).slice(0, 300));
+      });
+      window.addEventListener('unhandledrejection', function (ev) {
+        var r = ev && ev.reason;
+        var msg = (r && r.message) || String(r || 'promise rejected');
+        showFallback('위젯 로드 실패', String(msg).slice(0, 300));
+      });
       var dotEl = document.getElementById('dot');
       var statusEl = document.getElementById('status');
       var subEl = document.getElementById('sub');
@@ -258,7 +311,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
             updateEl.appendChild(s2);
             updateEl.className = 'update show';
             logLine('newer widget bundle: ' + v.uri);
-            try { window.location.reload(); } catch (e) { /* banner stays */ }
+            // NOTE: never auto-reload here. Scripted navigation inside the
+            // host sandbox can land on a blank view; the user-gesture
+            // button above is the only refresh path.
           }
         } catch (e) { /* version check is best-effort */ }
       }
@@ -475,6 +530,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (a.taskTitle) line += ' · ' + esc(a.taskTitle);
           html += '<div class="crew-card"><div class="stage"><div class="crew-sp" data-sheet="' + sheet + '"></div></div>'
             + '<div class="nm" title="' + esc((a.displayName || '') + ' ' + (a.workerId || '')) + '">' + esc(a.displayName || a.workerId || '?') + '</div>'
+            + '<div class="md">' + esc(a.model || t('modelUnknown')) + '</div>'
             + '<div class="rl">' + esc(agentStateLabel(a)) + '</div></div>';
         }
         agentsEl.innerHTML = html;
@@ -631,6 +687,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
           applyTheme(res.hostContext && res.hostContext.theme);
           sendNotification('ui/notifications/initialized', {});
           logLine('initialized');
+          hideFallback();
           setStatus('waiting', t('connected'), t('waiting'));
           checkVersion();
           setInterval(poll, POLL_MS);
@@ -638,6 +695,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
         } catch (e) {
           setStatus('fail', t('initFail'), e.message);
           logLine('initialize FAILED: ' + e.message);
+          showFallback('위젯 시작 실패', (e && e.message) || 'initialize 실패. 다시 시도 버튼을 눌러주세요.');
         }
       }
 

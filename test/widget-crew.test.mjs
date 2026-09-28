@@ -34,4 +34,13 @@ describe('crew widget spec', () => {
     assert.ok(html.includes('ui/initialize') && html.includes('relay_pm_claim_wake'));
     assert.ok(!html.includes('AGENT_RELAY_PM_WAKE') && !html.includes('submit_judgment'));
   });
+  it('never auto-reloads; fallback is static-first with retry', () => {
+    const reloads = html.match(/window\.location\.reload/g) || [];
+    assert.equal(reloads.length, 1, 'exactly one reload: the user-gesture update button, no auto-reload');
+    assert.ok(html.includes('btn.onclick = function () { try { window.location.reload(); }'), 'reload only on user gesture');
+    assert.ok(html.includes('id="fallback"'), 'static fallback box present without JS');
+    assert.ok(html.includes('위젯 로드 중'), 'fallback shows loading state pre-JS');
+    assert.ok(html.includes('unhandledrejection'), 'promise failures surface to fallback');
+    assert.ok(html.includes("btn.onclick = function () { hideFallback(); init(); }"), 'retry re-runs init');
+  });
 });
