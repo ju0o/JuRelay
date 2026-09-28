@@ -22465,6 +22465,54 @@
           ],
           "ssotEvidence": "docs/GLOSSARY_POLICY.md:183 설명이 원래 용어보다 어렵지 않은가",
           "title": "어려운 용어를 쉽게 설명해요"
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-PLAIN-WORD-PARITY",
+          "scope": "Add GLOSSARY_POLICY §2.3's sentence that ordinary words already clear in context get no explanation to glossary-ko.md's opening block before the 목차 heading, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-plain-word-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-plain-word-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:34 문맥상 이해할 수 있는 일반 단어에는 설명을 붙이지 않는다."
+        },
+        {
+          "taskId": "JUTELL-LENGTH-NO-FIXED-COUNT-PARITY",
+          "scope": "Add PRODUCT_SCOPE §11.4's three prose sentences on short reports, optional technical detail, and no fixed character count, plus the three length-tier labels, as lines under report-format.md section 2, plus an offline node:test that those sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/length-no-fixed-count-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/length-no-fixed-count-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:674 기본 보고서는 가능한 한 짧게 작성하며, 상세 기술 정보는 필요한 경우에만 추가한다."
+        },
+        {
+          "taskId": "JUTELL-RISK-VERIFICATION-STATE-SEPARATE-PARITY",
+          "scope": "Add the BEGINNER_REPORT_SPEC §12 sentence that risk is judged separately from verification state as one line in risk-level-guide.md, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/risk-level-guide.md",
+            "tests/risk-verification-state-separate-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/risk-verification-state-separate-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:493 위험도는 검증 상태와 별도로 판단한다."
+        },
+        {
+          "taskId": "JUTELL-SYSTEM-INSTRUCTION-PRIORITY-PARITY",
+          "scope": "Add the BEGINNER_REPORT_SPEC §22 sentence that the current AI Agent's system instructions and higher instructions outrank this document as one line under SKILL.md 적용 전 읽기, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/system-instruction-priority-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/system-instruction-priority-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:895 현재 사용하는 AI Agent의 시스템 지침과 상위 지침은 이 문서보다 우선한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
