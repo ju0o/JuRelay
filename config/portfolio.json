@@ -12285,7 +12285,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면에서 판정 확인 후 받기 같은 말의 뜻을 쉬운 한국어로 보여 준다"
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면에서 판정 확인 후 받기 같은 말의 뜻을 쉬운 한국어로 보여 준다",
+          "title": "작업 결과를 쉽게 이해해요"
         },
         {
           "taskId": "JUCEIPT-DAILY-EMPTY-NO-FLAG",
@@ -12298,7 +12299,8 @@
           "tests": [
             "npx vitest run tests/daily.test.ts tests/daily-cli.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: juceipt daily 명령 출력에서 개발자 플래그를 빼고 평문 한국어만 보여 준다"
+          "ssotEvidence": "Founder direction 2026-09-25: juceipt daily 명령 출력에서 개발자 플래그를 빼고 평문 한국어만 보여 준다",
+          "title": "기록이 없을 때 다시 찾아요"
         }
       ],
       "skills": {
@@ -15273,7 +15275,8 @@
           "tests": [
             "node --test tests/*.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints."
+          "ssotEvidence": "Founder direction 2026-09-23: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints.",
+          "title": "화면 설명을 실제 결과와 맞춥니다"
         }
       ],
       "qaRuntime": [
@@ -20875,7 +20878,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:31,79-91,124-129 — visible English labels and internal gate text remain on the Founder-facing surface"
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:31,79-91,124-129 — visible English labels and internal gate text remain on the Founder-facing surface",
+          "title": "처음부터 쉽게 이해해요"
         }
       ],
       "skills": {
@@ -23356,7 +23360,8 @@
           "tests": [
             "node --test tests/config-file-safety-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:9 설정 파일에는 비밀정보, 비밀번호, API 키, 토큰 또는 개인정보를 저장하지 않는다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:9 설정 파일에는 비밀정보, 비밀번호, API 키, 토큰 또는 개인정보를 저장하지 않는다.",
+          "title": "비밀과 함부로 지우기와 설정 깨짐을 막는다"
         },
         {
           "taskId": "JUTELL-RISK-PRIORITY-EXAMPLES-PARITY",
@@ -23368,7 +23373,8 @@
           "tests": [
             "node --test tests/risk-priority-examples-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:560 로그인 화면의 일반 문구만 변경: 낮음"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:560 로그인 화면의 일반 문구만 변경: 낮음",
+          "title": "뭐가 더 위험한지 예시로 바로 알게 한다"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -25593,7 +25599,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 봇들끼리 수다(`#봇-놀이터`)"
+          "ssotEvidence": "README.md:19 봇들끼리 수다(`#봇-놀이터`)",
+          "title": "수다가 겹치지 않고 신청부터 이어져요"
         },
         {
           "taskId": "JUAI-CHECK-PROJECTS-BODY",
@@ -25604,7 +25611,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신"
+          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신",
+          "title": "없으면 안내하고 멤버 글을 최근 순으로 보여요"
         },
         {
           "taskId": "JUAI-CHECK-EXECUTE-KINDS",
@@ -25615,7 +25623,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:48 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다."
+          "ssotEvidence": "README.md:48 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다.",
+          "title": "승인하면 약속한 일만 서버에 반영해요"
         },
         {
           "taskId": "JUAI-CHECK-DM-GATES",
@@ -25626,7 +25635,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 OpenCode 개인 메시지도 하루 질문 횟수를 공유"
+          "ssotEvidence": "README.md:8 OpenCode 개인 메시지도 하루 질문 횟수를 공유",
+          "title": "멤버만 쓰고 살펴보기와 하루 횟수를 안내해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
