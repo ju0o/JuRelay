@@ -9899,7 +9899,8 @@
             "pnpm --filter @juplan/runtime test -- test/agent-relay-qa-gate.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 This lane stops. Other Agent Relay lanes are not stopped by this verdict."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 This lane stops. Other Agent Relay lanes are not stopped by this verdict.",
+          "title": "멈춘 작업은 승인하지 않기"
         },
         {
           "taskId": "JUPLAN-AR-RETRY-FOUNDER-GATE",
@@ -9912,7 +9913,8 @@
             "pnpm --filter @juplan/runtime test -- test/agent-relay-retry-policy.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:130 FOUNDER_GATE is not retried as Worker work; the lane waits for Founder"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:130 FOUNDER_GATE is not retried as Worker work; the lane waits for Founder",
+          "title": "멈춘 작업은 다시 시도하지 않기"
         },
         {
           "taskId": "JUPLAN-AR-ACCEPT-PAUSE",
@@ -9925,7 +9927,8 @@
             "pnpm --filter @juplan/runtime test -- test/agent-relay-accept-next.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1",
+          "title": "승인 후 잠시 멈추기"
         }
       ],
       "qaRuntime": [
@@ -12814,7 +12817,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "실패한 영수증 되돌리기 안내"
         },
         {
           "taskId": "JUCEIPT-TITLE-KOREAN-WITHOUT-PATH",
@@ -12826,7 +12830,8 @@
           "tests": [
             "npx vitest run tests/daily.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "영수증 제목을 쉽게 표시"
         }
       ],
       "skills": {
@@ -24142,7 +24147,8 @@
           "tests": [
             "node --test tests/evidence-group-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:260 같은 근거로 이어지는 여러 문장은 하나의 항목으로 묶을 수 있다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:260 같은 근거로 이어지는 여러 문장은 하나의 항목으로 묶을 수 있다.",
+          "title": "같은 근거는 한 번에 묶어 안내"
         },
         {
           "taskId": "JUTELL-UNCHECKED-SCREEN-EXAMPLE-PARITY",
@@ -24154,7 +24160,8 @@
           "tests": [
             "node --test tests/unchecked-screen-example-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:90 코드상 버튼이 표시될 것으로 예상됩니다. 실제 화면은 확인하지 못했습니다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:90 코드상 버튼이 표시될 것으로 예상됩니다. 실제 화면은 확인하지 못했습니다.",
+          "title": "확인하지 않은 화면은 실행 전제로 안내하지 않기"
         },
         {
           "taskId": "JUTELL-ORIGIN-NO-ASSUME-PARITY",
@@ -24166,7 +24173,8 @@
           "tests": [
             "node --test tests/origin-no-assume-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:601 변경 출처를 자동으로 단정하지 않음"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:601 변경 출처를 자동으로 단정하지 않음",
+          "title": "변경한 내용만 정확히 알려주기"
         },
         {
           "taskId": "JUTELL-REPORT-ONLY-NO-EDIT-PARITY",
@@ -24178,7 +24186,8 @@
           "tests": [
             "node --test tests/report-only-no-edit-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:516 이 경우 프로젝트 코드를 수정하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:516 이 경우 프로젝트 코드를 수정하지 않는다.",
+          "title": "설명 요청은 설명만 간단히 받기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -26643,7 +26652,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:19 그 밖에: 봇들끼리 수다(`#봇-놀이터`)"
+          "ssotEvidence": "README.md:19 그 밖에: 봇들끼리 수다(`#봇-놀이터`)",
+          "title": "오래된 대화와 빈 응답 처리"
         },
         {
           "taskId": "JUAI-CHECK-QUOTA-FOOTER",
@@ -26654,7 +26664,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:49 서버 주인(Founder)·운영진은 일일 제한 없음."
+          "ssotEvidence": "README.md:49 서버 주인(Founder)·운영진은 일일 제한 없음.",
+          "title": "남은 질문 수를 정확히 안내하기"
         },
         {
           "taskId": "JUAI-CHECK-AI-COOLDOWN",
@@ -26665,7 +26676,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:16 OpenCode 무료 모델 (자동 교체)"
+          "ssotEvidence": "README.md:16 OpenCode 무료 모델 (자동 교체)",
+          "title": "무료 모델 실패 재시도 줄이기"
         },
         {
           "taskId": "JUAI-CHECK-DM-CONNECT",
@@ -26676,7 +26688,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:8 `!익명`은 OpenCode 개인 메시지에서만 작동"
+          "ssotEvidence": "README.md:8 `!익명`은 OpenCode 개인 메시지에서만 작동",
+          "title": "개인 메시지를 안정적으로 받기"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
