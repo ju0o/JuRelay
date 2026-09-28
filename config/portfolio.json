@@ -12801,6 +12801,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "할 일을 놓치지 않게 요약을 먼저 보여드려요"
+        },
+        {
+          "taskId": "JUCEIPT-FAILED-ACCEPT-SECONDARY",
+          "scope": "On failed and cancelled receipts, show 되돌리기 방법 보기 as the first green button and 받음 as the white second button in both the receipt view and the today list, and keep 받음 first for every other verdict.",
+          "files": [
+            "src/render/index.ts",
+            "src/render/today.ts",
+            "tests/receipt-render-founder.test.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-TITLE-KOREAN-WITHOUT-PATH",
+          "scope": "After the existing keyword groups in taskTitle, drop whitespace-delimited tokens that contain a slash or a file extension and, when Hangul remains, use the existing 24-character Korean snippet instead of 작업 내용 확인.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
