@@ -2825,6 +2825,19 @@
           ],
           "ssotEvidence": "QA REQUEST_CHANGES finding (regex false positive) + Supervisor 2026-09-27 R2 redesign",
           "title": "자기 프로젝트 기록만 따로 보여주기"
+        },
+        {
+          "taskId": "AGENTRELAY-NIGHT-SUPERVISOR-OWN-SCOPE-BASEFIX",
+          "scope": "`npm test` already fails on the integration tip 51445ca before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output:     Expected values to be strictly equal:\n    \n    'JuTell' !== 'jutell'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'jutell'\n  actual: 'JuTell'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/skkse12/.local/share/AgentRelay/data/portfolio-execution/worktrees/agent-relay-agentrelay-night-supervisor-own-scope-r3-1790577059442/test/controlroom-no-raw-ids.test.mjs:32:10)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n1..4\n# tests 4\n# suites 0\n# pass 3\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 17.031647\n",
+          "files": [
+            "test/v2/night-run.test.mjs"
+          ],
+          "tests": [
+            "npm test",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "qaRuntime": [
