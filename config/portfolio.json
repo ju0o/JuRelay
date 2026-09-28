@@ -19955,6 +19955,29 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 — record a decision only for a captured row with both a Claude final and a Receipt.",
           "title": "검증 자료 수집 기준 세우기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-INTAKE-TEMPLATE-NOT-RETAINED",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md only, state that the §2.3 angle-bracket row is a column template and not retained joined evidence (retained joined rows stay 0), and rewrite the Section 7 next-authorized-step cell so a capture is added in that table only when both a Claude final and a Receipt exist and GO, DEFER, or KILL is recorded only for a retained joined row.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:84 Add a row only when the same task key identifies both a Claude final and a Receipt"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-INTAKE-NEXT-STEP-POINTER",
+          "scope": "In PM_STATUS_BOARD.md change only next-step item 2 and Next PM Moves row 4, and in MASTER_ROADMAP.md change only §12 item 4, so each names docs/validation/M3_DAILY_VALUE_VALIDATION.md §2.3 as the only intake for a row that contains both a Claude final and a Receipt and still forbids recording GO, DEFER, or KILL from the 0-join gap.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md",
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 Do not record M3 GO / DEFER / KILL from the 0-join gap; record a decision only for a captured row with both a Claude final and a Receipt."
         }
       ],
       "skills": {
