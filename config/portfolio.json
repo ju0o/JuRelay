@@ -24706,6 +24706,50 @@
           ],
           "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만",
           "title": "무료 인공지능을 기본으로 써요"
+        },
+        {
+          "taskId": "JUAI-CHECK-JOB-RETRY",
+          "scope": "check.mjs에 작업 중복 실행 방지, 성공 완료 기록, 실패 횟수 기록과 3회 실패 알림·건너뛰기 규칙의 오프라인 소스 점검을 추가한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:29-30 \"node check.mjs              # 로직 점검\""
+        },
+        {
+          "taskId": "JUAI-CHECK-CATCHUP-GUARD",
+          "scope": "check.mjs에 재시작 후 따라잡기 작업이 마지막 확인 시각이 없으면 종료하고 최대 10개만 처리하며 이미 봇 답변이 있는 스레드는 건너뛰는지 점검을 추가한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:42 \"guard.mjs 새 버전이 켜지지 않으면 이전 버전으로 자동 복구\""
+        },
+        {
+          "taskId": "JUAI-CHECK-TICK-ROUTINES",
+          "scope": "check.mjs에 정기 작업의 남은 시간 조건을 점검한다: 금요일 주간 하이라이트, 수요일 진행 알림, 매일 백업, 시작 후 오늘의 질문, 놓친 봇 수다 슬롯 건너뛰기.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:19 \"봇들끼리 수다(`#봇-놀이터`) ... 주간 리포트, 월간 배지, 프로젝트 목록 자동 갱신\""
+        },
+        {
+          "taskId": "JUAI-CHECK-SETUP-RERUN",
+          "scope": "check.mjs에 setup.mjs가 기존 역할·채널을 이름으로 찾아 갱신하고 기본 채널은 비어 있을 때만 삭제하며 입장 질문 수 초과 시 표시 수를 줄여 재시도하는지 점검을 추가한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:28 \"node setup.mjs              # 채널·역할·포럼 태그·입장 질문 생성 (여러 번 실행해도 안전)\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
