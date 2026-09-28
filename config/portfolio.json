@@ -20725,6 +20725,17 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:252 record GO, DEFER, or KILL only for that retained joined row"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-FUNNEL-JOIN-ONLY-R2",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html, change only the visible Korean funnel overview sentence so it states that later decisions are collected only from captured rows containing both a Claude final and a receipt; leave its folded 원문 보기 and all other content unchanged.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "python3 -c \"from pathlib import Path; s=Path('docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html').read_text(); assert 'B1은 연결된 행이 0건이라' not in s; assert '후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집' in s\""
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집"
         }
       ],
       "skills": {
