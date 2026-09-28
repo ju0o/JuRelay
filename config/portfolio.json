@@ -23795,6 +23795,50 @@
           ],
           "ssotEvidence": "README.md:19 답변 👍/👎",
           "title": "답에 좋아요·싫어요, 질문자만 모아요"
+        },
+        {
+          "taskId": "JUAI-CHECK-AI-REDACT",
+          "scope": "Add check.mjs assertions only that a successful ai.mjs CLI close resolves redact(text) and does not resolve raw stdout, so AI output is masked before Discord.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-MENTOR-GATE",
+          "scope": "Add check.mjs assertions only that mentorPing returns unless the asker has the 입문 role, keeps only 실무 mentors who match a requested interest and lack AI 언급 제외, and mentions at most MENTOR_MAX people through capMentors.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:20 #질문-답변에 입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-REVIEW-QUOTA",
+          "scope": "Add check.mjs assertions only that reviewRequest uses a GitHub link in the message when present and otherwise the profile link, and that a missing link is answered before takeQuota so 리뷰해줘 does not spend a daily question.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:16 질문 답변, 스레드 대화, GitHub 코드 리뷰, 활용 예시"
+        },
+        {
+          "taskId": "JUAI-CHECK-PROJECTS-REFRESH",
+          "scope": "Add check.mjs assertions only that a new showcase thread calls refreshProjects and returns before the shared forum quota, and that tick schedules the projects job every day without an hour gate.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
