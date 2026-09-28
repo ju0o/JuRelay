@@ -5976,6 +5976,43 @@
           ],
           "ssotEvidence": "src/actl/cli.py:901 Bind this OpenCode conversation now?",
           "title": "다음 할 일을 바로 알기"
+        },
+        {
+          "taskId": "ACTL-TUI-SEND-COPY-PLAIN",
+          "scope": "In src/actl/tui.py, make the s send and c/p copy result lines plain Korean with a next step, show 보냈어요 ✓ or 복사했어요 ✓ on that line, and move raw exceptions, pane targets, and English details onto a following 원문 보기 line, without changing keys, ::send, or when send and copy run.",
+          "files": [
+            "src/actl/tui.py",
+            "tests/test_tui_send_copy_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/tui.py:975 send_message = f\"✓ {row['display']}에 전송됨\"; Founder direction 2026-09-25 비개발자 UX"
+        },
+        {
+          "taskId": "ACTL-LIVE-CARD-NO-TEXT",
+          "scope": "In live_card(), show 아직 답이 없어요 when preview and pane_preview are blank or only the placeholder no text, so /api/cards does not surface that English placeholder, while keeping the existing status words and the pane id under raw.",
+          "files": [
+            "src/actl/live_card.py",
+            "tests/test_live_card.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/live_card.py:58 answer uses preview verbatim; Founder direction 2026-09-25 live status card API"
+        },
+        {
+          "taskId": "ACTL-CONFIG-UNMAPPED-KO",
+          "scope": "Make get_target's unmapped ValueError and migration_warning() plain Korean with what happened, why, and a next step, print that warning in the REPL and /reload without the English WARNING prefix, and point the existing not currently mapped assertion at the new Korean phrase, without changing when either is raised or editing bind or REPL prompts.",
+          "files": [
+            "src/actl/core/config.py",
+            "src/actl/cli.py",
+            "tests/test_config.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/core/config.py:48 Agent is not currently mapped to a tmux pane; Founder direction 2026-09-25 비개발자 UX"
         }
       ],
       "qaRuntime": [
