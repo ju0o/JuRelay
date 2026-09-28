@@ -20535,6 +20535,28 @@
           ],
           "ssotEvidence": "docs/product/MASTER_ROADMAP.md:561 Use only `docs/validation/M3_DAILY_VALUE_VALIDATION.md` §2.3 to intake a row containing both a Claude final and a Receipt; do not record the M3 GO/DEFER/KILL milestone decision from the 0-join gap.",
           "title": "일정 세 줄이 모으기만 하고 결정은 없어요"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-M3-STATUS-JOIN-ONLY",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md add only the existing join-only collection clause to the M3 milestone state (line 58), the M3 daily-value sentence that ends at no decision recorded (line 168), next-step item 1 (line 173), and Next PM Moves row 1 (line 264), matching the roadmap status wording, and record no GO, DEFER, or KILL.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:96 collect only same-task Claude-final/Receipt joins per §2.3; M3 decision pending"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-FUNNEL-JOIN-ONLY",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html change only the funnel overview sentence and its 원문 보기 so the Korean surface states the same join-only rule already on the M3 hero pill, with the English kept folded, and record no GO, DEFER, or KILL.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집"
         }
       ],
       "skills": {
