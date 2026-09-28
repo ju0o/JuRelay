@@ -19503,6 +19503,28 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 DEFER — 10-RECEIPT REGISTER FILLED; SEVEN-TASK FINAL+RECEIPT JOIN MISSING (0 ROWS); DAILY REPORT DEFERRED TO V1",
           "title": "영수증은 통과, 하루 보고는 보류, 검사는 미정"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-MAPPING-NOT-CONVERTED",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md change only §4.3 line 142 and the checked line 147 so they match line 62: the evidence mapping stays UNDECIDED and is not GO or KILL, and the checked item stays the daily-report productization hold instead of citing §2.2/§6/§7 as if those sections converted the mapping into DEFER.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 Master WBS M3 is DEFER — Daily Report deferred to V1, with 0 joined rows; §4.3 validation mapping remains UNDECIDED, not GO or KILL."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-M3-MAPPING-BOUNDARY",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html change only the M3 hero pill (line 17) and the Next Agent sentence (line 126) so the Korean surface keeps the daily-report deferral and 0 joined rows and says the evidence mapping is not a GO or stop decision, with UNDECIDED/GO/KILL only under 원문 보기, matching WBS §2.1 line 62; leave the M3 gate state cell unchanged.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 §4.3 validation mapping remains UNDECIDED, not GO or KILL."
         }
       ],
       "skills": {
