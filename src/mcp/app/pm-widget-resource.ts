@@ -48,28 +48,56 @@ const WIDGET_HTML = `<!DOCTYPE html>
   body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin:0; padding:14px; font-size:14px;
          background: var(--bg); color: var(--text); }
   .card { border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
-  .title { font-size:15px; font-weight:700; margin:0 0 2px; display:flex; align-items:center; gap:8px; }
-  #buildTag { font-size:10px; font-weight:400; }
-  .lang { margin-left:auto; display:flex; gap:4px; }
+  /* A안 헤더 1줄 */
+  .hdr { display:flex; align-items:center; gap:8px; margin:0 0 2px; }
+  .dot { width:9px; height:9px; border-radius:50%; flex:none; }
+  .pulse { animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.35; } }
+  .dot.connected{background:var(--ok);} .dot.waiting{background:var(--wait);} .dot.ready{background:var(--ok);}
+  .dot.fail{background:var(--err);} .dot.sent{background:var(--mut);}
+  .app { font-size:15px; font-weight:700; }
+  .hpill { font-size:11px; border:1px solid var(--border); border-radius:12px; padding:1px 9px; color:var(--muted); white-space:nowrap; }
+  .hfrac { margin-left:auto; font-size:12px; color:var(--muted); white-space:nowrap; }
+  .hfrac b { color:var(--text); font-size:14px; }
+  .subhide { display:none; }
+  .lang { display:flex; gap:4px; }
   .lang button { font-size:11px; border:1px solid var(--border); background:transparent; color:var(--muted);
                  border-radius:12px; padding:1px 8px; cursor:pointer; }
   .lang button.on { color:var(--text); border-color:var(--text); font-weight:700; }
-  .statusline { display:flex; align-items:center; gap:8px; margin:4px 0 10px; font-weight:600; }
-  .dot { width:10px; height:10px; border-radius:50%; flex:none; }
-  .dot.connected{background:var(--ok);} .dot.waiting{background:var(--wait);} .dot.ready{background:var(--ok);}
-  .dot.fail{background:var(--err);} .dot.sent{background:var(--mut);}
-  .state { font-size:14px; }
   .sub { color: var(--muted); font-size:12px; }
-  /* H2: unified strip [wait][work][done] + Active n/m. Zero segments dim. */
-  .strip { display:flex; align-items:stretch; margin:6px 0 2px; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
-  .seg { flex:1; padding:5px 2px; text-align:center; min-width:0; }
-  .seg + .seg { border-left:1px solid var(--border); }
-  .seg b { display:block; font-size:18px; }
-  .seg span { font-size:10px; color: var(--muted); white-space:nowrap; }
-  .seg.dim { opacity:.38; }
-  .active-mini { display:flex; align-items:center; gap:3px; padding:0 10px; font-size:11px; color:var(--muted);
-                border-left:1px solid var(--border); white-space:nowrap; }
-  .active-mini b { color:var(--text); font-size:13px; }
+  /* A안 "지금 이 환경" 스트립 */
+  .env { border:1px solid var(--border); border-radius:10px; padding:8px 10px; margin:6px 0 2px; }
+  .env-title { font-size:12px; font-weight:700; margin-bottom:4px; }
+  .env-row { display:flex; align-items:center; gap:10px; }
+  .env-nums { display:flex; flex:1; gap:12px; min-width:0; }
+  .eseg b { display:block; font-size:21px; font-weight:650; line-height:1.1; }
+  .eseg span { font-size:10px; color:var(--muted); white-space:nowrap; }
+  .eseg.blue b { color:#3b82f6; } .eseg.amber b { color:#d97706; }
+  .eseg.green b { color:#22b573; } .eseg.muted b { color:var(--muted); }
+  .eseg.dim { opacity:.38; }
+  .env-note { font-size:11px; color:var(--muted); white-space:nowrap; margin-left:auto; }
+  @media (max-width:480px) { .env-row { flex-wrap:wrap; } .env-note { margin-left:0; } }
+  /* A안 레인 3개 */
+  .lanes { display:flex; flex-direction:column; gap:8px; margin:6px 0 2px; }
+  .lane { background:#161a21; border:1px solid #262c37; border-radius:10px; padding:9px 11px; }
+  .lane-head { display:flex; align-items:baseline; gap:8px; }
+  .lane-title { font-size:12px; font-weight:700; }
+  .lane-a .lane-title { color:#d97706; } .lane-b .lane-title { color:#3b82f6; } .lane-c .lane-title { color:#8b5cf6; }
+  .lane-desc { font-size:10px; color:var(--muted); }
+  .lane-n { margin-left:auto; font-size:14px; font-weight:700; }
+  .bar { height:4px; border-radius:2px; background:#262c37; margin:6px 0; overflow:hidden; }
+  .bar i { display:block; height:100%; border-radius:2px; transition:width 1s ease; }
+  .lane-a .bar i { background:#d97706; } .lane-b .bar i { background:#3b82f6; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { display:flex; align-items:center; gap:6px; min-height:34px; border:1px solid #262c37;
+          border-radius:8px; padding:2px 8px 2px 2px; min-width:0; max-width:100%; }
+  .cav { flex:none; width:20px; height:30px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; }
+  .cav-miss { width:20px; height:30px; display:flex; align-items:center; justify-content:center;
+             border:1px dashed var(--wait); border-radius:4px; font-size:11px; font-weight:700;
+             color:var(--text); background:var(--panel); flex:none; }
+  .ctx { min-width:0; }
+  .ctx b { display:block; font-size:11px; font-weight:600; white-space:nowrap; overflow:hidden; }
+  .ctx i { display:block; font-style:normal; font-size:10px; color:var(--muted); white-space:nowrap; overflow:hidden; }
   .steps { display:flex; align-items:center; gap:6px; margin:6px 0 2px; font-size:11px; color: var(--muted); }
   .step { display:flex; align-items:center; gap:4px; }
   .step i { width:9px; height:9px; border-radius:50%; background: var(--border); flex:none; }
@@ -103,8 +131,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
   }
   .crew-sp, .climber, .runner { background-repeat:no-repeat; }
   @media (prefers-reduced-motion: reduce) {
-    .crew-sp, .climber, .runner { animation:none !important; }
-    .climber, .runner, .track-fill { transition:none !important; }
+    .crew-sp, .climber, .runner, .pulse { animation:none !important; }
+    .climber, .runner, .track-fill, .bar i { transition:none !important; }
   }
   .tabs { display:flex; gap:6px; margin:8px 0 2px; }
   .tabs button { flex:1; border:1px solid var(--border); background:transparent; color:var(--muted);
@@ -115,30 +143,11 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .tabs button.on .bdg { color:var(--text); border-color:var(--text); }
   .tabpane { display:none; }
   .tabpane.on { display:block; }
-  /* P2: avatar 32x48 (<=10% of card). 3-line card: [avatar] name+pill / role / task. */
-  .agents { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin:6px 0 2px; }
-  @media (min-width:820px) { .agents { grid-template-columns:repeat(3,1fr); } }
-  @media (min-width:1180px) { .agents { grid-template-columns:repeat(4,1fr); } }
-  .crew-card { border:1px solid var(--border); border-radius:8px; padding:6px 8px; min-width:0; }
-  .crew-top { display:flex; align-items:center; gap:8px; min-width:0; }
-  .avatar { flex:none; width:32px; height:48px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; }
-  .who { flex:1; min-width:0; }
-  .crew-card .nm { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; }
-  .crew-card .pill { display:inline-block; font-size:11px; font-weight:700; border-radius:12px; padding:1px 10px; margin-top:2px; white-space:nowrap; }
-  .crew-card .pill.st-work { background:#0a7d33; color:#fff; }
-  .crew-card .pill.st-qa { background:#3b82f6; color:#fff; }
-  .crew-card .pill.st-idle { background:transparent; border:1px solid var(--border); color:var(--muted); }
-  .crew-card .role { font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; margin-top:2px; }
-  .crew-card .task1 { font-size:12px; white-space:nowrap; overflow:hidden; margin-top:2px; }
-  .crew-missing { width:32px; height:48px; display:flex; align-items:center; justify-content:center;
-                 border:1px dashed var(--wait); border-radius:6px; background:var(--panel);
-                 font-size:16px; font-weight:700; color:var(--text); }
-  .sprite-err { font-size:10px; color:var(--wait); white-space:nowrap; overflow:hidden; margin-top:2px; }
   .sheet-missing { display:flex; align-items:center; justify-content:center;
                   border:1px dashed var(--wait); border-radius:6px; background:var(--panel);
                   font-size:16px; font-weight:700; color:var(--wait); }
   .ladder-wrap { display:flex; gap:10px; margin-top:6px; }
-  .ladder-stage { position:relative; width:76px; flex:none; }
+  .ladder-stage { position:relative; width:60px; flex:none; }
   .climber { position:absolute; left:50%; transform:translateX(-50%); transition:bottom 1.1s ease; }
   .tasklist { flex:1; font-size:12px; min-width:0; }
   .tasklist .trow { padding:4px 6px; border-radius:6px; overflow:hidden; white-space:nowrap; }
@@ -177,16 +186,25 @@ const WIDGET_HTML = `<!DOCTYPE html>
       <span class="ver">버전 __WIDGET_BUILD__ · 자바스크립트가 실행되면 이 박스는 사라집니다.</span><br>
       <span class="ver">이 박스가 계속 보이면 위젯 스크립트가 막힌 것입니다. 새 대화에서 열어주세요.</span>
     </div>
-    <div class="title"><span id="appName">Agent Relay</span>
+    <div class="hdr">
+      <span class="dot waiting pulse" id="dot"></span>
+      <span class="app">Agent Relay</span>
+      <span class="hpill" id="status">PM 대기</span>
+      <span class="hfrac"><b id="headDone">0</b> / <span id="headTotal">0</span></span>
       <span class="lang"><button id="langKo" class="on">한국어</button><button id="langEn">EN</button></span>
+      <span id="sub" class="subhide"></span>
     </div>
-    <div class="statusline"><span class="dot waiting" id="dot"></span><span class="state" id="status">연결 중…</span></div>
-    <div class="sub" id="sub"></div>
-    <div class="strip" id="strip">
-      <div class="seg" id="segWait"><b id="cWait">0</b><span data-i="wait">대기 중</span></div>
-      <div class="seg" id="segDoing"><b id="cDoing">0</b><span data-i="doing">검토 중</span></div>
-      <div class="seg" id="segDone"><b id="cDone">0</b><span data-i="done">완료</span></div>
-      <div class="active-mini">Active <b id="activeN">0</b>/<span id="activeT">0</span></div>
+    <div class="env" id="env">
+      <div class="env-title">지금 이 환경</div>
+      <div class="env-row">
+        <div class="env-nums">
+          <div class="eseg blue" id="sgAgents"><b id="stAgents">0</b><span>에이전트</span></div>
+          <div class="eseg amber" id="sgReview"><b id="stReview">0</b><span>검토중</span></div>
+          <div class="eseg green" id="sgDone"><b id="stDone">0</b><span>완료</span></div>
+          <div class="eseg muted" id="sgGoals"><b id="stGoals">0</b><span>목표</span></div>
+        </div>
+        <div class="env-note" id="stNote">대기 중</div>
+      </div>
     </div>
     <div class="steps" id="steps">
       <span class="step off" data-s="wait"><i></i><span data-i="sWait">대기</span></span><span class="step-sep"></span>
@@ -199,8 +217,22 @@ const WIDGET_HTML = `<!DOCTYPE html>
       <button data-tab="wbs">WBS<span class="bdg" id="bWbs">0</span></button>
     </div>
     <div class="tabpane on" id="pane-crew">
-      <div class="agents" id="agents"></div>
-      <div class="remain" id="remain"></div>
+      <div class="lanes" id="lanes">
+        <div class="lane lane-a">
+          <div class="lane-head"><span class="lane-title">검토 중</span><span class="lane-desc">사람이 봐야 함</span><span class="lane-n" id="laneNa">0</span></div>
+          <div class="bar"><i id="barA" style="width:100%"></i></div>
+          <div class="chips" id="chipsA"></div>
+        </div>
+        <div class="lane lane-b">
+          <div class="lane-head"><span class="lane-title">작업 중</span><span class="lane-desc">지금 코드를 쓰는 중</span><span class="lane-n" id="laneNb">0</span></div>
+          <div class="bar"><i id="barB" style="width:0%"></i></div>
+          <div class="chips" id="chipsB"></div>
+        </div>
+        <div class="lane lane-c">
+          <div class="lane-head"><span class="lane-title">휴식</span><span class="lane-desc">토큰 대기</span><span class="lane-n" id="laneNc">0</span></div>
+          <div class="chips" id="chipsC"></div>
+        </div>
+      </div>
     </div>
     <div class="tabpane" id="pane-ladder">
       <div id="goalBadges"></div>
@@ -270,16 +302,18 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var subEl = document.getElementById('sub');
       var logEl = document.getElementById('log');
       var cardsEl = document.getElementById('cards');
-      var cWaitEl = document.getElementById('cWait');
-      var cDoingEl = document.getElementById('cDoing');
-      var cDoneEl = document.getElementById('cDone');
       var stepsEl = document.getElementById('steps');
       var doneCount = 0;
       var lastDeliveries = [];
       var lastDash = null;
       var spriteNote = '';
-      var agentsEl = document.getElementById('agents');
-      var remainEl = document.getElementById('remain');
+      var stAgentsEl = document.getElementById('stAgents');
+      var stReviewEl = document.getElementById('stReview');
+      var stDoneEl = document.getElementById('stDone');
+      var stGoalsEl = document.getElementById('stGoals');
+      var stNoteEl = document.getElementById('stNote');
+      var headDoneEl = document.getElementById('headDone');
+      var headTotalEl = document.getElementById('headTotal');
       var diagEl = document.getElementById('diag');
       function setDiag(text) {
         try { if (diagEl) diagEl.textContent = text; } catch (e) {}
@@ -377,12 +411,20 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
         cardsEl.innerHTML = html;
         var nWait = list.length - doing;
-        cWaitEl.textContent = String(nWait);
-        cDoingEl.textContent = String(doing);
-        cDoneEl.textContent = String(doneCount);
-        setSeg('segWait', nWait);
-        setSeg('segDoing', doing);
-        setSeg('segDone', doneCount);
+        setNum(stReviewEl, doing);
+        setNum(stDoneEl, doneCount);
+        setSeg('sgReview', doing, 'eseg amber');
+        setSeg('sgDone', doneCount, 'eseg green');
+        if (headDoneEl) headDoneEl.textContent = String(doneCount);
+        if (headTotalEl) headTotalEl.textContent = String(list.length);
+        // "무엇을 하고 있나": arrivals first, then review, else waiting.
+        try {
+          if (stNoteEl) {
+            stNoteEl.textContent = nWait > 0
+              ? t('envArrived').replace('{n}', String(nWait))
+              : (doing > 0 ? t('envReview') : t('envWait'));
+          }
+        } catch (e) {}
         var steps = stepsEl.querySelectorAll('.step');
         setStep(steps[0], list.length > 0 ? 'on' : 'off');
         setStep(steps[1], doing > 0 ? 'doing' : (list.length > 0 ? 'off' : 'off'));
@@ -409,7 +451,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
               working: '일하는 중', resting: '쉬는 중', qaDoing: '검사하는 중',
               spriteFail: '이미지 실패', spriteLoadFail: '스프라이트 로드 실패', spritesOk: '스프라이트', spritesFail: '스프라이트 실패',
               modelUnknown: '모델 정보 없음',
-              remaining: '남은 일', goals: '목표', noAgents: '일하는 AI 없음' },
+              remaining: '남은 일', goals: '목표', noAgents: '일하는 AI 없음',
+              envWait: '대기 중', envReview: 'PM 검토 대기', envArrived: '최종 delivery {n}건 도착' },
         en: { connecting: 'Connecting…', connected: 'Connected', waiting: 'Waiting for Agent result…',
               reviewReady: 'PM review ready', waking: 'Waking GPT…', wakeSent: 'Wake sent — GPT notified',
               wakeFail: 'Wake failed', initFail: 'Initialization failed', wait: 'Waiting', doing: 'Reviewing',
@@ -417,7 +460,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
               working: 'working', resting: 'resting', qaDoing: 'inspecting',
               spriteFail: 'sprite failed', spriteLoadFail: 'sprite load failed', spritesOk: 'sprites', spritesFail: 'sprites failed',
               modelUnknown: 'model unknown',
-              remaining: 'Remaining', goals: 'Goals', noAgents: 'No active AI' },
+              remaining: 'Remaining', goals: 'Goals', noAgents: 'No active AI',
+              envWait: 'Waiting', envReview: 'PM review pending', envArrived: 'Final delivery: {n} arrived' },
       };
       function t(key) { return (I18N[lang] && I18N[lang][key]) || I18N.ko[key] || key; }
       function applyLang() {
@@ -437,7 +481,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var FRAMES = { run: 6, dig: 4, climb: 4, qa: 4, done: 4, blocked: 4, sleep: 4, idle: 4 };
       var DURS = { run: 0.52, dig: 0.62, climb: 0.66, qa: 1.15, done: 0.9, blocked: 0.85, sleep: 2.4, idle: 2.6 };
             var SEP_RE = new RegExp('[ \\t\\n\\r_-]+');
-var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
+      var SHEET_W = { crew: 20, crewH: 30, climb: 48, climbH: 74 };
       // --sheetW = -(N * displayW): sheet math from DISPLAY size only, never source pixels.
       function sheetGeom(state, w, h) {
         var n = FRAMES[state] || 4;
@@ -664,21 +708,72 @@ var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
         var fw2 = firstWord(s);
         return (fw2 && fw2.length <= 16) ? fw2 : chars.slice(0, 16).join('');
       }
+      var PAREN_KO = { 'config default model': '기본 모델' };
+      function stripVersions(s) {
+        return String(s || '').replace(/[0-9]+(.[0-9]+)+/g, '').replace(/ +/g, ' ').trim();
+      }
+      function coreShort(s) {
+        var c = stripVersions(String(s || ''));
+        c = c.replace(/ CLI$/i, '').trim();
+        return c.replace(/ +/g, ' ').trim();
+      }
+      function tokensOf(s) {
+        return String(s || '').trim().split(SEP_RE).filter(Boolean);
+      }
       function normalizeAgent(a) {
         var wid = String((a && a.workerId) || '');
         var raw = String((a && (a.displayName || a.workerId)) || '');
-        var name = raw;
-        var role = null;
+        // Version-stamped ids ("V0.2-B Codex 0.153.4 Managed"): last token = name, first = role.
+        if (!/ via /i.test(raw)) {
+          var rawToks = tokensOf(raw);
+          if (rawToks.length >= 3 && /[0-9]+\.[0-9]+/.test(raw)) {
+            return {
+              name: capName(rawToks[rawToks.length - 1]),
+              role: capName(rawToks[0]),
+              full: raw,
+            };
+          }
+        }
         var via = raw.match(/^(.*?) via (.+)$/i);
         if (via) {
-          role = mapFirst(NAME_MAP, via[1]) || firstWord(via[1]) || 'Builder';
-          name = firstWord(via[2]) || raw;
-        } else {
-          name = raw.replace(/^(builder|worker|agent) +/i, '');
-          var hit = mapFirst(NAME_MAP, name) || mapFirst(NAME_MAP, wid);
-          if (hit) name = hit;
-          role = mapFirst(ROLE_MAP, name) || mapFirst(ROLE_MAP, wid);
+          var prefix = via[1].trim();
+          var rest = via[2].trim();
+          var pm = rest.match(/^(.*?)\(([^()]*)\) *$/);
+          var core = pm ? pm[1].trim() : rest;
+          var paren = pm ? pm[2].split(',')[0].trim() : null;
+          var isQa = /qa/i.test(prefix);
+          var role;
+          if (paren && !isQa) {
+            var pk = paren.toLowerCase();
+            role = (pk in PAREN_KO) ? PAREN_KO[pk] : capName(paren);
+          } else {
+            role = mapFirst(NAME_MAP, isQa ? core : prefix)
+              || mapFirst(ROLE_MAP, core)
+              || mapFirst(ROLE_MAP, wid)
+              || (/qa/i.test(wid) ? 'QA' : 'Build');
+          }
+          var name;
+          if (isQa) {
+            name = 'QA';
+          } else {
+            var cs = coreShort(core);
+            var hit = mapFirst(NAME_MAP, cs);
+            if (hit) name = hit;
+            else if (tokensOf(cs).length > 1) name = firstWord(cs) || cs;
+            else name = cs;
+          }
+          if (!name) name = 'Agent';
+          return { name: capName(name), role: capName(role || 'Build'), full: raw };
         }
+        var name2 = coreShort(raw.replace(/^(builder|worker|agent) +/i, ''));
+        var hit2 = mapFirst(NAME_MAP, name2) || mapFirst(NAME_MAP, wid);
+        if (hit2) name2 = hit2;
+        var role2 = mapFirst(ROLE_MAP, name2) || mapFirst(ROLE_MAP, wid);
+        if (!name2) name2 = 'Agent';
+        name2 = capName(name2);
+        if (!role2) role2 = /(^|[^a-z])qa([^a-z]|$)/i.test(wid) ? 'QA' : 'Build';
+        return { name: name2, role: role2, full: raw };
+      }
         if (!name) name = 'Agent';
         name = capName(name);
         if (!role) role = /(^|[^a-z])qa([^a-z]|$)/i.test(wid) ? 'QA' : 'Build';
@@ -708,10 +803,13 @@ var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
           if (b) b.textContent = String(total);
         } catch (e) {}
       }
-      function setSeg(id, n) {
+      function setNum(el, n) {
+        try { if (el) el.textContent = String(n); } catch (e) {}
+      }
+      function setSeg(id, n, base) {
         try {
           var el = document.getElementById(id);
-          if (el) el.className = 'seg' + (n ? '' : ' dim');
+          if (el) el.className = (base || 'seg') + (n ? '' : ' dim');
         } catch (e) {}
       }
       function renderAgents(dash) {
