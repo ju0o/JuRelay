@@ -21658,6 +21658,42 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:150 다음과 같은 작업은 세부 설명을 추가할 수 있다.",
           "title": "복잡한 일은 설명을 더 자세히 적기"
+        },
+        {
+          "taskId": "JUTELL-GENERAL-WORK-SCOPE-PARITY",
+          "scope": "Add the three BEGINNER_REPORT_SPEC §5.2 general-work bullets still missing from report-format.md section 3 (각 항목은 필요한 범위에서 작성, 검증 결과와 미확인 항목을 구분, 영향 가능 기능이 있으면 설명) as one bullet, plus an offline node:test that those sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/general-work-scope-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/general-work-scope-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:143 * 각 항목은 필요한 범위에서 작성"
+        },
+        {
+          "taskId": "JUTELL-UNKNOWN-ORIGIN-EXAMPLE-PARITY",
+          "scope": "Add the BEGINNER_REPORT_SPEC §14 출처 구분 불가 example sentence under SKILL.md step 4, plus an offline node:test that the full sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/unknown-origin-example-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/unknown-origin-example-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:608 출처 구분 불가: 작업 시작 전 Git 상태를 기록하지 않아 일부 변경이 이번 작업에서 발생했는지 판단하지 못했습니다."
+        },
+        {
+          "taskId": "JUTELL-APPROVAL-NOT-SUCCESS-PARITY",
+          "scope": "Add PRODUCT_SCOPE §11.3's sentence that user approval is not treated as successful operation, as one sub-bullet under SKILL.md step 16, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/approval-not-success-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/approval-not-success-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:668 * 사용자 승인과 정상 작동 여부를 동일하게 취급하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
