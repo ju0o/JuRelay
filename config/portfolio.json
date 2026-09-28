@@ -19429,6 +19429,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: M3 최종 판정은 DEFER; 0 of 7 Founder register rows have both a Claude final and a Receipt",
           "title": "다음 단계 진행 여부를 한눈에 확인"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-GTM-WBS-M3-DEFER-CELL-SYNC",
+          "scope": "Replace only the GTM §8 B1 state cell and the WBS B1/M3 state cells plus the still-open §4.3 GO/DEFER/KILL checkbox so they copy the canonical map's already recorded M3 DEFER and 0-join evidence, leaving M4 and B2–B6 locked.",
+          "files": [
+            "docs/business/GROWTH_MONETIZATION_GTM.md",
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 \"M3 DEFER · 10-RECEIPT REGISTER FILLED · SEVEN-TASK FINAL+RECEIPT JOIN MISSING (0 ROWS) · DAILY REPORT DEFERRED TO V1\""
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-HANDOFF-M3-DEFER-AGREE",
+          "scope": "Correct only the planning-gate report sentences and the handoff Work Package A check that still say no M3 decision is recorded and that the HTML agrees, so they state the canonical map already shows M3 DEFER with zero joined final-and-Receipt rows and the daily report deferred to V1.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md",
+            "docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:84 \"M3 DEFER · 10-RECEIPT REGISTER FILLED · SEVEN-TASK FINAL+RECEIPT JOIN MISSING (0 ROWS) · DAILY REPORT DEFERRED TO V1\""
         }
       ],
       "skills": {
