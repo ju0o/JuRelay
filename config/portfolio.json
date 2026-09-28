@@ -21483,6 +21483,17 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:4 ('> Last updated: 2026-09-25') vs `git log -1 --format=%ad --date=short 557e53c1f4b99559fcaa5ae4a730d29c0caec83a -- docs/planning/BUSINESS_SYSTEM_INDEX.md` = 2026-09-28",
           "title": "사업 정보 최신 날짜로 확인"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-P0-CHECK-JOIN-ONLY",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md change only the §2.1 consistency bullet so it keeps M2 GO and M3 UNDECIDED and adds that a later GO, DEFER, or KILL is collected only from a captured row with both a Claude final and a Receipt, without ticking the checkbox or recording a decision.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision is collected only from a captured row that has both a Claude final and a Receipt. Founder direction 2026-09-28"
         }
       ],
       "skills": {
