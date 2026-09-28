@@ -18186,7 +18186,8 @@
           "founder-ux",
           "founder-gate-relay"
         ]
-      }
+      },
+      "pmJudge": "chatgpt"
     },
     {
       "id": "juceipt-planning",
@@ -19564,6 +19565,29 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 §4.3 validation mapping remains UNDECIDED, not GO or KILL."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-GATE-MAPPING-CLAUSE",
+          "scope": "On the canonical map, add the hero pill's existing mapping-boundary clause to the funnel overview and the B1 and M3 gate states so the visible Korean hold says it is not a GO or KILL, with the English kept under 원문 보기.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 근거 매핑은 GO나 중단 결정이 아님"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-GTM-STATE-MAPPING-CLAUSE",
+          "scope": "Add the existing UNDECIDED-not-GO-or-KILL clause to the WBS B1/M3 state cells and the GTM B1 state cell, keeping the daily-report hold and recording no new milestone decision.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md",
+            "docs/business/GROWTH_MONETIZATION_GTM.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 §4.3 validation mapping remains UNDECIDED, not GO or KILL"
         }
       ],
       "skills": {
