@@ -11856,6 +11856,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 빠진 확인을 과장 없이 쉬운 말로",
           "title": "오늘 목록을 상황에 맞게 안내하기"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-EMPTY-NO-FLAG",
+          "scope": "빈 스캔의 기본 출력과 SUMMARY.md에 남은 juceipt scan --since 7d 문장을 빼고, 기간을 더 길게 잡아 다시 찾으라는 평문 한국어만 남긴다.",
+          "files": [
+            "src/cli/main.ts",
+            "src/sources/summary.ts",
+            "tests/sources-scan-cli.test.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-scan-cli.test.ts tests/scan-summary.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-INDEX-READY-INTRO",
+          "scope": "하루 색인에 영수증이 있고 요약이 지금 하실 일은 없어요이면 맨 위 안내를 지금 하실 일은 없어요 — 새 작업이 끝나면 다시 열어 보세요.로 맞추고, 빈 목록과 확인이 필요한 경우의 기존 안내는 유지한다.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily-background.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-background.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
