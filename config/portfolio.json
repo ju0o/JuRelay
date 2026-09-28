@@ -21028,6 +21028,28 @@
           ],
           "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:31,79-91,124-129 — visible English labels and internal gate text remain on the Founder-facing surface",
           "title": "처음부터 쉽게 이해해요"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-INDEX-M3-JOIN-ONLY-CLAUSE",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_INDEX.md change only canonical-artifact item 9 (line 18) so it keeps the 0-join UNDECIDED fact and states that a later M3 GO, DEFER, or KILL is collected only from a captured row that has both a Claude final and a Receipt, without recording a decision.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_INDEX.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-28: Collect only captured rows containing both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL only for those joined rows."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-UNPLANNED-NOTE-JOIN-ONLY",
+          "scope": "In docs/decisions/UNPLANNED_WORK_01_DECISION.md change only the 2026-09-26 header note (line 8) so it keeps M2 GO and the 0-join UNDECIDED fact and states that a later M3 GO, DEFER, or KILL is recorded only for a captured row that has both a Claude final and a Receipt.",
+          "files": [
+            "docs/decisions/UNPLANNED_WORK_01_DECISION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a captured row that has both a Claude final and a Receipt."
         }
       ],
       "skills": {
