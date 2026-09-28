@@ -19759,6 +19759,30 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-28: record M3 GO, DEFER, or KILL only for those joined rows."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-JOIN-STATE-CLEANUP",
+          "scope": "WBS·GTM·캐노니컬 HTML의 M3 DEFER 표기를 결정 보류·UNDECIDED로 맞춰, GO/DEFER/KILL은 Claude 최종본과 Receipt가 함께 있는 행에서만 기록되도록 정렬한다.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md",
+            "docs/business/GROWTH_MONETIZATION_GTM.md",
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 — record a decision only for a captured row with both a Claude final and a Receipt."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-JOINED-EVIDENCE-INTAKE",
+          "scope": "M3 검증 문서에 Claude 최종본과 Receipt가 모두 있는 캡처 행만 수집·판정 대상으로 삼는 후속 입력 표와 미충족 시 UNDECIDED 유지 규칙을 추가한다.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 — record a decision only for a captured row with both a Claude final and a Receipt."
         }
       ],
       "skills": {
