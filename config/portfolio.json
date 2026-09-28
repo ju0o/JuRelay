@@ -24968,6 +24968,50 @@
           ],
           "ssotEvidence": "README.md:28 \"node setup.mjs              # 채널·역할·포럼 태그·입장 질문 생성 (여러 번 실행해도 안전)\"",
           "title": "기존 설정을 안전하게 다시 맞춰요"
+        },
+        {
+          "taskId": "JUAI-CHECK-COPROJECT-PING",
+          "scope": "Add check.mjs assertions only that a new coproject thread returns coprojectMatch before the shared forum quota, and that coprojectMatch posts through CommandCode, keeps only INTERESTS fields, and pings the mentionable 공동프로젝트 알림 role.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:17 \"공동 프로젝트 알림\""
+        },
+        {
+          "taskId": "JUAI-CHECK-FEEDBACK-FIRST",
+          "scope": "Add check.mjs assertions only that, after the shared bot:forum staff quota, a feedback thread's first reply is CommandCode using the existing 좋은 점 1개 and 개선 제안 2개 prompt, while a qa thread's first reply stays OpenCode.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:17 \"피드백 첫 코멘트\""
+        },
+        {
+          "taskId": "JUAI-CHECK-SUB-LIST-CANCEL",
+          "scope": "Add check.mjs assertions only that subscribe handles !구독목록 and !구독취소, including the empty-list and not-subscribed replies, and that both return before keyword validation and insertion.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 \"!구독목록\" \"!구독취소 단어\""
+        },
+        {
+          "taskId": "JUAI-CHECK-THREAD-CHAT",
+          "scope": "Add check.mjs assertions only that a reply inside an ai-연구실 or 오늘의-오픈소스 thread calls threadChat before a generic mention answer, and that threadChat passes the fetched history to answer as OpenCode.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:16 \"스레드 대화\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
