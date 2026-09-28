@@ -9211,6 +9211,44 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 FOUNDER_GATE This lane stops. Other Agent Relay lanes are not stopped by this verdict.",
           "title": "멈춘 작업은 자동으로 거절돼요"
+        },
+        {
+          "taskId": "JUPLAN-AR-TRANSPORT-FACT-TYPE",
+          "scope": "Import TaskPacketTransportHold from the runtime public entry in the transport-queue test and name the disconnected pm/juplan fact so that packet stays refused with dispatch none.",
+          "files": [
+            "packages/runtime/test/agent-relay-transport-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-transport-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
+        },
+        {
+          "taskId": "JUPLAN-AR-SCOPE-FACT-TYPE",
+          "scope": "Import TaskPacketScopeHold from the runtime public entry in the scope-hold test and name the out-of-scope fact so that packet stays refused with dispatch none.",
+          "files": [
+            "packages/runtime/test/agent-relay-scope-hold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-scope-hold.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+        },
+        {
+          "taskId": "JUPLAN-AR-PAUSE-QUEUE",
+          "scope": "Refuse an otherwise authorized TASK_PACKET in validateTaskPacket when a supplied PAUSE fact says this lane is paused, with dispatch none and no invented Product task, while an omitted fact still accepts the packet, and export that fact type from the runtime public entry.",
+          "files": [
+            "packages/runtime/src/agentRelayPackets.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-pause-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-pause-queue.test.ts",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work."
         }
       ],
       "qaRuntime": [
