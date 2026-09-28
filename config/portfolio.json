@@ -12930,6 +12930,18 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 — 영수증 보기 밝은 화면 대비와 확인 필요 노랑",
           "title": "밝은 화면에서 영수증이 잘 보여요"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-DAILY-HIDE-ZERO-COUNTS-BASEFIX",
+          "scope": "`npm test` already fails on the integration tip 72d07dc before any change, so every task in this lane fails its test gate. Make it pass on the base: if a test expects outdated wording/behaviour that a later accepted commit changed on purpose, update the test to the current intended behaviour; if the code regressed, fix the code. Never delete or weaken assertions. Failure output: .receipt').forEach((row)=>{row.querySelector('[data-row-accept]').onclick=(event)=>{event.stopPropagation();document.querySelector('.detail-panel[data-detail-id=''+row.dataset.select+''] [data-accept]').click()};row.querySelector('[data-row-rollback]').onclick=(event)=>{event.stopPropagation();select(row.dataset.select);document.querySelector('.detail-panel[data-detail-id=''+row.dataset.select+''] [data-rollback]').click()}});</script></body></html>'\n\n ❯ test/today-page.test.ts:54:18\n     52|     } as Receipt]);\n     53| \n     54|     expect(html).toContain('<dt>되돌리기</dt><dd>이전 커밋으로 되돌릴 …\n       |                  ^\n     55|   });\n     56| });\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯\n\n Test Files  1 failed | 32 passed (33)\n      Tests  2 failed | 379 passed (381)\n   Start at  03:11:27\n   Duration  12.19s (transform 5.15s, setup 0ms, collect 11.59s, tests 9.73s, environment 43ms, prepare 12.25s)\n\n",
+          "files": [
+            "test/today-page.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
+          "title": "기존 시험 고치기 (이미 깨져 있던 것)"
         }
       ],
       "skills": {
