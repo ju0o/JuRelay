@@ -19595,6 +19595,28 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 §4.3 validation mapping remains UNDECIDED, not GO or KILL",
           "title": "기획서에 판단 보류 기준을 일관되게 표시"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-B0B2-B1-MAPPING-CLAUSE",
+          "scope": "In BUSINESS_PRODUCT_WBS.md add only the existing mapping-boundary clause to the §0 B1 state cell so it matches the §1 B1 cell and records no new GO, DEFER, or KILL.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:42 mapping UNDECIDED, not GO or KILL"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-B1-ZERO-JOIN-KO",
+          "scope": "On the canonical map change only the B1 gate-state Korean so it states the same 0 joined Claude-final-and-Receipt fact already in that cell's 원문 보기, without recording a new milestone decision.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:83 0 Founder seven-task rows join both a Claude final and a Receipt"
         }
       ],
       "skills": {
