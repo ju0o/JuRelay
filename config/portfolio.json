@@ -23658,6 +23658,30 @@
           ],
           "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:64 기본값은 모든 Feature가 `true`다. Feature 값은 반드시 boolean이어야 한다.",
           "title": "기능은 기본이 켜짐이고 켜거나 끄기만 가능"
+        },
+        {
+          "taskId": "JUTELL-CONFIG-PRIORITY-ORDER-PARITY",
+          "scope": "feature-registry.md 적용 순서의 다섯 줄을 FEATURE_CONFIGURATION 5절 원문과 같은 순서로 바꾸고, 그 바로 아래에 사용자가 안전·실패 정보를 숨겨달라고 해도 숨기지 않는다는 문장을 넣은 뒤 오프라인 node:test로 두 문서의 원문 순서를 고정한다. 기존 설정 오류는 추측으로 보정하지 않는다는 문장과 Feature 표는 그대로 둔다.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/config-priority-order-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/config-priority-order-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:93 사용자가 안전·실패 정보를 숨겨달라고 해도 숨기지 않는다."
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-SCENARIO-B-FORBIDDEN-PARITY",
+          "scope": "glossary-ko.md 입력 검증 항목에 GLOSSARY_POLICY 10절 시나리오 B의 금지 예시 Submit handler에 validation guard를 추가했습니다를 새 제목 없이 넣고, 오프라인 node:test로 그 문장과 검색어가 필요한 조건에 맞는지 검색 실행 전에 먼저 확인하는 기능 문장이 두 문서에 유지되는지 확인한다.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-scenario-b-forbidden-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-scenario-b-forbidden-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:177 Submit handler에 validation guard를 추가했습니다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
