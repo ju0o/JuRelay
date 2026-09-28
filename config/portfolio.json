@@ -23945,6 +23945,32 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:104 단순한 작업에서는 보고서 상태를 6번 항목에 함께 작성할 수 있다.",
           "title": "간단한 일은 상태를 보고 안에 적는다"
+        },
+        {
+          "taskId": "JUTELL-SECRET-OUTPUT-MASK-LIST-PARITY",
+          "scope": "BEGINNER_REPORT_SPEC §16.2의 확인할 값 9종과 문장 `도구 출력이 사용자에게 공개되기 전에 가능한 범위에서 값을 가린다`를 report-format.md §1에서 `전체 로그를 그대로 출력하지 않는다` 바로 아래에 한 bullet로 넣고 오프라인 node:test로 원문 일치를 고정한다.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/secret-output-mask-list-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/secret-output-mask-list-parity.test.mjs",
+            "node --test tests/verify-record-fields-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:719 도구 출력이 사용자에게 공개되기 전에 가능한 범위에서 값을 가린다."
+        },
+        {
+          "taskId": "JUTELL-DEFERRED-SCENARIOS-PARITY",
+          "scope": "PRODUCT_SCOPE §10.3의 V0.1 필수 검증 제외 시나리오 7개와 문장 `이 시나리오는 Git 정보 수집과 위험도 기준이 안정화된 이후 검토한다`를 risk-level-guide.md 7절 시나리오 B 아래에 한 bullet로 넣고 오프라인 node:test로 원문 일치를 고정한다.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/risk-level-guide.md",
+            "tests/deferred-scenarios-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/deferred-scenarios-parity.test.mjs",
+            "node --test tests/risk-level-guide-spec-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:620 다음 시나리오는 V0.1 필수 검증에서 제외한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
