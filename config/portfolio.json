@@ -9508,6 +9508,50 @@
             "pnpm typecheck"
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is"
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-INBOX",
+          "scope": "Append an optional retry-queue argument after blockedResult on parseResultInbox, pass it into validateTaskPacket's existing retryQueue slot so REQUEST_CHANGES past the three-attempt bound refuses intake with dispatch none, and point the existing inbox signature checks at that new argument.",
+          "files": [
+            "packages/runtime/src/agentRelayResultInbox.ts",
+            "packages/runtime/test/agent-relay-retry-queue.test.ts",
+            "packages/runtime/test/agent-relay-blocked-queue.test.ts",
+            "packages/runtime/test/agent-relay-pause-queue.test.ts",
+            "packages/runtime/test/agent-relay-scope-hold.test.ts",
+            "packages/runtime/test/agent-relay-transport-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-queue.test.ts test/agent-relay-blocked-queue.test.ts test/agent-relay-pause-queue.test.ts test/agent-relay-scope-hold.test.ts test/agent-relay-transport-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:147 Independent QA returned `FOUNDER_GATE`, or `REQUEST_CHANGES` after the"
+        },
+        {
+          "taskId": "JUPLAN-AR-PROVIDER-QUEUE",
+          "scope": "Append an optional inline provider-failure fact after nightDrain on validateTaskPacket so an empty runtime chain refuses the packet with dispatch none and no added provider, while a configured fall-through fact or an omitted fact still accepts only the same authorized packet.",
+          "files": [
+            "packages/runtime/src/agentRelayPackets.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-provider-failure-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-provider-failure-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none."
+        },
+        {
+          "taskId": "JUPLAN-AR-ACCEPT-TRANSPORT",
+          "scope": "Pass an optional disconnected pm/juplan fact through selectNextAfterAccept and applyAcceptNext so a disconnected channel returns dispatch none and a null next id even when another authorized id is listed, and an omitted or connected fact keeps today's next-listed result.",
+          "files": [
+            "packages/runtime/src/agentRelayAcceptNext.ts",
+            "packages/runtime/test/agent-relay-accept-next.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a"
         }
       ],
       "qaRuntime": [
