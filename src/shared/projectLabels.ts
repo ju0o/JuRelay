@@ -6,13 +6,15 @@ export interface ProjectLabel {
 }
 
 /**
- * 코드에 실린 기본 목록은 비어 있다.
- * 이름과 목표는 사용자 설정(`settings.json`의 projectLabels, 또는 같은 JSON을 담은
- * localStorage `agent-relay.project-labels`)에서만 온다. 파일이 없거나 깨져 있어도 예외를 내지 않는다.
+ * JuTell만 화면 이름과 목표를 제공하는 내장 항목이다. 그 밖의 이름과 목표는
+ * 사용자 설정(`settings.json`의 projectLabels, 또는 같은 JSON을 담은 localStorage
+ * `agent-relay.project-labels`)에서 온다. 파일이 없거나 깨져 있어도 예외를 내지 않는다.
  */
 export const PROJECT_LABELS: Record<string, ProjectLabel> = {
   jutell: { name: 'JuTell', goal: '짧고 쉬운 작업 보고서' },
 };
+
+const BUILT_IN_PROJECT_LABELS: Record<string, ProjectLabel> = { ...PROJECT_LABELS };
 
 /** 브라우저가 기억하는 사용자 프로젝트 설정 키. 파일과 같은 JSON이다. */
 export const PROJECT_LABELS_STORAGE_KEY = 'agent-relay.project-labels';
@@ -130,7 +132,7 @@ export function applyUserProjectConfig(...sources: unknown[]): UserProjectConfig
     if (parsed.hub) hub = true;
   }
   for (const key of Object.keys(PROJECT_LABELS)) delete PROJECT_LABELS[key];
-  Object.assign(PROJECT_LABELS, labels);
+  Object.assign(PROJECT_LABELS, BUILT_IN_PROJECT_LABELS, labels);
   hubFromConfig = hub;
   return { labels: PROJECT_LABELS, hub };
 }

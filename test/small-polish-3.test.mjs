@@ -1,12 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { PROJECT_LABELS, applyUserProjectConfig } from '../dist/server/shared/projectLabels.js';
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('jutell project label exists', async () => {
   const src = await read('src/shared/projectLabels.ts');
   assert.match(src, /jutell:\s*\{\s*name:\s*'JuTell',\s*goal:\s*'짧고 쉬운 작업 보고서'\s*\}/);
+});
+
+test('missing saved config keeps the built-in JuTell label', () => {
+  applyUserProjectConfig({ projects: { demo: { name: '데모', goal: '시험' } } });
+  applyUserProjectConfig(null, '');
+  assert.equal(PROJECT_LABELS.jutell.name, 'JuTell');
+  assert.equal(PROJECT_LABELS.demo, undefined);
 });
 
 test('AI 순서 저장 result says 만드는 AI / 검수하는 AI, not worker/qa', async () => {
