@@ -19352,6 +19352,28 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation.",
           "title": "사업 진행 기준을 헷갈리지 않기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-GTM-B3-B6-BLOCKED-SYNC",
+          "scope": "In docs/business/GROWTH_MONETIZATION_GTM.md section 8, change only the B3, B4, B5, and B6 State cells from FUTURE to BLOCKED so they match the WBS and status board, leaving the dependency text and the B0-B2 rows unchanged and not authorizing implementation.",
+          "files": [
+            "docs/business/GROWTH_MONETIZATION_GTM.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:47 | B3 | Funnel Proof | real acquisition/conversion measurement | B2 | checkup completion + monitor CTA demand observed | BLOCKED |"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-RQ01-AUDIT-TIME-NOTE",
+          "scope": "In docs/qa/P0_ROADMAP_WBS_GATE_QA.md add one dated note under the header that section 1 and RQ-01 describe audit checkout 1efd99c, while the status board now shows M2 GO and an unrecorded M3 decision, so those rows stay audit-time findings and are not an instruction to restore PM REVIEW or re-edit the roadmap.",
+          "files": [
+            "docs/qa/P0_ROADMAP_WBS_GATE_QA.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:28 | Product decision | **M2 GO** |"
         }
       ],
       "skills": {
