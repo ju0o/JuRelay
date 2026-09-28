@@ -9929,6 +9929,32 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1",
           "title": "승인 후 잠시 멈추기"
+        },
+        {
+          "taskId": "JUPLAN-AR-QA-PAUSE",
+          "scope": "Append an optional PAUSE fact after founderGate on decideQaTestGate so a paused lane does not promote a passing ACCEPT and dispatches none, while an omitted or not-paused fact keeps today's promotion.",
+          "files": [
+            "packages/runtime/src/agentRelayQaGate.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work."
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-PAUSE",
+          "scope": "Append an optional PAUSE fact after founderGate on applyRetryPolicy and runSameTaskRetry so a paused lane does not retry and dispatches none, while an omitted or not-paused fact keeps the same-task retry and invents no substitute task.",
+          "files": [
+            "packages/runtime/src/agentRelayRetryPolicy.ts",
+            "packages/runtime/test/agent-relay-retry-policy.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work."
         }
       ],
       "qaRuntime": [
