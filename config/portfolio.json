@@ -11223,22 +11223,6 @@
           "title": "영수증 검토 화면의 오류 문구와 색 고치기"
         },
         {
-          "taskId": "JUCEIPT-SOURCES-RELATIVE-TIME-R2-R2",
-          "scope": "sources 상대시간 재시도(daily 미수정). 상대시간과 그대로 출력만 유지하고 경계·미래 회귀만 갱신한다. daily 테스트는 절대 손대지 않는다. npm test 전체 통과를 확인하고 남은 daily drift는 고치지 말고 보고만 한다.",
-          "files": [
-            "src/sources/discover.ts",
-            "src/cli/main.ts",
-            "tests/sources-cli.test.ts",
-            "tests/sources-discover.test.ts"
-          ],
-          "tests": [
-            "npx vitest run tests/sources-cli.test.ts tests/sources-discover.test.ts",
-            "npm test"
-          ],
-          "ssotEvidence": "QA TEST_GATE finding (stale 기대값) + Supervisor 2026-09-27 R2 redesign",
-          "title": "기록 출처 시간 표시 다시 맞추기"
-        },
-        {
           "taskId": "JUCEIPT-RECEIPT-FOUNDER-UX-R3-R3",
           "scope": "R3 화면전환 버그 좁은 수정(버튼 유지). show()가 level1까지 끄는 문제를 고쳐 level2·level3 폴드 안에서만 토글하고 level1은 항상 보이게 한다. 복귀가 level1을 숨기지 않게 고치고 되돌릴 길 없는 빈 폴드를 없앤다. 폴드 안 버튼 클릭 후에도 level1 표시·level2 복원 가능 단언.",
           "files": [
@@ -14234,6 +14218,20 @@
           ],
           "ssotEvidence": "docs/getting-started.md:240 위 줄 아래에 한 줄 더 나옵니다(human-gate·hold)",
           "title": "지금 필요한 조치를 한눈에"
+        },
+        {
+          "taskId": "JUCONTROLER-DOGFOOD-SMOKE",
+          "scope": "자동 Dogfood: bash scripts/e2e.sh 전체 실행 + 상태판 CLI로 3개 어댑터 보드를 읽어 freshness·stale 규칙이 동작함을 단언한다. docs/getting-started.md 절차와 동일한 순서.",
+          "files": [
+            "scripts/e2e.sh",
+            "scripts/status-board.mjs",
+            "tests/dogfood-smoke.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/dogfood-smoke.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-28: Dogfood 자동화 (권고대로)",
+          "title": "공개 상태판 자동 실사용 연기"
         }
       ],
       "qaRuntime": [
@@ -18120,6 +18118,20 @@
           ],
           "ssotEvidence": "Founder 2026-09-27: 페르소나 Tester가 항상 건너뜀; persona 원본 부재 실측. Supervisor 결정: Agent-Relay WBS로 복원 (Aside 아님).",
           "title": "공개 소개가 갖춰졌고 비밀 없는지"
+        },
+        {
+          "taskId": "JCAPP-DOGFOOD-SMOKE",
+          "scope": "자동 Dogfood: operator 서버를 worktree에서 기동하고 홈·진행·승인·대화 탭 API를 순서대로 호출해 한국어 폴백(원시 UNKNOWN· TASK id 미노출)과 200 응답을 단언한 뒤 서버를 종료한다. 브라우저 없이 API 수준 실사용 연기. 실패 시 로그 첨부 HOLD.",
+          "files": [
+            "operator/server.mjs",
+            "operator/public/app.js",
+            "test/dogfood-smoke.test.mjs"
+          ],
+          "tests": [
+            "node --test test/dogfood-smoke.test.mjs"
+          ],
+          "ssotEvidence": "Founder 2026-09-28: Dogfood 자동화 (권고대로)",
+          "title": "관제 화면 자동 실사용 연기"
         }
       ],
       "skills": {
@@ -19362,7 +19374,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:47 | B3 | Funnel Proof | real acquisition/conversion measurement | B2 | checkup completion + monitor CTA demand observed | BLOCKED |"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:47 | B3 | Funnel Proof | real acquisition/conversion measurement | B2 | checkup completion + monitor CTA demand observed | BLOCKED |",
+          "title": "진행 불가한 수익화 계획을 표시"
         },
         {
           "taskId": "JUCEIPTPLAN-RQ01-AUDIT-TIME-NOTE",
@@ -19373,7 +19386,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:28 | Product decision | **M2 GO** |"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:28 | Product decision | **M2 GO** |",
+          "title": "점검 결과와 현재 결정을 분명히 안내"
         }
       ],
       "skills": {
@@ -21430,7 +21444,8 @@
           "tests": [
             "node --test tests/simple-length-leftover-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:133 * 같은 내용을 다른 항목에서 반복하지 않음"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:133 * 같은 내용을 다른 항목에서 반복하지 않음",
+          "title": "보고서를 필요한 만큼만 보여주기"
         },
         {
           "taskId": "JUTELL-GLOSSARY-KEEP-ORIGINAL-PARITY",
@@ -21442,7 +21457,8 @@
           "tests": [
             "node --test tests/glossary-keep-original-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:15 개발 용어를 완전히 없애지 않는다. 원래 용어를 유지하고 처음 등장할 때 짧고 쉬운 설명을 붙인다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:15 개발 용어를 완전히 없애지 않는다. 원래 용어를 유지하고 처음 등장할 때 짧고 쉬운 설명을 붙인다.",
+          "title": "용어를 처음에 쉽게 설명하기"
         },
         {
           "taskId": "JUTELL-CODE-BLOCK-UNITS-PARITY",
@@ -21454,7 +21470,8 @@
           "tests": [
             "node --test tests/code-block-units-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:140 설명 단위는 한 줄이 아니라 다음과 같은 기능 블록으로 묶는다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:140 설명 단위는 한 줄이 아니라 다음과 같은 기능 블록으로 묶는다.",
+          "title": "변경 내용을 단위별로 쉽게 보기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
