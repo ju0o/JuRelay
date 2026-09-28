@@ -1,4 +1,4 @@
-# Agent Relay
+# JuRelay
 
 > AI 여러 개가 **계획(PM) → 만들기(Worker) → 검사(QA)** 를 스스로 이어 가는 셋톱박스.
 > 사람은 결과를 보고, 꼭 필요한 결정에만 답하면 됩니다.
@@ -53,16 +53,22 @@ npm test                            # 테스트
 CLI 전체 목록, E2E, 릴리스 방법은 [docs/DEVELOPER.md](docs/DEVELOPER.md),
 밤 작업 준비(전원 끄기 권한 등)는 [docs/CORE_V1_AUTO_NIGHT_RUN.md](docs/CORE_V1_AUTO_NIGHT_RUN.md)를 보세요.
 
-## 다른 프로그램과의 관계
+## Ju 제품군에서의 위치
 
 ```text
-actl (리모컨)
-   └─▶ Agent Relay (셋톱박스: PM → Worker → QA)
-          └─▶ JuControler (허브: JuPlan · JuCeipt · Tester)
+JuActl (리모컨 · 여러 AI 창에 한 번에 지시)
+   └─▶ JuRelay (셋톱박스 · PM → Worker → QA)
+          └─▶ JuControler (허브 · 전체 진행을 한 화면에서)
 ```
 
-- 이 저장소에 들어 있는 것은 **Agent Relay** 하나예요. 나머지는 각자 따로 있는 프로그램이에요.
-- 실행기는 `config/portfolio.json`에 적힌 프로젝트(Agent Relay · actl · JuPlan · JuCeipt)를 순서대로 돌려요.
+같은 줄에서 나란히 도는 세 저장소예요.
+
+- **JuActl** — 여러 AI 창에 지시를 보내고 답을 받는 리모컨. https://github.com/ju0o/JuActl
+- **JuRelay** — AI들이 스스로 계획하고 만들고 검사하는 셋톱박스. 이 저장소.
+- **JuControler** — 여러 AI 프로젝트의 진행을 한 화면에 모으는 허브. https://github.com/ju0o/JuControler
+
+- 이 저장소에 들어 있는 것은 **JuRelay** 하나예요. 나머지는 각자 따로 있는 프로그램이에요.
+- 실행기는 `config/portfolio.json`에 적힌 프로젝트(JuRelay · actl · JuPlan · JuCeipt)를 순서대로 돌려요.
 
 ## 아직 안 되는 것
 
@@ -80,7 +86,7 @@ actl (리모컨)
 
 ## English summary
 
-Agent Relay is a local "set-top box" that chains several AI assistants through Plan (PM) → Build (Worker) → Check (QA), for non-developers.
+JuRelay is a local "set-top box" that chains several AI assistants through Plan (PM) → Build (Worker) → Check (QA), for non-developers.
 It ships a Windows desktop app (control room · approval rules · plan view) plus a Node CLI runner (`bridge/agent-relay.mjs`).
 QA must be a different AI from the builder, stuck tasks become one plain sentence with three options, and Night Run works until a deadline.
 Everything is files and Git — no database, no cloud, no telemetry; the only network call is the update check.
