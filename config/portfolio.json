@@ -6118,6 +6118,42 @@
             "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder direction 2026-09-25 13:06: 비개발자 UX 고도화"
+        },
+        {
+          "taskId": "ACTL-CLI-HELP-PLAIN",
+          "scope": "In _print_cli_help only, keep the typed commands, the echo send example, 대화형 모드, 에이전트 보드, and the OpenCode 원문 보기 line, move Agent Control CLI, pane 선택기, %ID, %69, live pane, hash/source, and python/tmux/ssh off the surface onto one 원문 보기 line with plain Korean command descriptions, and change test_help_descriptions_are_korean to expect 켜진 AI 창 목록 instead of live pane 감지 목록 while still rejecting the old English sentence.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_discover_apply_korean.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/cli.py:1284 live pane 감지 목록 — Founder direction 2026-09-23 non-developer surface"
+        },
+        {
+          "taskId": "ACTL-TK-FOCUS-NOTICE",
+          "scope": "In Board.on_focus only, use notify so a window that is not connected says to choose a connected AI window, success says 화면으로 옮겼어요 ✓, and failure says 화면으로 옮기지 못했어요 while the raw result stays in the log, and add a stub-board test that those notices appear and FOCUS disabled does not.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_visible_feedback.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/gui.py:1810 FOCUS disabled: validated tmux mapping required — Founder direction 2026-09-23 show the click result"
+        },
+        {
+          "taskId": "ACTL-TUI-HIDE-ROW-DETAIL",
+          "scope": "In tui._render only, keep a non-empty preview and the 답 없음 flag text, and when the preview is empty but detail is set show 확인하지 못했어요 instead of that detail, with a test that No completed assistant does not appear and the existing DONE preview assertion still passes.",
+          "files": [
+            "src/actl/tui.py",
+            "tests/test_tui.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/tui.py:423 row detail printed on the AI-window line — Founder direction 2026-09-23 no English errors on the surface"
         }
       ],
       "qaRuntime": [
