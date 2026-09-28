@@ -9701,7 +9701,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-queue.test.ts test/agent-relay-blocked-queue.test.ts test/agent-relay-pause-queue.test.ts test/agent-relay-scope-hold.test.ts test/agent-relay-transport-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:133 Quota, timeout, or transient provider failures may fall through the configured runtime chain. They are not a license to change scope."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:133 Quota, timeout, or transient provider failures may fall through the configured runtime chain. They are not a license to change scope.",
+          "title": "일하는 쪽 없으면 결과 안 받기"
         },
         {
           "taskId": "JUPLAN-AR-PROVIDER-ACCEPT",
@@ -9714,7 +9715,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none."
+          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none.",
+          "title": "일하는 쪽 없으면 다음 일 안 고름"
         }
       ],
       "qaRuntime": [
@@ -12495,7 +12497,8 @@
           "tests": [
             "npx vitest run tests/daily.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 빈 화면은 이유와 다음 행동을 말한다"
+          "ssotEvidence": "Founder direction 2026-09-23: 빈 화면은 이유와 다음 행동을 말한다",
+          "title": "하루 요약에도 빈 영향의 이유를 보여주기"
         },
         {
           "taskId": "JUCEIPT-INIT-NO-ENGLISH-ON",
@@ -12507,7 +12510,8 @@
           "tests": [
             "npx vitest run tests/daily-background.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 개발자 글자는 원문 보기 안에만 둔다"
+          "ssotEvidence": "Founder direction 2026-09-23: 개발자 글자는 원문 보기 안에만 둔다",
+          "title": "JuCeipt 설정을 거절하면 한글로 안내하기"
         }
       ],
       "skills": {
@@ -23669,7 +23673,8 @@
           "tests": [
             "node --test tests/config-priority-order-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:93 사용자가 안전·실패 정보를 숨겨달라고 해도 숨기지 않는다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:93 사용자가 안전·실패 정보를 숨겨달라고 해도 숨기지 않는다.",
+          "title": "안전한 설정 안내 순서를 맞춥니다"
         },
         {
           "taskId": "JUTELL-GLOSSARY-SCENARIO-B-FORBIDDEN-PARITY",
@@ -23681,7 +23686,8 @@
           "tests": [
             "node --test tests/glossary-scenario-b-forbidden-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:177 Submit handler에 validation guard를 추가했습니다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:177 Submit handler에 validation guard를 추가했습니다.",
+          "title": "잘못된 입력을 미리 막습니다"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -26002,7 +26008,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:89 버튼을 다시 누르면 수정돼요."
+          "ssotEvidence": "layout.mjs:89 버튼을 다시 누르면 수정돼요.",
+          "title": "프로필 소개를 간편하게 관리"
         },
         {
           "taskId": "JUAI-CHECK-RETHINK-DRAFT",
@@ -26013,7 +26020,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:203 더 생각 = 의견 한 줄 쓰면 고친 안으로 다시"
+          "ssotEvidence": "layout.mjs:203 더 생각 = 의견 한 줄 쓰면 고친 안으로 다시",
+          "title": "의견을 다시 검토해 안내 카드 정리"
         },
         {
           "taskId": "JUAI-CHECK-HIGHLIGHT-RANK",
@@ -26024,7 +26032,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:98 반응 좋은 글은 **매주 금요일 하이라이트**로 소개되고"
+          "ssotEvidence": "layout.mjs:98 반응 좋은 글은 **매주 금요일 하이라이트**로 소개되고",
+          "title": "인기 의견을 골라 주요 내용으로 정리"
         },
         {
           "taskId": "JUAI-CHECK-NUDGE-WINDOW",
@@ -26035,7 +26044,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:98 한동안 소식이 없으면 진행 상황을 물어봐요."
+          "ssotEvidence": "layout.mjs:98 한동안 소식이 없으면 진행 상황을 물어봐요.",
+          "title": "잠잠한 의견을 놓치지 않게 알림"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
