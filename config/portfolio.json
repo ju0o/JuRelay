@@ -6029,6 +6029,19 @@
           ],
           "ssotEvidence": "src/actl/cli.py:901 Bind this OpenCode conversation now?",
           "title": "프로그램 연결 방법을 쉽게 안내"
+        },
+        {
+          "taskId": "ACTL-CONFIG-UNMAPPED-KO-R2",
+          "scope": "From base 3c1c8564946ddff872bceeaf5cc1f1812468a4f9, make get_target's two unmapped ValueError strings and migration_warning() plain Korean stating what happened, why, and the next step, print that warning from repl() and /reload without the English WARNING prefix, and retarget tests/test_config.py::test_three_explicit_mappings_leave_other_agents_unmapped and test_legacy_config_stays_legacy_and_warns so they require the new Korean phrases and fail on the old English 'not currently mapped' and 'Config migration required' text, without changing when either is raised or editing bind or REPL prompts, all in one commit of only the three listed files whose full 40-character SHA is the promotion commit.",
+          "files": [
+            "src/actl/core/config.py",
+            "src/actl/cli.py",
+            "tests/test_config.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/core/config.py:48 Agent is not currently mapped to a tmux pane; Founder direction 2026-09-25 비개발자 UX"
         }
       ],
       "qaRuntime": [
