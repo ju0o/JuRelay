@@ -25992,6 +25992,50 @@
           ],
           "ssotEvidence": "layout.mjs:124 추천·요약에서 내 글이 언급되기 싫으면 입장 질문에서 언급하지 말아주세요를 고르세요.",
           "title": "언급 싫다는 사람 글은 요약에서 빼기"
+        },
+        {
+          "taskId": "JUAI-CHECK-PROFILE-EDIT",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that saveProfile edits the stored intro message when a profile already has message_id, sends a new intro post otherwise, and calls suggestUsage only on that first save.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:89 버튼을 다시 누르면 수정돼요."
+        },
+        {
+          "taskId": "JUAI-CHECK-RETHINK-DRAFT",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that the 더 생각 button opens the comment modal before the card changes, and that rethink marks the card REVISED then creates a replacement card for notice, rule, and feature while other kinds return through adminCommand.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:203 더 생각 = 의견 한 줄 쓰면 고친 안으로 다시"
+        },
+        {
+          "taskId": "JUAI-CHECK-HIGHLIGHT-RANK",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that highlight skips bot-authored starters, ranks showcase and feedback threads by message count plus twice the reactions, keeps the top three, and creates a notice card only when a member post remains.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:98 반응 좋은 글은 **매주 금요일 하이라이트**로 소개되고"
+        },
+        {
+          "taskId": "JUAI-CHECK-NUDGE-WINDOW",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that progressNudge asks CommandCode only about showcase threads quiet for 7 to 45 days, skips a nudge recorded within 14 days plus bots and the AI 언급 제외 role, and stops after 8 posts.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:98 한동안 소식이 없으면 진행 상황을 물어봐요."
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
