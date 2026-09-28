@@ -22335,6 +22335,43 @@
           ],
           "ssotEvidence": "docs/TEST_SCENARIOS.md:67-96 동일 조건·기준 상태·보고서 평가 분리·비밀정보 사용 금지 원칙을 공통으로 적용한다.",
           "title": "공통 확인 원칙 적용 점검"
+        },
+        {
+          "taskId": "JUTELL-EVIDENCE-SOURCE-DEFINITIONS-PARITY",
+          "scope": "Add the six BEGINNER_REPORT_SPEC §7.1–§7.6 evidence-source definitions in order as one bullet under report-format.md §1, plus an offline node:test that those sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/evidence-source-definitions-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/evidence-source-definitions-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:199 실제 파일 내용을 읽어서 확인했다."
+        },
+        {
+          "taskId": "JUTELL-NO-FORCED-USER-ACTION-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §9.5's sentence that a user-action item is not invented when there is nothing for the user to do, to SKILL.md step 15 and report-format.md §6.6, plus an offline node:test that the sentence stays in all three files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/no-forced-user-action-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/no-forced-user-action-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:374 사용자 행동이 없으면 억지로 항목을 만들지 않는다."
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-EASIER-THAN-TERM-PARITY",
+          "scope": "Add GLOSSARY_POLICY §11's rule that an explanation is not harder than the original term as one sentence in glossary-ko.md's opening block before the 목차 heading, without a new heading, plus an offline node:test.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-easier-than-term-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-easier-than-term-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:183 설명이 원래 용어보다 어렵지 않은가"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
