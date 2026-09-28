@@ -6341,7 +6341,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 discover --ssh asus 재검증"
+          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 discover --ssh asus 재검증",
+          "title": "윈도우에서 창 목록을 다시 확인"
         },
         {
           "taskId": "ACTL-BOARD-DISCOVER-FAIL-KIND",
@@ -6353,7 +6354,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "ROOT_CAUSE_REPORT.md:59 Therefore the empty GUI pane board was a transport failure hidden as an empty result"
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:59 Therefore the empty GUI pane board was a transport failure hidden as an empty result",
+          "title": "목록이 안 되면 이유와 다시 시도를 안내"
         },
         {
           "taskId": "ACTL-FLOW-OBSERVED-OUTCOMES",
@@ -6364,7 +6366,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다"
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다",
+          "title": "찾고 보내고 결과를 복사하는 흐름 확인"
         }
       ],
       "qaRuntime": [
@@ -9769,7 +9772,8 @@
             "pnpm --filter @juplan/runtime test packages/runtime/test/agent-relay-blocked-queue.test.ts packages/runtime/test/agent-relay-pause-queue.test.ts packages/runtime/test/agent-relay-retry-queue.test.ts packages/runtime/test/agent-relay-scope-hold.test.ts packages/runtime/test/agent-relay-transport-queue.test.ts packages/runtime/test/agent-relay-result-inbox.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch."
+          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch.",
+          "title": "애매한 재시작은 받은 일을 안 받기"
         },
         {
           "taskId": "JUPLAN-AR-RESTART-ACCEPT",
@@ -9782,7 +9786,8 @@
             "pnpm --filter @juplan/runtime test packages/runtime/test/agent-relay-accept-next.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:136 They do not dispatch unauthorized work."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:136 They do not dispatch unauthorized work.",
+          "title": "애매한 재시작은 다음 일을 안 고르기"
         }
       ],
       "qaRuntime": [
@@ -12591,7 +12596,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "영수증 비용을 원으로 쉽게, 어두운 화면도 잘 보이게"
         },
         {
           "taskId": "JUCEIPT-INIT-SCHEDULE-FAIL-LINES",
@@ -12603,7 +12609,8 @@
           "tests": [
             "npx vitest run tests/daily-background.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "자동 영수증 예약 실패를 쉬운 말로 알려줘요"
         }
       ],
       "skills": {
@@ -21217,7 +21224,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "README.md:9-13 'The PM must continuously maintain and use these control documents'; docs/planning/BUSINESS_SYSTEM_INDEX.md:8-18 canonical read order includes M3_DAILY_VALUE_VALIDATION.md"
+          "ssotEvidence": "README.md:9-13 'The PM must continuously maintain and use these control documents'; docs/planning/BUSINESS_SYSTEM_INDEX.md:8-18 canonical read order includes M3_DAILY_VALUE_VALIDATION.md",
+          "title": "기획 읽기 순서를 최신 문서까지 맞춘다"
         }
       ],
       "skills": {
@@ -23802,7 +23810,8 @@
           "tests": [
             "node --test tests/config-error-cases-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:113 설정 오류가 있어도 작업 자체를 불필요하게 중단하지 않는다. 오류가 있는 설정 전체를 추측해 보정하지 않고 `balanced` 기본값으로 진행한다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:113 설정 오류가 있어도 작업 자체를 불필요하게 중단하지 않는다. 오류가 있는 설정 전체를 추측해 보정하지 않고 `balanced` 기본값으로 진행한다.",
+          "title": "설정이 잘못돼도 멈추지 않는 안내"
         },
         {
           "taskId": "JUTELL-GLOSSARY-INTERNAL-DOC-NOT-FACT-PARITY",
@@ -23814,7 +23823,8 @@
           "tests": [
             "node --test tests/glossary-internal-doc-not-fact-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:124 프로젝트 내부 문서의 설명을 참고할 수 있지만, 코드와 실제 동작에 어긋나는 설명을 무조건 사실로 받아들이지 않는다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:124 프로젝트 내부 문서의 설명을 참고할 수 있지만, 코드와 실제 동작에 어긋나는 설명을 무조건 사실로 받아들이지 않는다.",
+          "title": "실제와 다른 문서 말은 사실로 안 본다"
         },
         {
           "taskId": "JUTELL-BROWSER-NO-AUTOMATION-PARITY",
@@ -23826,7 +23836,8 @@
           "tests": [
             "node --test tests/browser-no-automation-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:571 V0.1은 별도의 브라우저 자동화 기능을 제공하지 않는다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:571 V0.1은 별도의 브라우저 자동화 기능을 제공하지 않는다.",
+          "title": "브라우저를 대신 눌러 주는 기능은 없다"
         },
         {
           "taskId": "JUTELL-SIMPLE-REPORT-STATE-INLINE-PARITY",
@@ -23838,7 +23849,8 @@
           "tests": [
             "node --test tests/simple-report-state-inline-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:104 단순한 작업에서는 보고서 상태를 6번 항목에 함께 작성할 수 있다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:104 단순한 작업에서는 보고서 상태를 6번 항목에 함께 작성할 수 있다.",
+          "title": "간단한 일은 상태를 보고 안에 적는다"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -26207,7 +26219,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:89 입장하면 뜨는 **[프로필 작성]** 버튼으로 SNS 닉네임과 지금 만드는 걸 등록하면 자기소개가 자동으로 올라가요. 버튼을 다시 누르면 수정돼요."
+          "ssotEvidence": "layout.mjs:89 입장하면 뜨는 **[프로필 작성]** 버튼으로 SNS 닉네임과 지금 만드는 걸 등록하면 자기소개가 자동으로 올라가요. 버튼을 다시 누르면 수정돼요.",
+          "title": "프로필 버튼이 남고 자유대화에 환영"
         },
         {
           "taskId": "JUAI-CHECK-REVIEW-RESOLVE",
@@ -26218,7 +26231,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:135 `리뷰해줘 https://github.com/아이디/저장소` → 🔵 OpenCode가 저장소를 보고 코드 리뷰 (1회). 프로필에 GitHub를 적어두면 `리뷰해줘`만 써도 돼요"
+          "ssotEvidence": "layout.mjs:135 `리뷰해줘 https://github.com/아이디/저장소` → 🔵 OpenCode가 저장소를 보고 코드 리뷰 (1회). 프로필에 GitHub를 적어두면 `리뷰해줘`만 써도 돼요",
+          "title": "공개 저장소만 조언, 없으면 안내"
         },
         {
           "taskId": "JUAI-CHECK-THREAD-MEMORY",
@@ -26229,7 +26243,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:104 **여기 글을 쓰면 🔵 OpenCode가 스레드를 열고 답해요.** 스레드 안에서 계속 대화하면 앞 내용을 기억해요."
+          "ssotEvidence": "layout.mjs:104 **여기 글을 쓰면 🔵 OpenCode가 스레드를 열고 답해요.** 스레드 안에서 계속 대화하면 앞 내용을 기억해요.",
+          "title": "연구실 질문 방과 추천 글 세 줄 요약"
         },
         {
           "taskId": "JUAI-CHECK-ADMIN-MISS",
@@ -26240,7 +26255,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:198 \"자유대화 광고 글 지워줘\" / \"OO 1시간 타임아웃\" / \"채널 만들어줘·삭제해줘\" → 확인 카드"
+          "ssotEvidence": "layout.mjs:198 \"자유대화 광고 글 지워줘\" / \"OO 1시간 타임아웃\" / \"채널 만들어줘·삭제해줘\" → 확인 카드",
+          "title": "못 찾으면 알리고 확인은 운영진에"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
