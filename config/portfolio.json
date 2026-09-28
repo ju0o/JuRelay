@@ -2673,6 +2673,7 @@
             "test/v03.test.mjs"
           ],
           "tests": [
+            "npm run build:server",
             "npm run typecheck",
             "node test/v03.test.mjs"
           ],
@@ -8972,6 +8973,43 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-28: While PM transport is disconnected, record one Result Inbox entry for AR-JUPLAN-001 with state HOLD, an empty QA slot, and dispatch none.",
           "title": "결과 기록이 빠지면 바로 알기"
+        },
+        {
+          "taskId": "JUPLAN-AR-BLOCKED-PUBLIC-ENTRY",
+          "scope": "Re-export decideBlockedResultHold and BlockedResultHoldDecision from the runtime public entry and import them in the blocked-hold test so a BLOCKED result stays HOLD with dispatch none, an empty QA slot, and no substitute task.",
+          "files": [
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-blocked-hold.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-blocked-hold.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:91 BLOCKED holds the task. It does not invent a substitute Product task and does not continue to QA."
+        },
+        {
+          "taskId": "JUPLAN-AR-GATE-QUEUE-ENTRY",
+          "scope": "Import validateTaskPacket, parseFounderGatePacket, and parseResultInbox from the runtime public entry in the Founder Gate queue test so a stopped lane still refuses the packet with dispatch none.",
+          "files": [
+            "packages/runtime/test/agent-relay-founder-gate-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-founder-gate-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 FOUNDER_GATE stops this lane and other Agent Relay lanes are not stopped by this verdict."
+        },
+        {
+          "taskId": "JUPLAN-AR-TRANSPORT-QUEUE-ENTRY",
+          "scope": "Import validateTaskPacket and loadTransportHold from the runtime public entry in the transport-queue test so a disconnected pm/juplan still refuses the packet with dispatch none.",
+          "files": [
+            "packages/runtime/test/agent-relay-transport-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-transport-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
         }
       ],
       "qaRuntime": [
