@@ -198,6 +198,11 @@ describe('layout contract (P1-P5, H1-H4)', () => {
     assert.deepEqual(meta['openai/widgetCSP'].resource_domains, ['https://mcp.relay-agent.site']);
     assert.deepEqual(meta['openai/widgetCSP'].connect_domains, ['https://mcp.relay-agent.site']);
   });
+  it('CDN base derives jsdelivr origin for sandbox allowlist', () => {
+    const cdn = m.widgetResourceMeta('https://cdn.jsdelivr.net/gh/ju0o/Agent-Relay@widgets-crew-v1/public/widgets/crew');
+    assert.deepEqual(cdn.ui.csp.resourceDomains, ['https://cdn.jsdelivr.net']);
+    assert.deepEqual(cdn['openai/widgetCSP'].resource_domains, ['https://cdn.jsdelivr.net']);
+  });
   it('sprite failure surfaces visibly on cards and stages', () => {
     assert.ok(html.includes('스프라이트 로드 실패'), 'named sheet error text present');
     assert.ok(html.includes('markSheetMissing'), 'stage fallback marker present');

@@ -277,6 +277,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var doneCount = 0;
       var lastDeliveries = [];
       var lastDash = null;
+      var spriteNote = '';
       var agentsEl = document.getElementById('agents');
       var remainEl = document.getElementById('remain');
       var diagEl = document.getElementById('diag');
@@ -822,7 +823,7 @@ var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
           try {
             var dash = await callTool('relay_pm_get_dashboard', {});
             lastDash = dash;
-            setDiag('dashboard ok · ' + diagTime());
+            setDiag('dashboard ok · ' + diagTime() + spriteNote);
             try { renderAgents(dash); } catch (eAgents) { logLine('render agents error: ' + eAgents.message); }
             try {
               var tl = await callTool('relay_pm_list_tasks', {});
@@ -832,7 +833,7 @@ var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
               try { renderWbs(taskList, goals); } catch (eW) { logLine('render wbs error: ' + eW.message); }
             } catch (e3) { /* task views best-effort */ }
           } catch (e2) {
-            setDiag('dashboard 실패: ' + String((e2 && e2.message) || e2).slice(0, 120));
+            setDiag('dashboard 실패: ' + String((e2 && e2.message) || e2).slice(0, 120) + spriteNote);
             /* dashboard best-effort; deliveries already shown */
           }
           if (deliveries.length === 0) {
@@ -909,9 +910,12 @@ var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
           try {
             preloadSheets(function (failed) {
               if (failed.length) {
+                spriteNote = ' · ' + t('spritesFail') + ': ' + failed.join(',');
                 setDiag(t('spritesFail') + ': ' + failed.join(','));
                 logLine('sprite preload failed: ' + failed.join(','));
               } else {
+                spriteNote = ' · ' + t('spritesOk') + ' 8/8';
+                setDiag(t('spritesOk') + ' 8/8 · ' + diagTime());
                 logLine(t('spritesOk') + ' 8/8');
               }
               try { if (lastDash) renderAgents(lastDash); } catch (e) { /* next poll redraws */ }
