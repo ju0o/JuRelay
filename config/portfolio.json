@@ -20222,6 +20222,19 @@
           ],
           "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:126 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집합니다. The line-17 pill and line-84 M3 gate omit that clause.",
           "title": "화면에 참여 조건 명확히 표시"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-B1-M3-STATE-JOIN-ONLY-CLAUSE",
+          "scope": "Add only the existing join-only clause to the GTM §8 B1 state cell, the WBS §0 and §1 B1 state cells, the WBS §1 M3 state cell, and the canonical map B1 gate, stating that a later GO, DEFER, or KILL is collected only from a captured row with both a Claude final and a Receipt, keeping UNDECIDED with Korean on the map surface and the English under 원문 보기, and recording no new milestone decision.",
+          "files": [
+            "docs/business/GROWTH_MONETIZATION_GTM.md",
+            "docs/planning/BUSINESS_PRODUCT_WBS.md",
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:142 A later GO / DEFER / KILL decision is recorded only for a M3 validation §2.3 captured row with both a Claude final and a Receipt."
         }
       ],
       "skills": {
