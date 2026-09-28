@@ -3,9 +3,11 @@
 > AI 여러 개가 **계획(PM) → 만들기(Worker) → 검사(QA)** 를 스스로 이어 가는 셋톱박스.
 > 사람은 결과를 보고, 꼭 필요한 결정에만 답하면 됩니다.
 
-## 30초 소개 영상
+## 소개 영상
 
-[![30초 소개 영상](docs/media/agentrelay-30s.jpg)](docs/media/agentrelay-30s.mp4)
+[![30초 소개 영상](docs/media/agentrelay-30s.jpg)](https://youtu.be/CXViRtuSXG0)
+
+[![실제 사용 화면 27초](https://img.youtube.com/vi/BrnZxxEWzf4/hqdefault.jpg)](https://youtu.be/BrnZxxEWzf4)
 
 전체 소개 (60초): https://youtu.be/tB1cCLzTvIs
 
