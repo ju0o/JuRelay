@@ -19327,6 +19327,28 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation.",
           "title": "통과해도 다음 단계는 열리지 않아요"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-REPORT-A1-NONUNLOCK",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md section A.1, change only the morning bullet that still says P0 does not authorize implementation or advance M2 so it matches the status-board non-unlock sentence, without recording a P0 or M3 decision.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HANDOFF-P0-NONUNLOCK-CHECK",
+          "scope": "In docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md, change only the Audit Work Package A check that says P0 is planning-only and cannot unlock business implementation so it states the same non-unlock boundary as the status board, without deciding P0.",
+          "files": [
+            "docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
         }
       ],
       "skills": {
