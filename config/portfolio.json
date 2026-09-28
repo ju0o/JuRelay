@@ -20154,6 +20154,28 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:42 DECISION UNDECIDED — DAILY REPORT HELD FOR V1; 0 Founder seven-task rows join both a Claude final and a Receipt; no GO / DEFER / KILL recorded"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-DECISION-LOG-JOIN-ONLY",
+          "scope": "In docs/decisions/DECISION_LOG.md change only D-023 so it keeps UNDECIDED and the 0-join fact, and states that a later M3 GO, DEFER, or KILL is recorded only for a captured row that has both a Claude final and a Receipt.",
+          "files": [
+            "docs/decisions/DECISION_LOG.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-28: Collect only captured rows containing both a Claude final and a Receipt, then record M3 GO, DEFER, or KILL only for those joined rows. docs/decisions/DECISION_LOG.md:369 records no decision but omits that limit, while docs/operations/PM_STATUS_BOARD.md:174 already states it."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-M3-PILL-JOIN-ONLY",
+          "scope": "On docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html add the existing line-126 join-only clause to the M3 hero pill and the M3 gate state, in Korean on the surface and English under 원문 보기, without recording GO, DEFER, or KILL.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:126 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집합니다. The line-17 pill and line-84 M3 gate omit that clause."
         }
       ],
       "skills": {
