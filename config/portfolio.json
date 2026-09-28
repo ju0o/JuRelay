@@ -21379,6 +21379,18 @@
             "node --test tests/risk-without-runtime-parity.test.mjs"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:468 테스트, 브라우저 또는 실행 환경이 없더라도 코드와 변경 범위를 확인할 수 있다면 위험도를 판단할 수 있다."
+        },
+        {
+          "taskId": "JUTELL-MINIMAL-PROFILE-KEEP-PARITY-R2",
+          "scope": "Add TEST_SCENARIOS §14.1's four minimal-profile keep rules as one aligned paragraph and an offline node:test parity check, removing only CRLF trailing whitespace in the touched registry lines so git diff --check passes; the test must fail on the old content and pass on the new content, without running C1 or editing scenario fixtures.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/minimal-profile-keep-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/minimal-profile-keep-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:918 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동은 유지한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
