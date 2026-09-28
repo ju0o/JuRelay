@@ -24,11 +24,11 @@ const read = file => readFile(new URL(file, root), 'utf8');
 describe('standalone project labels', { concurrency: false }, () => {
 test('code defaults have no founder project list, paths, or hosts', async () => {
   const source = await read('src/shared/projectLabels.ts');
-  assert.equal(Object.keys(PROJECT_LABELS).length, 0);
+  assert.equal(Object.keys(PROJECT_LABELS).length, 1);
+  assert.equal(PROJECT_LABELS.jutell.name, 'JuTell');
   for (const banned of [
     'JuPlan',
     'JuCeipt',
-    'JuTell',
     'JuAi',
     'JuRadar',
     '통합 관제 화면',
@@ -39,7 +39,7 @@ test('code defaults have no founder project list, paths, or hosts', async () => 
   ]) {
     assert.equal(source.includes(banned), false, banned);
   }
-  assert.match(source, /export const PROJECT_LABELS: Record<string, ProjectLabel> = \{\}/);
+  assert.match(source, /jutell:\s*\{\s*name: 'JuTell',\s*goal: '짧고 쉬운 작업 보고서'/);
 });
 
 test('names and goals come from the user config, then the repo folder name', () => {
@@ -81,7 +81,8 @@ test('a missing or broken user config never throws and stays empty', () => {
   assert.equal(userProjectConfigFromSettings({ dataRoot: '/tmp', customAgents: [] }), null);
   assert.deepEqual(userProjectConfigFromSettings({ projectLabels: { demo: { name: '데모', goal: '목표' } } }).demo.name, '데모');
   const applied = applyUserProjectConfig(null, '', '{');
-  assert.equal(Object.keys(applied.labels).length, 0);
+  assert.equal(Object.keys(applied.labels).length, 1);
+  assert.equal(applied.labels.jutell.name, 'JuTell');
   assert.equal(applied.hub, false);
   assert.equal(projectDisplayName('demo'), 'demo');
   assert.equal(userProjectConfigPath('/tmp/someone'), '/tmp/someone/.config/agent-relay/project-labels.json');
