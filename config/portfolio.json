@@ -12016,6 +12016,30 @@
           ],
           "ssotEvidence": "src/sources/summary.ts:110 `| AI | 작업 | 받아도 됨 | 확인 후 받기 | 문제 있음 |`; Founder direction 2026-09-23",
           "title": "검색 결과를 인공지능마다 한 줄로"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-ACCEPT-FEEDBACK",
+          "scope": "In renderTodayList, make a list-card 받음 click write 받았어요 ✓ into a status line that stays visible outside any hidden detail panel before that card disappears.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-WHO-PARTICLE",
+          "scope": "In renderLevel1, use the 이 particle for Codex and Cursor on the who/when line, and still name the AI when the finish time is missing.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
