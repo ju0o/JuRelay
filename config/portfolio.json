@@ -9941,7 +9941,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work.",
+          "title": "일시정지 중엔 검사 통과해도 다음 단계 보류"
         },
         {
           "taskId": "JUPLAN-AR-RETRY-PAUSE",
@@ -9954,7 +9955,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 / portfolio backlog work.",
+          "title": "일시정지 중엔 실패한 작업 다시 시도 안 함"
         }
       ],
       "qaRuntime": [
@@ -12873,7 +12875,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 — scan·daily 첫 문장이 0건 판정으로 어긋나지 않게"
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 — scan·daily 첫 문장이 0건 판정으로 어긋나지 않게",
+          "title": "있는 결과만 요약에 보여요"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-VIEW-LIGHT-CONTRAST",
@@ -12886,7 +12889,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 — 영수증 보기 밝은 화면 대비와 확인 필요 노랑"
+          "ssotEvidence": "Founder direction 2026-09-23: 비개발자 UX 고도화 — 영수증 보기 밝은 화면 대비와 확인 필요 노랑",
+          "title": "밝은 화면에서 영수증이 잘 보여요"
         }
       ],
       "skills": {
@@ -21548,7 +21552,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision is collected only from a captured row that has both a Claude final and a Receipt. Founder direction 2026-09-28"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision is collected only from a captured row that has both a Claude final and a Receipt. Founder direction 2026-09-28",
+          "title": "나중 결정은 결론과 영수증이 있을 때"
         }
       ],
       "skills": {
@@ -24265,7 +24270,8 @@
           "tests": [
             "node --test tests/verify-result-definitions-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:396 도구, 권한, 설정 또는 환경 문제로 실행하지 못했다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:396 도구, 권한, 설정 또는 환경 문제로 실행하지 못했다.",
+          "title": "검증 결과가 무슨 뜻인지 바로 보여 주기"
         },
         {
           "taskId": "JUTELL-LOW-OPERATING-COST-PARITY",
@@ -24277,7 +24283,8 @@
           "tests": [
             "node --test tests/low-operating-cost-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:493 V0.1은 중앙 서버와 별도 AI API 없이 작동해야 한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:493 V0.1은 중앙 서버와 별도 AI API 없이 작동해야 한다.",
+          "title": "추가 비용 없이 쓰는 원칙을 안내하기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -26790,7 +26797,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:14 | Claude | 공지·규칙 초안 → 승인 카드, 어제 요약, 건의 정리, 스팸 관리, 서버 주인 명령 실행 | Claude Code CLI (Haiku) |"
+          "ssotEvidence": "README.md:14 | Claude | 공지·규칙 초안 → 승인 카드, 어제 요약, 건의 정리, 스팸 관리, 서버 주인 명령 실행 | Claude Code CLI (Haiku) |",
+          "title": "조용한 날은 짧게, 맞는 요약만 세 줄"
         },
         {
           "taskId": "JUAI-CHECK-WEEKLY-CARDS",
@@ -26801,7 +26809,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:14 | Claude | 공지·규칙 초안 → 승인 카드, 어제 요약, 건의 정리, 스팸 관리, 서버 주인 명령 실행 | Claude Code CLI (Haiku) |"
+          "ssotEvidence": "README.md:14 | Claude | 공지·규칙 초안 → 승인 카드, 어제 요약, 건의 정리, 스팸 관리, 서버 주인 명령 실행 | Claude Code CLI (Haiku) |",
+          "title": "주간 건의와 규칙을 승인 카드로 받기"
         },
         {
           "taskId": "JUAI-CHECK-AI-SPAWN-ENV",
@@ -26812,7 +26821,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:46 자식 프로세스에는 봇 토큰이 없습니다."
+          "ssotEvidence": "README.md:46 자식 프로세스에는 봇 토큰이 없습니다.",
+          "title": "비밀 정보를 답변 쪽에 안 넘기기"
         },
         {
           "taskId": "JUAI-CHECK-PICKS-CAP",
@@ -26823,7 +26833,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:15 | Codex | 매일 서버 대화에 맞춘 오픈소스 추천 | Codex CLI |"
+          "ssotEvidence": "README.md:15 | Codex | 매일 서버 대화에 맞춘 오픈소스 추천 | Codex CLI |",
+          "title": "오늘의 추천은 세 개까지, 못 읽으면 안 올림"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
