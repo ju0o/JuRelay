@@ -9442,6 +9442,36 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:128 After the bound is exhausted, the task is HOLD. The runner does not",
           "title": "세 번 고친 뒤엔 다시 안 시키기"
+        },
+        {
+          "taskId": "JUPLAN-AR-BLOCKED-INBOX",
+          "scope": "Append an optional blocked-result argument after transportHold on parseResultInbox and pass it into validateTaskPacket's existing blockedResult slot so a Worker BLOCKED fact refuses inbox intake with dispatch none and invents no Product task, while an omitted fact still accepts today's inbox.",
+          "files": [
+            "packages/runtime/src/agentRelayResultInbox.ts",
+            "packages/runtime/test/agent-relay-blocked-queue.test.ts",
+            "packages/runtime/test/agent-relay-pause-queue.test.ts",
+            "packages/runtime/test/agent-relay-scope-hold.test.ts",
+            "packages/runtime/test/agent-relay-transport-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-blocked-queue.test.ts test/agent-relay-pause-queue.test.ts test/agent-relay-scope-hold.test.ts test/agent-relay-transport-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED."
+        },
+        {
+          "taskId": "JUPLAN-AR-NIGHT-DRAIN-QUEUE",
+          "scope": "Refuse an otherwise authorized TASK_PACKET in validateTaskPacket when a supplied night-drain fact says a night-run drain is in effect, with dispatch none and no invented Product task, appending that fact after retryQueue so an omitted or not-draining fact still accepts only the authorized packet.",
+          "files": [
+            "packages/runtime/src/agentRelayPackets.ts",
+            "packages/runtime/src/index.ts",
+            "packages/runtime/test/agent-relay-night-drain-queue.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-night-drain-queue.test.ts test/agent-relay-retry-queue.test.ts test/agent-relay-blocked-queue.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is"
         }
       ],
       "qaRuntime": [
