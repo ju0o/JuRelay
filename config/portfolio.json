@@ -26568,6 +26568,50 @@
           ],
           "ssotEvidence": "README.md:40 \"ai.mjs AI CLI 실행·격리·무료 모델 자동 교체\"",
           "title": "질문은 한 건씩 들어오고 결과 후 빠져요"
+        },
+        {
+          "taskId": "JUAI-CHECK-TALK-STALE",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that scheduleTalk returns when talk_session is missing and clears a session whose startedAt is older than 3 hours before arming the next step, and that talkStep sets that bot's budget to 0 and calls scheduleTalk when the model returns no text.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:19 그 밖에: 봇들끼리 수다(`#봇-놀이터`)"
+        },
+        {
+          "taskId": "JUAI-CHECK-QUOTA-FOOTER",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that answer, summarizeThread, and anonymousQuestion append the 오늘 남은 질문 footer only inside a Number.isFinite(q.left) check so a staff Infinity remaining count is not shown.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:49 서버 주인(Founder)·운영진은 일일 제한 없음."
+        },
+        {
+          "taskId": "JUAI-CHECK-AI-COOLDOWN",
+          "scope": "Add check.mjs assertions only by reading ai.mjs as text and not importing it, leaving ai.mjs unchanged, that runWithFallback benches a failed CommandCode or OpenCode model for COOLDOWN_MS of 30 minutes, skips models still inside that bench, and calls alertHook before rethrowing when every free model has failed.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:16 OpenCode 무료 모델 (자동 교체)"
+        },
+        {
+          "taskId": "JUAI-CHECK-DM-CONNECT",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that connect() gives OpenCode DirectMessages and a Channel partial when it is not the hub, and always registers that client's messageCreate handler to onDirect.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:8 `!익명`은 OpenCode 개인 메시지에서만 작동"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
