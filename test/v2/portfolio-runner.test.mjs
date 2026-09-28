@@ -41,9 +41,9 @@ test("CORE V1 Result Inbox keeps lane fields machine-readable and pipeable", () 
   assert.equal(formatCoreV1Results(snapshot, false), formatCoreV1Text(snapshot));
 });
 
-test("CORE V1 snapshot prefers active task over historical completed task", () => {
-  const snapshot = buildCoreV1Snapshot({ projects: [{ id: "p", coreV1: true, pmChannel: "pm/p", pmState: "READY", runtime: "codex", tasks: [{ taskId: "P-CURRENT", scope: "bounded", files: [], tests: [] }, { taskId: "P-OLD", scope: "bounded", files: [], tests: [] }] }] }, { service: "IDLE", updatedAt: "now", events: [], tasks: [{ projectId: "p", taskId: "P-CURRENT", state: "QA", attempts: 1 }, { projectId: "p", taskId: "P-OLD", state: "VERIFIED_DONE", attempts: 1 }] });
-  assert.equal(snapshot.lanes[0].currentTask, "P-CURRENT");
+test("CORE V1 snapshot prefers the latest unfinished task over a historical completed task", () => {
+  const snapshot = buildCoreV1Snapshot({ projects: [{ id: "p", coreV1: true, pmChannel: "pm/p", pmState: "READY", runtime: "codex", tasks: [{ taskId: "P-OLD", scope: "bounded", files: [], tests: [] }, { taskId: "P-CURRENT", scope: "bounded", files: [], tests: [] }, { taskId: "P-LATEST", scope: "bounded", files: [], tests: [] }] }] }, { service: "IDLE", updatedAt: "now", events: [], tasks: [{ projectId: "p", taskId: "P-OLD", state: "QA", attempts: 1 }, { projectId: "p", taskId: "P-CURRENT", state: "VERIFIED_DONE", attempts: 1 }, { projectId: "p", taskId: "P-LATEST", state: "REQUEST_CHANGES", attempts: 2 }] });
+  assert.equal(snapshot.lanes[0].currentTask, "P-LATEST");
   assert.equal(snapshot.lanes[0].next, null);
 });
 
