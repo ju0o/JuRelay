@@ -6171,7 +6171,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화",
+          "title": "연결을 끊으면 다음에 할 일을 알려요"
         },
         {
           "taskId": "ACTL-CLI-DISCOVER-TABLE-PLAIN",
@@ -6183,7 +6184,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화",
+          "title": "창마다 어느 폴더에 연결됐는지 보여요"
         },
         {
           "taskId": "ACTL-WEB-COPY-EMPTY-PLAIN",
@@ -6195,7 +6197,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화",
+          "title": "답이 없으면 끝나면 다시 복사하라고 해요"
         },
         {
           "taskId": "ACTL-TUI-HIDE-ROW-DETAIL-R2",
@@ -6207,7 +6210,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/tui.py:423 row detail printed on the AI-window line — Founder direction 2026-09-23 no English errors on the surface"
+          "ssotEvidence": "src/actl/tui.py:423 row detail printed on the AI-window line — Founder direction 2026-09-23 no English errors on the surface",
+          "title": "답을 못 보면 확인하지 못했다고 보여요"
         }
       ],
       "qaRuntime": [
@@ -9421,7 +9425,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-scope-hold.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a",
+          "title": "JuPlan이 끊기면 받은 일 안 받기"
         },
         {
           "taskId": "JUPLAN-AR-RETRY-QUEUE",
@@ -9435,7 +9440,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:128 After the bound is exhausted, the task is HOLD. The runner does not"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:128 After the bound is exhausted, the task is HOLD. The runner does not",
+          "title": "세 번 고친 뒤엔 다시 안 시키기"
         }
       ],
       "qaRuntime": [
@@ -23073,7 +23079,8 @@
           "tests": [
             "node --test tests/length-warning-priority-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:137 안전 문제, 테스트 실패, 비밀정보 노출 또는 데이터 손실 가능성이 있다면 길이 제한보다 정확한 경고를 우선한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:137 안전 문제, 테스트 실패, 비밀정보 노출 또는 데이터 손실 가능성이 있다면 길이 제한보다 정확한 경고를 우선한다.",
+          "title": "짧은 보고에도 경고를 먼저 보기"
         },
         {
           "taskId": "JUTELL-FEATURE-SAFETY-FACT-ONLY-PARITY",
@@ -23085,7 +23092,8 @@
           "tests": [
             "node --test tests/feature-safety-fact-only-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:109 이 규칙은 꺼진 Feature 전체를 다시 켜는 것이 아니라, 안전에 필요한 사실만 추가하는 규칙이다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:109 이 규칙은 꺼진 Feature 전체를 다시 켜는 것이 아니라, 안전에 필요한 사실만 추가하는 규칙이다.",
+          "title": "꺼진 기능은 안전 사실만 안내받기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -25262,7 +25270,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만, 1인 기본 하루 5회"
+          "ssotEvidence": "README.md:49 멤버 AI 대화는 무료 모델만, 1인 기본 하루 5회",
+          "title": "멤버가 한도 넘으면 안내만"
         },
         {
           "taskId": "JUAI-CHECK-MENTION-ROUTE",
@@ -25273,7 +25282,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:83 운영 전용이라 질문에는 답하지 않아요"
+          "ssotEvidence": "layout.mjs:83 운영 전용이라 질문에는 답하지 않아요",
+          "title": "누구를 부르면 맞게 응답"
         },
         {
           "taskId": "JUAI-CHECK-SUGGEST-TAGS",
@@ -25284,7 +25294,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:108 Claude가 태그를 달고"
+          "ssotEvidence": "layout.mjs:108 Claude가 태그를 달고",
+          "title": "빈 건의글에만 분류 두 개"
         },
         {
           "taskId": "JUAI-CHECK-SPAM-ENFORCE",
@@ -25295,7 +25306,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:14 스팸 관리"
+          "ssotEvidence": "README.md:14 스팸 관리",
+          "title": "도배하면 글 지우고 잠시 막기"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
