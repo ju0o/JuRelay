@@ -118,6 +118,7 @@ test("toggle failure shows the Korean message inline and keeps raw detail aside"
 
 test("top bar uses the helpers and does not return early when mode is missing", () => {
   assert.match(appSrc, /automationToggleOp\(enabled\)/);
+  assert.match(appSrc, /const label = phase === 'checking' \? shellToggleLabel\(enabled, phase\) : automationToggleLabel\(enabled, phase\);/);
   assert.match(appSrc, /connectionSwitchSentence\(message\)/);
   assert.match(appSrc, /controlRoom:automationStatus/);
   assert.match(appSrc, /op === 'controlRoom:automationOn'/);
