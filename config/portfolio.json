@@ -24335,6 +24335,54 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:493 V0.1은 중앙 서버와 별도 AI API 없이 작동해야 한다.",
           "title": "추가 비용 없이 쓰는 원칙을 안내하기"
+        },
+        {
+          "taskId": "JUTELL-USER-JUDGMENT-SUPPORT-PARITY",
+          "scope": "Add PRODUCT_SCOPE §3.4's sentence JuTell는 사용자가 판단할 수 있도록 검증 상태와 확인 항목을 제공한다 as one sub-bullet under SKILL.md 실행 절차 step 15, placed after the existing 자동 실패시키지 않는다 line and without separating that line from 억지로 항목을 만들지 않는다, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/user-judgment-support-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/user-judgment-support-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:104 JuTell는 사용자가 판단할 수 있도록 검증 상태와 확인 항목을 제공한다."
+        },
+        {
+          "taskId": "JUTELL-GIT-DIFF-MEANING-PARITY",
+          "scope": "Add PRODUCT_SCOPE §3.2's sentence Git diff가 제공되더라도 코드 문법을 모르면 변경의 의미를 이해하기 어렵다 as one bullet under explained-diff-format.md section 1, leaving the existing evidence-only bullet unchanged, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/explained-diff-format.md",
+            "tests/git-diff-meaning-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/git-diff-meaning-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:78 Git diff가 제공되더라도 코드 문법을 모르면 변경의 의미를 이해하기 어렵다."
+        },
+        {
+          "taskId": "JUTELL-PROFILE-DEPTH-PARITY",
+          "scope": "Add FEATURE_CONFIGURATION §4's profile-bundle sentence and the learning/detailed/simple-work depth sentence as one new paragraph in feature-registry.md, without editing the existing one-line minimal profile paragraph or the feature table, plus an offline node:test that both sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/profile-depth-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/profile-depth-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:79 `learning`은 용어 설명 한도를 늘릴 수 있다. `detailed`는 복잡하거나 위험한 작업에서 파일과 검증 설명을 더 자세히 작성할 수 있다. 단순 작업에서는 실제 작업 규모에 맞게 줄인다."
+        },
+        {
+          "taskId": "JUTELL-V01-NOT-VISUAL-PROGRAM-PARITY",
+          "scope": "Add PRODUCT_SCOPE §5's two sentences that V0.1 is not a finished visual program and is an instruction-based check made of AGENTS.md, AI Agent Skill, 보고서 작성 기준, 용어 설명 기준, 위험도 판단 기준, and 검증 시나리오 as one paragraph under README 지원 환경과 검증 범위, plus an offline node:test that those sentences and six parts stay aligned.",
+          "files": [
+            "README.md",
+            "tests/v01-not-visual-program-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/v01-not-visual-program-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:153 V0.1은 완성된 시각 프로그램이 아니다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
