@@ -6223,7 +6223,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 진짜 비개발자도 보면 이해가 되게. founder-ux: 시간은 오후 2:10, 버튼 결과는 누른 곳에"
+          "ssotEvidence": "Founder direction 2026-09-25: 진짜 비개발자도 보면 이해가 되게. founder-ux: 시간은 오후 2:10, 버튼 결과는 누른 곳에",
+          "title": "시간을 쉽게 보고 빈 글은 안내"
         },
         {
           "taskId": "ACTL-TK-PRINT-PLAIN",
@@ -6235,7 +6236,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 진짜 비개발자도 보면 이해가 되게. founder-ux: 빈 버튼 없이, 오류는 다음 행동이 있는 한국어"
+          "ssotEvidence": "Founder direction 2026-09-25: 진짜 비개발자도 보면 이해가 되게. founder-ux: 빈 버튼 없이, 오류는 다음 행동이 있는 한국어",
+          "title": "답을 못 가져오면 다음 할 일 안내"
         },
         {
           "taskId": "ACTL-TUI-MAP-PLAIN",
@@ -6247,7 +6249,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: founder-ux Skill의 Live status card. pane id와 영어 상태는 원문 보기 뒤"
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux Skill의 Live status card. pane id와 영어 상태는 원문 보기 뒤",
+          "title": "번호 연결 결과를 쉽게 안내"
         }
       ],
       "qaRuntime": [
@@ -9493,7 +9496,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-blocked-queue.test.ts test/agent-relay-pause-queue.test.ts test/agent-relay-scope-hold.test.ts test/agent-relay-transport-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED.",
+          "title": "막힌 결과로 새 일을 만들지 않음"
         },
         {
           "taskId": "JUPLAN-AR-NIGHT-DRAIN-QUEUE",
@@ -9507,7 +9511,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-night-drain-queue.test.ts test/agent-relay-retry-queue.test.ts test/agent-relay-blocked-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is",
+          "title": "야간 정리 중에는 새 일을 안 받음"
         },
         {
           "taskId": "JUPLAN-AR-RETRY-INBOX",
@@ -9524,7 +9529,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-queue.test.ts test/agent-relay-blocked-queue.test.ts test/agent-relay-pause-queue.test.ts test/agent-relay-scope-hold.test.ts test/agent-relay-transport-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:147 Independent QA returned `FOUNDER_GATE`, or `REQUEST_CHANGES` after the"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:147 Independent QA returned `FOUNDER_GATE`, or `REQUEST_CHANGES` after the",
+          "title": "수정이 세 번을 넘으면 받지 않음"
         },
         {
           "taskId": "JUPLAN-AR-PROVIDER-QUEUE",
@@ -9538,7 +9544,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-provider-failure-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none."
+          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none.",
+          "title": "돌릴 수 없으면 그 일을 멈춤"
         },
         {
           "taskId": "JUPLAN-AR-ACCEPT-TRANSPORT",
@@ -9551,7 +9558,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a",
+          "title": "JuPlan과 연결이 끊기면 다음 일 멈춤"
         }
       ],
       "qaRuntime": [
@@ -12251,7 +12259,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장으로 지금 할 일을 말하고, 지금 하실 일은 없어요"
+          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장으로 지금 할 일을 말하고, 지금 하실 일은 없어요",
+          "title": "오늘 하실 일이 없으면 알려 주기"
         },
         {
           "taskId": "JUCEIPT-DAILY-INDEX-LINK-LABEL",
@@ -12263,7 +12272,8 @@
           "tests": [
             "npx vitest run tests/daily-background.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면을 비개발자가 한눈에 고를 수 있게"
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면을 비개발자가 한눈에 고를 수 있게",
+          "title": "하루 목록에 제목과 결과 보여 주기"
         }
       ],
       "skills": {
@@ -20793,7 +20803,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:58 collect only same-task Claude-final/Receipt joins per §2.3; M3 decision pending"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:58 collect only same-task Claude-final/Receipt joins per §2.3; M3 decision pending",
+          "title": "현황판은 최종 답과 영수증이 같이 있을 때만"
         },
         {
           "taskId": "JUCEIPTPLAN-P0-REPORT-COLLECT-ONLY",
@@ -20804,7 +20815,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:252 record GO, DEFER, or KILL only for that retained joined row"
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:252 record GO, DEFER, or KILL only for that retained joined row",
+          "title": "보고서도 최종 답과 영수증이 같이 있을 때만"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-FUNNEL-JOIN-ONLY-R2",
@@ -20815,7 +20827,8 @@
           "tests": [
             "python3 -c \"from pathlib import Path; s=Path('docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html').read_text(); assert 'B1은 연결된 행이 0건이라' not in s; assert '후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집' in s\""
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집"
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집",
+          "title": "사업 흐름은 최종 답과 영수증이 같이 있을 때만"
         }
       ],
       "skills": {
@@ -23271,7 +23284,8 @@
           "tests": [
             "node --test tests/evaluation-materials-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:98-111 평가 자료 제한: 비개발자 평가자에게 제공할 자료와 제공하지 않을 자료를 구분한다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:98-111 평가 자료 제한: 비개발자 평가자에게 제공할 자료와 제공하지 않을 자료를 구분한다.",
+          "title": "요청과 결과 화면만 평가하기"
         },
         {
           "taskId": "JUTELL-EVALUATOR-INFO-SEPARATION-PARITY",
@@ -23282,7 +23296,8 @@
           "tests": [
             "node --test tests/evaluator-info-separation-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:113-128 평가자 정보 분리: 기대 답변과 채점표는 진행자만 확인하고 평가 대상자는 요청문과 최종 보고서만 읽는다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:113-128 평가자 정보 분리: 기대 답변과 채점표는 진행자만 확인하고 평가 대상자는 요청문과 최종 보고서만 읽는다.",
+          "title": "요청과 보고서만 읽고 채점"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
