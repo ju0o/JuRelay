@@ -24004,6 +24004,50 @@
           ],
           "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신",
           "title": "새 작품을 매일 빠르게 보여줘요"
+        },
+        {
+          "taskId": "JUAI-CHECK-SOLVED-FAQ",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that threadUpdate calls onSolved and that onSolved returns before addFaq unless the thread parent is qa and the 해결됨 tag is newly applied, in which case addFaq uses a thread: source id.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용"
+        },
+        {
+          "taskId": "JUAI-CHECK-BADGE-SCHEDULE",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that the showcase/feedback bonus branch writes an fb: monthly usage row before grantBonus, that monthlyBadge selects fb: rows with count at least BADGE_MIN and limit BADGE_TOP, and that tick schedules monthlyBadge only when the KST date ends with -01 and the hour is at least 10.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 월간 배지"
+        },
+        {
+          "taskId": "JUAI-CHECK-WEEKLY-REPORT",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that tick schedules weekly and opsReport in the same branch only when kstDay is 1 and the hour is at least 10, and that weekly slices the suggestion TOP list to 5 and proposals to 3.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 주간 리포트"
+        },
+        {
+          "taskId": "JUAI-CHECK-CODEREVIEW-LINK",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that codeReview returns before the bot:forum takeQuota when no GitHub repository is found, and that onThread calls codeReview for both showcase and feedback parents.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:16 GitHub 코드 리뷰"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
