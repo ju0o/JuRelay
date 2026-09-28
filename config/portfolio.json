@@ -26377,6 +26377,50 @@
           ],
           "ssotEvidence": "layout.mjs:198 \"자유대화 광고 글 지워줘\" / \"OO 1시간 타임아웃\" / \"채널 만들어줘·삭제해줘\" → 확인 카드",
           "title": "못 찾으면 알리고 확인은 운영진에"
+        },
+        {
+          "taskId": "JUAI-CHECK-AI-ENGINE-GUARD",
+          "scope": "check.mjs에 알 수 없는 AI 엔진이 명확한 오류로 거부되는지 오프라인 소스 점검을 추가한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:40 \"ai.mjs AI CLI 실행·격리·무료 모델 자동 교체\""
+        },
+        {
+          "taskId": "JUAI-CHECK-SETUP-IDENTITY",
+          "scope": "check.mjs에 setup.mjs의 봇 토큰 ID 추출과 지정 서버 우선·JuAi 이름 검색·미발견 오류 경로를 오프라인 점검으로 추가한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:27-29 \"node setup.mjs invite\" 및 \"node setup.mjs\""
+        },
+        {
+          "taskId": "JUAI-CHECK-SOLVED-GUARDS",
+          "scope": "check.mjs에 해결 태그 중복·미존재·답변 메시지 없음 조건에서 FAQ 저장을 건너뛰는지 오프라인 소스 점검을 추가한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:19 \"자주 묻는 질문 재사용\""
+        },
+        {
+          "taskId": "JUAI-CHECK-AI-QUEUE-STATE",
+          "scope": "check.mjs에 AI 요청의 pending 증가·성공 및 실패 후 감소와 다음 요청 직렬화 규칙을 오프라인 소스 점검으로 추가한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:40 \"ai.mjs AI CLI 실행·격리·무료 모델 자동 교체\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
