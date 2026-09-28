@@ -20064,6 +20064,28 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 Do not record M3 GO / DEFER / KILL from the 0-join gap; record a decision only for a captured row with both a Claude final and a Receipt.",
           "title": "완전한 검증 자료만 다음 단계로 접수"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-JOIN-INTAKE-ONLY",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md change only the §4.3 evidence-register sentence at line 142 so it keeps UNDECIDED, the 0-join fact, and the V1 hold, removes the claim that this section records the decision now, and states that a later GO, DEFER, or KILL is recorded only for a §2.3 captured row that has both a Claude final and a Receipt.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:245 Add a capture to the Section 2.3 table only when the same task has both a Claude final and a Receipt; record GO, DEFER, or KILL only for that retained joined row."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-NEXT-JOIN-INTAKE",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html change only the Next Agent muted sentence at line 126 and its 원문 보기 so the Korean surface says a later 판정 is collected only from a captured row that has both a Claude final and a Receipt, the English states the same facts, and the existing 0-join hold stays with no new milestone decision.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:245 Add a capture to the Section 2.3 table only when the same task has both a Claude final and a Receipt; record GO, DEFER, or KILL only for that retained joined row."
         }
       ],
       "skills": {
