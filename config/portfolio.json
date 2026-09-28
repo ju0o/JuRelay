@@ -23050,6 +23050,30 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:789 AI Agent는 사용자 승인 없이 이 문서의 제품 방향을 임의로 확대하지 않는다.",
           "title": "제품 범위만 승인, 평소 작업은 계속"
+        },
+        {
+          "taskId": "JUTELL-LENGTH-WARNING-PRIORITY-PARITY",
+          "scope": "report-format.md 단순 작업 절에 BEGINNER_REPORT_SPEC §5.1의 길이 제한보다 경고를 우선하는 문장을 한 줄 추가하고, 기존 짧은 경고 문장은 그대로 둔 채 오프라인 node:test로 원문 일치를 고정한다.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/length-warning-priority-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/length-warning-priority-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:137 안전 문제, 테스트 실패, 비밀정보 노출 또는 데이터 손실 가능성이 있다면 길이 제한보다 정확한 경고를 우선한다."
+        },
+        {
+          "taskId": "JUTELL-FEATURE-SAFETY-FACT-ONLY-PARITY",
+          "scope": "FEATURE_CONFIGURATION §6의 꺼진 Feature 전체를 다시 켜지 않고 안전에 필요한 사실만 추가한다는 문장을 feature-registry.md에 한 줄 추가하고, 오프라인 node:test로 두 문서의 원문 일치를 고정한다.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/feature-safety-fact-only-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/feature-safety-fact-only-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:109 이 규칙은 꺼진 Feature 전체를 다시 켜는 것이 아니라, 안전에 필요한 사실만 추가하는 규칙이다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
