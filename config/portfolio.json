@@ -5924,6 +5924,42 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25",
           "title": "고장 원인을 쉽게 확인"
+        },
+        {
+          "taskId": "ACTL-WEB-HEADER-PLAIN",
+          "scope": "In the web board header and refresh log, replace 정상/문제/미확인, the English word live, and 유휴 상태 전환 with 일하는 중/쉬는 중/답 기다림/연결 안 됨, and show 연결 안 됨 in amber instead of red.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/serve.py:315 ● 정상 ${good} · 문제 ${problem} · 미확인 ${unknown}"
+        },
+        {
+          "taskId": "ACTL-TUI-HELP-PLAIN",
+          "scope": "Rewrite the TUI help and top status line into plain Korean without a host name, SSH, OSC52, live, or exact, and hide the pane target on the main row.",
+          "files": [
+            "src/actl/tui.py",
+            "tests/test_tui.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/tui.py:403 첫실행 튜토리얼 (MainPC → SSH → asus)"
+        },
+        {
+          "taskId": "ACTL-CLI-BIND-PLAIN",
+          "scope": "Make the REPL prompts and actl bind opencode messages plain Korean with a next step, and move pane ids and session ids under 원문 보기 without changing when a relaunch is confirmed.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_korean_messages.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/cli.py:901 Bind this OpenCode conversation now?"
         }
       ],
       "qaRuntime": [
