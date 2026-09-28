@@ -8820,7 +8820,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-project-identity.test.ts",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:158 Agent Relay can represent JuPlan's SSOT path and lane state via project-identity.json."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:158 Agent Relay can represent JuPlan's SSOT path and lane state via project-identity.json.",
+          "title": "Agent Relay 작업 기준 확인"
         },
         {
           "taskId": "JUPLAN-AR-LANE-STATUS-MODULE",
@@ -8833,7 +8834,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-lane-status.test.ts",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 Deliverables: project identity and PM-channel mapping in Agent Relay; bounded task intake/result routing; lane status and Founder Gate packet mapping."
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 Deliverables: project identity and PM-channel mapping in Agent Relay; bounded task intake/result routing; lane status and Founder Gate packet mapping.",
+          "title": "Agent Relay 진행 상태 확인"
         },
         {
           "taskId": "JUPLAN-AR-GATE-PACKET-MODULE",
@@ -8846,7 +8848,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-gate-packet.test.ts",
             "pnpm --filter @juplan/runtime typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane.",
+          "title": "대표님 승인 요청 안전 처리"
         }
       ],
       "qaRuntime": [
@@ -19553,7 +19556,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 Master WBS M3 is DEFER — Daily Report deferred to V1, with 0 joined rows; §4.3 validation mapping remains UNDECIDED, not GO or KILL."
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 Master WBS M3 is DEFER — Daily Report deferred to V1, with 0 joined rows; §4.3 validation mapping remains UNDECIDED, not GO or KILL.",
+          "title": "근거 연결 상태를 보류로 바로잡기"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-M3-MAPPING-BOUNDARY",
@@ -19564,7 +19568,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 §4.3 validation mapping remains UNDECIDED, not GO or KILL."
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 §4.3 validation mapping remains UNDECIDED, not GO or KILL.",
+          "title": "화면에 근거 연결 보류를 분명히 표시"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-GATE-MAPPING-CLAUSE",
@@ -19575,7 +19580,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 근거 매핑은 GO나 중단 결정이 아님"
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 근거 매핑은 GO나 중단 결정이 아님",
+          "title": "주요 화면에 판단 보류 기준을 함께 표시"
         },
         {
           "taskId": "JUCEIPTPLAN-WBS-GTM-STATE-MAPPING-CLAUSE",
@@ -19587,7 +19593,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 §4.3 validation mapping remains UNDECIDED, not GO or KILL"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:62 §4.3 validation mapping remains UNDECIDED, not GO or KILL",
+          "title": "기획서에 판단 보류 기준을 일관되게 표시"
         }
       ],
       "skills": {
@@ -23578,7 +23585,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 스레드 전용 `!요약해줘`"
+          "ssotEvidence": "README.md:8 스레드 전용 `!요약해줘`",
+          "title": "스레드에서만 요약을 안내해요"
         },
         {
           "taskId": "JUAI-CHECK-LEFT-NOQUOTA",
@@ -23589,7 +23597,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:115 !남은횟수 → 오늘 남은 AI 질문 수 (횟수 안 씀)"
+          "ssotEvidence": "layout.mjs:115 !남은횟수 → 오늘 남은 AI 질문 수 (횟수 안 씀)",
+          "title": "남은 횟수를 제한 없이 알려줘요"
         },
         {
           "taskId": "JUAI-CHECK-FAQ-NOQUOTA",
@@ -23600,7 +23609,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:143 예전에 해결된 비슷한 질문이 있으면 그 답을 먼저 보여줘요 (횟수 안 씀)"
+          "ssotEvidence": "layout.mjs:143 예전에 해결된 비슷한 질문이 있으면 그 답을 먼저 보여줘요 (횟수 안 씀)",
+          "title": "자주 묻는 답변은 질문을 아껴요"
         },
         {
           "taskId": "JUAI-CHECK-SPAM-STAFF-SKIP",
@@ -23611,7 +23621,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:120 서버 주인과 운영진은 제외돼요"
+          "ssotEvidence": "layout.mjs:120 서버 주인과 운영진은 제외돼요",
+          "title": "운영자와 담당자는 스팸에서 제외해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
