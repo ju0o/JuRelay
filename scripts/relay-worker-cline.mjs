@@ -124,8 +124,11 @@ function writeLaunchLog(runFolder, entry) {
 function runCline(prompt, workspaceRoot, sessionId) {
   // Provider 'cline' (valid token, free model). 'cline-pass' expired 2026-09-23
   // ("model not found") and is no longer used.
+  // NOTE 2026-09-28: --id resume rejects prompts in --json headless mode
+  // ("requires a prompt argument or piped stdin"), so every run starts fresh.
+  // sessionId is accepted-but-ignored to keep the call shape stable.
+  void sessionId;
   const args = ['--json', '--auto-approve', 'true', '-c', workspaceRoot, '--provider', 'cline'];
-  if (sessionId) args.push('--id', sessionId);
   args.push(prompt);
   return new Promise((resolve, reject) => {
     let child;
