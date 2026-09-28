@@ -100,10 +100,13 @@ export async function stopPidLock({ pidPath, label = "pid lock", killImpl = (pid
 // shapes, so those launches silently produced empty output. Only explicit test
 // opt-out (env flag or node --test runner argv) skips the CLI.
 export const BRIDGE_NO_CLI_ENV = "AGENT_RELAY_BRIDGE_NO_CLI";
+const BRIDGE_AREAS = new Set(["portfolio", "project", "core-v1", "night-run"]);
 
 export function shouldRunBridgeCli({ argv = process.argv, env = process.env } = {}) {
   const flag = env[BRIDGE_NO_CLI_ENV];
   if (flag === "1" || flag === "true" || flag === "yes") return false;
+  const hasCliArea = argv.some((value, index) => index > 0 && BRIDGE_AREAS.has(value));
+  if (!hasCliArea) return false;
   if (argv.includes("--test") || argv.includes("--experimental-test-coverage")) return false;
   return true;
 }
@@ -195,7 +198,7 @@ if (area === "night-run" && command === "up") {
   } finally { await rm(nightPidPath, { force: true }); }
   process.exit(0);
 }
-if (area === "night-run" && command === "stop") { const outcome = await stopPidLock({ pidPath: nightPidPath, label: "night run" }); if (!outcome.signaled) console.error(JSON.stringify({ pidLock: outcome })); if (outcome.state === "STALE" || outcome.state === "CORRUPT") await rm(nightPidPath, { force: true }); console.log(JSON.stringify(await night().status(), null, 2)); process.exit(0); }
+if (area === "night-run" && command === "stop") { const outcome = await stopPidLock({ pidPath: nightPidPath, label: "night run" }); if (!outcome.signaled) console.error(JSON.stringify({ pidLock: outcome })); if (outcome.state === "STALE" || outcome.state === "CORRUPT") await rm(nightPidPath, { force: true }); console.log(JSON.stringify(await night().status(), null, 2)); return; }
 if (area === "portfolio" && command === "status") { console.log(JSON.stringify(await instance.load(), null, 2)); process.exit(0); }
 if (area === "portfolio" && command === "reconcile") { console.log(JSON.stringify(await instance.reconcile(), null, 2)); process.exit(0); }
 if (area === "portfolio" && command === "intake" && project) { const packet = parseTaskPacket(await readFile(project, "utf8")); console.log(JSON.stringify(await instance.acceptTaskPacket(packet), null, 2)); process.exit(0); }
