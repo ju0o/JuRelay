@@ -47,8 +47,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
   * { box-sizing: border-box; }
   body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin:0; padding:14px; font-size:14px;
          background: var(--bg); color: var(--text); }
-  .card { border:1px solid var(--border); border-radius:10px; padding:14px; }
-  .title { font-size:15px; font-weight:700; margin:0 0 4px; display:flex; align-items:center; gap:8px; }
+  .card { border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+  .title { font-size:15px; font-weight:700; margin:0 0 2px; display:flex; align-items:center; gap:8px; }
   #buildTag { font-size:10px; font-weight:400; }
   .lang { margin-left:auto; display:flex; gap:4px; }
   .lang button { font-size:11px; border:1px solid var(--border); background:transparent; color:var(--muted);
@@ -60,11 +60,17 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .dot.fail{background:var(--err);} .dot.sent{background:var(--mut);}
   .state { font-size:14px; }
   .sub { color: var(--muted); font-size:12px; }
-  .counts { display:flex; gap:8px; margin:10px 0 4px; }
-  .count { flex:1; border:1px solid var(--border); border-radius:8px; padding:8px 10px; text-align:center; }
-  .count b { display:block; font-size:20px; }
-  .count span { font-size:11px; color: var(--muted); }
-  .steps { display:flex; align-items:center; gap:6px; margin:10px 0 4px; font-size:11px; color: var(--muted); }
+  /* H2: unified strip [wait][work][done] + Active n/m. Zero segments dim. */
+  .strip { display:flex; align-items:stretch; margin:6px 0 2px; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+  .seg { flex:1; padding:5px 2px; text-align:center; min-width:0; }
+  .seg + .seg { border-left:1px solid var(--border); }
+  .seg b { display:block; font-size:18px; }
+  .seg span { font-size:10px; color: var(--muted); white-space:nowrap; }
+  .seg.dim { opacity:.38; }
+  .active-mini { display:flex; align-items:center; gap:3px; padding:0 10px; font-size:11px; color:var(--muted);
+                border-left:1px solid var(--border); white-space:nowrap; }
+  .active-mini b { color:var(--text); font-size:13px; }
+  .steps { display:flex; align-items:center; gap:6px; margin:6px 0 2px; font-size:11px; color: var(--muted); }
   .step { display:flex; align-items:center; gap:4px; }
   .step i { width:9px; height:9px; border-radius:50%; background: var(--border); flex:none; }
   .step.on i { background: var(--ok); }
@@ -75,23 +81,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .dcard { border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12px; }
   .dcard .row { display:flex; align-items:center; gap:8px; }
   .dcard .id { font-weight:700; }
-  .dcard .task { color: var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .dcard .task { color: var(--muted); overflow:hidden; white-space:nowrap; }
   .pill { margin-left:auto; font-size:11px; border:1px solid var(--border); border-radius:20px; padding:1px 8px; flex:none; }
   .pill.wait { color: var(--wait); border-color: var(--wait); }
   .pill.doing { color: var(--mut); border-color: var(--mut); }
   .pill.done { color: var(--ok); border-color: var(--ok); }
   .dcard summary { cursor:pointer; }
   .dcard .meta { color: var(--muted); font-size:11px; margin-top:4px; }
-  .agents { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
-  .agent { display:flex; align-items:center; gap:10px; border:1px solid var(--border);
-           border-radius:8px; padding:6px 10px; font-size:12px; }
-  .agent svg { flex:none; }
-  .agent .who { overflow:hidden; }
-  .agent .who b { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .agent .who span { color: var(--muted); font-size:11px; display:block; overflow:hidden;
-                     text-overflow:ellipsis; white-space:nowrap; }
-  .agent .st { margin-left:auto; flex:none; }
-  .remain { margin-top:8px; font-size:12px; color: var(--muted); }
+  .remain { margin-top:6px; font-size:12px; color: var(--muted); }
   .remain b { color: var(--text); }
   .update { display:none; margin-top:8px; border:1px solid var(--wait); border-radius:8px;
             padding:8px 10px; font-size:12px; }
@@ -109,30 +106,44 @@ const WIDGET_HTML = `<!DOCTYPE html>
     .crew-sp, .climber, .runner { animation:none !important; }
     .climber, .runner, .track-fill { transition:none !important; }
   }
-  .tabs { display:flex; gap:6px; margin:10px 0 4px; }
+  .tabs { display:flex; gap:6px; margin:8px 0 2px; }
   .tabs button { flex:1; border:1px solid var(--border); background:transparent; color:var(--muted);
-                 border-radius:8px; padding:6px 4px; font-size:12px; cursor:pointer; }
+                 border-radius:8px; padding:6px 4px; font-size:12px; cursor:pointer; white-space:nowrap; }
   .tabs button.on { color:var(--text); border-color:var(--text); font-weight:700; }
+  .tabs .bdg { display:inline-block; min-width:18px; font-size:10px; border:1px solid var(--border);
+              border-radius:10px; padding:0 5px; margin-left:4px; color:var(--muted); font-weight:400; }
+  .tabs button.on .bdg { color:var(--text); border-color:var(--text); }
   .tabpane { display:none; }
   .tabpane.on { display:block; }
-  .crew-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; margin-top:8px; }
-  .agents { display:grid; grid-template-columns:repeat(2,111px); gap:8px; justify-content:center; margin:8px 0 2px; }
-  .crew-card { border:1px solid var(--border); border-radius:8px; padding:6px; text-align:center; }
-  .crew-card .stage { height:150px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; }
-  .crew-card .nm { font-size:12px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .crew-card .md { font-size:10px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .crew-card .rl { font-size:11px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .ladder-wrap { display:flex; gap:10px; margin-top:8px; }
-  .ladder-stage { position:relative; width:150px; flex:none; }
+  /* P2: avatar 32x48 (<=10% of card). 3-line card: [avatar] name+pill / role / task. */
+  .agents { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin:6px 0 2px; }
+  @media (min-width:820px) { .agents { grid-template-columns:repeat(3,1fr); } }
+  @media (min-width:1180px) { .agents { grid-template-columns:repeat(4,1fr); } }
+  .crew-card { border:1px solid var(--border); border-radius:8px; padding:6px 8px; min-width:0; }
+  .crew-top { display:flex; align-items:center; gap:8px; min-width:0; }
+  .avatar { flex:none; width:32px; height:48px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; }
+  .who { flex:1; min-width:0; }
+  .crew-card .nm { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; }
+  .crew-card .pill { display:inline-block; font-size:11px; font-weight:700; border-radius:12px; padding:1px 10px; margin-top:2px; white-space:nowrap; }
+  .crew-card .pill.st-work { background:#0a7d33; color:#fff; }
+  .crew-card .pill.st-qa { background:#3b82f6; color:#fff; }
+  .crew-card .pill.st-idle { background:transparent; border:1px solid var(--border); color:var(--muted); }
+  .crew-card .role { font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; margin-top:2px; }
+  .crew-card .task1 { font-size:12px; white-space:nowrap; overflow:hidden; margin-top:2px; }
+  .crew-missing { width:32px; height:48px; display:flex; align-items:center; justify-content:center;
+                 border:1px dashed var(--wait); border-radius:6px; background:var(--panel);
+                 font-size:16px; font-weight:700; color:var(--text); }
+  .ladder-wrap { display:flex; gap:10px; margin-top:6px; }
+  .ladder-stage { position:relative; width:76px; flex:none; }
   .climber { position:absolute; left:50%; transform:translateX(-50%); transition:bottom 1.1s ease; }
   .tasklist { flex:1; font-size:12px; min-width:0; }
-  .tasklist .trow { padding:4px 6px; border-radius:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .tasklist .trow { padding:4px 6px; border-radius:6px; overflow:hidden; white-space:nowrap; }
   .tasklist .trow.done { color:var(--muted); text-decoration:line-through; }
   .tasklist .trow.cur { font-weight:700; border:1px solid var(--border); }
   .goalbadge { display:inline-block; font-size:11px; border:1px solid var(--border);
                border-radius:12px; padding:1px 8px; margin:6px 4px 0 0; }
-  .wbs-wrap { margin-top:8px; }
-  .track { position:relative; height:225px; border-bottom:2px solid var(--border); margin-top:24px; }
+  .wbs-wrap { margin-top:6px; }
+  .track { position:relative; height:96px; border-bottom:2px solid var(--border); margin-top:8px; }
   .track-fill { position:absolute; left:0; top:0; bottom:0;
                 background:linear-gradient(90deg,#3b82f6,#22c55e); opacity:.25; transition:width 1s ease; }
   .runner { position:absolute; transition:left 1s ease; }
@@ -174,16 +185,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
       <span class="ver">이 박스가 계속 보이면 위젯 스크립트가 막힌 것입니다. 새 대화에서 열어주세요.</span>
     </div>
     <div class="title"><span id="appName">Agent Relay</span>
-      <span class="sub" id="buildTag">__WIDGET_BUILD__</span>
       <span class="lang"><button id="langKo" class="on">한국어</button><button id="langEn">EN</button></span>
     </div>
     <div class="statusline"><span class="dot waiting" id="dot"></span><span class="state" id="status">연결 중…</span></div>
     <div class="sub" id="sub"></div>
-    <div class="sub" id="diag">dashboard 상태 확인 중…</div>
-    <div class="counts">
-      <div class="count"><b id="cWait">0</b><span data-i="wait">대기 중</span></div>
-      <div class="count"><b id="cDoing">0</b><span data-i="doing">검토 중</span></div>
-      <div class="count"><b id="cDone">0</b><span data-i="done">완료</span></div>
+    <div class="strip" id="strip">
+      <div class="seg" id="segWait"><b id="cWait">0</b><span data-i="wait">대기 중</span></div>
+      <div class="seg" id="segDoing"><b id="cDoing">0</b><span data-i="doing">검토 중</span></div>
+      <div class="seg" id="segDone"><b id="cDone">0</b><span data-i="done">완료</span></div>
+      <div class="active-mini">Active <b id="activeN">0</b>/<span id="activeT">0</span></div>
     </div>
     <div class="steps" id="steps">
       <span class="step off" data-s="wait"><i></i><span data-i="sWait">대기</span></span><span class="step-sep"></span>
@@ -191,9 +201,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
       <span class="step off" data-s="done"><i></i><span data-i="sDone">판정 완료</span></span>
     </div>
     <div class="tabs" id="tabs">
-      <button data-tab="crew" class="on">Builder</button>
-      <button data-tab="ladder"><span data-i="tabLadder">사다리</span></button>
-      <button data-tab="wbs">WBS</button>
+      <button data-tab="crew" class="on">Builder<span class="bdg" id="bCrew">0</span></button>
+      <button data-tab="ladder"><span data-i="tabLadder">사다리</span><span class="bdg" id="bLadder">0</span></button>
+      <button data-tab="wbs">WBS<span class="bdg" id="bWbs">0</span></button>
     </div>
     <div class="tabpane on" id="pane-crew">
       <div class="agents" id="agents"></div>
@@ -211,8 +221,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
     </div>
     <div class="update" id="update"></div>
     <div class="cards" id="cards"></div>
-    <details>
-      <summary>debug log</summary>
+    <details class="dbg">
+      <summary>debug · <span class="sub" id="buildTag">__WIDGET_BUILD__</span></summary>
+      <div class="sub" id="diag">dashboard 상태 확인 중…</div>
       <div id="log"></div>
     </details>
   </div>
@@ -272,6 +283,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var stepsEl = document.getElementById('steps');
       var doneCount = 0;
       var lastDeliveries = [];
+      var lastDash = null;
       var agentsEl = document.getElementById('agents');
       var remainEl = document.getElementById('remain');
       var diagEl = document.getElementById('diag');
@@ -370,9 +382,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
             + (d.createdAt ? '<br>생성 ' + esc(d.createdAt) : '') + '</div></details>';
         }
         cardsEl.innerHTML = html;
-        cWaitEl.textContent = String(list.length - doing);
+        var nWait = list.length - doing;
+        cWaitEl.textContent = String(nWait);
         cDoingEl.textContent = String(doing);
         cDoneEl.textContent = String(doneCount);
+        setSeg('segWait', nWait);
+        setSeg('segDoing', doing);
+        setSeg('segDone', doneCount);
         var steps = stepsEl.querySelectorAll('.step');
         setStep(steps[0], list.length > 0 ? 'on' : 'off');
         setStep(steps[1], doing > 0 ? 'doing' : (list.length > 0 ? 'off' : 'off'));
@@ -397,6 +413,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
               wakeFail: '전송 실패', initFail: '시작 실패', wait: '대기 중', doing: '검토 중',
               done: '완료', sWait: '대기', sDoing: '검토 요청', sDone: '판정 완료',
               working: '일하는 중', resting: '쉬는 중', qaDoing: '검사하는 중',
+              spriteFail: '이미지 실패', spritesOk: '스프라이트', spritesFail: '스프라이트 실패',
               modelUnknown: '모델 정보 없음',
               remaining: '남은 일', goals: '목표', noAgents: '일하는 AI 없음' },
         en: { connecting: 'Connecting…', connected: 'Connected', waiting: 'Waiting for Agent result…',
@@ -404,6 +421,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
               wakeFail: 'Wake failed', initFail: 'Initialization failed', wait: 'Waiting', doing: 'Reviewing',
               done: 'Done', sWait: 'Wait', sDoing: 'Review', sDone: 'Judged',
               working: 'working', resting: 'resting', qaDoing: 'inspecting',
+              spriteFail: 'sprite failed', spritesOk: 'sprites', spritesFail: 'sprites failed',
               modelUnknown: 'model unknown',
               remaining: 'Remaining', goals: 'Goals', noAgents: 'No active AI' },
       };
@@ -424,17 +442,52 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var ASSET_BASE = '__ASSET_BASE__';
       var FRAMES = { run: 6, dig: 4, climb: 4, qa: 4, done: 4, blocked: 4, sleep: 4, idle: 4 };
       var DURS = { run: 0.52, dig: 0.62, climb: 0.66, qa: 1.15, done: 0.9, blocked: 0.85, sleep: 2.4, idle: 2.6 };
-      var SHEET_W = { crew: 98, crewH: 150, climb: 140, climbH: 214 };
+            var SEP_RE = new RegExp('[ \\t\\n\\r_-]+');
+var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
+      // --sheetW = -(N * displayW): sheet math from DISPLAY size only, never source pixels.
+      function sheetGeom(state, w, h) {
+        var n = FRAMES[state] || 4;
+        return { frames: n, bgW: n * w, offW: -(n * w) };
+      }
+      // Sprite preload: a sheet that fails (CSP/offline/404) must NEVER
+      // leave an empty black stage. Status per sheet; cards render a
+      // visible missing-sprite box instead. No silent-fail empty cards.
+      var SHEETS = ['run', 'dig', 'climb', 'qa', 'done', 'blocked', 'sleep', 'idle'];
+      var sheetStatus = {};
+      var sheetFailed = [];
+      function sheetUrl(state) { return ASSET_BASE + '/' + state + '-sheet.png'; }
+      function preloadSheets(done) {
+        var pending = SHEETS.length;
+        SHEETS.forEach(function (s) {
+          var settled = false;
+          function mark(ok) {
+            if (settled) return;
+            settled = true;
+            sheetStatus[s] = ok ? 'ok' : 'fail';
+            if (!ok) sheetFailed.push(s);
+            if (--pending === 0 && typeof done === 'function') done(sheetFailed.slice());
+          }
+          try {
+            var img = new Image();
+            var timer = setTimeout(function () { mark(false); }, 8000);
+            img.onload = function () { clearTimeout(timer); mark(true); };
+            img.onerror = function () { clearTimeout(timer); mark(false); };
+            img.src = sheetUrl(s);
+          } catch (e) { mark(false); }
+        });
+      }
       function applySheet(el, state, w, h) {
+        if (sheetStatus[state] === 'fail') return false;
         var n = FRAMES[state] || 4;
         var dur = DURS[state] || 1;
-        el.style.backgroundImage = 'url(' + ASSET_BASE + '/' + state + '-sheet.png)';
+        el.style.backgroundImage = 'url(' + sheetUrl(state) + ')';
         el.style.backgroundRepeat = 'no-repeat';
         el.style.backgroundSize = (n * w) + 'px ' + h + 'px';
         el.style.setProperty('--sheetW', String(-(n * w)) + 'px');
         el.style.width = w + 'px';
         el.style.height = h + 'px';
         el.style.animation = 'play ' + dur + 's steps(' + n + ') infinite';
+        return true;
       }
       function agentSheet(a) {
         if (/qa/i.test(a.workerId || '')) return 'qa';
@@ -494,6 +547,11 @@ const WIDGET_HTML = `<!DOCTYPE html>
           html += '<div class="trow ' + cls + '">' + taskTitleOf(tasks[j], j) + '</div>';
         }
         list.innerHTML = html;
+        var openTasks = 0;
+        for (var q = 0; q < tasks.length; q++) {
+          if (!isDoneTask(tasks[q])) openTasks++;
+        }
+        setBadge('bLadder', openTasks);
         var g = '';
         for (var k = 0; k < (goals || []).length; k++) {
           g += '<span class="goalbadge">' + esc(goals[k].title || goals[k].goalId) + '</span>';
@@ -514,8 +572,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
         var frac = tasks.length > 1 ? Math.max(cur, 0) / (tasks.length - 1) : 1;
         fill.style.width = Math.round(frac * 100) + '%';
         applySheet(runner, 'run', SHEET_W.crew, SHEET_W.crewH);
-        runner.style.top = '75px';
-        runner.style.left = 'calc(' + Math.round(frac * 100) + '% - 49px)';
+        runner.style.top = '48px';
+        runner.style.left = 'calc(' + Math.round(frac * 100) + '% - 16px)';
         var nodes = '';
         for (var j = 0; j < tasks.length; j++) {
           var done = isDoneTask(tasks[j]);
@@ -527,22 +585,154 @@ const WIDGET_HTML = `<!DOCTYPE html>
         tmp.innerHTML = nodes;
         while (tmp.firstChild) track.appendChild(tmp.firstChild);
         wgoal.textContent = (goals && goals[0] && (goals[0].title || goals[0].goalId)) || '';
+        var openGoals = 0;
+        for (var gq = 0; gq < (goals || []).length; gq++) {
+          var gg = goals[gq];
+          if (gg && gg.status !== 'COMPLETED' && gg.status !== 'DONE') openGoals++;
+        }
+        setBadge('bWbs', openGoals);
+      }
+      // R1-R5: name normalization (mapping at the data level, never CSS cut).
+      // "Builder via live checkout" -> {name:"Live", role:"Builder"}.
+      var NAME_MAP = [
+        [/claude-code/i, 'Claude'],
+        [/codex/i, 'Codex'],
+        [/probe/i, 'Probe'],
+        [/builder/i, 'Builder'],
+      ];
+      var ROLE_MAP = [
+        [/claude-code/i, 'Code'],
+        [/codex/i, 'Code'],
+        [/probe/i, 'QA'],
+        [/(^|[^a-z])qa([^a-z]|$)/i, 'QA'],
+        [/builder/i, 'Build'],
+        [/worker/i, 'Worker'],
+        [/agent/i, 'Agent'],
+      ];
+      var KO_WORD = {
+        quality: '품질', assurance: '검증', verification: '검증', validation: '검증',
+        test: '테스트', review: '검토', scout: '정찰', probe: '탐색',
+        semantic: '', smart: '', advanced: '', super: '', ultimate: '',
+      };
+      function mapFirst(list, text) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i][0].test(text)) return list[i][1];
+        }
+        return null;
+      }
+      function firstWord(text) {
+        var tok = String(text || '').trim().split(SEP_RE)[0] || '';
+        tok = tok.split(/(?=[A-Z])/)[0] || tok;
+        return tok ? tok.slice(0, 1).toUpperCase() + tok.slice(1) : '';
+      }
+      function capName(name) {
+        var s = String(name || '');
+        var chars = Array.from(s);
+        if (/[가-힣]/.test(s)) {
+          return chars.length <= 10 ? s : chars.slice(0, 10).join('');
+        }
+        var words = s.toLowerCase().split(SEP_RE).filter(Boolean);
+        if (words.length > 1) {
+          // Long phrases map to key nouns ("Semantic Quality Assurance" -> "품질 검증").
+          var mapped = [];
+          for (var i = 0; i < words.length; i++) {
+            if (words[i] in KO_WORD) { if (KO_WORD[words[i]]) mapped.push(KO_WORD[words[i]]); }
+            else mapped.push(words[i]);
+          }
+          var ko = mapped.join(' ').trim();
+          if (/[가-힣]/.test(ko)) {
+            var kos = Array.from(ko);
+            return kos.length <= 10 ? ko : kos.slice(0, 10).join('');
+          }
+          if (chars.length > 16) {
+            var fw = firstWord(s);
+            if (fw && fw.length <= 16) return fw;
+          } else {
+            return s;
+          }
+        }
+        if (chars.length <= 16) return s;
+        var fw2 = firstWord(s);
+        return (fw2 && fw2.length <= 16) ? fw2 : chars.slice(0, 16).join('');
+      }
+      function normalizeAgent(a) {
+        var wid = String((a && a.workerId) || '');
+        var raw = String((a && (a.displayName || a.workerId)) || '');
+        var name = raw;
+        var role = null;
+        var via = raw.match(/^(.*?) via (.+)$/i);
+        if (via) {
+          role = mapFirst(NAME_MAP, via[1]) || firstWord(via[1]) || 'Builder';
+          name = firstWord(via[2]) || raw;
+        } else {
+          name = raw.replace(/^(builder|worker|agent) +/i, '');
+          var hit = mapFirst(NAME_MAP, name) || mapFirst(NAME_MAP, wid);
+          if (hit) name = hit;
+          role = mapFirst(ROLE_MAP, name) || mapFirst(ROLE_MAP, wid);
+        }
+        if (!name) name = 'Agent';
+        name = capName(name);
+        if (!role) role = /(^|[^a-z])qa([^a-z]|$)/i.test(wid) ? 'QA' : 'Build';
+        return { name: name, role: role, full: raw };
+      }
+      // Task titles: data-level single line (cap 30, full kept in title attr).
+      function shortTaskTitle(task) {
+        var full = String((task && (task.title || task.taskId)) || '');
+        var chars = Array.from(full);
+        return { text: chars.length > 30 ? chars.slice(0, 30).join('') : full, full: full };
+      }
+      function agentPillClass(a) {
+        if (/qa/i.test(a.workerId || '')) return 'st-qa';
+        return a.state === 'working' ? 'st-work' : 'st-idle';
+      }
+      function setBadge(id, n) {
+        try {
+          var el = document.getElementById(id);
+          if (el) el.textContent = String(n);
+        } catch (e) {}
+      }
+      function setActive(n, total) {
+        try {
+          var a = document.getElementById('activeN');
+          var b = document.getElementById('activeT');
+          if (a) a.textContent = String(n);
+          if (b) b.textContent = String(total);
+        } catch (e) {}
+      }
+      function setSeg(id, n) {
+        try {
+          var el = document.getElementById(id);
+          if (el) el.className = 'seg' + (n ? '' : ' dim');
+        } catch (e) {}
       }
       function renderAgents(dash) {
         var agents = (dash && dash.agents) || [];
-        if (!agents.length) { agentsEl.innerHTML = '<div class="sub">' + esc(t('noAgents')) + '</div>'; return; }
+        setBadge('bCrew', agents.length);
+        if (!agents.length) { agentsEl.innerHTML = '<div class="sub">' + esc(t('noAgents')) + '</div>'; setActive(0, 0); return; }
         var html = '';
+        var active = 0;
         for (var i = 0; i < agents.length; i++) {
           var a = agents[i] || {};
+          var norm = normalizeAgent(a);
           var sheet = agentSheet(a);
-          var line = esc(a.displayName || a.workerId || '?');
-          line += ' · ' + esc(a.model || t('modelUnknown'));
-          line += ' — ' + esc(agentStateLabel(a));
-          if (a.taskTitle) line += ' · ' + esc(a.taskTitle);
-          html += '<div class="crew-card"><div class="stage"><div class="crew-sp" data-sheet="' + sheet + '"></div></div>'
-            + '<div class="nm" title="' + esc((a.displayName || '') + ' ' + (a.workerId || '')) + '">' + esc(a.displayName || a.workerId || '?') + '</div>'
-            + '<div class="md">' + esc(a.model || t('modelUnknown')) + '</div>'
-            + '<div class="rl">' + esc(agentStateLabel(a)) + '</div></div>';
+          if (a.state === 'working' || /qa/i.test(a.workerId || '')) active++;
+          var stageInner;
+          if (sheetStatus[sheet] === 'fail') {
+            // Visible missing-sprite avatar: initial only. Never an empty slot.
+            var initial = esc(Array.from(norm.name).slice(0, 1).join('') || '?');
+            stageInner = '<div class="crew-missing" title="' + esc(t('spriteFail')) + '">' + initial + '</div>';
+          } else {
+            stageInner = '<div class="crew-sp" data-sheet="' + sheet + '"></div>';
+          }
+          var tt = shortTaskTitle(a.taskTitle ? { title: a.taskTitle } : (a.taskId ? { taskId: a.taskId } : null));
+          var taskRow = tt.text
+            ? '<div class="task1" title="' + esc(tt.full) + '">' + esc(tt.text) + '</div>'
+            : '';
+          html += '<div class="crew-card"><div class="crew-top"><div class="avatar">' + stageInner + '</div>'
+            + '<div class="who"><span class="nm" title="' + esc(norm.full) + '">' + esc(norm.name) + '</span> '
+            + '<span class="pill ' + agentPillClass(a) + '">● ' + esc(agentStateLabel(a)) + '</span></div></div>'
+            + '<div class="role">' + esc(norm.role) + '</div>'
+            + taskRow + '</div>';
         }
         agentsEl.innerHTML = html;
         var stages = agentsEl.querySelectorAll('.crew-sp');
@@ -552,6 +742,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
           else if (sh === 'qa') applySheet(stages[s], 'qa', SHEET_W.crew, SHEET_W.crewH);
           else applySheet(stages[s], 'idle', SHEET_W.crew, SHEET_W.crewH);
         }
+        setActive(active, agents.length);
         var tasks = (dash && dash.tasks) || {};
         var open = (tasks.RUNNING || 0) + (tasks.DISPATCHED || 0) + (tasks.READY || 0) + (tasks.PENDING || 0);
         var goals = (dash && dash.goals) || [];
@@ -620,6 +811,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (fp !== lastDeliveryFp) { lastDeliveryFp = fp; checkVersion(); }
           try {
             var dash = await callTool('relay_pm_get_dashboard', {});
+            lastDash = dash;
             setDiag('dashboard ok · ' + diagTime());
             try { renderAgents(dash); } catch (eAgents) { logLine('render agents error: ' + eAgents.message); }
             try {
@@ -704,6 +896,17 @@ const WIDGET_HTML = `<!DOCTYPE html>
           logLine('initialized');
           hideFallback();
           setStatus('waiting', t('connected'), t('waiting'));
+          try {
+            preloadSheets(function (failed) {
+              if (failed.length) {
+                setDiag(t('spritesFail') + ': ' + failed.join(','));
+                logLine('sprite preload failed: ' + failed.join(','));
+              } else {
+                logLine(t('spritesOk') + ' 8/8');
+              }
+              try { if (lastDash) renderAgents(lastDash); } catch (e) { /* next poll redraws */ }
+            });
+          } catch (ePre) { /* sprites best-effort; missing boxes cover failures */ }
           checkVersion();
           setInterval(poll, POLL_MS);
           poll();
@@ -742,10 +945,16 @@ export const PM_WIDGET_MIME_TYPE = 'text/html;profile=mcp-app';
 // Host CSP allowlist (OpenAI Apps SDK / MCP Apps): the widget loads sprite
 // images from the public asset base, so its origin must be declared in
 // _meta.ui.csp.resourceDomains or the sandbox blocks them.
+// ChatGPT has been observed sourcing the legacy openai/widgetCSP key even
+// for ui.resourceUri templates, so both keys are emitted (dual-protocol).
 export function widgetResourceMeta(assetBase = ''): Record<string, unknown> {
   let origin = 'https://mcp.relay-agent.site';
   try {
     if (assetBase) origin = new URL(assetBase).origin;
   } catch (e) { /* keep default origin */ }
-  return { ui: { prefersBorder: true, csp: { resourceDomains: [origin] } } };
+  return {
+    ui: { prefersBorder: true, csp: { resourceDomains: [origin] } },
+    'openai/widgetCSP': { resource_domains: [origin], connect_domains: [] as string[] },
+  };
 }
+export const WIDGET_SPRITE_SHEETS = ['run', 'dig', 'climb', 'qa', 'done', 'blocked', 'sleep', 'idle'];
