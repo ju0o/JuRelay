@@ -11,6 +11,7 @@ import * as path from 'node:path';
 import * as goalTask from '../backend/goal-task.js';
 import * as dispatcher from '../backend/dispatcher.js';
 import * as pmDelivery from '../backend/pm-delivery.js';
+import { PM_WIDGET_RESOURCE_URI, PM_WIDGET_RESOURCE_VERSION } from './app/pm-widget-resource.js';
 import { objectSchema, rejectUnknownFields } from './schemas.js';
 import type { McpTool, PmServerContext } from './server.js';
 
@@ -62,6 +63,17 @@ function runFoldersFor(dataRoot: string, project: string, workerId: string): str
 export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
   const { dataRoot, project } = ctx;
   return [
+    {
+      name: 'relay_pm_get_widget_version',
+      description:
+        'Current widget resource identity (uri, version). The widget polls this ' +
+        'itself to notice a newer bundle without any host cache-clear. Pure read.',
+      inputSchema: objectSchema({}),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, []);
+        return { uri: PM_WIDGET_RESOURCE_URI, version: PM_WIDGET_RESOURCE_VERSION };
+      },
+    },
     {
       name: 'relay_pm_get_dashboard',
       description:

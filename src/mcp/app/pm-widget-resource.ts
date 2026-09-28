@@ -23,7 +23,7 @@ import { createHash } from 'node:crypto';
 export const PM_WIDGET_RESOURCE_VERSION = '2026-09-28-auto';
 
 export function pmWidgetHtml(): string {
-  return WIDGET_HTML;
+  return WIDGET_HTML.replaceAll('__WIDGET_URI__', PM_WIDGET_RESOURCE_URI);
 }
 
 const WIDGET_HTML = `<!DOCTYPE html>
@@ -89,6 +89,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .agent .st { margin-left:auto; flex:none; }
   .remain { margin-top:8px; font-size:12px; color: var(--muted); }
   .remain b { color: var(--text); }
+  .update { display:none; margin-top:8px; border:1px solid var(--wait); border-radius:8px;
+            padding:8px 10px; font-size:12px; }
+  .update.show { display:block; }
   /* character animations (pure CSS/SVG, no assets) */
   @keyframes swing { 0%,100% { transform:rotate(-18deg); } 50% { transform:rotate(24deg); } }
   @keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-3px); } }
@@ -128,6 +131,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
     </div>
     <div class="agents" id="agents"></div>
     <div class="remain" id="remain"></div>
+    <div class="update" id="update"></div>
     <div class="cards" id="cards"></div>
     <details>
       <summary>debug log</summary>
@@ -150,6 +154,27 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var lastDeliveries = [];
       var agentsEl = document.getElementById('agents');
       var remainEl = document.getElementById('remain');
+      var updateEl = document.getElementById('update');
+      var OWN_URI = '__WIDGET_URI__';
+      var updateNoticed = false;
+      // Self-update check: if the server serves a newer bundle than this render,
+      // banner it and try a same-document reload (falls back to the banner when
+      // the host sandbox blocks navigation). No cache-clear needed, ever.
+      async function checkVersion() {
+        if (updateNoticed) return;
+        try {
+          var v = await callTool('relay_pm_get_widget_version', {});
+          if (v && v.uri && v.uri !== OWN_URI) {
+            updateNoticed = true;
+            updateEl.textContent = lang === 'en'
+              ? 'A newer widget is available — reloading… (if this stays, open the widget in a new chat)'
+              : '새 위젯이 있어요 — 새로고침 중… (계속 보이면 새 대화에서 열어주세요)';
+            updateEl.className = 'update show';
+            logLine('newer widget bundle: ' + v.uri);
+            try { window.location.reload(); } catch (e) { /* banner stays */ }
+          }
+        } catch (e) { /* version check is best-effort */ }
+      }
       var langKoBtn = document.getElementById('langKo');
       var langEnBtn = document.getElementById('langEn');
       var lang = 'ko';
@@ -354,8 +379,11 @@ const WIDGET_HTML = `<!DOCTYPE html>
         return r || {};
       }
 
+      var pollCount = 0;
       async function poll() {
         try {
+          pollCount++;
+          if (pollCount % 20 === 0) checkVersion();
           var list = await callTool('relay_pm_list_pending_deliveries', {});
           var deliveries = (list && list.deliveries) || [];
           lastDeliveries = deliveries;
@@ -434,6 +462,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
           sendNotification('ui/notifications/initialized', {});
           logLine('initialized');
           setStatus('waiting', t('connected'), t('waiting'));
+          checkVersion();
           setInterval(poll, POLL_MS);
           poll();
         } catch (e) {
