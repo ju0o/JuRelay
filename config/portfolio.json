@@ -24199,6 +24199,30 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:516 이 경우 프로젝트 코드를 수정하지 않는다.",
           "title": "설명 요청은 설명만 간단히 받기"
+        },
+        {
+          "taskId": "JUTELL-VERIFY-RESULT-DEFINITIONS-PARITY",
+          "scope": "Add the six BEGINNER_REPORT_SPEC §10.1–§10.6 definition sentences in order as one bullet directly under the verification-result labels in report-format.md §1, without changing those six labels, plus an offline node:test.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/verify-result-definitions-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/verify-result-definitions-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:396 도구, 권한, 설정 또는 환경 문제로 실행하지 못했다."
+        },
+        {
+          "taskId": "JUTELL-LOW-OPERATING-COST-PARITY",
+          "scope": "Add PRODUCT_SCOPE §7.9's two sentences and its four priority items as one bullet in the README section JuTell이 하는 일과 하지 않는 일, leaving the existing external-transfer sentences in place, plus an offline node:test.",
+          "files": [
+            "README.md",
+            "tests/low-operating-cost-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/low-operating-cost-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:493 V0.1은 중앙 서버와 별도 AI API 없이 작동해야 한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
