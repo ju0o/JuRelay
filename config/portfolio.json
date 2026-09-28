@@ -22802,6 +22802,54 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:367 보고서 상태는 사용자의 승인이나 배포 결정을 대신하지 않는다.",
           "title": "승인과 배포는 직접 결정하기"
+        },
+        {
+          "taskId": "JUTELL-FILE-ROLE-EVIDENCE-LINK-PARITY",
+          "scope": "Add GLOSSARY_POLICY §8's sentence that an important file-role claim is linked to evidence when possible as one bullet under report-format.md section 3, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/file-role-evidence-link-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/file-role-evidence-link-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:154 중요한 파일 역할 주장에는 가능한 경우 근거를 연결함"
+        },
+        {
+          "taskId": "JUTELL-LIMIT-RANGE-SAFETY-PARITY",
+          "scope": "Add FEATURE_CONFIGURATION's sentence that limit ranges apply only to optional information and not to forced safety information as one line in feature-registry.md, plus an offline node:test that this sentence stays aligned and that maxMainFiles 1~10, maxGlossaryTerms 0~10, and compactReportMaxSentences 4~30 match LIMIT_RANGES in schema.ts and catalog.ts without changing those range values.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/limit-range-safety-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/limit-range-safety-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:81 `maxMainFiles`는 1~10, `maxGlossaryTerms`는 0~10, `compactReportMaxSentences`는 4~30의 정수만 허용한다. 이 제한은 선택 정보에 적용하며 안전상 강제되는 정보에는 적용하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-EVAL-PARTIAL-SCORE-PARITY",
+          "scope": "Add TEST_SCENARIOS §7.2's sentence that a partial pass is not counted in the final score and §7.3's sentence that both scenarios need 6 or more points for V0.1 as one bullet under the V0.1 pass line in SKILL.md, plus an offline node:test that both sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/eval-partial-score-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/eval-partial-score-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:546 부분 통과는 최종 통과 점수에 포함하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-SCOPE-DOC-BOUNDARY-PARITY",
+          "scope": "Add PRODUCT_SCOPE §14's two sentences, that an agent does not widen this document's product direction without user approval and that the rule applies only when editing the product-scope document and does not forbid ordinary code work, as bullets in AGENTS.md outside the managed block, plus an offline node:test that both sentences stay aligned.",
+          "files": [
+            "AGENTS.md",
+            "tests/scope-doc-boundary-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/scope-doc-boundary-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:789 AI Agent는 사용자 승인 없이 이 문서의 제품 방향을 임의로 확대하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
