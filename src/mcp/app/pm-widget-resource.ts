@@ -13,12 +13,14 @@
  *
  * No business logic lives in the widget. No Result text is fetched or shown.
  * The HTML is embedded so the compiled dist needs no asset-copy step.
+ *
+ * Cache policy: MCP Apps hosts cache the rendered widget by resource URI.
+ * The URI below embeds a content hash, so EVERY widget change mints a fresh
+ * resource identity automatically — no manual v-bump, no stale renders.
  */
+import { createHash } from 'node:crypto';
 
-export const PM_WIDGET_RESOURCE_URI = 'ui://agent-relay/pm-widget-v5';
-export const PM_WIDGET_RESOURCE_NAME = 'Agent Relay PM';
-export const PM_WIDGET_MIME_TYPE = 'text/html;profile=mcp-app';
-export const PM_WIDGET_RESOURCE_VERSION = '2026-09-28-v5';
+export const PM_WIDGET_RESOURCE_VERSION = '2026-09-28-auto';
 
 export function pmWidgetHtml(): string {
   return WIDGET_HTML;
@@ -455,3 +457,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
 </body>
 </html>
 `;
+
+const WIDGET_HASH = createHash('sha256').update(WIDGET_HTML, 'utf8').digest('hex').slice(0, 8);
+export const PM_WIDGET_RESOURCE_URI = `ui://agent-relay/pm-widget-${WIDGET_HASH}`;
+export const PM_WIDGET_RESOURCE_NAME = 'Agent Relay PM';
+export const PM_WIDGET_MIME_TYPE = 'text/html;profile=mcp-app';

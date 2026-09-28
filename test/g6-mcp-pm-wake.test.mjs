@@ -267,10 +267,10 @@ console.log('\n-- MCP App server surface --');
   }
   const opener = listed.find((t) => t.name === 'relay_pm_open_widget');
   const metaUri = opener && opener._meta && opener._meta.ui && opener._meta.ui.resourceUri;
-  check(metaUri === 'ui://agent-relay/pm-widget-v5', 'open-widget tool carries ui resourceUri');
+  check(/^ui:\/\/agent-relay\/pm-widget-[0-9a-f]{8}$/.test(metaUri || ''), 'open-widget tool carries content-hashed ui resourceUri');
   const resources = await client.listResources();
-  check(resources.resources.some((r) => r.uri === 'ui://agent-relay/pm-widget-v5'), 'app server lists widget resource');
-  const read = await client.readResource({ uri: 'ui://agent-relay/pm-widget-v5' });
+  check(resources.resources.some((r) => r.uri === metaUri), 'app server lists widget resource');
+  const read = await client.readResource({ uri: metaUri });
   const html = read.contents[0].text;
   check(html.includes('ui/initialize') && html.includes('AGENT_RELAY_PM_WAKE') === false, 'widget HTML served (wake text is generated server-side, not embedded)');
   check(html.includes('relay_pm_list_pending_deliveries') && html.includes('relay_pm_claim_wake'), 'widget HTML polls list + claims wake');
