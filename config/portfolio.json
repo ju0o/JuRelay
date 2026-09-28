@@ -22966,6 +22966,17 @@
           ],
           "ssotEvidence": "README.md:14 \"스팸 관리\"",
           "title": "반복 글을 막고 운영진은 예외 처리"
+        },
+        {
+          "taskId": "JUAI-CHECK-SPAM-BOUNDARIES",
+          "scope": "check.mjs에 스팸 판정의 채널 수·문자 수 경계와 GUIDE의 동적 스팸 제한 안내를 검증하는 자체 점검을 추가한다.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "layout.mjs:120 quote, or Founder direction 2026-09-23"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
