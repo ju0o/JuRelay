@@ -25765,6 +25765,50 @@
           ],
           "ssotEvidence": "README.md:8 OpenCode 개인 메시지도 하루 질문 횟수를 공유",
           "title": "멤버만 쓰고 살펴보기와 하루 횟수를 안내해요"
+        },
+        {
+          "taskId": "JUAI-CHECK-FAQ-REPLY",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that faqReply returns false before say when bestFaq misses and never calls takeQuota, and that a hit posts the existing similar-question notice.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "layout.mjs:143 예전에 해결된 비슷한 질문이 있으면 그 답을 먼저 보여줘요 (횟수 안 씀)"
+        },
+        {
+          "taskId": "JUAI-CHECK-DM-QUOTA-RETURN",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that onDirect returns quotaMessage when takeQuota is refused, before ai() and before the answer chunks are sent.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:8 OpenCode 개인 메시지도 하루 질문 횟수를 공유"
+        },
+        {
+          "taskId": "JUAI-CHECK-OPS-BODY",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that opsReport posts the weekly staff report and includes answerQuality, whose downvote query keeps only answers with down greater than zero.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:19 주간 리포트"
+        },
+        {
+          "taskId": "JUAI-CHECK-COLLECT-OPTOUT",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that collect skips a member when optedOut is true before pushing that message into summary refs, and that optedOut checks the AI 언급 제외 role.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "layout.mjs:124 추천·요약에서 내 글이 언급되기 싫으면 입장 질문에서 언급하지 말아주세요를 고르세요."
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
