@@ -5935,7 +5935,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/serve.py:315 ● 정상 ${good} · 문제 ${problem} · 미확인 ${unknown}"
+          "ssotEvidence": "src/actl/serve.py:315 ● 정상 ${good} · 문제 ${problem} · 미확인 ${unknown}",
+          "title": "웹 작업 상태를 쉽게 보기"
         },
         {
           "taskId": "ACTL-TUI-HELP-PLAIN",
@@ -5947,7 +5948,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/tui.py:403 첫실행 튜토리얼 (MainPC → SSH → asus)"
+          "ssotEvidence": "src/actl/tui.py:403 첫실행 튜토리얼 (MainPC → SSH → asus)",
+          "title": "화면 안내를 쉽게 보기"
         },
         {
           "taskId": "ACTL-CLI-BIND-PLAIN",
@@ -5959,7 +5961,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/cli.py:901 Bind this OpenCode conversation now?"
+          "ssotEvidence": "src/actl/cli.py:901 Bind this OpenCode conversation now?",
+          "title": "다음 할 일을 바로 알기"
         }
       ],
       "qaRuntime": [
@@ -9060,7 +9063,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-result-scope.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:66 Workers execute only the declared files and tests."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:66 Workers execute only the declared files and tests.",
+          "title": "허용된 결과만 제출돼요"
         },
         {
           "taskId": "JUPLAN-AR-SCOPE-HOLD-ENTRY",
@@ -9072,7 +9076,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-scope-hold.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
+          "title": "범위 밖 작업은 자동으로 멈춰요"
         },
         {
           "taskId": "JUPLAN-AR-GATE-FACT-TYPE",
@@ -9085,7 +9090,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-founder-gate-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 FOUNDER_GATE This lane stops. Other Agent Relay lanes are not stopped by this verdict."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:118 FOUNDER_GATE This lane stops. Other Agent Relay lanes are not stopped by this verdict.",
+          "title": "멈춘 작업은 자동으로 거절돼요"
         }
       ],
       "qaRuntime": [
@@ -11595,7 +11601,8 @@
           "tests": [
             "npx vitest run test/today-page.test.ts tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안, 빈 화면 이유+다음 행동, 막힘은 노랑"
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안, 빈 화면 이유+다음 행동, 막힘은 노랑",
+          "title": "오늘 영수증을 깔끔하게 보여주기"
         },
         {
           "taskId": "JUCEIPT-HELP-DEV-TEXT-FOLDED",
@@ -11608,7 +11615,8 @@
           "tests": [
             "npx vitest run tests/daily-cli.test.ts tests/daily-background.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장, 개발자 글자는 원문 보기 안, 첫 실행 3단계 안내"
+          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장, 개발자 글자는 원문 보기 안, 첫 실행 3단계 안내",
+          "title": "도움말을 쉽게 보고 자세히 보기"
         }
       ],
       "skills": {
@@ -14547,7 +14555,8 @@
           "tests": [
             "node --test tests/getting-started-unknown-action-run.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:240 위 줄 아래에 한 줄 더 나옵니다(human-gate·hold)"
+          "ssotEvidence": "docs/getting-started.md:240 위 줄 아래에 한 줄 더 나옵니다(human-gate·hold)",
+          "title": "문제 있는 항목을 바로 알려줘"
         },
         {
           "taskId": "JUCONTROLER-GUIDE-USAGE-EXIT-RUN",
@@ -14558,7 +14567,8 @@
           "tests": [
             "node --test tests/getting-started-usage-exit-run.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:247 아래에 영어 Usage 줄이 하나 더 나오고, 종료 코드는 2입니다"
+          "ssotEvidence": "docs/getting-started.md:247 아래에 영어 Usage 줄이 하나 더 나오고, 종료 코드는 2입니다",
+          "title": "사용법을 쉽게 안내해줘"
         }
       ],
       "qaRuntime": [
@@ -19965,7 +19975,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:84 Add a row only when the same task key identifies both a Claude final and a Receipt"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:84 Add a row only when the same task key identifies both a Claude final and a Receipt",
+          "title": "완전한 검증 결과만 결정에 반영"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-INTAKE-NEXT-STEP-POINTER",
@@ -19977,7 +19988,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 Do not record M3 GO / DEFER / KILL from the 0-join gap; record a decision only for a captured row with both a Claude final and a Receipt."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:174 Do not record M3 GO / DEFER / KILL from the 0-join gap; record a decision only for a captured row with both a Claude final and a Receipt.",
+          "title": "완전한 검증 자료만 다음 단계로 접수"
         }
       ],
       "skills": {
@@ -22187,7 +22199,8 @@
           "tests": [
             "node --test tests/glossary-no-repeat-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:23 같은 보고서에서 같은 용어를 반복해서 설명하지 않는다. 이후에는 원래 용어만 사용할 수 있다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:23 같은 보고서에서 같은 용어를 반복해서 설명하지 않는다. 이후에는 원래 용어만 사용할 수 있다.",
+          "title": "용어 설명을 한 번만 안내"
         },
         {
           "taskId": "JUTELL-RISK-NOT-SUCCESS-PARITY",
@@ -22199,7 +22212,8 @@
           "tests": [
             "node --test tests/risk-not-success-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:351 위험도는 정상 작동 여부를 의미하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:351 위험도는 정상 작동 여부를 의미하지 않는다.",
+          "title": "위험도와 정상 작동을 구분"
         },
         {
           "taskId": "JUTELL-TEST-RUN-TEMPLATE-PARITY",
@@ -22211,7 +22225,8 @@
           "tests": [
             "node --test tests/test-run-template-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:683-695 각 실행 결과는 tests/results 아래에 저장하며 Test Run 기록 형식을 따른다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:683-695 각 실행 결과는 tests/results 아래에 저장하며 Test Run 기록 형식을 따른다.",
+          "title": "확인 절차 기록 양식 통일"
         },
         {
           "taskId": "JUTELL-COMMON-TEST-PRINCIPLES-PARITY",
@@ -22222,7 +22237,8 @@
           "tests": [
             "node --test tests/common-test-principles-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:67-96 동일 조건·기준 상태·보고서 평가 분리·비밀정보 사용 금지 원칙을 공통으로 적용한다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:67-96 동일 조건·기준 상태·보고서 평가 분리·비밀정보 사용 금지 원칙을 공통으로 적용한다.",
+          "title": "공통 확인 원칙 적용 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -24159,7 +24175,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용"
+          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용",
+          "title": "해결된 답변이 자주 묻는 질문에 반영돼요"
         },
         {
           "taskId": "JUAI-CHECK-BADGE-SCHEDULE",
@@ -24170,7 +24187,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 월간 배지"
+          "ssotEvidence": "README.md:19 월간 배지",
+          "title": "매달 우수 참여자에게 배지를 드려요"
         },
         {
           "taskId": "JUAI-CHECK-WEEKLY-REPORT",
@@ -24181,7 +24199,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 주간 리포트"
+          "ssotEvidence": "README.md:19 주간 리포트",
+          "title": "주간 제안과 운영 소식을 정리해요"
         },
         {
           "taskId": "JUAI-CHECK-CODEREVIEW-LINK",
@@ -24192,7 +24211,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:16 GitHub 코드 리뷰"
+          "ssotEvidence": "README.md:16 GitHub 코드 리뷰",
+          "title": "참여 글에 변경사항 검토를 연결해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
