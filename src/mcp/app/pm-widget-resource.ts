@@ -152,17 +152,6 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .wnode.hit { background:#22b573; border-color:#22b573; }
   .wgoal { position:absolute; right:0; top:100%; transform:translateY(-50%); font-size:11px; font-weight:700; }
   @media (max-width:820px) { .ladder-wrap { flex-direction:column; } }
-  /* character animations (pure CSS/SVG, no assets) */
-  @keyframes swing { 0%,100% { transform:rotate(-18deg); } 50% { transform:rotate(24deg); } }
-  @keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-3px); } }
-  @keyframes floatz { 0% { transform:translateY(2px); opacity:0; } 30% { opacity:1; } 100% { transform:translateY(-9px); opacity:0; } }
-  @keyframes peek { 0%,100% { transform:translateX(0); } 50% { transform:translateX(3px); } }
-  .pick { transform-origin: 44px 30px; animation: swing 1.1s ease-in-out infinite; }
-  .bob { animation: bob 1.6s ease-in-out infinite; }
-  .z1 { animation: floatz 2.4s linear infinite; }
-  .z2 { animation: floatz 2.4s linear 0.8s infinite; }
-  .z3 { animation: floatz 2.4s linear 1.6s infinite; }
-  .magn { animation: peek 2s ease-in-out infinite; }
   details { margin-top:10px; }
   summary { cursor:pointer; color:var(--muted); font-size:12px; user-select:none; }
   #log { margin:6px 0 0; padding:8px; border:1px solid var(--border); border-radius:6px;
