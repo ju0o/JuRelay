@@ -274,24 +274,37 @@ export async function startMcpAppServer(opts: McpAppServerOptions): Promise<http
     }
     // Public sprite assets for the PM widget (img tags carry no bearer token,
     // so this route is unauthenticated by design — fixed allowlist, PNG only).
-    if (req.method === 'GET' && url.pathname.startsWith('/widgets/crew/')) {
-      const name = url.pathname.slice('/widgets/crew/'.length);
-      if (/^(run|dig|climb|qa|done|blocked|sleep|idle)-sheet\.png$/.test(name)) {
-        try {
-          const file = path.join(ASSET_DIR, 'widgets', 'crew', name);
-          const data = fs.readFileSync(file);
-          res.writeHead(200, {
-            'content-type': 'image/png',
-            'cache-control': 'public, max-age=31536000, immutable',
-            'content-length': data.length,
-          });
-          res.end(data);
-          return;
-        } catch {
-          // fall through to 404
-        }
+    // CORS open (*): lets in-sandbox fetch() diagnostics distinguish network
+    // failure from CSP blocking (img/css loads never need CORS, fetch does).
+    if (url.pathname.startsWith('/widgets/crew/')) {
+      const cors = {
+        'access-control-allow-origin': '*',
+        'access-control-allow-methods': 'GET, OPTIONS',
+        'access-control-max-age': '86400',
+      };
+      if (req.method === 'OPTIONS') {
+        res.writeHead(204, cors); res.end(); return;
       }
-      res.writeHead(404); res.end('not found'); return;
+      if (req.method === 'GET') {
+        const name = url.pathname.slice('/widgets/crew/'.length);
+        if (/^(run|dig|climb|qa|done|blocked|sleep|idle)-sheet\.png$/.test(name)) {
+          try {
+            const file = path.join(ASSET_DIR, 'widgets', 'crew', name);
+            const data = fs.readFileSync(file);
+            res.writeHead(200, {
+              ...cors,
+              'content-type': 'image/png',
+              'cache-control': 'public, max-age=31536000, immutable',
+              'content-length': data.length,
+            });
+            res.end(data);
+            return;
+          } catch {
+            // fall through to 404
+          }
+        }
+        res.writeHead(404); res.end('not found'); return;
+      }
     }
     if (req.method !== 'POST' || url.pathname !== '/mcp') {
       res.writeHead(404); res.end('not found'); return;

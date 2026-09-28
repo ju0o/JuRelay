@@ -133,6 +133,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .crew-missing { width:32px; height:48px; display:flex; align-items:center; justify-content:center;
                  border:1px dashed var(--wait); border-radius:6px; background:var(--panel);
                  font-size:16px; font-weight:700; color:var(--text); }
+  .sprite-err { font-size:10px; color:var(--wait); white-space:nowrap; overflow:hidden; margin-top:2px; }
+  .sheet-missing { display:flex; align-items:center; justify-content:center;
+                  border:1px dashed var(--wait); border-radius:6px; background:var(--panel);
+                  font-size:16px; font-weight:700; color:var(--wait); }
   .ladder-wrap { display:flex; gap:10px; margin-top:6px; }
   .ladder-stage { position:relative; width:76px; flex:none; }
   .climber { position:absolute; left:50%; transform:translateX(-50%); transition:bottom 1.1s ease; }
@@ -402,7 +406,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
               wakeFail: '전송 실패', initFail: '시작 실패', wait: '대기 중', doing: '검토 중',
               done: '완료', sWait: '대기', sDoing: '검토 요청', sDone: '판정 완료',
               working: '일하는 중', resting: '쉬는 중', qaDoing: '검사하는 중',
-              spriteFail: '이미지 실패', spritesOk: '스프라이트', spritesFail: '스프라이트 실패',
+              spriteFail: '이미지 실패', spriteLoadFail: '스프라이트 로드 실패', spritesOk: '스프라이트', spritesFail: '스프라이트 실패',
               modelUnknown: '모델 정보 없음',
               remaining: '남은 일', goals: '목표', noAgents: '일하는 AI 없음' },
         en: { connecting: 'Connecting…', connected: 'Connected', waiting: 'Waiting for Agent result…',
@@ -410,7 +414,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
               wakeFail: 'Wake failed', initFail: 'Initialization failed', wait: 'Waiting', doing: 'Reviewing',
               done: 'Done', sWait: 'Wait', sDoing: 'Review', sDone: 'Judged',
               working: 'working', resting: 'resting', qaDoing: 'inspecting',
-              spriteFail: 'sprite failed', spritesOk: 'sprites', spritesFail: 'sprites failed',
+              spriteFail: 'sprite failed', spriteLoadFail: 'sprite load failed', spritesOk: 'sprites', spritesFail: 'sprites failed',
               modelUnknown: 'model unknown',
               remaining: 'Remaining', goals: 'Goals', noAgents: 'No active AI' },
       };
@@ -508,6 +512,17 @@ var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
           }
         })();
       } catch (eTab) { /* tabs are progressive enhancement; core still renders */ }
+      // applySheet returns false when the sheet failed to preload: mark the
+      // slot visibly instead of leaving an empty box.
+      function markSheetMissing(el, w, h, state) {
+        try {
+          el.style.width = w + 'px';
+          el.style.height = h + 'px';
+          el.className = (el.className || '') + ' sheet-missing';
+          el.textContent = '!';
+          el.title = t('spriteFail') + ': ' + state;
+        } catch (e) {}
+      }
       function isDoneTask(task) {
         return task && (task.pmState === 'ACCEPTED' || task.executionState === 'COMPLETED');
       }
@@ -528,7 +543,9 @@ var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
         }
         if (cur < 0 && tasks.length) cur = tasks.length - 1;
         var climber = document.getElementById('climber');
-        applySheet(climber, 'climb', SHEET_W.climb, SHEET_W.climbH);
+        if (!applySheet(climber, 'climb', SHEET_W.climb, SHEET_W.climbH)) {
+          markSheetMissing(climber, SHEET_W.climb, SHEET_W.climbH, 'climb');
+        }
         climber.style.bottom = (16 + Math.max(cur, 0) * RH - 8) + 'px';
         var html = '';
         for (var j = 0; j < tasks.length; j++) {
@@ -560,7 +577,9 @@ var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
         if (cur < 0 && tasks.length) cur = tasks.length - 1;
         var frac = tasks.length > 1 ? Math.max(cur, 0) / (tasks.length - 1) : 1;
         fill.style.width = Math.round(frac * 100) + '%';
-        applySheet(runner, 'run', SHEET_W.crew, SHEET_W.crewH);
+        if (!applySheet(runner, 'run', SHEET_W.crew, SHEET_W.crewH)) {
+          markSheetMissing(runner, SHEET_W.crew, SHEET_W.crewH, 'run');
+        }
         runner.style.top = '48px';
         runner.style.left = 'calc(' + Math.round(frac * 100) + '% - 16px)';
         var nodes = '';
@@ -706,10 +725,12 @@ var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
           var sheet = agentSheet(a);
           if (a.state === 'working' || /qa/i.test(a.workerId || '')) active++;
           var stageInner;
+          var sheetErr = '';
           if (sheetStatus[sheet] === 'fail') {
-            // Visible missing-sprite avatar: initial only. Never an empty slot.
+            // Visible missing-sprite avatar + named warning on the card. Never an empty slot.
             var initial = esc(Array.from(norm.name).slice(0, 1).join('') || '?');
-            stageInner = '<div class="crew-missing" title="' + esc(t('spriteFail')) + '">' + initial + '</div>';
+            stageInner = '<div class="crew-missing" title="' + esc(t('spriteFail') + ': ' + sheet) + '">' + initial + '</div>';
+            sheetErr = '<div class="sprite-err">' + esc(t('spriteLoadFail') + ': ' + sheet) + '</div>';
           } else {
             stageInner = '<div class="crew-sp" data-sheet="' + sheet + '"></div>';
           }
@@ -721,7 +742,7 @@ var SHEET_W = { crew: 32, crewH: 48, climb: 64, climbH: 98 };
             + '<div class="who"><span class="nm" title="' + esc(norm.full) + '">' + esc(norm.name) + '</span> '
             + '<span class="pill ' + agentPillClass(a) + '">● ' + esc(agentStateLabel(a)) + '</span></div></div>'
             + '<div class="role">' + esc(norm.role) + '</div>'
-            + taskRow + '</div>';
+            + taskRow + sheetErr + '</div>';
         }
         agentsEl.innerHTML = html;
         var stages = agentsEl.querySelectorAll('.crew-sp');
@@ -942,8 +963,8 @@ export function widgetResourceMeta(assetBase = ''): Record<string, unknown> {
     if (assetBase) origin = new URL(assetBase).origin;
   } catch (e) { /* keep default origin */ }
   return {
-    ui: { prefersBorder: true, csp: { resourceDomains: [origin] } },
-    'openai/widgetCSP': { resource_domains: [origin], connect_domains: [] as string[] },
+    ui: { prefersBorder: true, csp: { resourceDomains: [origin], connectDomains: [origin] } },
+    'openai/widgetCSP': { resource_domains: [origin], connect_domains: [origin] },
   };
 }
 export const WIDGET_SPRITE_SHEETS = ['run', 'dig', 'climb', 'qa', 'done', 'blocked', 'sleep', 'idle'];

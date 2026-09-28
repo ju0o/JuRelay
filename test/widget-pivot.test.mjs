@@ -194,6 +194,13 @@ describe('layout contract (P1-P5, H1-H4)', () => {
   it('dual CSP meta (ui.csp + legacy openai/widgetCSP)', () => {
     const meta = m.widgetResourceMeta('https://mcp.relay-agent.site/widgets/crew');
     assert.deepEqual(meta.ui.csp.resourceDomains, ['https://mcp.relay-agent.site']);
+    assert.deepEqual(meta.ui.csp.connectDomains, ['https://mcp.relay-agent.site']);
     assert.deepEqual(meta['openai/widgetCSP'].resource_domains, ['https://mcp.relay-agent.site']);
+    assert.deepEqual(meta['openai/widgetCSP'].connect_domains, ['https://mcp.relay-agent.site']);
+  });
+  it('sprite failure surfaces visibly on cards and stages', () => {
+    assert.ok(html.includes('스프라이트 로드 실패'), 'named sheet error text present');
+    assert.ok(html.includes('markSheetMissing'), 'stage fallback marker present');
+    assert.ok(html.includes('sheet-missing'), 'missing-slot style present');
   });
 });
