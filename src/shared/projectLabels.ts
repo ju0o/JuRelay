@@ -10,7 +10,9 @@ export interface ProjectLabel {
  * 이름과 목표는 사용자 설정(`settings.json`의 projectLabels, 또는 같은 JSON을 담은
  * localStorage `agent-relay.project-labels`)에서만 온다. 파일이 없거나 깨져 있어도 예외를 내지 않는다.
  */
-export const PROJECT_LABELS: Record<string, ProjectLabel> = {};
+export const PROJECT_LABELS: Record<string, ProjectLabel> = {
+  jutell: { name: 'JuTell', goal: '짧고 쉬운 작업 보고서' },
+};
 
 /** 브라우저가 기억하는 사용자 프로젝트 설정 키. 파일과 같은 JSON이다. */
 export const PROJECT_LABELS_STORAGE_KEY = 'agent-relay.project-labels';

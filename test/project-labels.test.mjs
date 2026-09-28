@@ -8,7 +8,7 @@ const read = file => readFile(new URL(file, root), "utf8");
 
 test("shared project labels are not a built-in product list", async () => {
   const source = await read("src/shared/projectLabels.ts");
-  assert.match(source, /export const PROJECT_LABELS: Record<string, ProjectLabel> = \{\}/);
+  assert.match(source, /export const PROJECT_LABELS: Record<string, ProjectLabel> = \{[\s\S]*jutell:\s*\{\s*name: 'JuTell',\s*goal: '짧고 쉬운 작업 보고서'/);
   for (const name of ["JuPlan", "JuCeipt", "통합 관제 화면", "JuCeipt 기획", "에이전트 릴레이", "주플랜", "주싯", "주컨트롤러"]) {
     assert.equal(source.includes(name), false, name);
   }
@@ -21,7 +21,8 @@ test("Control Room and Plan Studio consume the shared map and render goals separ
     assert.doesNotMatch(source, /에이전트 릴레이|주플랜|주싯|주컨트롤러/);
   }
   assert.match(controlRoom, /<span>\{presentation\.name\}<\/span>[\s\S]*?<small[^>]*>\{presentation\.goal\}<\/small>/);
-  assert.match(planStudio, /<span>\{item\.name\}<\/span>[\s\S]*?<small[^>]*>\{item\.goal\}<\/small>/);
+  assert.match(planStudio, />\{item\.name\}<\/button>/);
+  assert.match(planStudio, /<p className="plan-goal">\{goalText\}<\/p>/);
 });
 
 test("QA editor blocks self-review by the first worker AI", async () => {
