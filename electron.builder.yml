@@ -43,4 +43,6 @@ nsis:
   artifactName: AgentRelay-Setup-${version}.exe
 portable:
   artifactName: AgentRelay-Portable-${version}.exe
+linux:
+  target: dir
 npmRebuild: false
