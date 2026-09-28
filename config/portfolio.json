@@ -6196,6 +6196,18 @@
             "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX 고도화"
+        },
+        {
+          "taskId": "ACTL-TUI-HIDE-ROW-DETAIL-R2",
+          "scope": "In tui._render only, keep a non-empty preview and the 답 없음 flag text, and when the preview is empty but detail is set show 확인하지 못했어요 instead of that detail, with test_render_hides_missing_completion_detail failing on the old code because No completed assistant is still printed and passing on the new code while the existing DONE assertion in test_render_shows_live_and_result_state still passes, and leave one local commit whose reported commitSha is the exact 40-character output of git rev-parse HEAD.",
+          "files": [
+            "src/actl/tui.py",
+            "tests/test_tui.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/tui.py:423 row detail printed on the AI-window line — Founder direction 2026-09-23 no English errors on the surface"
         }
       ],
       "qaRuntime": [
