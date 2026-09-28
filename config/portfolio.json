@@ -20865,6 +20865,17 @@
           ],
           "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:17 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집",
           "title": "사업 흐름은 최종 답과 영수증이 같이 있을 때만"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-FOUNDER-SURFACE-KO",
+          "scope": "캐노니컬 HTML 05의 첫 화면과 WBS·핸드오프 표면에서 보이는 영어 개발자 문구와 내부 코드를 plain Korean으로 바꾸고 원문 보기 안에만 남긴다.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:31,79-91,124-129 — visible English labels and internal gate text remain on the Founder-facing surface"
         }
       ],
       "skills": {
