@@ -28,7 +28,7 @@
 "test:controlroom-toggle": "node test/controlroom-automation-toggle.test.mjs && node test/controlroom-plain-2.test.mjs",
     "test": "npm run test:fs && npm run test:vnext && npm run test:v03 && npm run test:v2 && npm run test:night-buttons && npm run test:plan-request && npm run test:night-reports && npm run test:controlroom-copy && npm run test:controlroom-toggle && npm run test:automation-ui && node test/standalone-no-hub.test.mjs && node test/oss-local-run.test.mjs",
     "pretest": "npm run build:server",
-    "build:win": "vite build && tsc -p tsconfig.server.json && electron-builder --config electron.builder.yml"
+    "build:win": "vite build && tsc -p tsconfig.server.json && electron-builder --win --publish never --config electron.builder.yml"
   },
   "main": "dist/server/backend/main.js",
   "dependencies": {
