@@ -8808,6 +8808,45 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:1-4 'It describes how JuPlan is exposed as an Agent Relay CORE V1 managed project' plus the established sibling pattern (packages/runtime/src/agentRelayTransportHold.ts exported and re-exported from src/index.ts:4716-4729) that Result Inbox alone does not yet follow",
           "title": "결과함을 안정적으로 확인"
+        },
+        {
+          "taskId": "JUPLAN-AR-IDENTITY-MODULE",
+          "scope": "Move the project-identity parser out of the test into an exported runtime module so Agent Relay can read the SSOT path and lane state, without changing the manifest or V1 behavior.",
+          "files": [
+            "packages/runtime/src/agentRelayProjectIdentity.ts",
+            "packages/runtime/test/agent-relay-project-identity.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-project-identity.test.ts",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:158 Agent Relay can represent JuPlan's SSOT path and lane state via project-identity.json."
+        },
+        {
+          "taskId": "JUPLAN-AR-LANE-STATUS-MODULE",
+          "scope": "Move the lane-status parser out of the test into an exported runtime module so the CONTROL_TOWER lane vocabulary stays a callable mapping, without changing lane states or V1 behavior.",
+          "files": [
+            "packages/runtime/src/agentRelayLaneStatus.ts",
+            "packages/runtime/test/agent-relay-lane-status.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-lane-status.test.ts",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "docs/roadmap/MASTER_WBS.md:212 Deliverables: project identity and PM-channel mapping in Agent Relay; bounded task intake/result routing; lane status and Founder Gate packet mapping."
+        },
+        {
+          "taskId": "JUPLAN-AR-GATE-PACKET-MODULE",
+          "scope": "Move the Founder Gate packet parser out of the test into an exported runtime module that still stops only this lane and keeps DEC-G012 isolated, without changing V1 behavior.",
+          "files": [
+            "packages/runtime/src/agentRelayFounderGatePacket.ts",
+            "packages/runtime/test/agent-relay-gate-packet.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-gate-packet.test.ts",
+            "pnpm --filter @juplan/runtime typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane."
         }
       ],
       "qaRuntime": [
