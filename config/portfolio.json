@@ -6082,6 +6082,42 @@
           ],
           "ssotEvidence": "README.md:6 여러 AI 비서를 번갈아 쓰는 비개발자를 위한 도구입니다.",
           "title": "맞는 인공지능 창만 쉽게 찾기"
+        },
+        {
+          "taskId": "ACTL-CLI-PASTE-PLAIN",
+          "scope": "Make cli._paste_mode Founder messages plain Korean with a next step and fold WriterDenied detail under 원문 보기.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_paste_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:06: 비개발자 UX 고도화"
+        },
+        {
+          "taskId": "ACTL-CLI-MAP-PLAIN",
+          "scope": "Make actl map prompts and failures plain Korean with a next step, keeping pane ids only under 원문 보기.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_map_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:14 웹 보드와 TUI 보드 모두 한국어 상태 라벨을 사용한다."
+        },
+        {
+          "taskId": "ACTL-WEB-VALIDATE-PLAIN",
+          "scope": "Replace serve.py request-validation ValueErrors (unknown agent/text/pane) with plain Korean next-step messages so /api/send and /api/remap never return English to the Founder.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_errors_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25 13:06: 비개발자 UX 고도화"
         }
       ],
       "qaRuntime": [
