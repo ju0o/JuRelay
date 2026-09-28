@@ -68,6 +68,13 @@ async function main() {
   relay.writeMarkdown(folder, 'result.md', '# hi\n', false);
   if (fs.existsSync(relay.resolveResultPath(folder))) PASS('file exists at resolved path');
   else FAIL('resolved path does not hold result.md');
+  console.log('R3) 깊은 폴더에서도 export 헤더가 Run 이름을 유지함');
+  const nestedFolder = path.join(TEST_ROOT, 'archive', 'deep', 'NESTEDTEST', '2026-08-23', 'Claude Code', '02');
+  relay.writeMarkdown(nestedFolder, 'prompt.md', '# nested\n', false);
+  const nestedExport = relay.exportRunMarkdown(nestedFolder);
+  if (nestedExport.startsWith('# NESTEDTEST · Claude Code · 2026-08-23 · Run 02')) {
+    PASS('nested export keeps project and run names');
+  } else FAIL(`nested export header wrong: ${nestedExport.split('\n')[0]}`);
 
   // ── 4. Dogfooding ─────────────────────────────────────────────────────────
   console.log('D1) 피드백 생성 — ID 자동 증가');
