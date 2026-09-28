@@ -23681,6 +23681,50 @@
           ],
           "ssotEvidence": "layout.mjs:120 서버 주인과 운영진은 제외돼요",
           "title": "운영자와 담당자는 스팸에서 제외해요"
+        },
+        {
+          "taskId": "JUAI-CHECK-FEEDBACK-SCOPE",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that the onMessage feedback-bonus condition requires a feedback or showcase parent, a different thread owner, and length at least FEEDBACK_MIN, and that grantBonus runs inside that condition before labQuestion.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 피드백 보너스는 다른 사람의 쇼케이스·피드백 글에 피드백을 달 때만 적용"
+        },
+        {
+          "taskId": "JUAI-CHECK-TALK-GATES",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that requestTalk returns when the topic is shorter than TALK_TOPIC_MIN and when the pending count has reached TALK_PENDING_MAX, both before inserting a talk request.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 봇수다 주제는 4자 이상·최대 100자·1인 대기 2개까지"
+        },
+        {
+          "taskId": "JUAI-CHECK-FORUM-NOQUOTA",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that onThread returns from the qa faqReply path before takeQuota and that its forum takeQuota uses bot:forum with staff true rather than the post author's id.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 1인 기본 하루 5회"
+        },
+        {
+          "taskId": "JUAI-CHECK-VOTE-FAQ",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that rememberAnswer reacts with both thumbs-up and thumbs-down and that onVote calls addFaq only when that thumbs-up comes from the original asker.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 답변 👍/👎"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
