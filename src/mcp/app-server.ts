@@ -53,6 +53,7 @@ import {
   PM_WIDGET_RESOURCE_NAME,
   PM_WIDGET_RESOURCE_URI,
   pmWidgetHtml,
+  widgetResourceMeta,
 } from './app/pm-widget-resource.js';
 import { mapCoreError } from './errors.js';
 
@@ -147,7 +148,11 @@ export function buildAppTools(ctx: PmServerContext): AppTool[] {
       'with a bounded AGENT_RELAY_PM_WAKE instruction when a result is ready for review. ' +
       'Pure read; the widget then uses the standard Agent Relay PM tools.',
     inputSchema: { type: 'object', properties: {}, required: [], additionalProperties: false },
-    _meta: { ui: { resourceUri: PM_WIDGET_RESOURCE_URI } },
+    _meta: {
+      ui: { resourceUri: PM_WIDGET_RESOURCE_URI },
+      // ChatGPT compatibility alias (Apps SDK honors this alongside ui.resourceUri).
+      'openai/outputTemplate': PM_WIDGET_RESOURCE_URI,
+    },
     // Per-call unique URI in the PATH (not query — some hosts normalize
     // query strings away when caching renders). Every open is uncacheable.
     handler: async () => {
@@ -211,6 +216,7 @@ function newAppServer(tools: AppTool[]): SdkServerInstance {
         name: PM_WIDGET_RESOURCE_NAME,
         description: 'Agent Relay PM wake widget: monitors pending PM Deliveries and wakes GPT PM.',
         mimeType: PM_WIDGET_MIME_TYPE,
+        _meta: widgetResourceMeta(process.env['WIDGET_ASSET_BASE'] || ''),
       },
     ],
   }));
@@ -230,6 +236,7 @@ function newAppServer(tools: AppTool[]): SdkServerInstance {
           {
             uri: PM_WIDGET_RESOURCE_URI,
             mimeType: PM_WIDGET_MIME_TYPE,
+            _meta: widgetResourceMeta(process.env['WIDGET_ASSET_BASE'] || ''),
             text: pmWidgetHtml(
               process.env['WIDGET_ASSET_BASE'] || '',
             ),

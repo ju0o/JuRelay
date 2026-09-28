@@ -43,4 +43,11 @@ describe('crew widget spec', () => {
     assert.ok(html.includes('unhandledrejection'), 'promise failures surface to fallback');
     assert.ok(html.includes("btn.onclick = function () { hideFallback(); init(); }"), 'retry re-runs init');
   });
+  it('declares host CSP allowlist for sprite origin', () => {
+    const meta = m.widgetResourceMeta('https://mcp.relay-agent.site/widgets/crew');
+    assert.deepEqual(meta.ui.csp.resourceDomains, ['https://mcp.relay-agent.site']);
+    const fallback = m.widgetResourceMeta('');
+    assert.deepEqual(fallback.ui.csp.resourceDomains, ['https://mcp.relay-agent.site']);
+    assert.equal(meta.ui.prefersBorder, true);
+  });
 });

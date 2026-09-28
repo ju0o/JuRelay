@@ -720,3 +720,13 @@ const BUILD_DATE = new Date().toISOString().slice(0, 16).replace('T', ' ');
 export const PM_WIDGET_RESOURCE_URI = `ui://agent-relay/pm-widget-${WIDGET_HASH}`;
 export const PM_WIDGET_RESOURCE_NAME = 'Agent Relay PM';
 export const PM_WIDGET_MIME_TYPE = 'text/html;profile=mcp-app';
+// Host CSP allowlist (OpenAI Apps SDK / MCP Apps): the widget loads sprite
+// images from the public asset base, so its origin must be declared in
+// _meta.ui.csp.resourceDomains or the sandbox blocks them.
+export function widgetResourceMeta(assetBase = ''): Record<string, unknown> {
+  let origin = 'https://mcp.relay-agent.site';
+  try {
+    if (assetBase) origin = new URL(assetBase).origin;
+  } catch (e) { /* keep default origin */ }
+  return { ui: { prefersBorder: true, csp: { resourceDomains: [origin] } } };
+}
