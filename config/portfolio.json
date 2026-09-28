@@ -6212,6 +6212,42 @@
           ],
           "ssotEvidence": "src/actl/tui.py:423 row detail printed on the AI-window line — Founder direction 2026-09-23 no English errors on the surface",
           "title": "답을 못 보면 확인하지 못했다고 보여요"
+        },
+        {
+          "taskId": "ACTL-WEB-CLOCK-EMPTY",
+          "scope": "In src/actl/serve.py BOARD_HTML only, show the header clock and the 기록 time as Korean 12-hour local time without seconds (오전/오후, for example 오후 2:10) instead of toLocaleTimeString(), stop appending the raw %H:%M:%S d.time onto the status line, and when 보내기 is pressed with an empty composer show 보낼 내용이 없어요 — 내용을 입력한 뒤 다시 보내 주세요 in #sendConfirmText without opening the busy-send 보내기 button.",
+          "files": [
+            "src/actl/serve.py",
+            "tests/test_serve_plain_cards.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 진짜 비개발자도 보면 이해가 되게. founder-ux: 시간은 오후 2:10, 버튼 결과는 누른 곳에"
+        },
+        {
+          "taskId": "ACTL-TK-PRINT-PLAIN",
+          "scope": "In Board.on_print in src/actl/gui.py only, notify 연결된 AI 창을 골라 주세요 when the window is not connected, notify a Korean next step instead of logging live pane 없음 when there is no target, show 아직 새 답이 없어요 — 작업이 끝나면 다시 해 보세요 when the answer is empty without extractor detail, and on failure show a Korean next step while the raw exception stays in the log.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_visible_feedback.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 진짜 비개발자도 보면 이해가 되게. founder-ux: 빈 버튼 없이, 오류는 다음 행동이 있는 한국어"
+        },
+        {
+          "taskId": "ACTL-TUI-MAP-PLAIN",
+          "scope": "In src/actl/tui.py only, the number-key mapping result, the undetected preview line, and the m remap candidate list plus its success and failure lines must say what happened in plain Korean with a next step, and put the pane id, path, command, and raw exception on a 원문 보기 line via the existing _result_message helper.",
+          "files": [
+            "src/actl/tui.py",
+            "tests/test_tui_send_copy_plain.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: founder-ux Skill의 Live status card. pane id와 영어 상태는 원문 보기 뒤"
         }
       ],
       "qaRuntime": [
