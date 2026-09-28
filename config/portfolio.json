@@ -6013,6 +6013,18 @@
             "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "src/actl/core/config.py:48 Agent is not currently mapped to a tmux pane; Founder direction 2026-09-25 비개발자 UX"
+        },
+        {
+          "taskId": "ACTL-CLI-BIND-PLAIN-R2",
+          "scope": "OpenCode 연결 안내만 평이한 한국어로 정리하고 표면 안내에서는 bind opencode를 숨겨 원문 보기 아래에만 표시하며 대화창 문구와 relaunch 확인 시점은 변경하지 않는다.",
+          "files": [
+            "src/actl/cli.py",
+            "tests/test_cli_korean_messages.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/cli.py:901 Bind this OpenCode conversation now?"
         }
       ],
       "qaRuntime": [
