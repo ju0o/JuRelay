@@ -2399,6 +2399,7 @@ export function ControlRoom(): React.ReactElement {
     try {
       const next = await must<ControlRoomBoard>({ op: 'controlRoom:board' });
       const normalized = {
+        ...next,
         lanes: Array.isArray(next?.lanes) ? next.lanes : [],
         models: next?.models && typeof next.models === 'object' ? next.models : undefined,
         routing: (next as Record<string, unknown>)?.routing,
