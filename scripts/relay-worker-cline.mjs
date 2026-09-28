@@ -122,7 +122,9 @@ function writeLaunchLog(runFolder, entry) {
 }
 
 function runCline(prompt, workspaceRoot, sessionId) {
-  const args = ['--json', '--auto-approve', 'true', '-c', workspaceRoot, '--provider', 'cline-pass'];
+  // Provider 'cline' (valid token, free model). 'cline-pass' expired 2026-09-23
+  // ("model not found") and is no longer used.
+  const args = ['--json', '--auto-approve', 'true', '-c', workspaceRoot, '--provider', 'cline'];
   if (sessionId) args.push('--id', sessionId);
   args.push(prompt);
   return new Promise((resolve, reject) => {
@@ -191,7 +193,7 @@ async function main() {
     if (result.sessionId) writeSessionId(args.dataRoot, args.project, workerId, result.sessionId);
     writeLaunchLog(runFolder, {
       startedAt, finishedAt: new Date().toISOString(), taskId: args.taskId, runId: args.runId,
-      workerId, provider: 'cline-pass', sessionResumed: !!priorSession,
+      workerId, provider: 'cline', sessionResumed: !!priorSession,
       phase: 'completed', exitCode: result.code, ...(result.signal ? { signal: result.signal } : {}),
       ...(result.code !== 0 && result.stderr ? { stderrExcerpt: result.stderr.slice(0, DIAG_LIMIT) } : {}),
     });
