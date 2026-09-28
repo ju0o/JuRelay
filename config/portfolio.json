@@ -23357,6 +23357,50 @@
           ],
           "ssotEvidence": "README.md:8 quote, or Founder direction 2026-09-23",
           "title": "멤버에게 보이는 명령이 실제와 같음"
+        },
+        {
+          "taskId": "JUAI-CHECK-README-QUOTA-NUMBERS",
+          "scope": "Add check.mjs assertions only that README's quota safety line cites LIMITS.daily, LIMITS.gapMs in seconds, LIMITS.globalDaily, LIMITS.bonusMax, and the Founder/staff daily exemption.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:49 1인 기본 하루 5회(30자 이상 피드백 보너스는 다른 사람의 쇼케이스·피드백 글에 피드백을 달 때만 적용, 최대 +3) · 30초 간격 · 서버 전체 하루 300회 · 서버 주인(Founder)·운영진은 일일 제한 없음."
+        },
+        {
+          "taskId": "JUAI-CHECK-README-SUB-CAPS",
+          "scope": "Add check.mjs assertions only that README's member-commands parenthetical cites SUB_KEYWORD_MIN, SUB_KEYWORD_MAX, SUB_MAX, and SUB_DAILY, leaving the command-name inventory untouched.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 키워드 구독은 2~20글자, 최대 5개, 매칭 알림은 1인 하루 3회"
+        },
+        {
+          "taskId": "JUAI-CHECK-README-MODELS",
+          "scope": "Add check.mjs assertions only that README's bot table names Claude as Haiku and CommandCode as Laguna S 2.1, matching ai.mjs's haiku default and COMMANDCODE_MODEL.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:14 Claude Code CLI (Haiku); README.md:17 Laguna S 2.1 자체 무료 모델 (실패 시 OpenCode 무료 모델)"
+        },
+        {
+          "taskId": "JUAI-CHECK-CARD-LABELS",
+          "scope": "Add check.mjs assertions only that the approval card buttons are exactly 승인, 보류, and 더 생각 and that README says those are the only card actions.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다."
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
