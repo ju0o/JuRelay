@@ -15263,6 +15263,17 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-28: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints.",
           "title": "이유를 몰라도 상태판 안내가 안내문과 같아요"
+        },
+        {
+          "taskId": "JUCONTROLER-GUIDE-TABLE-ALL-LINES",
+          "scope": "상세 시작 문서의 상태판 안내 문장 표를 읽고 각 한국어 문장이 실제 scripts/status-board.mjs fixture 출력과 일치하는지 오프라인으로 검사한다.",
+          "files": [
+            "tests/getting-started-guide-table-all-lines.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/*.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints."
         }
       ],
       "qaRuntime": [
