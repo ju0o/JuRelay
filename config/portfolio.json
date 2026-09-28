@@ -21289,6 +21289,17 @@
           ],
           "ssotEvidence": "README.md:9-13 'The PM must continuously maintain and use these control documents'; docs/planning/BUSINESS_SYSTEM_INDEX.md:8-18 canonical read order includes M3_DAILY_VALUE_VALIDATION.md",
           "title": "기획 읽기 순서를 최신 문서까지 맞춘다"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-PROTOCOL-LIVE-STATUS-RULE",
+          "scope": "In docs/operations/PM_WORKER_PROTOCOL.md add one sentence after the numbered authority list stating that live milestone, PR, and SHA status follows PM_STATUS_BOARD.md over stale MASTER_ROADMAP operational paragraphs, without reordering the list or recording any milestone decision.",
+          "files": [
+            "docs/operations/PM_WORKER_PROTOCOL.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:20 Live milestone/PR/SHA truth remains in PM_STATUS_BOARD.md; stale operational paragraphs in MASTER_ROADMAP do not override the status board."
         }
       ],
       "skills": {
