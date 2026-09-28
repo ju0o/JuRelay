@@ -6262,7 +6262,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "복사 기록을 쉬운 말로 보여요"
         },
         {
           "taskId": "ACTL-TK-INSPECTOR-ROLE-KO",
@@ -6274,7 +6275,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "역할을 한글로 계획 만들기 검사 시험"
         },
         {
           "taskId": "ACTL-TUI-COPY-CHECK-PLAIN",
@@ -6286,7 +6288,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "복사할 수 있는지 쉬운 말로 봐요"
         }
       ],
       "qaRuntime": [
@@ -9612,7 +9615,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts test/agent-relay-blocked-queue.test.ts test/agent-relay-pause-queue.test.ts test/agent-relay-retry-queue.test.ts test/agent-relay-scope-hold.test.ts test/agent-relay-transport-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched.",
+          "title": "야간 마무리 중 새 일 안 받기"
         },
         {
           "taskId": "JUPLAN-AR-ACCEPT-NIGHT-DRAIN",
@@ -9625,7 +9629,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched.",
+          "title": "야간 마무리 중 다음 일 멈추기"
         },
         {
           "taskId": "JUPLAN-AR-RESTART-QUEUE",
@@ -9639,7 +9644,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-queue.test.ts test/agent-relay-provider-failure-queue.test.ts test/agent-relay-night-drain-queue.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch."
+          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch.",
+          "title": "재시작이 애매하면 작업 보류"
         }
       ],
       "qaRuntime": [
@@ -23466,7 +23472,8 @@
           "tests": [
             "node --test tests/evidence-repeat-skip-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:268 단순한 안내 문장이나 이미 근거가 명확한 파일 설명에는 상태를 반복하지 않아도 된다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:268 단순한 안내 문장이나 이미 근거가 명확한 파일 설명에는 상태를 반복하지 않아도 된다.",
+          "title": "분명한 안내에는 확인 표시를 반복하지 않음"
         },
         {
           "taskId": "JUTELL-NO-USER-ACTION-NOT-AUTO-FAIL-PARITY",
@@ -23478,7 +23485,8 @@
           "tests": [
             "node --test tests/no-user-action-not-auto-fail-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:584 사용자 행동이 필요하지 않은 작업에서 사용자 행동 항목이 없다는 이유만으로 자동 실패시키지 않는다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:584 사용자 행동이 필요하지 않은 작업에서 사용자 행동 항목이 없다는 이유만으로 자동 실패시키지 않는다.",
+          "title": "할 일이 없어도 실패로 처리하지 않음"
         },
         {
           "taskId": "JUTELL-EXPLAINED-DIFF-EVIDENCE-ONLY-PARITY",
@@ -23490,7 +23498,8 @@
           "tests": [
             "node --test tests/explained-diff-evidence-only-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:66 `explainedDiff`는 근거가 확인된 변경에만 설명을 덧붙인다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:66 `explainedDiff`는 근거가 확인된 변경에만 설명을 덧붙인다.",
+          "title": "확인된 변경에만 이유를 설명함"
         },
         {
           "taskId": "JUTELL-FEATURE-BOOLEAN-DEFAULT-PARITY",
@@ -23502,7 +23511,8 @@
           "tests": [
             "node --test tests/feature-boolean-default-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:64 기본값은 모든 Feature가 `true`다. Feature 값은 반드시 boolean이어야 한다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:64 기본값은 모든 Feature가 `true`다. Feature 값은 반드시 boolean이어야 한다.",
+          "title": "기능은 기본이 켜짐이고 켜거나 끄기만 가능"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -25775,7 +25785,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "layout.mjs:143 예전에 해결된 비슷한 질문이 있으면 그 답을 먼저 보여줘요 (횟수 안 씀)"
+          "ssotEvidence": "layout.mjs:143 예전에 해결된 비슷한 질문이 있으면 그 답을 먼저 보여줘요 (횟수 안 씀)",
+          "title": "비슷한 질문만 보여주고 횟수 아끼기"
         },
         {
           "taskId": "JUAI-CHECK-DM-QUOTA-RETURN",
@@ -25786,7 +25797,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:8 OpenCode 개인 메시지도 하루 질문 횟수를 공유"
+          "ssotEvidence": "README.md:8 OpenCode 개인 메시지도 하루 질문 횟수를 공유",
+          "title": "개인 메시지 횟수 끝나면 안내하기"
         },
         {
           "taskId": "JUAI-CHECK-OPS-BODY",
@@ -25797,7 +25809,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:19 주간 리포트"
+          "ssotEvidence": "README.md:19 주간 리포트",
+          "title": "운영진 주간 보고에 나쁜 답만 넣기"
         },
         {
           "taskId": "JUAI-CHECK-COLLECT-OPTOUT",
@@ -25808,7 +25821,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "layout.mjs:124 추천·요약에서 내 글이 언급되기 싫으면 입장 질문에서 언급하지 말아주세요를 고르세요."
+          "ssotEvidence": "layout.mjs:124 추천·요약에서 내 글이 언급되기 싫으면 입장 질문에서 언급하지 말아주세요를 고르세요.",
+          "title": "언급 싫다는 사람 글은 요약에서 빼기"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
@@ -26400,11 +26414,12 @@
   "pool": {
     "subscribed": [
       "codex",
-      "codex-terra",
+      "opencode-free",
+      "cline",
       "cursor",
       "opencode",
-      "cline",
-      "grok"
+      "grok",
+      "codex-terra"
     ],
     "free": [
       "opencode-free"
