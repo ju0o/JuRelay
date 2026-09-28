@@ -6,7 +6,7 @@ productName: Agent Relay
 asar: false
 directories:
   output: dist
-  buildResources: .github
+  buildResources: build
 files:
   - dist/client/**/*
   - dist/server/**/*
