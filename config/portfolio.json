@@ -19388,6 +19388,33 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:28 | Product decision | **M2 GO** |",
           "title": "점검 결과와 현재 결정을 분명히 안내"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-QA-AUDIT-TIME-M2-NOTE",
+          "scope": "Add one dated audit-time note under each listed QA header stating that the M2 PM REVIEW baseline belongs to that audit checkout, that the status board now shows M2 GO, and that the note records no M3 GO/DEFER/KILL and is not an instruction to restore PM REVIEW.",
+          "files": [
+            "docs/qa/P0_CANONICAL_HTML_TRACEABILITY_AUDIT.md",
+            "docs/qa/P0_CROSS_ARTIFACT_AUDIT.md",
+            "docs/qa/P0_DECISION_TRACEABILITY_QA.md",
+            "docs/qa/P0_ERD_SCENARIO_AUDIT.md",
+            "docs/qa/P0_RECEIPT_ERD_PARITY_AUDIT.md",
+            "docs/qa/P0_WBS_ENTITY_GATE_MATRIX_AUDIT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:28 | Product decision | **M2 GO** |"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-NEXT-AGENT-KO",
+          "scope": "On the canonical map, fold only the visible English milestone sentence in the Next Agent may do card under 원문 보기 and show one Korean sentence with the same facts: the 10-receipt register is complete, 0 seven-task rows join both artifacts, the M3 decision is not recorded, and planning does not unlock implementation.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:173 M3 decision is pending"
         }
       ],
       "skills": {
