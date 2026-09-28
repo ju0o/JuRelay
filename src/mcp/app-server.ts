@@ -123,9 +123,9 @@ export function buildAppTools(ctx: PmServerContext): AppTool[] {
       'Pure read; the widget then uses the standard Agent Relay PM tools.',
     inputSchema: { type: 'object', properties: {}, required: [], additionalProperties: false },
     _meta: { ui: { resourceUri: PM_WIDGET_RESOURCE_URI } },
-    // Per-call unique URI: hosts cache renders by URI, so every open gets a
-    // fresh address (?t=<ms>) that can never match a cached render.
-    handler: async () => ({ ok: true, widget: `${PM_WIDGET_RESOURCE_URI}?t=${Date.now()}` }),
+    // Per-call unique URI in the PATH (not query — some hosts normalize
+    // query strings away when caching renders). Every open is uncacheable.
+    handler: async () => ({ ok: true, widget: `${PM_WIDGET_RESOURCE_URI}--${Date.now()}` }),
   });
   return tools;
 }
@@ -190,8 +190,8 @@ function newAppServer(tools: AppTool[]): SdkServerInstance {
     ReadResourceRequestSchema,
     async (req: { params: { uri?: string } }) => {
       const uri = req.params.uri;
-      // Accept per-call nonce (?t=...) appended by the opener; identity is the base URI.
-      const base = (uri || '').split('?')[0];
+      // Accept per-call nonce suffixes (--<ms> or legacy ?t=<ms>); identity is the base URI.
+      const base = (uri || '').split(/[?]/)[0].split('--')[0];
       if (base !== PM_WIDGET_RESOURCE_URI) {
         throw new Error(`Unknown resource: ${uri}`);
       }
