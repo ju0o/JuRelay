@@ -92,6 +92,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .update { display:none; margin-top:8px; border:1px solid var(--wait); border-radius:8px;
             padding:8px 10px; font-size:12px; }
   .update.show { display:block; }
+  .update button { margin:0 6px; border:1px solid var(--text); background:transparent;
+                   color:var(--text); border-radius:12px; padding:2px 10px; cursor:pointer;
+                   font-size:12px; }
   /* character animations (pure CSS/SVG, no assets) */
   @keyframes swing { 0%,100% { transform:rotate(-18deg); } 50% { transform:rotate(24deg); } }
   @keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-3px); } }
@@ -157,18 +160,39 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var updateEl = document.getElementById('update');
       var OWN_URI = '__WIDGET_URI__';
       var updateNoticed = false;
-      // Self-update check: if the server serves a newer bundle than this render,
-      // banner it and try a same-document reload (falls back to the banner when
-      // the host sandbox blocks navigation). No cache-clear needed, ever.
+      // Self-update: if the server serves a newer bundle than this render,
+      // switch to it automatically. A user-gesture button is offered too,
+      // since sandboxes sometimes ignore scripted navigation.
+      var updateBtnHandler = null;
+      var lastDeliveryFp = '';
+      function deliveryFp(deliveries) {
+        return (deliveries || []).map(function (d) {
+          return (d && d.deliveryId || '') + ':' + (d && d.status || '');
+        }).join('|');
+      }
       async function checkVersion() {
         if (updateNoticed) return;
         try {
           var v = await callTool('relay_pm_get_widget_version', {});
           if (v && v.uri && v.uri !== OWN_URI) {
             updateNoticed = true;
-            updateEl.textContent = lang === 'en'
-              ? 'A newer widget is available — reloading… (if this stays, open the widget in a new chat)'
-              : '새 위젯이 있어요 — 새로고침 중… (계속 보이면 새 대화에서 열어주세요)';
+            var msg = lang === 'en'
+              ? 'A newer widget is available.'
+              : '새 위젯이 있어요.';
+            var hint = lang === 'en'
+              ? 'If this stays, open the widget in a new chat.'
+              : '계속 보이면 새 대화에서 열어주세요.';
+            updateEl.innerHTML = '';
+            var s1 = document.createElement('span');
+            s1.textContent = msg + ' ';
+            var btn = document.createElement('button');
+            btn.textContent = lang === 'en' ? 'Refresh now' : '지금 새로고침';
+            btn.onclick = function () { try { window.location.reload(); } catch (e) { /* banner stays */ } };
+            var s2 = document.createElement('span');
+            s2.textContent = ' ' + hint;
+            updateEl.appendChild(s1);
+            updateEl.appendChild(btn);
+            updateEl.appendChild(s2);
             updateEl.className = 'update show';
             logLine('newer widget bundle: ' + v.uri);
             try { window.location.reload(); } catch (e) { /* banner stays */ }
@@ -379,15 +403,16 @@ const WIDGET_HTML = `<!DOCTYPE html>
         return r || {};
       }
 
-      var pollCount = 0;
       async function poll() {
         try {
-          pollCount++;
-          if (pollCount % 20 === 0) checkVersion();
           var list = await callTool('relay_pm_list_pending_deliveries', {});
           var deliveries = (list && list.deliveries) || [];
           lastDeliveries = deliveries;
           renderBoard(deliveries);
+          // Event-driven version check: only when the delivery set actually
+          // changed (or first run). No timer polling.
+          var fp = deliveryFp(deliveries);
+          if (fp !== lastDeliveryFp) { lastDeliveryFp = fp; checkVersion(); }
           try {
             var dash = await callTool('relay_pm_get_dashboard', {});
             renderAgents(dash);
