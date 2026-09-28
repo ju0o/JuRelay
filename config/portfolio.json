@@ -5987,7 +5987,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/tui.py:975 send_message = f\"✓ {row['display']}에 전송됨\"; Founder direction 2026-09-25 비개발자 UX"
+          "ssotEvidence": "src/actl/tui.py:975 send_message = f\"✓ {row['display']}에 전송됨\"; Founder direction 2026-09-25 비개발자 UX",
+          "title": "보내고 복사한 결과를 쉽게 확인"
         },
         {
           "taskId": "ACTL-LIVE-CARD-NO-TEXT",
@@ -5999,7 +6000,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/live_card.py:58 answer uses preview verbatim; Founder direction 2026-09-25 live status card API"
+          "ssotEvidence": "src/actl/live_card.py:58 answer uses preview verbatim; Founder direction 2026-09-25 live status card API",
+          "title": "답이 없을 때 알아보기 쉽게 표시"
         },
         {
           "taskId": "ACTL-CONFIG-UNMAPPED-KO",
@@ -6012,7 +6014,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/core/config.py:48 Agent is not currently mapped to a tmux pane; Founder direction 2026-09-25 비개발자 UX"
+          "ssotEvidence": "src/actl/core/config.py:48 Agent is not currently mapped to a tmux pane; Founder direction 2026-09-25 비개발자 UX",
+          "title": "연결 대상 오류와 해결 방법 안내"
         },
         {
           "taskId": "ACTL-CLI-BIND-PLAIN-R2",
@@ -6024,7 +6027,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "src/actl/cli.py:901 Bind this OpenCode conversation now?"
+          "ssotEvidence": "src/actl/cli.py:901 Bind this OpenCode conversation now?",
+          "title": "프로그램 연결 방법을 쉽게 안내"
         }
       ],
       "qaRuntime": [
@@ -11690,7 +11694,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 영어 원문은 원문 보기 안에 두고 겉에는 쉬운 한국어만 보여 준다"
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 영어 원문은 원문 보기 안에 두고 겉에는 쉬운 한국어만 보여 준다",
+          "title": "오늘 영수증을 깔끔하게 보기"
         },
         {
           "taskId": "JUCEIPT-SCAN-MISSING-EMPTY-REASON",
@@ -11702,7 +11707,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: juceipt scan 출력에서 빠진 확인 항목을 쉬운 말로 설명한다"
+          "ssotEvidence": "Founder direction 2026-09-25: juceipt scan 출력에서 빠진 확인 항목을 쉬운 말로 설명한다",
+          "title": "빠진 확인이 없을 때 다음 행동 보기"
         }
       ],
       "skills": {
@@ -20086,7 +20092,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:245 Add a capture to the Section 2.3 table only when the same task has both a Claude final and a Receipt; record GO, DEFER, or KILL only for that retained joined row."
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:245 Add a capture to the Section 2.3 table only when the same task has both a Claude final and a Receipt; record GO, DEFER, or KILL only for that retained joined row.",
+          "title": "다음 결정을 위한 근거를 남깁니다"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-NEXT-JOIN-INTAKE",
@@ -20097,7 +20104,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:245 Add a capture to the Section 2.3 table only when the same task has both a Claude final and a Receipt; record GO, DEFER, or KILL only for that retained joined row."
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:245 Add a capture to the Section 2.3 table only when the same task has both a Claude final and a Receipt; record GO, DEFER, or KILL only for that retained joined row.",
+          "title": "판정에 필요한 근거를 보여줍니다"
         }
       ],
       "skills": {
@@ -22358,7 +22366,8 @@
           "tests": [
             "node --test tests/evidence-source-definitions-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:199 실제 파일 내용을 읽어서 확인했다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:199 실제 파일 내용을 읽어서 확인했다.",
+          "title": "근거 출처를 한눈에 확인해요"
         },
         {
           "taskId": "JUTELL-NO-FORCED-USER-ACTION-PARITY",
@@ -22371,7 +22380,8 @@
           "tests": [
             "node --test tests/no-forced-user-action-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:374 사용자 행동이 없으면 억지로 항목을 만들지 않는다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:374 사용자 행동이 없으면 억지로 항목을 만들지 않는다.",
+          "title": "할 일이 없으면 요구하지 않아요"
         },
         {
           "taskId": "JUTELL-GLOSSARY-EASIER-THAN-TERM-PARITY",
@@ -22383,7 +22393,8 @@
           "tests": [
             "node --test tests/glossary-easier-than-term-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:183 설명이 원래 용어보다 어렵지 않은가"
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:183 설명이 원래 용어보다 어렵지 않은가",
+          "title": "어려운 용어를 쉽게 설명해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -24368,7 +24379,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:14 어제 요약; layout.mjs:45 매일 오전 8시 Claude가 어제 대화를 요약해요."
+          "ssotEvidence": "README.md:14 어제 요약; layout.mjs:45 매일 오전 8시 Claude가 어제 대화를 요약해요.",
+          "title": "매일 아침 어제 소식 요약받기"
         },
         {
           "taskId": "JUAI-CHECK-PICKS-CONTEXT",
@@ -24379,7 +24391,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:15 매일 서버 대화에 맞춘 오픈소스 추천; layout.mjs:39 매일 오전 9시 Codex 추천."
+          "ssotEvidence": "README.md:15 매일 서버 대화에 맞춘 오픈소스 추천; layout.mjs:39 매일 오전 9시 Codex 추천.",
+          "title": "맞춤 추천을 더 잘 받아보기"
         },
         {
           "taskId": "JUAI-CHECK-USAGE-EXAMPLE",
@@ -24390,7 +24403,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:16 활용 예시; layout.mjs:103 OpenCode가 활용 예시와 흐름도를 달아요."
+          "ssotEvidence": "README.md:16 활용 예시; layout.mjs:103 OpenCode가 활용 예시와 흐름도를 달아요.",
+          "title": "추천에서 사용 예시까지 보기"
         },
         {
           "taskId": "JUAI-CHECK-WELCOME-PROFILE",
@@ -24401,7 +24415,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:17 환영 인사·프로필 폼"
+          "ssotEvidence": "README.md:17 환영 인사·프로필 폼",
+          "title": "가입할 때 내 정보 간단히 등록"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
