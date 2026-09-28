@@ -6329,6 +6329,42 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25",
           "title": "연결할 창이 없음을 알려줘요"
+        },
+        {
+          "taskId": "ACTL-WIN-PACKAGE-DISCOVER-RECHECK",
+          "scope": "Add a pure argv recheck used by scripts/qa.ps1 that records Windows list-panes -F quoting as OBSERVED and a live installed discover --ssh as NOT_PROVEN, without spawning ssh or claiming the MainPC install.",
+          "files": [
+            "src/actl/core/win_discover_recheck.py",
+            "scripts/qa.ps1",
+            "tests/test_windows_discover_recheck.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 discover --ssh asus 재검증"
+        },
+        {
+          "taskId": "ACTL-BOARD-DISCOVER-FAIL-KIND",
+          "scope": "In the Tk refresh failure path, show three Korean lines when list-panes itself fails (what happened, the computer answered but the list command failed, retry) and keep the existing power-and-network sentence only for SSH disconnects, leaving the raw exception in the log.",
+          "files": [
+            "src/actl/gui.py",
+            "tests/test_gui_empty_error_states.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:59 Therefore the empty GUI pane board was a transport failure hidden as an empty result"
+        },
+        {
+          "taskId": "ACTL-FLOW-OBSERVED-OUTCOMES",
+          "scope": "Extend the offline disposable board harness so one monkeypatched run records discover, the Korean card line, send, result, and copy as OBSERVED and always records the live Windows board flow as NOT_PROVEN.",
+          "files": [
+            "tests/test_board_e2e_harness.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다"
         }
       ],
       "qaRuntime": [
