@@ -22200,6 +22200,29 @@
             "node --test tests/risk-not-success-parity.test.mjs"
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:351 위험도는 정상 작동 여부를 의미하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-TEST-RUN-TEMPLATE-PARITY",
+          "scope": "TEST_SCENARIOS §9.6의 Test Run 기록 필드와 tests/results/TEST_RUN_TEMPLATE.md를 일치시키고 오프라인 parity 테스트로 고정한다.",
+          "files": [
+            "tests/results/TEST_RUN_TEMPLATE.md",
+            "tests/test-run-template-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/test-run-template-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:683-695 각 실행 결과는 tests/results 아래에 저장하며 Test Run 기록 형식을 따른다."
+        },
+        {
+          "taskId": "JUTELL-COMMON-TEST-PRINCIPLES-PARITY",
+          "scope": "TEST_SCENARIOS §4 공통 테스트 원칙이 실행 절차·기록 템플릿·Skill 안전 규칙에 반영되어 있는지 확인하는 오프라인 parity 테스트를 추가한다.",
+          "files": [
+            "tests/common-test-principles-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/common-test-principles-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:67-96 동일 조건·기준 상태·보고서 평가 분리·비밀정보 사용 금지 원칙을 공통으로 적용한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
