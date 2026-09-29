@@ -415,7 +415,12 @@ export class PortfolioRunner {
   }
 
   async load() { try { return JSON.parse(await readFile(this.statePath, "utf8")); } catch { return { schema: "agent-relay.portfolio-state.v1", service: "STOPPED", tasks: [], activeBuilders: [], activeQa: [], events: [], updatedAt: new Date().toISOString() }; } }
-  async save(state) { const snapshot = { ...state, ...(this.routing ? { routing: this.routing } : {}), updatedAt: new Date().toISOString() }; this._saveChain = this._saveChain.then(async () => {
+  async save(state) {
+    // QA capacity is derived at write time so every snapshot carries it — the board reads one file and
+    // never has to guess why six tasks are in QA against maxQa 4.
+    const capacity = this.qaCapacity(state);
+    const snapshot = { ...state, ...(this.routing ? { routing: this.routing } : {}), qa: capacity, ...capacity, updatedAt: new Date().toISOString() };
+    this._saveChain = this._saveChain.then(async () => {
     // The continuous loop holds state in memory; a Founder answer written meanwhile by the CLI (founder-response) must not be overwritten.
     if (this._continuous) { const disk = await this.load(); if ((disk.resolvedFounderGates || []).length > (snapshot.resolvedFounderGates || []).length) for (const key of ["founderDecisions", "resolvedFounderGates"]) { snapshot[key] = disk[key]; state[key] = disk[key]; } } await mkdir(resolve(this.statePath, ".."), { recursive: true }); await writeFile(`${this.statePath}.tmp`, JSON.stringify(snapshot, null, 2)); await rename(`${this.statePath}.tmp`, this.statePath); }); return this._saveChain; } // atomic: a power-off mid-save keeps the old or the new file, never none
 
@@ -537,6 +542,18 @@ export class PortfolioRunner {
     await writeFile(join(this.resultRoot, `${task.taskId}.json`), JSON.stringify({ schema: "agent-relay.result-return.v1", taskId: task.taskId, result: task.result, qa: task.qa || null, state: task.state }, null, 2));
   }
 
+  /**
+   * QA capacity, as the Founder sees it. qaActive is the number of QA slots actually held, qaWaiting the
+   * tasks that finished building and are queued for a slot, qaTotal everything currently in QA.
+   * Without qaWaiting the board could only show "QA 6" against maxQa 4, which reads as a stall rather
+   * than a queue (2026-09-29: six live QA tasks looked like dead agents).
+   */
+  qaCapacity(state) {
+    const maxQa = Math.max(1, Number(this.manifest?.maxQa) || 1);
+    const qaTotal = (state?.activeQa || []).length;
+    return { qaActive: Math.min(this._qaActive || 0, qaTotal) || qaTotal, qaWaiting: Math.max(0, qaTotal - (this._qaActive || qaTotal)), qaTotal, maxQa };
+  }
+
   async _acquireQa() { const slots = Math.max(1, Number(this.manifest.maxQa) || 1); this._qaActive = this._qaActive || 0; while (this._qaActive >= slots) await new Promise((resolvePromise) => this._qaWaiters.push(resolvePromise)); this._qaActive += 1; }
   _releaseQa() { this._qaActive = Math.max(0, (this._qaActive || 1) - 1); this._qaWaiters.shift()?.(); }
 
@@ -560,7 +577,7 @@ export class PortfolioRunner {
       // a slow task. It is killed and folded into the existing chain fall-through (below), so the retry
       // budget, cooldown, and NO_RUNTIME_AVAILABLE path stay the single source of truth. The adapter's own
       // 30-minute timeout is untouched and remains the backstop.
-      const watch = this.startStallWatch(request, { attempts: this._stallAttempts ?? 0 });
+      const watch = this.startStallWatch(request, { attempts: this._stallAttempts ?? 0, onChild: request.onChild });
       try { result = await adapter.run({ ...request, onChild: watch.onChild, onOutput: watch.onOutput }); }
       catch (error) { const message = String(error.message || error); if (request.signal?.aborted || !(QUOTA_ERROR.test(message) || TRANSIENT_ERROR.test(message) || /exit null/.test(message) || watch.stalled)) throw error; cool(id); tried.push(`${id}: ${QUOTA_ERROR.test(message) ? "quota" : TRANSIENT_ERROR.test(message) ? "unavailable" : watch.stalled ? "stalled" : "timeout"}`); continue; }
       finally { watch.stop(); }
@@ -586,7 +603,7 @@ export class PortfolioRunner {
    * from the tracker, because the tracker's own counter dies with the process and would hand a
    * restarting runner a fresh budget.
    */
-  startStallWatch(request, { attempts = 0 } = {}) {
+  startStallWatch(request, { attempts = 0, onChild = null } = {}) {
     const stallMs = this.stallMs ?? STALL_MS;
     const pollMs = this.stallPollMs ?? Math.max(250, Math.min(30_000, Math.floor(stallMs / 4)));
     const workspace = request?.workspace;
@@ -606,7 +623,9 @@ export class PortfolioRunner {
     // The first sample is the baseline, not progress: without it a worker that never touches anything
     // would look "idle since construction" and be killed instantly.
     baseline().then((b) => { last = b; tracker.record("file-hash", { hash: b.hash }); tracker.record("git-head", { head: b.head }); }).catch(() => {});
-    watch.onChild = (child) => { watch.child = child; };
+    // The caller's hook fires too, so a runner can record the live pid the moment the child exists
+    // (activeQa used to keep pid:null, which made a healthy QA worker look dead on the board).
+    watch.onChild = (child) => { watch.child = child; try { onChild?.(child); } catch { /* observation never breaks the run */ } };
     watch.onOutput = (chars) => { if (chars > 0) tracker.record("output", { chars }); };
     const timer = setInterval(async () => {
       if (watch.stopped || watch.child?.killed) return;
@@ -698,7 +717,17 @@ export class PortfolioRunner {
       // independent QA: the AI that built this task reviews it only when every other QA AI is unavailable
       const qaOrder = [...qaChain.filter((id) => id !== builderRun.runtime), ...qaChain.filter((id) => id === builderRun.runtime)];
       const qaCtx = await agentContext(project, "qa", { taskId: task.taskId, memoryStore: this.manifest?.memoryStore, memory: this.manifest?.memoryDelivery === true });
-      try { task.qaAttempts += 1; qaRun = await this.runChain(qaOrder, { workspace: builder.path, sandbox: "read-only", prompt: qaCtx.text + qaPrompt(task, builder.base), signal }, parseQaPacket); }
+      // Record the QA worker's pid as soon as it exists, not after it exits. onChild fires from inside
+      // runChain → startStallWatch → the adapter, so a live QA task shows a real pid on the board.
+      const onQaChild = (child) => {
+        const entry = state.activeQa.find((item) => item.taskId === task.taskId);
+        if (!entry) return;
+        entry.pid = child?.pid ?? null;
+        entry.runtime = null;
+        entry.startedAt = new Date().toISOString();
+        this.save(state).catch(() => { /* a missed status write must not kill the QA run */ });
+      };
+      try { task.qaAttempts += 1; qaRun = await this.runChain(qaOrder, { workspace: builder.path, sandbox: "read-only", prompt: qaCtx.text + qaPrompt(task, builder.base), signal, onChild: onQaChild }, parseQaPacket); }
       finally { this._releaseQa(); }
       task.qaEvidence = { skills: qaCtx.skills, memories: qaCtx.memories, pid: qaRun.pid, startedAt: qaRun.startedAt, exitCode: qaRun.code, runtime: qaRun.runtime, model: workerModelFor(qaRun.runtime, this.runtimeAdapters), fallbacks: qaRun.fallbacks, ...(qaRun.runtime === builderRun.runtime ? { sameAsBuilder: true } : {}) }; task.qa = parseQaPacket(qaRun.text); state.activeQa = state.activeQa.filter((item) => item.taskId !== task.taskId);
       if (task.qa.verdict === "ACCEPT" && !task.verificationOnly && this.testGate) {
