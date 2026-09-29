@@ -13430,6 +13430,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면은 맨 위 한 문장과 쉬운 한국어로, 누가 했는지와 끝난 시각을 바로 알 수 있게",
           "title": "오늘 영수증에 누가 언제 끝냈는지 표시"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-ACTION-VARIANT-PLAIN",
+          "scope": "In plainActionText in src/render/index.ts, before the early return, show 하지 말라고 한 일이 실행됐어요. 영향을 확인해 주세요 for action text containing 금지된 명령의 영향 and 사람이 직접 확인해야 해요 for action text containing 확인을 수행, and assert both stored lines are gone from the visible receipt.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts"
+          ],
+          "ssotEvidence": "m2/tasks/m2-007/receipt.json:634 \"금지된 명령의 영향과 결과를 직접 검토하고 필요하면 작업을 다시 요청\""
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-ACTION-VARIANT-PLAIN",
+          "scope": "In plainText in src/render/today.ts, before the early return, show 하지 말라고 한 일이 실행됐어요. 영향을 확인해 주세요 for action text containing 금지된 명령의 영향 and 사람이 직접 확인해야 해요 for action text containing 확인을 수행, and assert both stored lines are gone from the visible today detail.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "m2/tasks/m2-013/receipt.json:688 \"명시된 사람 검토/확인을 수행하고 완료 여부를 결정\""
         }
       ],
       "skills": {
