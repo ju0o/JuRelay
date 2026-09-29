@@ -14183,7 +14183,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "PM_STATUS_BOARD.md:163 M2 closes only after PM decides blocker vs acceptable limitation and records per-task scorecard."
+          "ssotEvidence": "PM_STATUS_BOARD.md:163 M2 closes only after PM decides blocker vs acceptable limitation and records per-task scorecard.",
+          "title": "영수증 기능 가치를 다시 판단해요"
         }
       ],
       "skills": {
@@ -17195,7 +17196,8 @@
           "tests": [
             "node --test tests/v0-registry-entry.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23; docs/architecture.md:24 Agent Relay owns durable managed work, results, verification and PM judgments during V0"
+          "ssotEvidence": "Founder direction 2026-09-23; docs/architecture.md:24 Agent Relay owns durable managed work, results, verification and PM judgments during V0",
+          "title": "Agent Relay 작업 등록"
         },
         {
           "taskId": "JUCONTROLER-V0-RELAY-CURRENT",
@@ -17207,7 +17209,8 @@
           "tests": [
             "node --test tests/v0-agent-relay-current.test.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23; docs/architecture.md:24 Agent Relay owns durable managed work, results, verification and PM judgments during V0"
+          "ssotEvidence": "Founder direction 2026-09-23; docs/architecture.md:24 Agent Relay owns durable managed work, results, verification and PM judgments during V0",
+          "title": "Agent Relay 밤 작업 상태 확인"
         }
       ],
       "qaRuntime": [
@@ -23309,7 +23312,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:1 지금은 JuCeipt의 M3 진행 상태를 확인하는 화면이에요. 같은 작업의 Claude 최종 답변과 영수증 참조가 유효하게 연결될 때까지 M3 결정은 기록하지 않아요."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:1 지금은 JuCeipt의 M3 진행 상태를 확인하는 화면이에요. 같은 작업의 Claude 최종 답변과 영수증 참조가 유효하게 연결될 때까지 M3 결정은 기록하지 않아요.",
+          "title": "현황을 한눈에 확인"
         }
       ],
       "skills": {
@@ -29764,7 +29768,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:42 guard.mjs 새 버전이 켜지지 않으면 이전 버전으로 자동 복구"
+          "ssotEvidence": "README.md:42 guard.mjs 새 버전이 켜지지 않으면 이전 버전으로 자동 복구",
+          "title": "시작 실패 시 안전하게 복구"
         },
         {
           "taskId": "JUAI-CHECK-TICK-HEARTBEAT",
@@ -29775,7 +29780,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:30 node bot.mjs # 실행 (상시 실행은 juai-bot.service)"
+          "ssotEvidence": "README.md:30 node bot.mjs # 실행 (상시 실행은 juai-bot.service)",
+          "title": "정기 확인과 종료 안전 처리"
         },
         {
           "taskId": "JUAI-CHECK-TALK-CARRY-START",
@@ -29786,7 +29792,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 그 밖에: 봇들끼리 수다(`#봇-놀이터`)"
+          "ssotEvidence": "README.md:19 그 밖에: 봇들끼리 수다(`#봇-놀이터`)",
+          "title": "대화 이어가기와 새 주제 전환"
         },
         {
           "taskId": "JUAI-CHECK-SETUP-NOTIFY",
@@ -29797,7 +29804,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "setup.mjs:102 new members: only @mentions ping by default"
+          "ssotEvidence": "setup.mjs:102 new members: only @mentions ping by default",
+          "title": "커뮤니티 안내와 알림 설정"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
