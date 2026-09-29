@@ -10260,7 +10260,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched.",
+          "title": "밤 작업 중 외부 장애를 안전하게 정리"
         }
       ],
       "qaRuntime": [
@@ -13441,7 +13442,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts"
           ],
-          "ssotEvidence": "m2/tasks/m2-007/receipt.json:634 \"금지된 명령의 영향과 결과를 직접 검토하고 필요하면 작업을 다시 요청\""
+          "ssotEvidence": "m2/tasks/m2-007/receipt.json:634 \"금지된 명령의 영향과 결과를 직접 검토하고 필요하면 작업을 다시 요청\"",
+          "title": "영수증에서 위험한 안내를 확인"
         },
         {
           "taskId": "JUCEIPT-TODAY-ACTION-VARIANT-PLAIN",
@@ -13453,7 +13455,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "m2/tasks/m2-013/receipt.json:688 \"명시된 사람 검토/확인을 수행하고 완료 여부를 결정\""
+          "ssotEvidence": "m2/tasks/m2-013/receipt.json:688 \"명시된 사람 검토/확인을 수행하고 완료 여부를 결정\"",
+          "title": "오늘 기록에서 위험한 안내를 확인"
         }
       ],
       "skills": {
@@ -28204,7 +28207,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:87 Founder runs the server from Discord only, so real problems go to their DMs."
+          "ssotEvidence": "bot.mjs:87 Founder runs the server from Discord only, so real problems go to their DMs.",
+          "title": "최근 오류가 많으면 알려줘"
         },
         {
           "taskId": "JUAI-CHECK-RESTART-ALERT",
@@ -28215,7 +28219,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "bot.mjs:1110 filter starts to Date.now() - t < 15 * 60_000 before the length >= 3 Founder alert"
+          "ssotEvidence": "bot.mjs:1110 filter starts to Date.now() - t < 15 * 60_000 before the length >= 3 Founder alert",
+          "title": "짧은 시간 재시작을 알려줘"
         },
         {
           "taskId": "JUAI-CHECK-PROMPT-RULES",
@@ -28226,7 +28231,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:46 멤버 글이 들어가는 AI는 격리 실행: Claude는 도구를 끄고"
+          "ssotEvidence": "README.md:46 멤버 글이 들어가는 AI는 격리 실행: Claude는 도구를 끄고",
+          "title": "질문에 안전 규칙을 먼저 적용해"
         },
         {
           "taskId": "JUAI-CHECK-ASKER-CONTEXT",
@@ -28237,7 +28243,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:89 [프로필 작성] 버튼으로 SNS 닉네임과 지금 만드는 걸 등록하면 자기소개가 자동으로 올라가요."
+          "ssotEvidence": "layout.mjs:89 [프로필 작성] 버튼으로 SNS 닉네임과 지금 만드는 걸 등록하면 자기소개가 자동으로 올라가요.",
+          "title": "질문자 정보로 답변을 맞춰줘"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
