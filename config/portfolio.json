@@ -22221,6 +22221,28 @@
           ],
           "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join.",
           "title": "결정 전에 근거 연결을 확인"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-B1-M3-VALID-JOIN",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html change only the B1 and M3 gate-state Korean and their 원문 보기 so a later decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join, keeping the 0-join UNDECIDED hold and recording no GO, DEFER, or KILL.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:175 until then, do not record M3 GO / DEFER / KILL"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HANDOFF-A-VALID-JOIN",
+          "scope": "In docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md change only the Work Package A check at line 71 so it keeps M2 GO and states that no M3 GO, DEFER, or KILL is recorded until a same-task row has Claude-final and Receipt references reconciled into a valid join.",
+          "files": [
+            "docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join"
         }
       ],
       "skills": {
