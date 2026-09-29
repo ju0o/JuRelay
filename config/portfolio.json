@@ -22711,6 +22711,28 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:66 MASTER_ROADMAP status was refreshed: §2 line 96 and §12 line 561 now show the M3 join-gap state.",
           "title": "계획 상태는 이미 최신, 새 결정 없음"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-TALLY-UNDECIDED-TRACE",
+          "scope": "M3 검증 문서의 Receipt-only tally가 유효한 Claude-final/Receipt 연결 근거가 아님을 §2.2·§3.1·§7에서 일관되게 명시한다.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:146-149 — tally는 설명용 신호이며 유효한 same-task Claude-final/Receipt join 전에는 M3 판정을 만들지 않는다."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-FOUNDER-MOBILE-READABILITY",
+          "scope": "캐노니컬 HTML 05의 Founder 화면을 휴대폰 너비에서 읽기 쉽게 만들고 본문 글자·클릭 영역을 키우며 가로 스크롤을 제거하되 현재 M3 valid-join 보류 근거와 원문 보기 경계는 보존한다.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 — M3는 유효한 same-task Claude-final/Receipt join 전까지 UNDECIDED로 유지한다."
         }
       ],
       "skills": {
