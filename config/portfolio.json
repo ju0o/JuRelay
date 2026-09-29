@@ -21790,6 +21790,30 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-GTM-B1-VALID-JOIN",
+          "scope": "In docs/business/GROWTH_MONETIZATION_GTM.md change only the §8 B1 state cell so a later GO, DEFER, or KILL stays limited to a same-task row whose Claude-final and Receipt references reconcile into a valid join, keeping UNDECIDED and the 0-join fact and recording no milestone decision.",
+          "files": [
+            "docs/business/GROWTH_MONETIZATION_GTM.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-INDEX-NOTE-VALID-JOIN",
+          "scope": "In BUSINESS_SYSTEM_INDEX.md item 9, README.md item 10, and the UNPLANNED_WORK_01_DECISION.md 2026-09-26 note, replace only the weaker both-artifacts clause with the rule that a later M3 GO, DEFER, or KILL waits for a same-task valid join, recording no decision.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_INDEX.md",
+            "README.md",
+            "docs/decisions/UNPLANNED_WORK_01_DECISION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
         }
       ],
       "skills": {
