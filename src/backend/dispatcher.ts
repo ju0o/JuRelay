@@ -31,6 +31,7 @@ import {
 } from './goal-task.js';
 import {
   RuntimeConflictError,
+  requestFailedRunRetry,
   transitionTaskExecution,
 } from './goal-task-runtime.js';
 import {
@@ -56,6 +57,7 @@ import {
   writeFallbackRecord,
 } from './worker-fallback.js';
 import { emitRunFailedWake, emitWake } from './wake-queue.js';
+import { recordOutcome } from './auto-advance.js';
 import { resolveClaudeConfigContext } from '../integrations/claude/profile.js';
 import { ensureDispatchCaptureManager } from './capture-service.js';
 import {
@@ -161,6 +163,21 @@ export interface DispatchRequest {
     preparationId: string;
     sourceRunId: string;
     prompt: string;
+  };
+  /**
+   * F0 Phase 2 trusted internal auto-advance correlation. ONLY the
+   * dispatcher itself mints this (handleChildExit → autoAdvanceRedispatch);
+   * it is never accepted from PM/MCP/Worker/Adapter/retry surfaces.
+   * Carries the failed source Run and the AUTO_ADVANCE decision
+   * (retry = same worker, fallback = next worker). The Dispatcher persists
+   * it on the new Run meta (`autoAdvance`, diagnostics only) so the
+   * automatic attempt is distinguishable from owner/G5/QA lineages.
+   * Mutually exclusive with the other three correlations.
+   */
+  autoAdvanceContext?: {
+    sourceRunId: string;
+    decision: 'retry' | 'fallback';
+    fromWorkerId: string;
   };
 }
 
@@ -669,6 +686,71 @@ function recordExitClassification(args: {
   return { kind: classified.kind, reason: classified.reason, fallbackTo };
 }
 
+// ── F0 Phase 2: automatic retry / fallback redispatch ─────────────────────
+// Internal only: invoked from handleChildExit when recordOutcome decides
+// retry|fallback. Reuses the sanctioned recovery path (requestFailedRunRetry:
+// FAILED+PENDING → READY, CAS-guarded) then dispatches through the canonical
+// dispatchTask with an internally-minted autoAdvanceContext. Never called
+// from MCP/PM/Worker surfaces. All failures are recorded, never thrown
+// (handleChildExit is fire-and-forget).
+async function autoAdvanceRedispatch(args: {
+  dataRoot: string;
+  project: string;
+  taskId: string;
+  runId: string;
+  goalId: string;
+  nextWorkerId: string;
+  workspaceRoot: string;
+  decision: 'retry' | 'fallback';
+  fromWorkerId: string;
+  reason: string;
+}): Promise<void> {
+  try {
+    await requestFailedRunRetry(args.dataRoot, args.project, args.taskId, args.runId, {
+      goalId: args.goalId,
+      reason: `auto-advance ${args.decision} after ${args.runId}: ${args.reason}`.slice(0, 400),
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    try {
+      await recordRunFailed(args.dataRoot, args.project, {
+        summary: `auto-advance ${args.decision} aborted for Task ${args.taskId}: ${msg}`,
+        taskId: args.taskId,
+        runId: args.runId,
+        goalId: args.goalId,
+        source: { kind: 'dispatcher', subsystem: 'auto-advance' },
+        details: { decision: args.decision, fromWorkerId: args.fromWorkerId, error: msg },
+      });
+    } catch { /* ignore */ }
+    return;
+  }
+  try {
+    await dispatchTask(args.dataRoot, args.project, {
+      taskId: args.taskId,
+      workerId: args.nextWorkerId,
+      workspaceRoot: args.workspaceRoot,
+      expectedExecutionState: 'READY',
+      autoAdvanceContext: {
+        sourceRunId: args.runId,
+        decision: args.decision,
+        fromWorkerId: args.fromWorkerId,
+      },
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    try {
+      await recordRunFailed(args.dataRoot, args.project, {
+        summary: `auto-advance ${args.decision} dispatch failed for Task ${args.taskId}: ${msg}`,
+        taskId: args.taskId,
+        runId: args.runId,
+        goalId: args.goalId,
+        source: { kind: 'dispatcher', subsystem: 'auto-advance-dispatch' },
+        details: { decision: args.decision, nextWorkerId: args.nextWorkerId, error: msg },
+      });
+    } catch { /* ignore */ }
+  }
+}
+
 // ── Exit handling ────────────────────────────────────────────────────────────
 
 async function handleChildExit(
@@ -716,12 +798,22 @@ async function handleChildExit(
       runFolder: live.captureFolder,
       outputText: live.outputTail ?? '',
     });
+    // F0 Phase 2: the production decision point. exit 0 → pass is handled
+    // below; here a non-zero exit records fail and the returned action
+    // drives real branching (retry|fallback redispatch, wake-pm records).
+    const decision = recordOutcome(live.dataRoot, live.project, {
+      taskId: live.taskId,
+      kind: 'fail',
+      failureCategory: advice.kind === 'provider' ? 'transient' : 'unknown',
+      fallbackAvailable: advice.fallbackTo !== '',
+    });
     try {
       await transitionTaskExecution(live.dataRoot, live.project, live.taskId, {
         expectedExecutionState: task.executionState,
         to: 'FAILED',
         reason: `worker process exit code=${exitCode}` + (signal ? ` signal=${signal}` : '')
-          + ` [${advice.kind}]` + (advice.fallbackTo ? ` suggest=${advice.fallbackTo}` : ''),
+          + ` [${advice.kind}]` + (advice.fallbackTo ? ` suggest=${advice.fallbackTo}` : '')
+          + ` [auto:${decision.action}]`,
       });
     } catch {
       // CAS race — leave state as-is
@@ -737,49 +829,76 @@ async function handleChildExit(
           exitCode, signal, runId: live.runId, workerId: live.workerId,
           failureKind: advice.kind, failureReason: advice.reason,
           ...(advice.fallbackTo ? { fallbackTo: advice.fallbackTo } : {}),
+          autoAction: decision.action,
+          autoHumanRequired: decision.humanRequired,
         },
       });
     } catch { /* ignore */ }
-    // F0 Phase 1: every non-zero exit leaves a durable wake record
-    // (RUN_FAILED, explicit RUNNING→RUN_FAILED transition). Record-only:
-    // the Supervisor consumes wakes without blocking on them.
-    try {
-      const tried = fallbackTriedByTask.get(live.key) ?? [];
-      emitRunFailedWake(live.dataRoot, live.project, {
-        goalId: task.goalId,
+    // Non-zero: disarm capture + release observation lock (idempotent).
+    // MUST precede any auto-advance redispatch below: the next attempt needs
+    // a free observation slot for the same adapter+workspace.
+    await cleanupObservationLifecycle(live);
+    if (decision.action === 'retry' || decision.action === 'fallback') {
+      const nextWorkerId = decision.action === 'fallback' && advice.fallbackTo
+        ? advice.fallbackTo
+        : live.workerId;
+      // Fire-and-forget by design (exit listener); failures recorded inside.
+      void autoAdvanceRedispatch({
+        dataRoot: live.dataRoot,
+        project: live.project,
         taskId: live.taskId,
         runId: live.runId ?? '',
-        workerId: live.workerId,
-        reasonText: `worker exit code=${exitCode}` + (signal ? ` signal=${signal}` : '') + ` [${advice.kind}] ${advice.reason}`,
-        failureCategory: advice.kind === 'provider' ? 'transient' : 'unknown',
-        attemptsUsed: tried.length + 1,
-        nextRecommendedAction: advice.fallbackTo ? 'fallback' : 'retry',
+        goalId: task.goalId,
+        nextWorkerId,
+        workspaceRoot: live.workspaceRoot ?? '',
+        decision: decision.action,
+        fromWorkerId: live.workerId,
+        reason: advice.reason,
       });
-      if (advice.fallbackTo) {
-        emitWake(live.dataRoot, live.project, {
-          reason: 'FALLBACK',
+    } else if (decision.humanRequired) {
+      // F0 noise rule: ONLY human-required paths create wake records.
+      // retry/fallback are already logged above (run record + fallback.json).
+      try {
+        const tried = fallbackTriedByTask.get(live.key) ?? [];
+        emitRunFailedWake(live.dataRoot, live.project, {
           goalId: task.goalId,
           taskId: live.taskId,
           runId: live.runId ?? '',
           workerId: live.workerId,
-          oldState: task.executionState,
-          newState: 'FAILED',
-          reasonText: `fallback ${live.workerId} -> ${advice.fallbackTo}: ${advice.reason}`,
-          failureCategory: 'transient',
-          blockerSummary: `fallback to ${advice.fallbackTo}`,
-          nextRecommendedAction: 'fallback',
+          reasonText: `worker exit code=${exitCode}` + (signal ? ` signal=${signal}` : '') + ` [${advice.kind}] ${advice.reason}`,
+          failureCategory: advice.kind === 'provider' ? 'transient' : 'unknown',
           attemptsUsed: tried.length + 1,
+          nextRecommendedAction: 'needs-human',
         });
-      }
-    } catch { /* wake records never break dispatch */ }
-
-    // Non-zero: disarm capture + release observation lock (idempotent).
-    await cleanupObservationLifecycle(live);
+        if (advice.fallbackTo) {
+          emitWake(live.dataRoot, live.project, {
+            reason: 'FALLBACK',
+            goalId: task.goalId,
+            taskId: live.taskId,
+            runId: live.runId ?? '',
+            workerId: live.workerId,
+            oldState: task.executionState,
+            newState: 'FAILED',
+            reasonText: `fallback ${live.workerId} -> ${advice.fallbackTo}: ${advice.reason}`,
+            failureCategory: 'transient',
+            blockerSummary: `fallback to ${advice.fallbackTo}`,
+            nextRecommendedAction: 'fallback',
+            attemptsUsed: tried.length + 1,
+          });
+        }
+      } catch { /* wake records never break dispatch */ }
+    }
+    // dispatch-next/notify-final: owned by the runner queue; nothing here.
     return;
   }
 
   // Zero exit: clear process tracking only — no RESULT_RECEIVED, no FAILED,
   // and do NOT release observation lock (Adapter may still observe RESPONSE_COMPLETE).
+  // F0: a clean exit resets the task's consecutive-failure counter (pass).
+  // dispatch-next itself stays with the runner queue; nothing else here.
+  try {
+    recordOutcome(live.dataRoot, live.project, { taskId: live.taskId, kind: 'pass' });
+  } catch { /* counter reset never breaks exit handling */ }
 }
 
 // ── Rollback ─────────────────────────────────────────────────────────────────
@@ -931,11 +1050,12 @@ export async function dispatchTask(
     throw new DispatcherError('INVALID_ARGUMENT', 'ownerInputPermitFactory requires ownerApprovalContext.');
   }
   const qaRemediationContext = request?.qaRemediationContext;
-  const correlationCount = [retryContext, ownerApprovalContext, qaRemediationContext].filter((c) => c !== undefined).length;
+  const autoAdvanceContext = request?.autoAdvanceContext;
+  const correlationCount = [retryContext, ownerApprovalContext, qaRemediationContext, autoAdvanceContext].filter((c) => c !== undefined).length;
   if (correlationCount > 1) {
     throw new DispatcherError(
       'INVALID_ARGUMENT',
-      'retryContext, ownerApprovalContext, and qaRemediationContext are mutually exclusive.',
+      'retryContext, ownerApprovalContext, qaRemediationContext, and autoAdvanceContext are mutually exclusive.',
     );
   }
   if (retryContext !== undefined) {
@@ -991,6 +1111,20 @@ export async function dispatchTask(
     }
     if (Buffer.byteLength(qaRemediationContext.prompt, 'utf8') > 16 * 1024) {
       throw new DispatcherError('INVALID_ARGUMENT', 'qaRemediationContext.prompt exceeds the 16 KiB Worker prompt cap.');
+    }
+  }
+  if (autoAdvanceContext !== undefined) {
+    if (!autoAdvanceContext || typeof autoAdvanceContext !== 'object') {
+      throw new DispatcherError('INVALID_ARGUMENT', 'autoAdvanceContext must be an object.');
+    }
+    if (typeof autoAdvanceContext.sourceRunId !== 'string' || !autoAdvanceContext.sourceRunId) {
+      throw new DispatcherError('INVALID_ARGUMENT', 'autoAdvanceContext.sourceRunId가 필요합니다.');
+    }
+    if (autoAdvanceContext.decision !== 'retry' && autoAdvanceContext.decision !== 'fallback') {
+      throw new DispatcherError('INVALID_ARGUMENT', 'autoAdvanceContext.decision은 retry|fallback이어야 합니다.');
+    }
+    if (typeof autoAdvanceContext.fromWorkerId !== 'string' || !autoAdvanceContext.fromWorkerId) {
+      throw new DispatcherError('INVALID_ARGUMENT', 'autoAdvanceContext.fromWorkerId가 필요합니다.');
     }
   }
 
@@ -1093,6 +1227,7 @@ export async function dispatchTask(
         dispatchedAt,
         retryContext,
         ownerApprovalContext,
+        autoAdvanceContext,
         ownerInputPermitFactory,
         qaRemediationContext,
         afterLinkHook,
@@ -1155,6 +1290,16 @@ export async function dispatchTask(
         : {}),
       ...(qaRemediationContext
         ? { qaRemediationPreparationId: qaRemediationContext.preparationId, sourceRunId: qaRemediationContext.sourceRunId }
+        : {}),
+      ...(autoAdvanceContext
+        ? {
+            sourceRunId: autoAdvanceContext.sourceRunId,
+            autoAdvance: {
+              decision: autoAdvanceContext.decision,
+              fromWorkerId: autoAdvanceContext.fromWorkerId,
+              at: nowIso(),
+            },
+          }
         : {}),
       ...(ownerApprovalContext
         ? { ownerApprovedScopeFingerprint: ownerApprovalContext.scopeFingerprint }
@@ -1648,6 +1793,7 @@ async function runActlManagedDispatch(args: {
   ownerApprovalContext: DispatchRequest['ownerApprovalContext'];
   ownerInputPermitFactory: DispatchRequest['ownerInputPermitFactory'];
   qaRemediationContext: DispatchRequest['qaRemediationContext'];
+  autoAdvanceContext: DispatchRequest['autoAdvanceContext'];
   afterLinkHook: (() => Promise<void>) | null;
 }): Promise<DispatchResult> {
   const {
@@ -1664,6 +1810,7 @@ async function runActlManagedDispatch(args: {
     retryContext,
     ownerApprovalContext,
     qaRemediationContext,
+    autoAdvanceContext,
   } = args;
 
   const actlAbs = worker.launchCommand;
@@ -1756,6 +1903,16 @@ async function runActlManagedDispatch(args: {
         ? {
             qaRemediationPreparationId: qaRemediationContext.preparationId,
             sourceRunId: qaRemediationContext.sourceRunId,
+          }
+        : {}),
+      ...(autoAdvanceContext
+        ? {
+            sourceRunId: autoAdvanceContext.sourceRunId,
+            autoAdvance: {
+              decision: autoAdvanceContext.decision,
+              fromWorkerId: autoAdvanceContext.fromWorkerId,
+              at: nowIso(),
+            },
           }
         : {}),
       ...(ownerApprovalContext

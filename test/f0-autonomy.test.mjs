@@ -154,27 +154,23 @@ describe('scenarios (interventions counted)', () => {
         const d = adv.recordOutcome(ROOT, PROJ, {
           taskId: t.id, kind, failureCategory: cat, fallbackAvailable: true,
         });
-        const w = wake.emitRunFailedWake(ROOT, PROJ, {
-          goalId: 'G', taskId: t.id, runId, workerId: 'builder-opencode',
-          reasonText: `${step} at ${runId}`, failureCategory: cat,
-          attemptsUsed: d.consecutiveFailures,
-          nextRecommendedAction: d.action === 'wake-pm' ? 'needs-human' : d.action,
-        });
-        if (w.deduped) dupes++; else wakes++;
-        // same-run re-emit must dedupe (double-report guard)
-        const w2 = wake.emitRunFailedWake(ROOT, PROJ, {
-          goalId: 'G', taskId: t.id, runId, workerId: 'builder-opencode',
-          reasonText: `${step} at ${runId}`, failureCategory: cat,
-          attemptsUsed: d.consecutiveFailures,
-          nextRecommendedAction: d.action === 'wake-pm' ? 'needs-human' : d.action,
-        });
-        assert.equal(w2.deduped, true, 'double report suppressed');
-        if (d.action === 'fallback') {
-          const f = wake.emitWake(ROOT, PROJ, {
-            reason: 'FALLBACK', goalId: 'G', taskId: t.id, runId,
-            workerId: 'builder-opencode', nextRecommendedAction: 'fallback',
+        // Noise rule: wake records ONLY on human-required paths.
+        // retry/fallback are logged in the run record, never woken.
+        if (d.humanRequired) {
+          const w = wake.emitRunFailedWake(ROOT, PROJ, {
+            goalId: 'G', taskId: t.id, runId, workerId: 'builder-opencode',
+            reasonText: `${step} at ${runId}`, failureCategory: cat,
+            attemptsUsed: d.consecutiveFailures,
+            nextRecommendedAction: 'needs-human',
           });
-          if (f.deduped) dupes++; else wakes++;
+          if (w.deduped) dupes++; else wakes++;
+          const w2 = wake.emitRunFailedWake(ROOT, PROJ, {
+            goalId: 'G', taskId: t.id, runId, workerId: 'builder-opencode',
+            reasonText: `${step} at ${runId}`, failureCategory: cat,
+            attemptsUsed: d.consecutiveFailures,
+            nextRecommendedAction: 'needs-human',
+          });
+          assert.equal(w2.deduped, true, 'double report suppressed');
         }
         log.push(`${t.id}/${runId}: ${d.action}${d.humanRequired ? ' HUMAN' : ''}`);
         if (d.humanRequired) {
@@ -195,16 +191,16 @@ describe('scenarios (interventions counted)', () => {
     assert.equal(r.interventions, 0);
     assert.equal(r.wakes, 0);
   });
-  it('S2: one failure then retry success -> 0 interventions', () => {
+  it('S2: one failure then retry success -> 0 interventions, 0 wakes', () => {
     const r = drive([{ id: 'S2a', runs: ['fail', 'pass'] }]);
     assert.equal(r.interventions, 0);
-    assert.equal(r.wakes, 1, 'one RUN_FAILED record, got: ' + r.log.join(' | '));
+    assert.equal(r.wakes, 0, 'retry path is log-only, got: ' + r.log.join(' | '));
     assert.equal(r.dupes, 0, 'no duplicate wakes counted');
   });
-  it('S3: three consecutive failures -> 1 intervention', () => {
+  it('S3: three consecutive failures -> 1 intervention, 1 wake', () => {
     const r = drive([{ id: 'S3a', runs: ['fail', 'fail', 'fail'] }]);
     assert.equal(r.interventions, 1);
-    assert.equal(r.wakes, 4, '3 RUN_FAILED + 1 FALLBACK, got: ' + r.log.join(' | '));
+    assert.equal(r.wakes, 1, 'only the human-required wake, got: ' + r.log.join(' | '));
     assert.equal(r.dupes, 0, 'no duplicate wakes');
     assert.ok(r.log.join(' ').includes('retry'));
     assert.ok(r.log.join(' ').includes('fallback'));

@@ -84,6 +84,8 @@ import {
   QaSemanticEvaluatorError,
 } from './qa-semantic-evaluator.js';
 import { ensurePmDeliveryForTaskVerify } from './pm-delivery.js';
+import { recordOutcome } from './auto-advance.js';
+import { emitWake } from './wake-queue.js';
 import { dispatchTask, validateWorkspaceRoot, DispatcherError } from './dispatcher.js';
 import { loadWorkerRegistryRecord } from './worker-registry.js';
 import { readRunMeta } from './fs.js';
@@ -1024,7 +1026,36 @@ export function reconcileQaGate(dataRoot: string, project: string, taskId: strin
   if (!tid) return Promise.reject(new QaGateError('INVALID_ARGUMENT', 'QA gate: taskId가 필요합니다.'));
   return withQaGateLock(dataRoot, project, tid, async (): Promise<ReconcileQaGateResult> => {
     try {
-      return await reconcileQaGateInner(dataRoot, project, tid, options);
+      const result = await reconcileQaGateInner(dataRoot, project, tid, options);
+      // F0 Phase 2: production QA-verdict sink. Records the outcome for the
+      // AUTO_ADVANCE counters; on a human-required decision leaves a QA_FAIL
+      // wake record. Retry decisions take no extra action here — the existing
+      // remediation flow already proceeds. Never breaks the gate.
+      try {
+        const verdict = result?.finalQaStatus;
+        if (verdict === 'PASS' || verdict === 'FAIL') {
+          const decision = recordOutcome(dataRoot, project, {
+            taskId: tid,
+            kind: verdict === 'PASS' ? 'qa-pass' : 'qa-fail',
+          });
+          if (decision.humanRequired) {
+            emitWake(dataRoot, project, {
+              reason: 'QA_FAIL',
+              goalId: '',
+              taskId: tid,
+              runId: result?.runId ?? '',
+              oldState: 'VERIFYING',
+              newState: 'VERIFYING',
+              reasonText: `QA FAIL (consecutive ${decision.consecutiveFailures})`,
+              failureCategory: 'unknown',
+              blockerSummary: 'QA failed repeatedly; human judgment needed',
+              nextRecommendedAction: 'needs-human',
+              attemptsUsed: decision.consecutiveFailures,
+            });
+          }
+        }
+      } catch { /* verdict accounting never breaks the gate */ }
+      return result;
     } catch (err) {
       if (err instanceof QaGateError) throw err;
       wrapGateError(err);

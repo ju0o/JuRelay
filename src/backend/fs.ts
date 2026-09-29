@@ -294,6 +294,16 @@ export interface RunMeta {
    * §11 Q5/Q7). Enables the same crash-safe adoption as G5-C.
    */
   qaRemediationPreparationId?: string;
+  /**
+   * F0 Phase 2 additive: auto-advance correlation for a Run produced by the
+   * dispatcher's own retry/fallback (never owner/G5/QA lineages).
+   * Diagnostics only.
+   */
+  autoAdvance?: {
+    decision: 'retry' | 'fallback';
+    fromWorkerId: string;
+    at: string;
+  };
 }
 
 /** Allocate a new collision-resistant runId (UUID). */
@@ -333,6 +343,11 @@ export function readRunMeta(folder: string): RunMeta {
     }
     if (typeof raw.qaRemediationPreparationId === 'string' && raw.qaRemediationPreparationId) {
       meta.qaRemediationPreparationId = raw.qaRemediationPreparationId;
+    }
+    const rawAa = raw.autoAdvance as { decision?: unknown; fromWorkerId?: unknown; at?: unknown } | undefined;
+    if (rawAa && (rawAa.decision === 'retry' || rawAa.decision === 'fallback')
+      && typeof rawAa.fromWorkerId === 'string' && typeof rawAa.at === 'string') {
+      meta.autoAdvance = { decision: rawAa.decision, fromWorkerId: rawAa.fromWorkerId, at: rawAa.at };
     }
     return meta;
   } catch {
@@ -381,6 +396,13 @@ export function writeRunMeta(folder: string, meta: RunMeta): void {
   }
   if (typeof meta.qaRemediationPreparationId === 'string' && meta.qaRemediationPreparationId) {
     out.qaRemediationPreparationId = meta.qaRemediationPreparationId;
+  }
+  if (meta.autoAdvance && (meta.autoAdvance.decision === 'retry' || meta.autoAdvance.decision === 'fallback')) {
+    out.autoAdvance = {
+      decision: meta.autoAdvance.decision,
+      fromWorkerId: meta.autoAdvance.fromWorkerId,
+      at: meta.autoAdvance.at,
+    };
   }
   const filePath = path.join(folder, 'meta.json');
   const tmp = `${filePath}.${process.pid}.${Date.now()}.tmp`;
