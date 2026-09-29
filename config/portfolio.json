@@ -14172,6 +14172,18 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 빈 항목은 이유와 다음 행동을 말하고 숨은 경로로 보내지 않음",
           "title": "빈 점검은 다음 할 일로 안내"
+        },
+        {
+          "taskId": "JUCEIPT-M2-VALUE-DECISION",
+          "scope": "Record an evidence-bounded M2 RETRY in a new docs/qa decision file from the 14 already-scored evaluation.json files: usefulness is 7 to 7 so the receipt is not yet materially more useful than Claude's final, unknown cost on all 14 and reported-not-verified tests are acceptable limits, and do not change receipts, scores, or product code.",
+          "files": [
+            "docs/qa/M2_VALUE_DECISION.md",
+            "tests/m2-value-decision.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "PM_STATUS_BOARD.md:163 M2 closes only after PM decides blocker vs acceptable limitation and records per-task scorecard."
         }
       ],
       "skills": {
