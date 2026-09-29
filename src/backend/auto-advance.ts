@@ -89,8 +89,8 @@ function wakeFor(action: AdvanceAction): WakeAction {
 
 export interface RunOutcome {
   taskId: string;
-  /** 'pass' | 'fail' for a run; 'qa-pass' | 'qa-fail' for QA. */
-  kind: 'pass' | 'fail' | 'qa-pass' | 'qa-fail';
+  /** 'pass' | 'fail' for a run; 'qa-pass' | 'qa-fail' for QA; 'orphan' for a stalled RUNNING. */
+  kind: 'pass' | 'fail' | 'qa-pass' | 'qa-fail' | 'orphan';
   failureCategory?: FailureCategory;
   /** Another worker available for fallback. */
   fallbackAvailable?: boolean;
@@ -147,6 +147,32 @@ export function recordOutcome(
     return {
       action: 'retry', humanRequired: false,
       consecutiveFailures: cur + 1, wakeAction: wakeFor('retry'),
+    };
+  }
+
+  // ORPHAN — the Run is still RUNNING but the worker stopped answering.
+  // Same ladder as a run failure, but the reason a human needs to see it is
+  // that the Task is not dead, it is stuck: retry, then another worker, and
+  // only then wake.
+  if (outcome.kind === 'orphan') {
+    const next = cur + 1;
+    counters[outcome.taskId] = next;
+    writeCounters(dataRoot, project, counters);
+    if (next >= MAX_ATTEMPTS) {
+      return {
+        action: 'wake-pm', humanRequired: true,
+        consecutiveFailures: next, wakeAction: 'needs-human',
+      };
+    }
+    if (next >= 2 && outcome.fallbackAvailable) {
+      return {
+        action: 'fallback', humanRequired: false,
+        consecutiveFailures: next, wakeAction: wakeFor('fallback'),
+      };
+    }
+    return {
+      action: 'retry', humanRequired: false,
+      consecutiveFailures: next, wakeAction: wakeFor('retry'),
     };
   }
 

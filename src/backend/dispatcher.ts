@@ -58,6 +58,8 @@ import {
 } from './worker-fallback.js';
 import { emitRunFailedWake, emitWake } from './wake-queue.js';
 import { recordOutcome } from './auto-advance.js';
+import { evaluateOrphan, DEFAULT_ORPHAN_CONFIG } from './orphan-detector.js';
+import type { OrphanDetectionConfig } from './orphan-detector.js';
 import { resolveClaudeConfigContext } from '../integrations/claude/profile.js';
 import { ensureDispatchCaptureManager } from './capture-service.js';
 import {
@@ -259,6 +261,14 @@ interface LiveDispatch {
   observationCleanupDone?: boolean;
   /** Bounded tail of worker stdout/stderr for exit classification (never prompts). */
   outputTail?: string;
+  /** Last proven liveness (worker output or explicit heartbeat). Epoch ms. */
+  lastHeartbeatAtMs?: number;
+  /** Last time outputTail changed. Epoch ms. */
+  lastOutputAtMs?: number;
+  /** Consecutive stale heartbeat checks — the grace counter. */
+  staleChecks?: number;
+  /** True once the orphan sweep has taken this Run over. */
+  orphanHandled?: boolean;
 }
 
 /** Process-local fallback attempts per Task (loop protection, max 2 auto-suggestions). */
@@ -650,6 +660,9 @@ async function cleanupObservationLifecycle(live: LiveDispatch): Promise<void> {
 
 function appendOutputTail(live: LiveDispatch, chunk: unknown): void {
   try {
+    // Any worker output IS a heartbeat — this is the primary liveness signal.
+    live.lastHeartbeatAtMs = Date.now();
+    live.lastOutputAtMs = live.lastHeartbeatAtMs;
     const text = Buffer.isBuffer(chunk) ? chunk.toString('utf8') : String(chunk ?? '');
     if (!text) return;
     live.outputTail = ((live.outputTail ?? '') + text).slice(-OUTPUT_TAIL_CAP);
@@ -684,6 +697,124 @@ function recordExitClassification(args: {
     }
   }
   return { kind: classified.kind, reason: classified.reason, fallbackTo };
+}
+
+// ── F0 orphan sweep: a RUNNING Run that stopped answering ───────────────────
+// A stalled worker is not a dead worker, so the sweep never guesses: it needs
+// heartbeat silence AND no output movement AND not-a-QA-wait, three sweeps in a
+// row (graceRuns), before it takes the Run over. Once taken over it runs the
+// same auto-advance ladder the exit path uses — retry, then another worker,
+// and only then one wake for the human.
+const ORPHAN_STALE_MS = Number(process.env['ARL_HEARTBEAT_STALE_MS'] ?? DEFAULT_ORPHAN_CONFIG.heartbeatStaleMs);
+const ORPHAN_CONFIG: OrphanDetectionConfig = {
+  heartbeatStaleMs: ORPHAN_STALE_MS,
+  checkIntervalMs: Number(process.env['ARL_ORPHAN_CHECK_MS'] ?? DEFAULT_ORPHAN_CONFIG.checkIntervalMs),
+  graceRuns: Number(process.env['ARL_ORPHAN_GRACE'] ?? DEFAULT_ORPHAN_CONFIG.graceRuns),
+  // 'Alive' must mean 'still talking', not merely 'process exists': a
+  // SIGSTOPped worker is a live process that stopped answering. Default to the
+  // SAME budget as staleness so the two can never disagree.
+  heartbeatFreshMs: Number(process.env['ARL_HEARTBEAT_FRESH_MS'] ?? ORPHAN_STALE_MS),
+};
+
+let orphanTimer: NodeJS.Timeout | null = null;
+
+export function stopOrphanSweepForTests(): void {
+  if (orphanTimer) { clearInterval(orphanTimer); orphanTimer = null; }
+}
+
+function taskIsQaPending(task: { executionState: string }): boolean {
+  return task.executionState === 'VERIFYING' || task.executionState === 'RESULT_RECEIVED';
+}
+
+async function sweepOrphanRuns(): Promise<void> {
+  for (const live of Array.from(activeDispatches.values())) {
+    if (!live.runId || live.exitHandled || live.orphanHandled) continue;
+    // Observation-driven workers can sit in 'dispatched' while their Task is
+    // already RUNNING, so gate on the live process + Task state, not on phase.
+    if (live.phase === 'preparing') continue;
+    if (!live.child || live.child.exitCode !== null) continue; // process gone = exit path owns it
+    if (!live.dispatchedAt) continue;
+
+    // First observation seeds the heartbeat: a fresh Run is never stale.
+    if (live.lastHeartbeatAtMs === undefined) live.lastHeartbeatAtMs = Date.now();
+
+    let task;
+    try { task = getTask(live.dataRoot, live.project, live.taskId); } catch { continue; }
+    if (task.executionState !== 'RUNNING' && task.executionState !== 'DISPATCHED') continue;
+
+    const verdict = evaluateOrphan({
+      taskId: live.taskId,
+      runId: live.runId,
+      workerId: live.workerId,
+      lastHeartbeatAtMs: live.lastHeartbeatAtMs,
+      lastOutputAtMs: live.lastOutputAtMs ?? null,
+      processAlive: live.child.exitCode === null,
+      qaPending: taskIsQaPending(task),
+      staleChecks: live.staleChecks ?? 0,
+    }, ORPHAN_CONFIG);
+
+    live.staleChecks = verdict.staleChecks;
+    if (!verdict.orphan) continue;
+
+    // Take over exactly once per Run.
+    live.orphanHandled = true;
+    const decision = recordOutcome(live.dataRoot, live.project, {
+      taskId: live.taskId,
+      kind: 'orphan',
+      fallbackAvailable: false,
+    });
+    const staleText = `heartbeat ${verdict.staleMinutes}분 경과`;
+
+    if (decision.action === 'retry' || decision.action === 'fallback') {
+      // The worker is not answering, so stop it before the retry re-dispatches
+      // the same adapter+workspace pair. The active-dispatch slot must also be
+      // released: the redispatch targets the same Task, and dispatchTask
+      // rejects a Task that still holds a live handle.
+      try { live.child.kill('SIGKILL'); } catch { /* already gone */ }
+      live.exitHandled = true;
+      if (activeDispatches.get(live.key) === live) activeDispatches.delete(live.key);
+      await cleanupObservationLifecycle(live);
+      try { await transitionTaskExecution(live.dataRoot, live.project, live.taskId, {
+        expectedExecutionState: 'RUNNING', to: 'FAILED', reason: `orphan: ${staleText}`.slice(0, 400),
+      }); } catch { /* exit path may win the race */ }
+      try {
+        await autoAdvanceRedispatch({
+          dataRoot: live.dataRoot, project: live.project, taskId: live.taskId, runId: live.runId,
+          goalId: task.goalId, nextWorkerId: live.workerId, workspaceRoot: live.workspaceRoot ?? '',
+          decision: decision.action, fromWorkerId: live.workerId, reason: `orphan ${staleText}`,
+        });
+      } catch (err) {
+      }
+      return;
+    }
+
+    // wake-pm: one record, human-readable reason.
+    try {
+      emitWake(live.dataRoot, live.project, {
+        reason: 'ORPHAN',
+        goalId: task.goalId,
+        taskId: live.taskId,
+        runId: live.runId,
+        workerId: live.workerId,
+        newState: 'ORPHAN',
+        oldState: 'RUNNING',
+        reasonText: `heartbeat ${staleText}`,
+        failureCategory: 'orphan',
+        attemptsUsed: decision.consecutiveFailures,
+        nextRecommendedAction: 'needs-human',
+        blockerSummary: `${live.workerId} 응답 없음 (RUNNING ${staleText})`,
+      });
+    } catch { /* wake never breaks the sweep */ }
+    try { live.child.kill('SIGKILL'); } catch { /* already gone */ }
+  }
+}
+
+function ensureOrphanSweep(): void {
+  if (orphanTimer) return;
+  const interval = Math.max(1000, ORPHAN_CONFIG.checkIntervalMs);
+  orphanTimer = setInterval(() => { void sweepOrphanRuns(); }, interval);
+  // Never hold the process open for a health check.
+  orphanTimer.unref?.();
 }
 
 // ── F0 Phase 2: automatic retry / fallback redispatch ─────────────────────
@@ -1132,6 +1263,7 @@ export async function dispatchTask(
 
   // Lazy process-local orphan scan (never mutates Task SSOT; never guesses FAILED)
   await ensureRecoveryScanned(root, proj);
+  ensureOrphanSweep();
 
   // 1. Acquire per-task dispatch lock (synchronous claim)
   if (activeDispatches.has(key)) {

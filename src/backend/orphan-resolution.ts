@@ -15,6 +15,7 @@ import {
   getRecoveryRecord,
   clearRecoveryRecordTrusted,
   isDispatchBlocked,
+  initializeDispatcherRecovery,
 } from './dispatcher.js';
 import {
   authorizeEffect,
@@ -82,6 +83,14 @@ export async function resolveOrphan(input: ResolveOrphanInput): Promise<ResolveO
     policy = { mode: 'PLAN' };
   }
 
+  // The recovery registry is process-local. A surface that never dispatched
+  // (the CLI, a fresh service process) would therefore always find "no recovery
+  // record" and refuse CONFIRM_FAILED — leaving an orphan unrecoverable. Scan
+  // first so any surface can resolve a genuinely dead Run.
+  try {
+    await initializeDispatcherRecovery(dataRoot, project);
+  } catch { /* a failed scan leaves the record absent; the check below decides */ }
+
   const effect =
     action === 'KEEP_WAITING'
       ? 'ORPHAN_KEEP_WAITING'
@@ -124,7 +133,11 @@ export async function resolveOrphan(input: ResolveOrphanInput): Promise<ResolveO
     );
   }
 
-  const expected = input.expectedExecutionState;
+  // CONFIRM_* require a recovery record + a CAS anchor. Surfaces that act on a
+  // scan finding (CLI guided action) have no state of their own, so anchor on
+  // the state the recovery scan recorded — the Task must still be exactly what
+  // the scan saw, otherwise the orphan is stale and the call is rejected.
+  const expected = input.expectedExecutionState ?? recovery.canonicalExecutionState;
   if (expected !== 'DISPATCHED' && expected !== 'RUNNING') {
     throw new OrphanResolutionError(
       'INVALID_ARGUMENT',

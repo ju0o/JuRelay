@@ -779,7 +779,18 @@ console.log('\n── G-33..G-39 MCP surface + no auto loops ──');
   );
 
   const srcDisp = fs.readFileSync(path.resolve('src/backend/dispatcher.ts'), 'utf8');
-  check(!/setInterval\s*\(/.test(srcDisp) && !/autoDispatch/.test(srcDisp), 'G-38 no auto-dispatch loop');
+  // G-38 (F0 policy change): the dispatcher no longer refuses automation on
+  // principle. It MAY run one health-check interval (the orphan sweep) and MAY
+  // re-dispatch from an auto-advance decision — but only through the
+  // internally-minted autoAdvanceContext, never from a caller-supplied one, and
+  // never on a bare timer. This asserts that narrow boundary, not a blanket ban.
+  check(!/autoDispatchLoop|setInterval\s*\(\s*\(?\s*\)?\s*=>\s*dispatchTask/.test(srcDisp),
+    'G-38 no auto-dispatch loop');
+  const intervalCalls = srcDisp.match(/setInterval\s*\(/g) || [];
+  check(intervalCalls.length <= 1, `G-38 exactly one health interval allowed (found ${intervalCalls.length})`);
+  check(/orphanTimer\.unref/.test(srcDisp), 'G-38 health interval cannot hold the process open');
+  check(/autoAdvanceContext\.sourceRunId/.test(srcDisp) && /internalOnly|autoAdvanceContext: \{/.test(srcDisp),
+    'G-38 redispatch is bound to an internal autoAdvanceContext');
   check(!/autoRetry|scheduleRetry/.test(srcDisp), 'G-39 no auto-retry loop');
   disp._resetDispatcherStateForTests();
 }

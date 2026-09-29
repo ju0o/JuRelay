@@ -22,13 +22,17 @@ export type WakeReason =
   | 'QA_FAIL'
   | 'FALLBACK'
   | 'GOAL_COMPLETE'
-  | 'VERIFYING';
+  | 'VERIFYING'
+  /** A RUNNING Run whose worker stopped answering. */
+  | 'ORPHAN';
 
 export type FailureCategory =
   | 'transient'
   | 'budget'
   | 'permission'
   | 'conflict'
+  /** The Run is still RUNNING but the worker stopped answering. */
+  | 'orphan'
   | 'unknown';
 
 export type WakeAction = 'retry' | 'fallback' | 'needs-human' | 'notify' | 'dispatch-next';
