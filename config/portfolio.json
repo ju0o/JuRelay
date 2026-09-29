@@ -24465,6 +24465,18 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:153 V0.1은 완성된 시각 프로그램이 아니다.",
           "title": "검증 범위와 방법을 쉽게 알 수 있어요"
+        },
+        {
+          "taskId": "JUTELL-V01-NON-GOALS-PARITY",
+          "scope": "Add PRODUCT_SCOPE §9's sentence V0.1에서는 다음을 구현하지 않는다 and its 21 non-goal items in order as one bullet in the README section JuTell이 하는 일과 하지 않는 일, plus an offline node:test, keeping the existing 외부로 전송하지 않습니다 sentence in that section.",
+          "files": [
+            "README.md",
+            "tests/v01-non-goals-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/v01-non-goals-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:556 V0.1에서는 다음을 구현하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
