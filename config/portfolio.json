@@ -13123,6 +13123,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안",
           "title": "하루 요약에서 어려운 명령어 숨기기"
+        },
+        {
+          "taskId": "JUCEIPT-VIEW-STORED-COMMAND",
+          "scope": "In renderLevel1 and renderTodayList, hide stored 받은 결과, 빠진 확인, 중요한 영향, and 받기 전 할 일 lines that contain a shell token anywhere (npm, npx, node, pnpm, yarn, git, bash, timeout, a pipe, or 2>&1), and rewrite the stored formal lines 검증 명령 실행 관찰, 비용을 확인할 수 없음, 명시적 금지 조건 위반, and 명시적 사람 검토 필요 into the 해요체 sentences already used for those cases (cost stays 비용을 확인할 수 없어요), keeping every original line inside 원문 보기.",
+          "files": [
+            "src/render/index.ts",
+            "src/render/today.ts",
+            "tests/receipt-render-founder.test.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안, 빠진 확인 항목의 쉬운 설명"
+        },
+        {
+          "taskId": "JUCEIPT-SUMMARY-FORMAL-GAP",
+          "scope": "In plainStoredCheck, rewrite only the stored formal lines 검증 명령 실행 관찰, 비용을 확인할 수 없음, 명시적 금지 조건 위반, 명시적 사람 검토 필요, and 실행 비용을 직접 확인 so scan 빠진 확인 and daily 할 일 show AI가 끝냈다고 했지만 확인한 기록이 없어요, 비용을 확인할 수 없어요, 사람이 직접 확인해야 해요, and 실행 비용을 직접 확인하세요, and leave every other line unchanged.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/scan-summary.test.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts tests/daily.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안, 빠진 확인 항목의 쉬운 설명"
         }
       ],
       "skills": {
