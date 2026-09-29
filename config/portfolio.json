@@ -2853,6 +2853,21 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: Founder choice 2026-09-29: Add one assertion in test/vnext.test.mjs that exportRunMarkdown still names the run when the folder is nested deeper than four segments, and change the header parse in src/backend/fs.ts only if that assertion fails.",
           "title": "깊은 폴더에서도 실행 이름 표시"
+        },
+        {
+          "taskId": "AGENTRELAY-DEV-DOC-TRUTH",
+          "scope": "Add docs-truth assertions that fail while BACKLOG still lists watch/HMR as missing and the docs still say watch/HMR 없음, Storage, and About, then update those lines to match scripts/dev.mjs and the labels 저장 폴더 and 앱 정보 without changing the moveRun backlog item.",
+          "files": [
+            "BACKLOG.md",
+            "docs/DEVELOPER.md",
+            "docs/RECORDS_AND_DOGFOODING.md",
+            "test/docs-truth.test.mjs"
+          ],
+          "tests": [
+            "node test/docs-truth.test.mjs",
+            "npm run typecheck"
+          ],
+          "ssotEvidence": "BACKLOG.md:26 npm run dev에 watch/HMR 없음"
         }
       ],
       "qaRuntime": [
