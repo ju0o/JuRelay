@@ -22353,6 +22353,28 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:85 Add a row only when the same task key identifies both a Claude final and a Receipt and those references reconcile into a valid join; Founder direction 2026-09-29",
           "title": "결제 사용 가치 판단 보류"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-NEXT-VALID-JOIN",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html change only the Next Agent muted Korean sentence and its 원문 보기 so a later M3 GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join, keeping M3 undecided and recording no decision.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-29"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-TALLY-CONFLICT-VALID-JOIN",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md change only the §2.2 closing sentence, the §3.1 tally decision sentence, and the Section 7 evidence-conflicts and actionable-bar cells so each keeps M3 unrecorded until a same-task Claude-final and Receipt reference pair reconciles into a valid join.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:244 a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join"
         }
       ],
       "skills": {
