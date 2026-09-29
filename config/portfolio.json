@@ -25313,6 +25313,18 @@
           ],
           "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:97 다음 정보는 관련 Feature가 꺼져 있어도 짧게 보고한다.",
           "title": "안전과 위험 정보를 빠짐없이 알려줘요"
+        },
+        {
+          "taskId": "JUTELL-MINIMAL-REDUCE-LIST-PARITY",
+          "scope": "Add FEATURE_CONFIGURATION §8.1's sentence 이 설정에서는 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동을 유지하고 내부 변화·주요 파일·변경 의미 설명·용어·일반 위험도 설명과 다음 행동 제안은 기본적으로 줄인다. 실패와 중요한 미확인 사항은 유지한다. `requestBuilder`는 보고서와 무관하므로 이 설정에서도 켜져 있다. as one line in feature-registry.md next to the existing minimal-profile paragraph without replacing it, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/minimal-reduce-list-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/minimal-reduce-list-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:144 이 설정에서는 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동을 유지하고 내부 변화·주요 파일·변경 의미 설명·용어·일반 위험도 설명과 다음 행동 제안은 기본적으로 줄인다. 실패와 중요한 미확인 사항은 유지한다. `requestBuilder`는 보고서와 무관하므로 이 설정에서도 켜져 있다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
