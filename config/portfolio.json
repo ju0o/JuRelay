@@ -6582,6 +6582,41 @@
           ],
           "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 discover --ssh asus 재검증",
           "title": "배포 파일 이름을 확인"
+        },
+        {
+          "taskId": "ACTL-INSTALL-ISS-SOURCES",
+          "scope": "Add a pure recheck that reads packaging/JuActl.iss file basenames and OutputBaseFilename against the existing build-exe and build-installer artifact names, records that match and that ISCC runs before the final SHA256SUMS rewrite as OBSERVED, and records the built installer as NOT_PROVEN, without running PyInstaller, Inno Setup, or ssh.",
+          "files": [
+            "src/actl/core/install_iss_recheck.py",
+            "tests/test_install_iss_recheck.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:106 Windows installer build and installation of this exact commit"
+        },
+        {
+          "taskId": "ACTL-REFRESH-MATRIX-MID",
+          "scope": "Extend the existing offline warm-refresh matrix so 2-pane and 4-pane remote-call counts are recorded as OBSERVED under the current pane_count+3 bound, while the 1-pane and 8-pane results stay and the live MainPC matrix stays NOT_PROVEN, without changing refresh behavior.",
+          "files": [
+            "tests/test_refresh_matrix_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:109 1/2/4/8-agent refresh matrix and auto-refresh OFF/TUI cases"
+        },
+        {
+          "taskId": "ACTL-TRANSPORT-SPAWN-EVIDENCE",
+          "scope": "Add a pure recheck that records the Windows list-panes, list-sessions, and control-session argv as OBSERVED ssh commands with no powershell token and no new-session, and records live PowerShell and sshd counts as NOT_PROVEN, without starting ssh or changing transport behavior.",
+          "files": [
+            "src/actl/core/transport_spawn_evidence.py",
+            "tests/test_transport_spawn_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:35 direct argv for initial SSH setup; no PowerShell wrapper per tmux operation"
         }
       ],
       "qaRuntime": [
