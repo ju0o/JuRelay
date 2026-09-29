@@ -13561,6 +13561,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: receipt 명령 오류는 평문 한국어 3줄과 바로 할 다음 행동이어야 한다.",
           "title": "다음 확인 방법을 안내해요"
+        },
+        {
+          "taskId": "JUCEIPT-REVIEW-NOTICE-TRUE-CAUSE",
+          "scope": "In the receipt view review notice, claim that the AI said the work was finished only when a remaining item links to a reported_not_verified gap; otherwise say those checks are simply not confirmed yet.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts"
+          ],
+          "ssotEvidence": "src/render/index.ts:142 아래 빠진 확인은 AI가 끝냈다고 말했지만 확인 근거가 부족한 내용이에요. Founder direction 2026-09-25 판정 뜻"
+        },
+        {
+          "taskId": "JUCEIPT-BROKEN-RECEIPT-RESCAN",
+          "scope": "When juceipt receipt finds a receipt file that is not valid JSON, replace the next-step line that tells the Founder to edit the file with the same plain Korean step daily already uses for a broken receipt.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-cli.test.ts"
+          ],
+          "ssotEvidence": "src/cli/main.ts:208 할 일: 파일 내용을 고친 뒤 다시 시도하세요. Founder direction 2026-09-25 오류 3줄"
         }
       ],
       "skills": {
