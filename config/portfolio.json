@@ -28026,6 +28026,50 @@
           ],
           "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다.",
           "title": "결정된 카드에서 선택 버튼을 숨겨요"
+        },
+        {
+          "taskId": "JUAI-CHECK-GIFT-REACT",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that the feedback-bonus branch reacts with 🎁 only when grantBonus returns true, so a capped member is not shown the gift.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:49 30자 이상 피드백 보너스는 다른 사람의 쇼케이스·피드백 글에 피드백을 달 때만 적용, 최대 +3"
+        },
+        {
+          "taskId": "JUAI-CHECK-BADGE-EMPTY",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that monthlyBadge returns before createCard when no member reaches the badge minimum, so an empty month does not post a badge card.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:19 월간 배지"
+        },
+        {
+          "taskId": "JUAI-CHECK-PICKS-SEEN",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that dailyPicks drops repositories already stored in the picks table before building the Codex candidate list, so a repository is not recommended again.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:15 매일 서버 대화에 맞춘 오픈소스 추천"
+        },
+        {
+          "taskId": "JUAI-CHECK-THREADS-ARCHIVED",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that threadsSince reads archived threads for the requested parents and keeps only threads created at or after since, so the project list and weekly report include older posts.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
