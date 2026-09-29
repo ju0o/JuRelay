@@ -6816,6 +6816,30 @@
           ],
           "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
           "title": "환경별 보드가 비었거나 안 맞을 때 안내"
+        },
+        {
+          "taskId": "ACTL-COPY-REPEAT-EVIDENCE",
+          "scope": "Add a pure recheck that reads the Tk notices for an already-copied result and a stale result, records both Korean lines as OBSERVED, and records a live Windows copy click as NOT_PROVEN, without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/copy_repeat_evidence.py",
+            "tests/test_copy_repeat_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-SEND-INFLIGHT-EVIDENCE",
+          "scope": "Add a pure recheck that reads the Tk in-flight send notice, records that Korean line as OBSERVED, and records a live Windows second send as NOT_PROVEN, without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/send_inflight_evidence.py",
+            "tests/test_send_inflight_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 보내기→결과→복사 흐름을 독립 QA로 확인한다."
         }
       ],
       "qaRuntime": [
