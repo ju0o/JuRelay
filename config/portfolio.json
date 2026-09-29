@@ -29230,6 +29230,50 @@
           ],
           "ssotEvidence": "README.md:48 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다.",
           "title": "개발 작업 권한을 알맞게 제한하기"
+        },
+        {
+          "taskId": "JUAI-CHECK-README-ROW-MODELS",
+          "scope": "Add check.mjs assertions only that README's Codex row names Codex CLI, the OpenCode row names 무료 모델 (자동 교체), and the CommandCode row names 실패 시 OpenCode 무료 모델.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:17 | CommandCode | 환영 인사·프로필 폼, 피드백 첫 코멘트, 공동 프로젝트 알림 | Laguna S 2.1 자체 무료 모델 (실패 시 OpenCode 무료 모델) |"
+        },
+        {
+          "taskId": "JUAI-CHECK-README-MENTOR-COUNT",
+          "scope": "Add a check.mjs assertion only that README's Q&A mentor bullet cites MENTOR_MAX, so the 실무자 최대 N명 clause cannot drift from lib.mjs.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:20 - `#질문-답변`에 입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-ADMIN-UNCLEAR",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that adminCommand returns the existing 무슨 일을 할지 정확히 못 알아들었어요 reply when validateAdminPlan fails, before sayLong and before createCard.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:13 | Claude | 공지·규칙 초안 → 승인 카드, 어제 요약, 건의 정리, 스팸 관리, 서버 주인 명령 실행 | Claude Code CLI (Haiku) |"
+        },
+        {
+          "taskId": "JUAI-CHECK-BADGE-ROLE-MISS",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that execute's badge case throws the existing 피드백 장인 역할이 없어요 error before roles.remove and roles.add.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 그 밖에: 봇들끼리 수다(`#봇-놀이터`), 자주 묻는 질문 재사용, 답변 👍/👎, 키워드 구독, 피드백 보너스, 주간 리포트, 월간 배지, 프로젝트 목록 자동 갱신."
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
