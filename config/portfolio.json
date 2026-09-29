@@ -22101,6 +22101,17 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join",
           "title": "연동 결과를 정확히 확인"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-REPORT-VALID-JOIN",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md change only the five M3 clauses at lines 6, 29, 59, 80, and 252 so a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join, keeping M3 UNDECIDED and recording no decision.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
         }
       ],
       "skills": {
