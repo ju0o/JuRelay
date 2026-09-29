@@ -10192,6 +10192,19 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane.",
           "title": "연결이 끊겨도 멈춘 일은 안 돌림"
+        },
+        {
+          "taskId": "JUPLAN-AR-RECONCILE-PAUSE",
+          "scope": "Append an optional PAUSE fact after founderGate on reconcileRestart, applyRestartReconcile, and runRestartReconcile so a paused lane turns the one provider-outage requeue into dispatch none and invents no Product task, while an omitted or unpaused fact keeps that single requeue.",
+          "files": [
+            "packages/runtime/src/agentRelayRestartReconcile.ts",
+            "packages/runtime/test/agent-relay-restart-reconcile.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 /"
         }
       ],
       "qaRuntime": [
