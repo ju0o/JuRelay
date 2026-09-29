@@ -22153,6 +22153,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists.",
           "title": "자료가 맞아야 다음 결정을 진행"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-SECTION23-VALID-JOIN",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md change only the §2.3 intake rule and the Section 7 next-step cell so a later GO, DEFER, or KILL stays unrecorded until a same-task row has Claude-final and Receipt references that reconcile into a valid join.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:175 Use only §2.3 to intake a same-task row containing both a Claude final and a Receipt whose references reconcile into a valid join; until then, do not record M3 GO / DEFER / KILL."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-READORDER-RECONCILE-JOIN",
+          "scope": "In README.md item 10, docs/planning/BUSINESS_SYSTEM_INDEX.md item 9, and the 2026-09-26 note in docs/decisions/UNPLANNED_WORK_01_DECISION.md, replace only the same-task valid-join clause so a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join.",
+          "files": [
+            "README.md",
+            "docs/planning/BUSINESS_SYSTEM_INDEX.md",
+            "docs/decisions/UNPLANNED_WORK_01_DECISION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join."
         }
       ],
       "skills": {
