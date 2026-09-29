@@ -29719,6 +29719,50 @@
           ],
           "ssotEvidence": "README.md:8 매칭 알림은 1인 하루 3회",
           "title": "본인 글과 하루 한도는 알리지 않아요"
+        },
+        {
+          "taskId": "JUAI-CHECK-BOOT-RECOVERY",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that a successful start deletes data/deploy.json and logs the existing success sentence, and deletes data/rollback.json before alerting the Founder with the existing Korean rollback sentence that names the feature/card branch.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:42 guard.mjs 새 버전이 켜지지 않으면 이전 버전으로 자동 복구"
+        },
+        {
+          "taskId": "JUAI-CHECK-TICK-HEARTBEAT",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that startup runs the first tick after 20 seconds, calls scheduleTalk immediately to resume a talk, repeats tick every 5 minutes, and destroys every logged-in client on SIGINT and SIGTERM.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:30 node bot.mjs # 실행 (상시 실행은 juai-bot.service)"
+        },
+        {
+          "taskId": "JUAI-CHECK-TALK-CARRY-START",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that startTalk continues talk_carry while its part is below TALK_MAX_PARTS using the continuation prompt and part+1 without appending talk_topics, and clears talk_carry before picking a new topic once that part has reached the maximum.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 그 밖에: 봇들끼리 수다(`#봇-놀이터`)"
+        },
+        {
+          "taskId": "JUAI-CHECK-SETUP-NOTIFY",
+          "scope": "Add check.mjs source assertions only, leaving setup.mjs unchanged, that setup enables Community with the rules and staff channels, sets verification to Low and the explicit content filter to all members, sets default notifications to mentions only, and sets the system channel to intro.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "setup.mjs:102 new members: only @mentions ping by default"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
