@@ -13811,6 +13811,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25",
           "title": "실패한 작업의 이유와 다음 할 일"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-NEXT-NAMES-TASK",
+          "scope": "In scanCommand, when any receipt is not ready, replace the generic next line with 다음: 「taskTitle of the first non-ready receipt request」부터 확인하세요 plus the daily remainder count when more than one is not ready, reading request_text from that receipt.json and falling back to the current generic line if it cannot be read, while leaving the empty and all-ready next lines unchanged and keeping paths only under --show-raw.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/sources-scan-cli.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: juceipt scan 출력은 지금 무엇을 할지 한 문장으로 안내"
+        },
+        {
+          "taskId": "JUCEIPT-CANCELLED-THREE-LINES",
+          "scope": "In renderLevel1 and renderTodayList, when the receipt is cancelled, show three plain Korean lines outside 원문 보기 — 무엇이 중단됐어요: 끝까지 끝나기 전에 멈췄어요, 왜 중단됐어요: 중간에 멈춰서 결과를 받으면 안 돼요, 다음 할 일: 받지 말고 필요하면 다시 맡겨 주세요 — keep the existing cancelled verdict sentence, and do not show 무엇이 실패했어요 on cancelled receipts.",
+          "files": [
+            "src/render/index.ts",
+            "src/render/today.ts",
+            "tests/receipt-render-founder.test.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 오류는 무슨 일, 왜, 다음 할 일 세 줄"
         }
       ],
       "skills": {
