@@ -6383,6 +6383,42 @@
           ],
           "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다",
           "title": "찾고 보내고 결과를 복사하는 흐름 확인"
+        },
+        {
+          "taskId": "ACTL-DISCOVER-ARGV-LOCK",
+          "scope": "Point the Windows discover recheck at production tmux._remote_args for list-panes and the connect() list-sessions -F probe, using one shared format constant, and keep installed discover --ssh NOT_PROVEN without spawning ssh.",
+          "files": [
+            "src/actl/core/tmux.py",
+            "src/actl/core/win_discover_recheck.py",
+            "tests/test_windows_discover_recheck.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 `discover --ssh asus` 재검증"
+        },
+        {
+          "taskId": "ACTL-TK-DISPLAY-EVIDENCE",
+          "scope": "Record gui._card_header and gui._card_line for one connected idle row as OBSERVED Tk board display and the live Windows board as NOT_PROVEN, with no pane id or English status on those lines and without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/board_display_evidence.py",
+            "tests/test_board_display_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-REFRESH-COUNT-EVIDENCE",
+          "scope": "In the existing warm-refresh op-budget test, record the counted remote calls as OBSERVED and live MainPC process and handshake counts as NOT_PROVEN, keeping the current call ceiling and not starting ssh.",
+          "files": [
+            "tests/test_rows_op_budget.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:28 독립 QA에서 warm transport, process 수와 refresh 동작 측정"
         }
       ],
       "qaRuntime": [
