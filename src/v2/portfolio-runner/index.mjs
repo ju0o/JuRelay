@@ -420,9 +420,14 @@ export class PortfolioRunner {
     // never has to guess why six tasks are in QA against maxQa 4.
     const capacity = this.qaCapacity(state);
     const snapshot = { ...state, ...(this.routing ? { routing: this.routing } : {}), qa: capacity, ...capacity, updatedAt: new Date().toISOString() };
+    // A separate, tiny mirror of the QA numbers. The PM dashboard polls every couple of seconds and
+    // state.json is ~10 MB of 2 000+ tasks; parsing that per poll would cost far more than the widget
+    // itself. Atomic (tmp + rename) like state.json, so a reader never sees a half-written file.
+    const capacityPath = this.statePath.replace(/state\.json$/, "qa-capacity.json");
+    const capacityBody = JSON.stringify({ ...capacity, updatedAt: snapshot.updatedAt }, null, 2);
     this._saveChain = this._saveChain.then(async () => {
     // The continuous loop holds state in memory; a Founder answer written meanwhile by the CLI (founder-response) must not be overwritten.
-    if (this._continuous) { const disk = await this.load(); if ((disk.resolvedFounderGates || []).length > (snapshot.resolvedFounderGates || []).length) for (const key of ["founderDecisions", "resolvedFounderGates"]) { snapshot[key] = disk[key]; state[key] = disk[key]; } } await mkdir(resolve(this.statePath, ".."), { recursive: true }); await writeFile(`${this.statePath}.tmp`, JSON.stringify(snapshot, null, 2)); await rename(`${this.statePath}.tmp`, this.statePath); }); return this._saveChain; } // atomic: a power-off mid-save keeps the old or the new file, never none
+    if (this._continuous) { const disk = await this.load(); if ((disk.resolvedFounderGates || []).length > (snapshot.resolvedFounderGates || []).length) for (const key of ["founderDecisions", "resolvedFounderGates"]) { snapshot[key] = disk[key]; state[key] = disk[key]; } } await mkdir(resolve(this.statePath, ".."), { recursive: true }); await writeFile(`${this.statePath}.tmp`, JSON.stringify(snapshot, null, 2)); await rename(`${this.statePath}.tmp`, this.statePath); await writeFile(`${capacityPath}.tmp`, capacityBody); await rename(`${capacityPath}.tmp`, capacityPath); }); return this._saveChain; } // atomic: a power-off mid-save keeps the old or the new file, never none
 
   async reconcileProjects(state) {
     const projects = []; const founderGates = [];
