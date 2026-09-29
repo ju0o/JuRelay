@@ -26549,6 +26549,42 @@
           ],
           "ssotEvidence": "docs/GLOSSARY_POLICY.md:108 모든 파일 설명에 같은 근거 문구를 반복하지 않음",
           "title": "근거 반복을 줄여 설명을 읽기 쉽게 함"
+        },
+        {
+          "taskId": "JUTELL-SCENARIO-U-IMPORTANT-UNVERIFIED",
+          "scope": "중요한 미확인 항목이 있는 보고서 fixture와 오프라인 테스트를 추가해 확인 완료 상태를 사용하지 않는지 검증한다.",
+          "files": [
+            "tests/results/scenario-u/important-unverified.fixture.md",
+            "tests/results/scenario-u/important-unverified.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-u/important-unverified.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:449-468 \"중요한 미확인 사항\"은 핵심 동작을 확인하지 못하면 `확인 완료`를 사용하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-NEXT-ACTION-CAP-FIXTURE",
+          "scope": "다음 행동 제안 fixture와 오프라인 테스트를 추가해 제안을 최대 3개로 제한하고 확인된 미확인 항목에만 연결한다.",
+          "files": [
+            "tests/results/scenario-v/next-action-cap.fixture.md",
+            "tests/results/scenario-v/next-action-cap.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-v/next-action-cap.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:359-374 \"다음 행동 제안\"은 최대 3개이며 보고서에서 이미 확인된 항목 중에서만 고른다."
+        },
+        {
+          "taskId": "JUTELL-VERIFY-RESULT-DETAIL-FIXTURE",
+          "scope": "검증 결과 fixture와 오프라인 테스트를 추가해 실행 명령·확인 범위·실패 개수·실행하지 못한 이유를 구분해 기록하는지 검증한다.",
+          "files": [
+            "tests/results/scenario-w/verification-details.fixture.md",
+            "tests/results/scenario-w/verification-details.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/results/scenario-w/verification-details.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:406-413 \"검증 결과에는 가능한 경우\" 실행한 명령, 확인 범위, 실패 개수, 실행하지 못한 이유를 함께 기록한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
