@@ -26188,6 +26188,30 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:8 본 문서에서 동일한 표현이 예시로 등장하더라도 상태 체계의 정의를 변경하지 않는다.",
           "title": "상태 기준을 일관되게 알려드려요"
+        },
+        {
+          "taskId": "JUTELL-NO-TOOL-IMPORTANCE-PARITY",
+          "scope": "BEGINNER_REPORT_SPEC §11.2의 문장 실행 권한이나 도구가 없을 때는 해당 검증의 중요도에 따라 결정한다를 report-format.md §1의 도구 없음 상태 연결 세 줄 바로 위에 한 줄로 넣고 오프라인 테스트로 원문을 고정한다.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/no-tool-importance-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/no-tool-importance-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:443 실행 권한이나 도구가 없을 때는 해당 검증의 중요도에 따라 결정한다."
+        },
+        {
+          "taskId": "JUTELL-LOCAL-PROCESS-ONLY-PARITY",
+          "scope": "PRODUCT_SCOPE 설치와 로컬 운영 지원의 문장 이 기능들은 127.0.0.1 또는 로컬 프로세스에서만 동작한다와 중앙 서버·원격 Telemetry·사용자 계정·공개 웹 대시보드에 연결하지 않는다는 문장을 README의 JuTell이 하는 일과 하지 않는 일 절에 한 bullet로 넣고 오프라인 테스트로 원문을 고정한다.",
+          "files": [
+            "README.md",
+            "tests/local-process-only-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/local-process-only-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:203 이 기능들은 127.0.0.1 또는 로컬 프로세스에서만 동작한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
