@@ -24997,6 +24997,43 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:425 필요한 핵심 검증이 모두 통과했고 중요한 미확인 사항이 없음",
           "title": "검증 결과를 알기 쉽게 안내하기"
+        },
+        {
+          "taskId": "JUTELL-UNCONFIRMED-NOT-WORKING-PARITY",
+          "scope": "Add PRODUCT_SCOPE §7.2's sentence 확인하지 않은 결과를 정상 작동한다고 표현하지 않는다 as one line in report-format.md §1 immediately after 근거가 없는 내용을 확인된 사실처럼 작성하지 않는다, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/unconfirmed-not-working-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/unconfirmed-not-working-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:395 확인하지 않은 결과를 정상 작동한다고 표현하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-USER-FINAL-DECISION-PARITY",
+          "scope": "Add PRODUCT_SCOPE §3.4's sentence 최종 승인이나 배포 결정은 사용자가 한다 as one sub-bullet under SKILL.md 실행 절차 step 15, directly after JuTell는 사용자가 판단할 수 있도록 검증 상태와 확인 항목을 제공한다, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/user-final-decision-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/user-final-decision-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:106 최종 승인이나 배포 결정은 사용자가 한다."
+        },
+        {
+          "taskId": "JUTELL-NO-ANSWER-STILL-SAFETY-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §3's sentence 사용자가 답변 자체를 원하지 않는다고 명확히 요청했더라도 안전, 실패, 데이터 손실 가능성 또는 비밀정보 노출 문제가 발견되면 해당 내용은 알린다 as one line under report-format.md §4 after 최소 보고에서도 생략하지 않는다 and as one sub-bullet under SKILL.md 실행 절차 step 6, plus an offline node:test that the sentence stays in all three files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/no-answer-still-safety-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/no-answer-still-safety-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:85 사용자가 답변 자체를 원하지 않는다고 명확히 요청했더라도 안전, 실패, 데이터 손실 가능성 또는 비밀정보 노출 문제가 발견되면 해당 내용은 알린다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
