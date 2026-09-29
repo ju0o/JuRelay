@@ -22917,6 +22917,18 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/product/MASTER_ROADMAP.md:561 M3 remains UNDECIDED, and no GO/DEFER/KILL milestone decision is recorded until that condition is met."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-FOUNDER-MOBILE-READABILITY-R2",
+          "scope": "캐노니컬 HTML 05 본문에 노출된 B0 영어 개발자 문장만 원문 보기 영역 안으로 이동하고 M3 valid-join 보류 근거와 원문 보기 경계를 보존한다.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "python3 -c \"import re,pathlib; s=pathlib.Path('docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html').read_text(); v=re.sub(r'<details>.*?</details>','',s,flags=re.S); assert 'B0 Core Value Proof maps to M2' not in v; assert 'B0 Core Value Proof maps to M2' in s\"",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 — M3는 유효한 same-task Claude-final/Receipt join 전까지 UNDECIDED로 유지한다."
         }
       ],
       "skills": {
