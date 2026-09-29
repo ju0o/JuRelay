@@ -21620,6 +21620,17 @@
           ],
           "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:16-31 \"이 05 문서가 현재 기준 시각화\" 및 M3 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집",
           "title": "휴대폰에서도 내용과 연결 상태 보기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-ROADMAP-P0-NONUNLOCK-SYNC",
+          "scope": "In docs/product/MASTER_ROADMAP.md change only section 12 item 2 so P0 planning-only does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation, matching the status board and opening no gate.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
         }
       ],
       "skills": {
