@@ -26290,6 +26290,54 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:203 이 기능들은 127.0.0.1 또는 로컬 프로세스에서만 동작한다.",
           "title": "내 컴퓨터에서만 쓰고 밖으로는 안 나감"
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-ANALOGY-DEFINITION-FIRST-PARITY",
+          "scope": "Add GLOSSARY_POLICY §2.4's sentence that an analogy still states the real definition first as one line in glossary-ko.md's opening block before the 목차 heading, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-analogy-definition-first-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-analogy-definition-first-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:38 비유를 사용하는 경우에도 실제 정의를 먼저 제공한다."
+        },
+        {
+          "taskId": "JUTELL-EVAL-CORE-MEANING-PARITY",
+          "scope": "Add TEST_SCENARIOS §5.8's sentence that the core meaning must match as one sub-bullet under SKILL.md read step 6, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/eval-core-meaning-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/eval-core-meaning-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:327 핵심 의미가 일치해야 한다."
+        },
+        {
+          "taskId": "JUTELL-MCP-CALL-STATE-SEPARATE-PARITY",
+          "scope": "Add PRODUCT_SCOPE's two sentences that an MCP server run and a real AI Agent tool call are separate states, and that only Codex has a real MCP connection while OpenCode is config-registration beta, as one bullet in the README section JuTell이 하는 일과 하지 않는 일, plus an offline node:test that those sentences stay in both files.",
+          "files": [
+            "README.md",
+            "tests/mcp-call-state-separate-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/mcp-call-state-separate-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:203 MCP 서버 실행과 실제 AI Agent 도구 호출은 별도 상태로 취급한다. 현재 실제 MCP 연결은 Codex만 지원하며, OpenCode는 설정 등록 베타 단계다."
+        },
+        {
+          "taskId": "JUTELL-CODE-ONLY-NO-LONG-REPORT-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §3's sentence that a code-only, no-report request does not produce a long report as one line under report-format.md section 4, leaving the existing short-report sentence in place, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/code-only-no-long-report-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/code-only-no-long-report-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:71 사용자가 “코드만 수정하고 보고서는 작성하지 말라”고 요청한 경우에는 긴 보고서를 생성하지 않는다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
