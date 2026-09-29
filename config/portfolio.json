@@ -6542,6 +6542,42 @@
           ],
           "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
           "title": "보내기 실패 이유를 한국어로 안내"
+        },
+        {
+          "taskId": "ACTL-INSTALL-VERSION-RECHECK",
+          "scope": "Add a pure recheck that reads packaging/JuActl.iss AppVersion and pyproject.toml version as text, records both strings and whether they match as OBSERVED, and records a live MainPC install as NOT_PROVEN, without editing either version, running the installer, or starting ssh.",
+          "files": [
+            "src/actl/core/install_version_recheck.py",
+            "tests/test_install_version_recheck.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다."
+        },
+        {
+          "taskId": "ACTL-BOARD-ENTRY-RECHECK",
+          "scope": "Add a pure recheck that records the board entry default SSH target, the install.ps1 fallback command text, and the two Korean startup messages as OBSERVED source facts, and a live Windows launch as NOT_PROVEN, without calling main, creating shortcuts, or starting ssh.",
+          "files": [
+            "src/actl/core/board_entry_recheck.py",
+            "tests/test_board_entry_recheck.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다."
+        },
+        {
+          "taskId": "ACTL-PACKAGE-ARTIFACT-RECHECK",
+          "scope": "Add a pure recheck that reads the Windows package scripts and records the artifact filenames they name as OBSERVED source text, while recording built dist files and checksums as NOT_PROVEN, without running PyInstaller, Inno Setup, or ssh.",
+          "files": [
+            "src/actl/core/package_artifact_recheck.py",
+            "tests/test_package_artifact_recheck.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 discover --ssh asus 재검증"
         }
       ],
       "qaRuntime": [
