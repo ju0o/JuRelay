@@ -6749,7 +6749,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "빈 보드와 연결된 창 안내"
         },
         {
           "taskId": "ACTL-DISCOVER-UNMAPPED-EVIDENCE",
@@ -6761,7 +6762,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 `discover --ssh asus` 재검증"
+          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 `discover --ssh asus` 재검증",
+          "title": "연결 안 된 창을 쉬운 말로"
         },
         {
           "taskId": "ACTL-SEND-CONFIRM-EVIDENCE",
@@ -6773,7 +6775,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:11 보내기 → 결과 → 복사"
+          "ssotEvidence": "BACKLOG.md:11 보내기 → 결과 → 복사",
+          "title": "보내기 확인 문장과 버튼"
         }
       ],
       "qaRuntime": [
@@ -14024,7 +14027,8 @@
           "tests": [
             "npx vitest run tests/scan-summary.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장과 빈 화면의 다음 행동이 화면의 실제 내용과 같아야 한다"
+          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장과 빈 화면의 다음 행동이 화면의 실제 내용과 같아야 한다",
+          "title": "받아도 되면 먼저 볼 목록에서 빼기"
         },
         {
           "taskId": "JUCEIPT-CLI-NEXT-WHEN-NO-GAP",
@@ -14036,7 +14040,8 @@
           "tests": [
             "npx vitest run tests/receipt-cli.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장과 빈 화면의 다음 행동이 화면의 실제 내용과 같아야 한다"
+          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장과 빈 화면의 다음 행동이 화면의 실제 내용과 같아야 한다",
+          "title": "빠진 확인이 없으면 다음 할 일을 맞게 안내"
         }
       ],
       "skills": {
@@ -23076,7 +23081,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/decisions/DECISION_LOG.md:251-254 plain Korean, one obvious next action, inline feedback, no raw task IDs or enum/status codes in user-facing output"
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:251-254 plain Korean, one obvious next action, inline feedback, no raw task IDs or enum/status codes in user-facing output",
+          "title": "JuCeipt 화면이 쉬운지 확인"
         }
       ],
       "skills": {
@@ -26301,7 +26307,8 @@
           "tests": [
             "node --test tests/glossary-analogy-definition-first-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:38 비유를 사용하는 경우에도 실제 정의를 먼저 제공한다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:38 비유를 사용하는 경우에도 실제 정의를 먼저 제공한다.",
+          "title": "비유해도 실제 뜻을 먼저 보여주기"
         },
         {
           "taskId": "JUTELL-EVAL-CORE-MEANING-PARITY",
@@ -26313,7 +26320,8 @@
           "tests": [
             "node --test tests/eval-core-meaning-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:327 핵심 의미가 일치해야 한다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:327 핵심 의미가 일치해야 한다.",
+          "title": "핵심 뜻이 같은지 맞추기"
         },
         {
           "taskId": "JUTELL-MCP-CALL-STATE-SEPARATE-PARITY",
@@ -26325,7 +26333,8 @@
           "tests": [
             "node --test tests/mcp-call-state-separate-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:203 MCP 서버 실행과 실제 AI Agent 도구 호출은 별도 상태로 취급한다. 현재 실제 MCP 연결은 Codex만 지원하며, OpenCode는 설정 등록 베타 단계다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:203 MCP 서버 실행과 실제 AI Agent 도구 호출은 별도 상태로 취급한다. 현재 실제 MCP 연결은 Codex만 지원하며, OpenCode는 설정 등록 베타 단계다.",
+          "title": "설정만 된 것과 실제 연결을 구분하기"
         },
         {
           "taskId": "JUTELL-CODE-ONLY-NO-LONG-REPORT-PARITY",
@@ -26337,7 +26346,8 @@
           "tests": [
             "node --test tests/code-only-no-long-report-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:71 사용자가 “코드만 수정하고 보고서는 작성하지 말라”고 요청한 경우에는 긴 보고서를 생성하지 않는다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:71 사용자가 “코드만 수정하고 보고서는 작성하지 말라”고 요청한 경우에는 긴 보고서를 생성하지 않는다.",
+          "title": "일만 부탁하면 긴 보고서를 안 만들기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
