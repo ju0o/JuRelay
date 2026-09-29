@@ -6472,7 +6472,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "보내면 결과를 한글로 알려 주기"
         },
         {
           "taskId": "ACTL-COPY-OUTCOME-EVIDENCE",
@@ -6485,7 +6486,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "복사하면 결과를 한글로 알려 주기"
         }
       ],
       "qaRuntime": [
@@ -13572,7 +13574,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts"
           ],
-          "ssotEvidence": "src/render/index.ts:142 아래 빠진 확인은 AI가 끝냈다고 말했지만 확인 근거가 부족한 내용이에요. Founder direction 2026-09-25 판정 뜻"
+          "ssotEvidence": "src/render/index.ts:142 아래 빠진 확인은 AI가 끝냈다고 말했지만 확인 근거가 부족한 내용이에요. Founder direction 2026-09-25 판정 뜻",
+          "title": "영수증 검토 안내를 사실대로"
         },
         {
           "taskId": "JUCEIPT-BROKEN-RECEIPT-RESCAN",
@@ -13584,7 +13587,8 @@
           "tests": [
             "npx vitest run tests/receipt-cli.test.ts"
           ],
-          "ssotEvidence": "src/cli/main.ts:208 할 일: 파일 내용을 고친 뒤 다시 시도하세요. Founder direction 2026-09-25 오류 3줄"
+          "ssotEvidence": "src/cli/main.ts:208 할 일: 파일 내용을 고친 뒤 다시 시도하세요. Founder direction 2026-09-25 오류 3줄",
+          "title": "깨진 영수증의 다음 단계를 쉽게"
         }
       ],
       "skills": {
@@ -25622,7 +25626,8 @@
           "tests": [
             "node --test tests/main-file-cause-include-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:639 다만 테스트 실패의 직접 원인이 테스트 파일에 있거나, 설정 파일이 보안·배포·의존성에 영향을 주는 경우에는 해당 파일을 주요 파일로 포함할 수 있다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:639 다만 테스트 실패의 직접 원인이 테스트 파일에 있거나, 설정 파일이 보안·배포·의존성에 영향을 주는 경우에는 해당 파일을 주요 파일로 포함할 수 있다.",
+          "title": "원인인 설정·확인용 파일도 보고서에 넣기"
         },
         {
           "taskId": "JUTELL-SCOPE-GOAL-NO-EXTRA-QUESTION-PARITY",
@@ -25634,7 +25639,8 @@
           "tests": [
             "node --test tests/scope-goal-no-extra-question-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:151 AI Agent가 작업을 완료한 뒤 비개발자가 별도의 추가 질문 없이 무엇이 바뀌었고, 무엇이 실제로 확인됐으며, 무엇을 직접 확인해야 하는지 이해할 수 있게 한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:151 AI Agent가 작업을 완료한 뒤 비개발자가 별도의 추가 질문 없이 무엇이 바뀌었고, 무엇이 실제로 확인됐으며, 무엇을 직접 확인해야 하는지 이해할 수 있게 한다.",
+          "title": "질문 없이 바뀐 것·확인된 것·볼 것 알기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -28555,7 +28561,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:29 node check.mjs              # 로직 점검"
+          "ssotEvidence": "README.md:29 node check.mjs              # 로직 점검",
+          "title": "오늘의 질문을 하루 동안 하나만 고르게 올려요"
         },
         {
           "taskId": "JUAI-CHECK-ALERT-COOLDOWN",
@@ -28566,7 +28573,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:39 - `bot.mjs` 기능 전부"
+          "ssotEvidence": "README.md:39 - `bot.mjs` 기능 전부",
+          "title": "같은 알림은 3시간에 한 번만 보내요"
         },
         {
           "taskId": "JUAI-CHECK-CATCHUP-LAB",
@@ -28577,7 +28585,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:29 node check.mjs              # 로직 점검"
+          "ssotEvidence": "README.md:29 node check.mjs              # 로직 점검",
+          "title": "꺼진 동안 답 없는 연구실 사람 글만 답해요"
         },
         {
           "taskId": "JUAI-CHECK-DM-GUILD-SKIP",
@@ -28588,7 +28597,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:39 - `bot.mjs` 기능 전부"
+          "ssotEvidence": "README.md:39 - `bot.mjs` 기능 전부",
+          "title": "봇과 서버 글은 개인 질문으로 안 받아요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
