@@ -10232,7 +10232,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
+          "title": "계획에 없는 일은 다시 시키지도 만들지도 않아요"
         }
       ],
       "qaRuntime": [
@@ -13358,7 +13359,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — scan·daily 출력의 개발자 말투를 쉬운 한국어로"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — scan·daily 출력의 개발자 말투를 쉬운 한국어로",
+          "title": "요약에서 쉬운 말로 확인을 부탁해요"
         },
         {
           "taskId": "JUCEIPT-VIEW-FORMAL-ACTION-PLAIN",
@@ -13372,7 +13374,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 영수증 보기 화면의 빠진 확인과 할 일을 쉬운 한국어로"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 영수증 보기 화면의 빠진 확인과 할 일을 쉬운 한국어로",
+          "title": "오늘 목록과 영수증을 쉽게 보여요"
         }
       ],
       "skills": {
@@ -22231,7 +22234,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:175 until then, do not record M3 GO / DEFER / KILL"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:175 until then, do not record M3 GO / DEFER / KILL",
+          "title": "오늘 가치는 답과 영수증이 맞을 때까지 대기"
         },
         {
           "taskId": "JUCEIPTPLAN-HANDOFF-A-VALID-JOIN",
@@ -22242,7 +22246,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join",
+          "title": "영수증은 진행, 오늘 가치는 답 맞기 전 대기"
         }
       ],
       "skills": {
@@ -28036,7 +28041,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:49 30자 이상 피드백 보너스는 다른 사람의 쇼케이스·피드백 글에 피드백을 달 때만 적용, 최대 +3"
+          "ssotEvidence": "README.md:49 30자 이상 피드백 보너스는 다른 사람의 쇼케이스·피드백 글에 피드백을 달 때만 적용, 최대 +3",
+          "title": "한도 찬 사람에게 선물을 안 보여요"
         },
         {
           "taskId": "JUAI-CHECK-BADGE-EMPTY",
@@ -28047,7 +28053,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:19 월간 배지"
+          "ssotEvidence": "README.md:19 월간 배지",
+          "title": "기준에 못 미치면 배지를 안 올려요"
         },
         {
           "taskId": "JUAI-CHECK-PICKS-SEEN",
@@ -28058,7 +28065,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:15 매일 서버 대화에 맞춘 오픈소스 추천"
+          "ssotEvidence": "README.md:15 매일 서버 대화에 맞춘 오픈소스 추천",
+          "title": "이미 추천한 건 다시 안 올려요"
         },
         {
           "taskId": "JUAI-CHECK-THREADS-ARCHIVED",
@@ -28069,7 +28077,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신"
+          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신",
+          "title": "프로젝트 목록과 주간 보고에 예전 글을 넣어요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
