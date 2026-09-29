@@ -6777,6 +6777,42 @@
           ],
           "ssotEvidence": "BACKLOG.md:11 보내기 → 결과 → 복사",
           "title": "보내기 확인 문장과 버튼"
+        },
+        {
+          "taskId": "ACTL-DISCOVER-STALE-EVIDENCE",
+          "scope": "Record the Tk discover stale, loading, and empty Korean lines as OBSERVED and a live Windows discover version check as NOT_PROVEN.",
+          "files": [
+            "src/actl/core/discover_stale_evidence.py",
+            "tests/test_discover_stale_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 discover --ssh asus 재검증"
+        },
+        {
+          "taskId": "ACTL-SEND-PANEL-EVIDENCE",
+          "scope": "Record the selected-window send panel Korean lines for no selection, an idle window, and a ready result as OBSERVED, and a live Windows panel as NOT_PROVEN.",
+          "files": [
+            "src/actl/core/send_panel_evidence.py",
+            "tests/test_send_panel_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-BOARD-EMPTY-BRANCH-EVIDENCE",
+          "scope": "Record the selected-environment and no-match board empty Korean lines as OBSERVED and a live Windows filter click as NOT_PROVEN.",
+          "files": [
+            "src/actl/core/board_empty_branch_evidence.py",
+            "tests/test_board_empty_branch_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
         }
       ],
       "qaRuntime": [
