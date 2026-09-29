@@ -27179,6 +27179,39 @@
           ],
           "ssotEvidence": "layout.mjs:22 서버 규칙. AI가 제안하고 운영진이 승인한 내용만 반영돼요.",
           "title": "처음 설정 안내를 승인 카드로 준비"
+        },
+        {
+          "taskId": "JUAI-CHECK-AI-FAIL-REPLY",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that answer() and onDirect catch a failed ai() call and send the existing Korean fallbacks 지금은 답을 못 만들었어요. 잠시 뒤에 다시 물어봐 주세요. and 지금은 답을 못 만들었어요. 잠시 뒤에 다시 보내주세요.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:16 OpenCode | 질문 답변, 스레드 대화, GitHub 코드 리뷰, 활용 예시"
+        },
+        {
+          "taskId": "JUAI-CHECK-VOTE-EARLY-RETURN",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that onVote returns before reading answers when the reactor is a bot or the emoji is not thumbs-up or thumbs-down, and that a thumbs-down still stores vote -1 without addFaq.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 답변 👍/👎"
+        },
+        {
+          "taskId": "JUAI-CHECK-ANON-FAQ-RETURN",
+          "scope": "Add check.mjs source assertions only, leaving bot.mjs unchanged, that anonymousQuestion calls faqReply and returns before ai() so a reused similar answer does not make another AI call.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
