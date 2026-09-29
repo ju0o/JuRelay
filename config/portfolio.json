@@ -13874,6 +13874,34 @@
             "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 오류는 무슨 일, 왜, 다음 할 일 세 줄"
+        },
+        {
+          "taskId": "JUCEIPT-UNKNOWN-PARTIAL-LINES",
+          "scope": "In renderLevel1 of src/render/index.ts and renderTodayList of src/render/today.ts, add a three-line plain Korean block outside 원문 보기 for partial and unknown only, using the same markup pattern as the existing cancellation summary: partial shows 무엇이 남았어요: 요청한 내용의 일부만 끝났어요, 왜 일부예요: 나머지를 끝냈다는 확인 기록이 없어요, 다음 할 일: 남은 내용을 확인한 뒤 다시 맡겨 주세요; unknown shows 무엇이 불명확해요: 이 작업 결과를 판단할 기록이 부족해요, 왜 판단할 수 없어요: 끝난 기록이나 확인 근거가 없어요, 다음 할 일: 받기 전에 결과를 직접 확인해 주세요. Keep those lines off ready, review_required, failed, and cancelled, keep the word 원문 out of them, and add matching assertions in tests/receipt-render-founder.test.ts and tests/today-founder.test.ts.",
+          "files": [
+            "src/render/index.ts",
+            "src/render/today.ts",
+            "tests/receipt-render-founder.test.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
+        },
+        {
+          "taskId": "JUCEIPT-ISSUE-MEANING-ONLY-PRESENT",
+          "scope": "In acceptanceMeaning in src/daily/index.ts, name only issue states with a count above zero. For 문제 있음 use one of 문제 있음은 판단할 수 없음을 센 수예요, 문제 있음은 일부 완료를 센 수예요, 문제 있음은 실패를 센 수예요, or 문제 있음은 중단됨을 센 수예요 when only that state is present, and for two or more join the present labels in the order 판단할 수 없음, 일부 완료, 실패, 중단됨 with · then 을 after 판단할 수 없음 or 중단됨 and 를 otherwise, as in 문제 있음은 판단할 수 없음·실패를 합친 수예요. For the incomplete clause, say only the present states: partial 일부만 끝난 작업이라 남은 내용을 확인해야 해요, failed 실패한 작업이라 받기 전에 이유를 확인해야 해요, cancelled 중간에 멈춘 작업이라 받지 말아야 해요. Update the hard-coded 상태 뜻 lines in tests/daily.test.ts, tests/daily-cli.test.ts, and tests/scan-summary.test.ts, and assert a failed-only summary leaves out 일부 완료 and 중단됨.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/daily-cli.test.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts tests/daily-cli.test.ts tests/scan-summary.test.ts tests/daily-corpus.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23"
         }
       ],
       "skills": {
