@@ -295,13 +295,34 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
       window.addEventListener('error', function (ev) {
         var msg = (ev && ev.message) || (ev && ev.error && ev.error.message) || 'script error';
-        showFallback('위젯 로드 실패', String(msg).slice(0, 300));
+        var where = '@' + ((ev && ev.lineno) || '?') + ':' + ((ev && ev.colno) || '?');
+        try {
+          var dg = document.getElementById('diag');
+          if (dg) dg.textContent = 'JS 오류: ' + String(msg).slice(0, 200) + ' ' + where;
+        } catch (e) {}
+        showFallback('위젯 로드 실패', (String(msg).slice(0, 300)) + ' ' + where);
       });
       window.addEventListener('unhandledrejection', function (ev) {
         var r = ev && ev.reason;
         var msg = (r && r.message) || String(r || 'promise rejected');
+        try {
+          var dg = document.getElementById('diag');
+          if (dg) dg.textContent = 'Promise 거부: ' + String(msg).slice(0, 200);
+        } catch (e) {}
         showFallback('위젯 로드 실패', String(msg).slice(0, 300));
       });
+      // init stage markers: boot -> init-start -> initialized -> first poll.
+      // renderSelfcheck replays the trail, so a stuck init names its last step.
+      var initTrail = [];
+      function setInitMark(step) {
+        try {
+          initTrail.push(step);
+          if (initTrail.length > 8) initTrail.shift();
+          var sc = document.getElementById('selfcheck');
+          if (sc && !window.__pollRan) sc.textContent = 'init:' + initTrail.join('>');
+        } catch (e) {}
+      }
+      setInitMark('boot');
       var dotEl = document.getElementById('dot');
       var statusEl = document.getElementById('status');
       var subEl = document.getElementById('sub');
@@ -974,8 +995,12 @@ const WIDGET_HTML = `<!DOCTYPE html>
           var ext = sheetFailed.length ? ('FAIL:' + sheetFailed.join(',')) : 'jsDelivr 8/8';
           var bytes = 0;
           try { bytes = document.documentElement.outerHTML.length; } catch (e) {}
+          try { window.__pollRan = true; } catch (e) {}
+          var trail = '';
+          try { trail = initTrail.join('>'); } catch (e) {}
           var lines = [
             'buildTag: ' + build.trim(),
+            'init: ' + (trail || '?'),
             'avatar loaded: ' + (av.length ? av.join(' ') : 'none yet'),
             'lane count: ' + lanes,
             'env strip exists: ' + envOk,
@@ -1085,11 +1110,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
 
       async function init() {
         try {
+          setInitMark('init-start');
           var res = await sendRequest('ui/initialize', {
             protocolVersion: '2026-01-26',
             appInfo: { name: 'agent-relay-pm', version: '1.0.0' },
             appCapabilities: {}
           }, 15000);
+          setInitMark('initialized');
           applyTheme(res.hostContext && res.hostContext.theme);
           sendNotification('ui/notifications/initialized', {});
           logLine('initialized');
@@ -1111,6 +1138,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
           } catch (ePre) { /* sprites best-effort; missing boxes cover failures */ }
           checkVersion();
           setInterval(poll, POLL_MS);
+          setInitMark('poll-start');
           poll();
         } catch (e) {
           setStatus('fail', t('initFail'), e.message);

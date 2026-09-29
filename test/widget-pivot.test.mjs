@@ -234,6 +234,8 @@ describe('layout contract (P1-P5, H1-H4)', () => {
     for (const hex of ['#4a9eff', '#f0b429', '#2ea86a', '#5c6470', '#8b7bd8']) {
       assert.ok(html.includes(hex), hex);
     }
+    assert.ok(html.includes('setInitMark') && html.includes("'init:'"), 'init trail in selfcheck');
+    assert.ok(html.includes('JS 오류:') && html.includes('Promise 거부:'), 'error handlers write #diag');
     assert.ok(html.includes('#1e1a12') && html.includes('#141d29'), 'per-lane bg variants');
     assert.ok(html.includes('height:3px'), 'progress bar 3px');
     assert.ok(html.includes('id="selfcheck"') && html.includes('renderSelfcheck'), 'selfcheck block');
