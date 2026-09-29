@@ -29498,6 +29498,50 @@
           ],
           "ssotEvidence": "README.md:19 그 밖에: 봇들끼리 수다(`#봇-놀이터`), 자주 묻는 질문 재사용, 답변 👍/👎, 키워드 구독, 피드백 보너스, 주간 리포트, 월간 배지, 프로젝트 목록 자동 갱신.",
           "title": "피드백 장인 없으면 역할 안 바꿈"
+        },
+        {
+          "taskId": "JUAI-CHECK-OWNER-CONNECT",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that connect() puts guild.ownerId and FOUNDER_IDS into founders before role lookup and registers interactionCreate to onInteraction on every logged-in bot.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-ANSWER-STORE",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that rememberAnswer returns before the answers insert and before thumbs reactions when msg is missing, stores at most 1000 question characters and 3000 answer characters, and addFaq uses INSERT OR IGNORE with the question capped at 1000 and the answer at 1500.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용, 답변 👍/👎"
+        },
+        {
+          "taskId": "JUAI-CHECK-SUB-CONFIRM",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that subscribe() returns the existing 구독했어요 confirmation naming the keyword only after INSERT OR IGNORE INTO subs.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 `!구독 단어`"
+        },
+        {
+          "taskId": "JUAI-CHECK-SUB-SILENT",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that notifySubs returns before say() when byUser is empty so an author-only or daily-capped match does not post.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 매칭 알림은 1인 하루 3회"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
