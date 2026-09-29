@@ -23200,6 +23200,28 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:5 > Last updated: 2026-09-19",
           "title": "계획 문서가 오늘 날짜로 보이게"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-GLANCE-VALID-JOIN",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md change only founder-glance lines 1 and 3-5 and 7 so M3 stays unrecorded until a same-task Claude-final and Receipt reference pair reconciles into a valid join, keep 대표님 할 일 as 없음, and do not call 시험 finished while that valid join is still missing.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-INDEX-DECISION-ROW-VALID-JOIN",
+          "scope": "In docs/planning/BUSINESS_SYSTEM_INDEX.md change only the authority-table cell at line 38 so the day-level value question keeps the validation file for evidence, states that the board holds M3 as UNDECIDED, and records a later GO, DEFER, or KILL only after a same-task Claude-final and Receipt reference pair reconciles into a valid join.",
+          "files": [
+            "docs/planning/BUSINESS_SYSTEM_INDEX.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:38 PM_STATUS_BOARD.md for the decision"
         }
       ],
       "skills": {
