@@ -25393,6 +25393,54 @@
           ],
           "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:144 이 설정에서는 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동을 유지하고 내부 변화·주요 파일·변경 의미 설명·용어·일반 위험도 설명과 다음 행동 제안은 기본적으로 줄인다. 실패와 중요한 미확인 사항은 유지한다. `requestBuilder`는 보고서와 무관하므로 이 설정에서도 켜져 있다.",
           "title": "필요한 변화만 간단히 안내"
+        },
+        {
+          "taskId": "JUTELL-LEARNING-UNRELATED-TERMS-PARITY",
+          "scope": "Add FEATURE_CONFIGURATION §8.2's sentence that a learning profile may explain more needed terms but must not explain every unrelated term, as one line in feature-registry.md after the existing profile paragraph, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/learning-unrelated-terms-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/learning-unrelated-terms-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:158 이 설정은 필요한 개발 용어 설명을 더 제공할 수 있다. 작업과 무관한 용어를 모두 설명하지는 않는다."
+        },
+        {
+          "taskId": "JUTELL-MAIN-FILES-UNEQUAL-WEIGHT-PARITY",
+          "scope": "Add PRODUCT_SCOPE §6.5's two sentences, that changed files are not all explained with equal weight and that only main files affecting the user feature get a role, as one bullet under report-format.md section 3, plus an offline node:test that both sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/main-files-unequal-weight-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/main-files-unequal-weight-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:267 모든 변경 파일을 같은 비중으로 설명하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-LONG-EXPLANATION-LIMIT-PARITY",
+          "scope": "Add GLOSSARY_POLICY §3.2's sentence that a long concept explanation is given only for a separate term question or an approval-critical concept, to glossary-ko.md's opening block before the 목차 heading, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-long-explanation-limit-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-long-explanation-limit-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:58 별도 용어 질문이나 승인에 중요한 개념인 경우에만 긴 개념 설명을 제공한다."
+        },
+        {
+          "taskId": "JUTELL-BASELINE-ORIGIN-UNSEPARABLE-PARITY",
+          "scope": "Add TEST_SCENARIOS §4.2's sentence that an unrecorded baseline means the change origin cannot be fully separated, as one sub-bullet under SKILL.md step 4, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/baseline-origin-unseparable-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/baseline-origin-unseparable-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:86 기준 상태를 기록하지 못했다면 변경 출처를 완전히 구분할 수 없다고 표시한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
