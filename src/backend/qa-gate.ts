@@ -1039,9 +1039,11 @@ export function reconcileQaGate(dataRoot: string, project: string, taskId: strin
             kind: verdict === 'PASS' ? 'qa-pass' : 'qa-fail',
           });
           if (decision.humanRequired) {
+            let goalId = '';
+            try { goalId = requireTask(dataRoot, project, tid).goalId; } catch { /* no goal, no id */ }
             emitWake(dataRoot, project, {
               reason: 'QA_FAIL',
-              goalId: '',
+              goalId,
               taskId: tid,
               runId: result?.runId ?? '',
               oldState: 'VERIFYING',

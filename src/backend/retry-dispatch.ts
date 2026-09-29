@@ -53,6 +53,7 @@ import {
   type RetryAuthorizationRecord,
 } from './retry-authorization.js';
 import { dispatchTask, validateWorkspaceRoot, DispatcherError } from './dispatcher.js';
+import { recordOutcome } from './auto-advance.js';
 import { readRunMeta } from './fs.js';
 import {
   correlationDigestForRun,
@@ -328,6 +329,12 @@ export function dispatchV1Retry(
     if (judgment.decision !== 'CHANGES') {
       throw new RetryDispatchError('INVALID_STATE', 'ACCEPT judgment cannot dispatch a retry.');
     }
+    // F0 Phase 2: the CHANGES path re-runs the same Task, so it must feed the
+    // AUTO_ADVANCE counter exactly like a worker exit does — otherwise a Task
+    // that is rejected forever never reaches the human-required threshold.
+    try {
+      recordOutcome(dataRoot, project, { taskId: task.taskId, kind: 'fail' });
+    } catch { /* counter never blocks the retry */ }
     if (judgment.status !== 'APPLIED') {
       throw new RetryDispatchError('CONFLICT', `Judgment ${prep.judgmentId} is ${judgment.status}, not APPLIED; G5-B must complete first.`);
     }

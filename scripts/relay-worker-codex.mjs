@@ -1,29 +1,28 @@
 #!/usr/bin/env node
 /**
- * relay-worker-opencode-impl.mjs — Relay-aware OpenCode implementation worker.
+ * relay-worker-codex.mjs — Relay-aware Codex CLI implementation worker.
  *
- * Protocol adapter between Relay Dispatcher argv and the real OpenCode CLI.
+ * Protocol adapter between Relay Dispatcher argv and the real Codex CLI.
  * Mirrors scripts/relay-worker-claude.mjs discipline on the Builder relay path:
  *
  * Accepts (and consumes) Relay internal args:
  *   --dataRoot, --project, --taskId, --runId, --workspaceRoot
+ *   --model <model-id> (optional; strict charset, default = codex config default)
  * Anything else fails closed.
  *
  * Shape:
  *   1. Load Task SSOT via dist backend getTask() (never from narrative).
- *   2. Build a deterministic, bounded Worker prompt (16 KiB cap).
- *   3. Write prompt.md into the existing Run folder (idempotent).
- *   4. Spawn `opencode run --dir <workspace> --auto -m <free-model> <prompt>`.
- *   5. Exit 0 on normal completion. NOT RESULT_RECEIVED by itself.
- *
- * Billing posture: FREE TIER ONLY (same as relay-worker-opencode.mjs QA wrapper).
- * Model allowlist mirrors role-loop.ts isFreeTierModel: `-free` suffix or `big-pickle`.
- * Default: opencode/nemotron-3-ultra-free (portfolio free default).
- * AGENT_RELAY_WORKER_MODEL override is accepted only if free-allowlisted.
+ *   2. Resolve run folder via Task.linkedRuns (current attempt only).
+ *   3. Build a deterministic, bounded Worker prompt (16 KiB cap).
+ *   4. Write prompt.md into the existing Run folder (idempotent).
+ *   5. Spawn `codex exec --skip-git-repo-check --cd <workspace>
+ *      --sandbox workspace-write [-m <model>] <prompt>` with shell:false.
+ *   6. Exit 0 on normal completion. NOT RESULT_RECEIVED by itself.
  *
  * Never calls markResultReceived, never writes Evidence, never calls MCP.
- * Observation is handled by the opencode adapter, not by this wrapper.
- * Exit semantics: 0 → completed normally; non-zero → Dispatcher failure path.
+ * Observation is handled by the codex adapter (session files), not by this
+ * wrapper. Exit semantics: 0 → completed normally; non-zero → Dispatcher
+ * failure path.
  */
 import { spawn } from 'node:child_process';
 import * as fs from 'node:fs';
@@ -31,30 +30,10 @@ import * as path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const PROMPT_SIZE_LIMIT_BYTES = 16 * 1024;
-const DEFAULT_MODEL = 'opencode/big-pickle';
 const RELAY_ARGS = new Set([
-  '--dataRoot', '--project', '--taskId', '--runId', '--workspaceRoot',
+  '--dataRoot', '--project', '--taskId', '--runId', '--workspaceRoot', '--model',
 ]);
-
-export function isFreeTierModel(model) {
-  if (!model || typeof model !== 'string') return false;
-  const bare = model.includes('/') ? model.slice(model.indexOf('/') + 1) : model;
-  return /-free$/.test(bare) || bare === 'big-pickle';
-}
-
-export function resolveWorkerModel() {
-  const override = (process.env['AGENT_RELAY_WORKER_MODEL'] || '').trim();
-  if (override) {
-    if (!isFreeTierModel(override)) {
-      throw new Error(
-        `AGENT_RELAY_WORKER_MODEL '${override}' refused: implementation worker is FREE TIER ONLY ` +
-        `(-free suffix or big-pickle).`,
-      );
-    }
-    return override;
-  }
-  return DEFAULT_MODEL;
-}
+const MODEL_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._/-]{0,63}$/;
 
 export function parseRelayArgs(argv) {
   const out = {};
@@ -64,7 +43,7 @@ export function parseRelayArgs(argv) {
       throw new Error(`Unknown argument '${tok}'. Only relay args are accepted.`);
     }
     const val = argv[i + 1];
-    if (val === undefined || val.startsWith('--')) {
+    if (val === undefined || (tok !== '--model' && val.startsWith('--'))) {
       throw new Error(`Missing value for '${tok}'.`);
     }
     out[tok.slice(2)] = val;
@@ -72,6 +51,9 @@ export function parseRelayArgs(argv) {
   }
   for (const key of ['dataRoot', 'project', 'taskId', 'runId', 'workspaceRoot']) {
     if (!out[key]) throw new Error(`Missing required relay arg --${key}.`);
+  }
+  if (out.model !== undefined && !MODEL_PATTERN.test(out.model)) {
+    throw new Error(`Invalid --model '${out.model}'.`);
   }
   return out;
 }
@@ -117,55 +99,13 @@ export function buildWorkerPrompt(task, runId) {
   return prompt;
 }
 
-function distBackendPath(dataRoot, rel) {
-  void dataRoot;
+function distBackendPath(rel) {
   const here = path.dirname(fileURLToPath(import.meta.url));
   return path.resolve(here, '..', 'dist', 'server', 'backend', rel);
 }
 
-export function readRetryContext(runFolder) {
-  const ctxPath = path.join(runFolder, 'retry-context.json');
-  if (!fs.existsSync(ctxPath)) return null;
-  return JSON.parse(fs.readFileSync(ctxPath, 'utf8'));
-}
-
-export async function buildRetryPrompt(dataRoot, project, task, retryCtx) {
-  if (retryCtx.taskId !== task.taskId) {
-    throw new Error(`retry-context taskId mismatch.`);
-  }
-  const retryPromptPath = distBackendPath(dataRoot, 'retry-prompt.js');
-  const pmJudgmentPath = distBackendPath(dataRoot, 'pm-judgment.js');
-  if (!fs.existsSync(retryPromptPath) || !fs.existsSync(pmJudgmentPath)) {
-    throw new Error('Relay backend dist not found for retry prompt composition.');
-  }
-  const rp = await import(pathToFileURL(retryPromptPath).href);
-  const pmJud = await import(pathToFileURL(pmJudgmentPath).href);
-  const judgment = pmJud.getPmJudgment(dataRoot, project, retryCtx.judgmentId);
-  const instruction = pmJud.getRetryInstructionForDelivery(dataRoot, project, retryCtx.deliveryId);
-  const sourceLink = (task.linkedRuns || []).find((r) => r.runId === retryCtx.sourceRunId);
-  if (!sourceLink) {
-    throw new Error(`Source Run ${retryCtx.sourceRunId} is no longer linked.`);
-  }
-  const prior = rp.readPriorResultExcerpt(sourceLink.folder);
-  return rp.composeRetryPrompt({
-    task,
-    preparationId: retryCtx.preparationId,
-    sourceRunId: retryCtx.sourceRunId,
-    reason: judgment.reason || '',
-    retryInstruction: instruction,
-    priorExcerpt: prior.excerpt,
-    priorAvailable: prior.available,
-  });
-}
-
-export async function resolvePrompt(dataRoot, project, task, runId, runFolder, deps = {}) {
-  const retryCtx = (deps.readRetryContext || readRetryContext)(runFolder);
-  if (!retryCtx) return buildWorkerPrompt(task, runId);
-  return (deps.buildRetryPrompt || buildRetryPrompt)(dataRoot, project, task, retryCtx);
-}
-
 export async function loadTask(dataRoot, project, taskId) {
-  const gt = await import(pathToFileURL(distBackendPath(dataRoot, 'goal-task.js')).href);
+  const gt = await import(pathToFileURL(distBackendPath('goal-task.js')).href);
   return gt.getTask(dataRoot, project, taskId);
 }
 
@@ -199,14 +139,17 @@ export function writePromptMd(runFolder, prompt) {
   return { wrote: true };
 }
 
-export function resolveOpencodeExecutable() {
-  const envOverride = (process.env['OPENCODE_BIN'] || '').trim();
+export function resolveCodexExecutable() {
+  const envOverride = (process.env['CODEX_BIN'] || '').trim();
   if (envOverride) return envOverride;
-  return 'opencode';
+  return 'codex';
 }
 
-export function buildOpencodeArgv(workspaceRoot, model, prompt) {
-  return ['run', '--dir', workspaceRoot, '--auto', '-m', model, prompt];
+export function buildCodexArgv(workspaceRoot, model, prompt) {
+  const argv = ['exec', '--skip-git-repo-check', '--cd', workspaceRoot, '--sandbox', 'workspace-write'];
+  if (model) argv.push('-m', model);
+  argv.push(prompt);
+  return argv;
 }
 
 function writeLaunchLog(runFolder, entry) {
@@ -227,42 +170,39 @@ export async function main(argv = process.argv.slice(2), deps = {}) {
   if (!path.isAbsolute(workspaceRoot) || !fs.existsSync(workspaceRoot)) {
     throw new Error('workspaceRoot must be an existing absolute directory.');
   }
-  const model = resolveWorkerModel();
   const task = await (deps.loadTask || loadTask)(dataRoot, project, taskId);
+  const prompt = buildWorkerPrompt(task, runId);
   const runFolder = (deps.runFolderFor || runFolderFor)(task, runId);
-  const prompt = await resolvePrompt(dataRoot, project, task, runId, runFolder, deps);
-  if (Buffer.byteLength(prompt, 'utf8') > PROMPT_SIZE_LIMIT_BYTES) {
-    throw new Error(`Worker prompt exceeds size limit (${PROMPT_SIZE_LIMIT_BYTES} bytes).`);
-  }
   writePromptMd(runFolder, prompt);
-  const opencodeExe = resolveOpencodeExecutable();
-  const opencodeArgs = buildOpencodeArgv(workspaceRoot, model, prompt);
+  const codexExe = resolveCodexExecutable();
+  const codexArgs = buildCodexArgv(workspaceRoot, parsed.model, prompt);
   writeLaunchLog(runFolder, {
-    worker: 'relay-worker-opencode-impl',
-    taskId, runId, model,
+    worker: 'relay-worker-codex', taskId, runId, model: parsed.model || '(config default)',
     at: new Date().toISOString(),
   });
   const exitCode = await new Promise((resolvePromise, reject) => {
     let child;
     try {
-      child = spawnFn(opencodeExe, opencodeArgs, {
-        cwd: workspaceRoot, shell: false, stdio: 'ignore',
+      child = spawnFn(codexExe, codexArgs, {
+        cwd: workspaceRoot, shell: false, stdio: ['ignore', 'pipe', 'pipe'],
       });
     } catch (err) {
       reject(err);
       return;
     }
     child.once('error', reject);
-    // Forward the child's streams so the dispatcher can classify provider
-    // deaths (overload / quota / auth) and pick a fallback worker.
+    // Forward the child's streams. The dispatcher classifies a death from this
+    // output (provider overload / model not found / quota / auth). Dropping it
+    // made every real failure look like a TASK-cause death, so no worker swap
+    // was ever suggested.
     child.stdout?.on('data', (chunk) => process.stdout.write(chunk));
     child.stderr?.on('data', (chunk) => process.stderr.write(chunk));
     child.once('close', (code) => resolvePromise(code ?? 1));
   });
   if (exitCode !== 0) {
-    throw new Error(`opencode worker exited with code ${exitCode}.`);
+    throw new Error(`codex worker exited with code ${exitCode}.`);
   }
-  return { ok: true, taskId, runId, model };
+  return { ok: true, taskId, runId };
 }
 
 const invokedAsMain = (() => {
@@ -277,7 +217,7 @@ if (invokedAsMain) {
   main().then(
     () => process.exit(0),
     (err) => {
-      process.stderr.write(`[relay-worker-opencode-impl] ${err instanceof Error ? err.message : err}\n`);
+      process.stderr.write(`[relay-worker-codex] ${err instanceof Error ? err.message : err}\n`);
       process.exit(1);
     },
   );
