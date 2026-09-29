@@ -10262,6 +10262,18 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched.",
           "title": "밤 작업 중 외부 장애를 안전하게 정리"
+        },
+        {
+          "taskId": "JUPLAN-AR-RECEIVE-ROUTE-CHECK",
+          "scope": "Add one offline regression proving AR-JUPLAN-001 is received and routed with its declared files and tests using the existing Agent Relay contract fixtures.",
+          "files": [
+            "packages/runtime/test/agent-relay-result-inbox.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: Run one offline check that the sole authorized packet AR-JUPLAN-001 is received and routed with its declared files and tests. Keep the check inside the existing Agent Relay contract fixtures."
         }
       ],
       "qaRuntime": [
