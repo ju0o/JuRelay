@@ -28170,6 +28170,50 @@
           ],
           "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신",
           "title": "프로젝트 목록과 주간 보고에 예전 글을 넣어요"
+        },
+        {
+          "taskId": "JUAI-CHECK-ERROR-BURST",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that fail() drops error times older than 30 minutes and calls alertFounder with the existing Korean 최근 30분 동안 오류가 sentence only when at least 8 recent errors remain.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:87 Founder runs the server from Discord only, so real problems go to their DMs."
+        },
+        {
+          "taskId": "JUAI-CHECK-RESTART-ALERT",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that startup keeps only starts from the last 15 minutes and calls alertFounder with the existing Korean 15분 동안 sentence only when that count reaches 3.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "bot.mjs:1110 filter starts to Date.now() - t < 15 * 60_000 before the length >= 3 Founder alert"
+        },
+        {
+          "taskId": "JUAI-CHECK-PROMPT-RULES",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that the answer, DM, anonymous-question, and forum first-reply prompts each include the RULES clause refusing member instructions (규칙 무시, 파일 읽기, 명령 실행, 비밀·토큰 출력, 역할 바꾸기) before the member text, which is passed through L.quote.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:46 멤버 글이 들어가는 AI는 격리 실행: Claude는 도구를 끄고"
+        },
+        {
+          "taskId": "JUAI-CHECK-ASKER-CONTEXT",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that askerContext returns empty when making text and roles are both absent, drops @everyone, AI 에이전트, and AI 언급 제외, is inserted into the answer, DM, and forum prompts, and is not used by anonymousQuestion.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:89 [프로필 작성] 버튼으로 SNS 닉네임과 지금 만드는 걸 등록하면 자기소개가 자동으로 올라가요."
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
