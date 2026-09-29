@@ -415,16 +415,66 @@ export class PortfolioRunner {
   }
 
   async load() { try { return JSON.parse(await readFile(this.statePath, "utf8")); } catch { return { schema: "agent-relay.portfolio-state.v1", service: "STOPPED", tasks: [], activeBuilders: [], activeQa: [], events: [], updatedAt: new Date().toISOString() }; } }
+  /**
+   * One entry of "what the portfolio is doing right now", in Founder-readable terms.
+   *
+   * This is the portfolio's own lane (Founder 2026-09-29: the portfolio is the main rail, ws is developer
+   * mode — portfolio workers are deliberately NOT merged into the ws worker registry). It carries what a
+   * human needs to answer "what is it doing?": the Korean task title, which AI is on it, the worker id,
+   * when it started, and whether the process is actually alive.
+   *
+   * `title` falls back to the taskId rather than an empty string, so a missing title can never render as
+   * a blank line on the board.
+   */
+  liveEntry(task, project, workspace, phase, extra = {}) {
+    const taskId = task?.taskId ?? "unknown";
+    return {
+      taskId,
+      title: typeof task?.title === "string" && task.title.trim() ? task.title.trim() : taskId,
+      projectId: project?.id ?? task?.projectId ?? null,
+      phase,                                   // "build" | "qa"
+      pid: extra.pid ?? null,
+      runtime: extra.runtime ?? null,          // filled in when the child spawns
+      model: extra.model ?? null,
+      workerId: `${project?.id ?? task?.projectId ?? "portfolio"}-${phase}-${taskId}`,
+      workspace: workspace ?? null,
+      startedAt: extra.startedAt ?? new Date().toISOString(),
+      owner: "agent-relay",
+      managed: true,
+    };
+  }
+
+  /**
+   * A small, live mirror of everything the board needs from the portfolio: capacity numbers plus the
+   * tasks actually in flight. The PM dashboard polls every couple of seconds and state.json is ~10 MB of
+   * 2 000+ tasks, so it reads this instead. Atomic (tmp + rename) and written on the same save chain as
+   * the state snapshot, so the two can never be half-updated relative to each other.
+   */
+  liveSnapshot(state) {
+    const entry = (item) => {
+      const pid = item.pid ?? null;
+      let alive = null;
+      if (pid) { try { process.kill(Number(pid), 0); alive = true; } catch { alive = false; } }
+      return { ...item, alive };
+    };
+    return {
+      ...this.qaCapacity(state),
+      builders: (state?.activeBuilders || []).map(entry),
+      qa: (state?.activeQa || []).map(entry),
+      updatedAt: new Date().toISOString(),
+    };
+  }
+
   async save(state) {
     // QA capacity is derived at write time so every snapshot carries it — the board reads one file and
     // never has to guess why six tasks are in QA against maxQa 4.
     const capacity = this.qaCapacity(state);
     const snapshot = { ...state, ...(this.routing ? { routing: this.routing } : {}), qa: capacity, ...capacity, updatedAt: new Date().toISOString() };
-    // A separate, tiny mirror of the QA numbers. The PM dashboard polls every couple of seconds and
-    // state.json is ~10 MB of 2 000+ tasks; parsing that per poll would cost far more than the widget
-    // itself. Atomic (tmp + rename) like state.json, so a reader never sees a half-written file.
-    const capacityPath = this.statePath.replace(/state\.json$/, "qa-capacity.json");
-    const capacityBody = JSON.stringify({ ...capacity, updatedAt: snapshot.updatedAt }, null, 2);
+    // A separate, small mirror of what the portfolio is doing. The PM dashboard polls every couple of
+    // seconds and state.json is ~10 MB of 2 000+ tasks; parsing that per poll would cost far more than
+    // the widget itself. Atomic (tmp + rename) like state.json, so a reader never sees a half-written file.
+    const capacityPath = this.statePath.replace(/state\.json$/, "portfolio-live.json");
+    const capacityBody = JSON.stringify(this.liveSnapshot(state), null, 2);
     this._saveChain = this._saveChain.then(async () => {
     // The continuous loop holds state in memory; a Founder answer written meanwhile by the CLI (founder-response) must not be overwritten.
     if (this._continuous) { const disk = await this.load(); if ((disk.resolvedFounderGates || []).length > (snapshot.resolvedFounderGates || []).length) for (const key of ["founderDecisions", "resolvedFounderGates"]) { snapshot[key] = disk[key]; state[key] = disk[key]; } } await mkdir(resolve(this.statePath, ".."), { recursive: true }); await writeFile(`${this.statePath}.tmp`, JSON.stringify(snapshot, null, 2)); await rename(`${this.statePath}.tmp`, this.statePath); await writeFile(`${capacityPath}.tmp`, capacityBody); await rename(`${capacityPath}.tmp`, capacityPath); }); return this._saveChain; } // atomic: a power-off mid-save keeps the old or the new file, never none
@@ -709,14 +759,22 @@ export class PortfolioRunner {
     if (!Array.isArray(project.runtime)) { try { adapter.assertOwnership(project); } catch (error) { task.state = "BLOCKED_RUNTIME_ADAPTER"; task.error = error.message; return; } }
     const retained = task.builderEvidence?.workspace && existsSync(task.builderEvidence.workspace);
     const builder = retained ? { path: task.builderEvidence.workspace, base: task.builderEvidence.base || (await exec("git", ["-C", task.builderEvidence.workspace, "rev-parse", "HEAD"])).stdout.trim(), projectId: project.id, cleanup: async () => {} } : await this.worktrees.create(project, task.taskId);
-    state.activeBuilders.push({ taskId: task.taskId, pid: null, workspace: builder.path, owner: "agent-relay", managed: true }); task.state = "RUNNING"; task.attempts += 1; task.builderEvidence = { ...(task.builderEvidence || {}), workspace: builder.path, base: builder.base, startedAt: new Date().toISOString(), pid: null }; await this.save(state);
+    state.activeBuilders.push(this.liveEntry(task, project, builder.path, "build")); task.state = "RUNNING"; task.attempts += 1; task.builderEvidence = { ...(task.builderEvidence || {}), workspace: builder.path, base: builder.base, startedAt: new Date().toISOString(), pid: null }; await this.save(state);
     let preserveWorktree = retained;
     try {
       for (;;) {
       const workerCtx = await agentContext(project, "worker", { taskId: task.taskId, memoryStore: this.manifest?.memoryStore, memory: this.manifest?.memoryDelivery === true });
-      const builderRun = await this.runChain(workerChain, { workspace: builder.path, sandbox: "workspace-write", prompt: workerCtx.text + builderPrompt({ ...task, projectId: project.id }), signal }, parseResultPacket);
+      // Same live bookkeeping as QA: the builder's pid and AI land in activeBuilders the moment the
+      // child exists, so the board can show a working agent rather than a slot with a name-less worker.
+      const onBuilderChild = (child) => {
+        const entry = state.activeBuilders.find((item) => item.taskId === task.taskId);
+        if (!entry) return;
+        entry.pid = child?.pid ?? entry.pid ?? null;
+        this.save(state).catch(() => { /* a missed status write must not kill the build */ });
+      };
+      const builderRun = await this.runChain(workerChain, { workspace: builder.path, sandbox: "workspace-write", prompt: workerCtx.text + builderPrompt({ ...task, projectId: project.id }), signal, onChild: onBuilderChild }, parseResultPacket);
       task.builderEvidence = { skills: workerCtx.skills, memories: workerCtx.memories, pid: builderRun.pid, workspace: builder.path, base: builder.base, startedAt: builderRun.startedAt, exitCode: builderRun.code, runtime: builderRun.runtime, model: workerModelFor(builderRun.runtime, this.runtimeAdapters), fallbacks: builderRun.fallbacks };
-      task.result = parseResultPacket(builderRun.text); await this.publishResult(task); if (task.result.status !== "IMPLEMENTED") { task.state = "HOLD"; break; } task.state = "QA"; state.activeBuilders = state.activeBuilders.filter((item) => item.taskId !== task.taskId); state.activeQa.push({ taskId: task.taskId, pid: null, workspace: builder.path, owner: "agent-relay", managed: true }); await this.save(state);
+      task.result = parseResultPacket(builderRun.text); await this.publishResult(task); if (task.result.status !== "IMPLEMENTED") { task.state = "HOLD"; break; } task.state = "QA"; state.activeBuilders = state.activeBuilders.filter((item) => item.taskId !== task.taskId); state.activeQa.push(this.liveEntry(task, project, builder.path, "qa", { runtime: builderRun.runtime, model: workerModelFor(builderRun.runtime, this.runtimeAdapters) })); await this.save(state);
       await this._acquireQa();
       let qaRun;
       // independent QA: the AI that built this task reviews it only when every other QA AI is unavailable
@@ -727,9 +785,11 @@ export class PortfolioRunner {
       const onQaChild = (child) => {
         const entry = state.activeQa.find((item) => item.taskId === task.taskId);
         if (!entry) return;
-        entry.pid = child?.pid ?? null;
-        entry.runtime = null;
-        entry.startedAt = new Date().toISOString();
+        // Only fill gaps. Wiping runtime here used to erase the runtime recorded at QA entry, which is how
+        // a live QA worker ended up on the board with no AI name at all.
+        entry.pid = child?.pid ?? entry.pid ?? null;
+        if (!entry.runtime) entry.runtime = entry.runtime ?? null;
+        entry.startedAt = entry.startedAt ?? new Date().toISOString();
         this.save(state).catch(() => { /* a missed status write must not kill the QA run */ });
       };
       try { task.qaAttempts += 1; qaRun = await this.runChain(qaOrder, { workspace: builder.path, sandbox: "read-only", prompt: qaCtx.text + qaPrompt(task, builder.base), signal, onChild: onQaChild }, parseQaPacket); }
@@ -762,7 +822,7 @@ export class PortfolioRunner {
         // accepted work that did not land on the integration branch is not done (2026-09-24: 4 tasks were marked done but never merged)
         if (INTEGRATION_FAILED.has(task.integration?.state)) { task.state = "HOLD"; task.error = `INTEGRATION_${task.integration.state}: ${task.integration.reason || ""}`.slice(0, 600); await this.publishResult(task); break; }
         task.state = "VERIFIED_DONE"; task.doneAt = new Date().toISOString(); /* board/app 오늘 끝난 일 needs a real finish time */ await this.publishResult(task); if (project.autoContinue === false) { const pause = join(resolve(this.statePath, ".."), "lane-pause"); await mkdir(pause, { recursive: true }); await writeFile(join(pause, project.id), `${task.taskId} done ${new Date().toISOString()}\n`); } break; }
-      if (task.qa.verdict === "REQUEST_CHANGES" && task.attempts < 3) { task.state = "REQUEST_CHANGES"; await this.publishResult(task); state.activeQa = state.activeQa.filter((item) => item.taskId !== task.taskId); await this.save(state); task.state = "RUNNING"; task.attempts += 1; state.activeBuilders.push({ taskId: task.taskId, pid: null, workspace: builder.path, owner: "agent-relay", managed: true }); await this.save(state); continue; }
+      if (task.qa.verdict === "REQUEST_CHANGES" && task.attempts < 3) { task.state = "REQUEST_CHANGES"; await this.publishResult(task); state.activeQa = state.activeQa.filter((item) => item.taskId !== task.taskId); await this.save(state); task.state = "RUNNING"; task.attempts += 1; state.activeBuilders.push(this.liveEntry(task, project, builder.path, "build")); await this.save(state); continue; }
       if (task.qa.verdict === "FOUNDER_GATE") task.state = "FOUNDER_GATE"; else task.state = "HOLD"; await this.publishResult(task); break;
       }
     } catch (error) { if (signal?.aborted) { preserveWorktree = true; task.state = "RUNNING"; task.error = "CHECKPOINTED_DEADLINE"; } else if (runtimeLaunchFailure(error)) { task.state = "HOLD"; task.error = `RUNTIME_LAUNCH:${String(error.message || error)}`; } else { task.state = "HOLD"; task.error = String(error.message || error); } state.activeBuilders = state.activeBuilders.filter((item) => item.taskId !== task.taskId); state.activeQa = state.activeQa.filter((item) => item.taskId !== task.taskId); }
