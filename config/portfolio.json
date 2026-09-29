@@ -29865,6 +29865,50 @@
           ],
           "ssotEvidence": "setup.mjs:102 new members: only @mentions ping by default",
           "title": "커뮤니티 안내와 알림 설정"
+        },
+        {
+          "taskId": "JUAI-CHECK-REVIEW-FAIL",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that reviewRequest returns quotaMessage when takeQuota is refused, before resolveRepo and ai, and returns the existing sentence 지금은 리뷰를 못 만들었어요 before sending review chunks when ai fails.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:8 `리뷰해줘`"
+        },
+        {
+          "taskId": "JUAI-CHECK-CODEREVIEW-QUOTA",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that codeReview returns when the shared bot:forum takeQuota fails, before withTyping and ai, and calls sayLong only when the review text is present.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:16 GitHub 코드 리뷰"
+        },
+        {
+          "taskId": "JUAI-CHECK-DELETE-CHANNEL-MISS",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that adminCommand's delete_channel path replies with the existing channel-not-found sentence and does not call createCard when resolveChannel finds no channel.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:48 삭제·타임아웃·채널 변경·코드 변경은 서버 주인의 승인 카드를 거칩니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-RULE-FIRST-POST",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that a rule card with no stored rules message sends the rules text with NO_PING and stores rules_message, rather than only editing an existing message.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:14 공지·규칙 초안 → 승인 카드"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
