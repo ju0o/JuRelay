@@ -6853,7 +6853,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "ROOT_CAUSE_REPORT.md:244 That old installation is not evidence for the new transport."
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:244 That old installation is not evidence for the new transport.",
+          "title": "컴퓨터와 인공지능 연결 확인"
         },
         {
           "taskId": "ACTL-DISCOVER-KO-LINE",
@@ -6865,7 +6866,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "연결된 인공지능 확인하기"
         },
         {
           "taskId": "ACTL-SEND-PRECHECK-EVIDENCE",
@@ -6877,7 +6879,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "안전하게 보낼 준비 확인"
         }
       ],
       "qaRuntime": [
@@ -23246,7 +23249,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join."
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join.",
+          "title": "검증 전 시험 완료 표시 막기"
         },
         {
           "taskId": "JUCEIPTPLAN-INDEX-DECISION-ROW-VALID-JOIN",
@@ -23257,7 +23261,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:38 PM_STATUS_BOARD.md for the decision"
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:38 PM_STATUS_BOARD.md for the decision",
+          "title": "근거 확인 뒤 사업 판단 기록하기"
         }
       ],
       "skills": {
@@ -26560,7 +26565,8 @@
           "tests": [
             "node --test tests/results/scenario-u/important-unverified.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:449-468 \"중요한 미확인 사항\"은 핵심 동작을 확인하지 못하면 `확인 완료`를 사용하지 않는다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:449-468 \"중요한 미확인 사항\"은 핵심 동작을 확인하지 못하면 `확인 완료`를 사용하지 않는다.",
+          "title": "중요한 미확인 내용을 안내해요"
         },
         {
           "taskId": "JUTELL-NEXT-ACTION-CAP-FIXTURE",
@@ -26572,7 +26578,8 @@
           "tests": [
             "node --test tests/results/scenario-v/next-action-cap.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:359-374 \"다음 행동 제안\"은 최대 3개이며 보고서에서 이미 확인된 항목 중에서만 고른다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:359-374 \"다음 행동 제안\"은 최대 3개이며 보고서에서 이미 확인된 항목 중에서만 고른다.",
+          "title": "확인할 다음 일을 세 가지로 안내해요"
         },
         {
           "taskId": "JUTELL-VERIFY-RESULT-DETAIL-FIXTURE",
@@ -26584,7 +26591,8 @@
           "tests": [
             "node --test tests/results/scenario-w/verification-details.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:406-413 \"검증 결과에는 가능한 경우\" 실행한 명령, 확인 범위, 실패 개수, 실행하지 못한 이유를 함께 기록한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:406-413 \"검증 결과에는 가능한 경우\" 실행한 명령, 확인 범위, 실패 개수, 실행하지 못한 이유를 함께 기록한다.",
+          "title": "검증 결과와 실패 이유를 구분해요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
