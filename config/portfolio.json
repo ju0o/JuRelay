@@ -6738,6 +6738,42 @@
           ],
           "ssotEvidence": "ROOT_CAUSE_REPORT.md:137 NOT_PROVEN in this run. The test harness did not drive the GUI toggle through a real Windows desktop input channel.",
           "title": "actl 화면이 저절로 바뀌지 않는지 확인"
+        },
+        {
+          "taskId": "ACTL-BOARD-GLANCE-EVIDENCE",
+          "scope": "Add a pure recheck that calls gui._status_sentence, gui._empty_cards_message, and gui._card_asked_line for an empty board and one connected row, records those Korean lines as OBSERVED, and records a live Windows board as NOT_PROVEN without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/board_glance_evidence.py",
+            "tests/test_board_glance_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-DISCOVER-UNMAPPED-EVIDENCE",
+          "scope": "Add a pure recheck that uses one hand-built unmapped discovered pane row and records gui._card_header and gui._card_line as OBSERVED Korean text containing 연결 안 된 창 and no pane id or UNMAPPED, leaving live Windows discover NOT_PROVEN without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/discover_unmapped_evidence.py",
+            "tests/test_discover_unmapped_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 `discover --ssh asus` 재검증"
+        },
+        {
+          "taskId": "ACTL-SEND-CONFIRM-EVIDENCE",
+          "scope": "Add a pure recheck that reads src/actl/gui.py and records the busy, ambiguous, and send inline confirm sentences plus the button labels 끝나면 보내기, 지금 보내기, 다시 보내기, 취소, and 보내기 as OBSERVED source text, with a live Windows send click left NOT_PROVEN and no Tk or ssh.",
+          "files": [
+            "src/actl/core/send_confirm_evidence.py",
+            "tests/test_send_confirm_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:11 보내기 → 결과 → 복사"
         }
       ],
       "qaRuntime": [
