@@ -6620,6 +6620,42 @@
           ],
           "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:35 direct argv for initial SSH setup; no PowerShell wrapper per tmux operation",
           "title": "원격 연결 실행 상태 확인"
+        },
+        {
+          "taskId": "ACTL-INSTALL-SHORTCUT-RECHECK",
+          "scope": "Add a pure recheck that only reads scripts/install.ps1 and records the desktop and Start Menu shortcut name JuActl Board.lnk, the preferred dist/JuActlBoard.exe target, the actl.cmd shim pointing at src/actl-run.py, and the uninstall line that removes shortcuts while keeping the repo as OBSERVED, with live shortcut creation NOT_PROVEN, and does not run install.ps1, create links, or call --init.",
+          "files": [
+            "src/actl/core/install_shortcut_recheck.py",
+            "tests/test_install_shortcut_recheck.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다."
+        },
+        {
+          "taskId": "ACTL-PREVIEW-SPAWN-EVIDENCE",
+          "scope": "Add a pure recheck that records the production one-shot argv used by capture_pane_live (tmux capture-pane -p -J -S -t through tmux._remote_args as one remote command, with no powershell token and no new-session) as OBSERVED and a live Windows board preview as NOT_PROVEN, without calling capture_pane_live or starting ssh.",
+          "files": [
+            "src/actl/core/preview_spawn_evidence.py",
+            "tests/test_preview_spawn_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-SEND-CONTROL-EVIDENCE",
+          "scope": "Add a pure recheck that records the tmux control-mode lines production builds with _tmux_control_quote for set-buffer, paste-buffer, and send-keys Enter as OBSERVED and a live Windows send as NOT_PROVEN, without calling send_prompt_staged or starting ssh.",
+          "files": [
+            "src/actl/core/send_control_evidence.py",
+            "tests/test_send_control_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
         }
       ],
       "qaRuntime": [
