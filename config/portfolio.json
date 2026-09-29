@@ -10083,6 +10083,45 @@
           ],
           "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none.",
           "title": "재시작 때 AI 연결이 없으면 다시 줄 세우지 않기"
+        },
+        {
+          "taskId": "JUPLAN-AR-RECONCILE-TRANSPORT",
+          "scope": "Pass an optional TaskPacketTransportHold after providerFailure on reconcileRestart, applyRestartReconcile, and runRestartReconcile so a disconnected pm/juplan turns the one provider-outage requeue into dispatch none, while an omitted or connected fact keeps that single requeue and the catalog proof.",
+          "files": [
+            "packages/runtime/src/agentRelayRestartReconcile.ts",
+            "packages/runtime/test/agent-relay-restart-reconcile.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
+        },
+        {
+          "taskId": "JUPLAN-AR-QA-RESTART",
+          "scope": "Append an optional TaskPacketRestartQueue after providerFailure on decideQaTestGate so an ambiguous restart does not promote a passing ACCEPT and dispatches none, while an omitted or not-ambiguous fact keeps the existing promotion.",
+          "files": [
+            "packages/runtime/src/agentRelayQaGate.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch."
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-RESTART",
+          "scope": "Append an optional TaskPacketRestartQueue after providerFailure on decideRetry, applyRetryPolicy, and runSameTaskRetry so an ambiguous restart does not retry and dispatches none, while an omitted or not-ambiguous fact keeps the same-task retry.",
+          "files": [
+            "packages/runtime/src/agentRelayRetryPolicy.ts",
+            "packages/runtime/test/agent-relay-retry-policy.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch."
         }
       ],
       "qaRuntime": [
