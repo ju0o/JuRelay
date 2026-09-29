@@ -10011,7 +10011,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
+          "title": "범위 밖 다음 작업 차단"
         },
         {
           "taskId": "JUPLAN-AR-QA-SCOPE",
@@ -10024,7 +10025,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
+          "title": "범위 밖 완료 처리 차단"
         },
         {
           "taskId": "JUPLAN-AR-RETRY-SCOPE",
@@ -10037,7 +10039,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
+          "title": "범위 밖 작업 재시도 차단"
         }
       ],
       "qaRuntime": [
@@ -21669,7 +21672,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation.",
+          "title": "계획 단계에서 성급한 결정을 막기"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-MOBILE-FOUNDER-UX-R2",
@@ -21681,7 +21685,8 @@
             "python3 -c 'import re; from pathlib import Path; t=Path(\"docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html\").read_text(); b=re.search(r\"body\\{([^}]*)\\}\", t); m=re.search(r\"font(?:-size)?:\\s*(\\d+)px\", b.group(1)); assert m and int(m.group(1))>=16; assert \"min-width:900px\" not in t and not re.search(r\"overflow(?:-x)?\\s*:\\s*auto\", t); assert re.search(r\"min-height:\\s*44px\", t); assert \"overflow-wrap\" in t or \"word-break\" in t; assert t.count(\"원문 보기\")==16; assert \"이 05 문서가 현재 기준 시각화\" in t and \"후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집\" in t'",
             "git diff --check"
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:16-31 '이 05 문서가 현재 기준 시각화' 및 M3 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집"
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:16-31 '이 05 문서가 현재 기준 시각화' 및 M3 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집",
+          "title": "휴대폰에서 글과 버튼을 쉽게 누르기"
         }
       ],
       "skills": {
@@ -24476,7 +24481,8 @@
           "tests": [
             "node --test tests/v01-non-goals-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:556 V0.1에서는 다음을 구현하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:556 V0.1에서는 다음을 구현하지 않는다.",
+          "title": "이번 버전에서 하지 않는 일"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -27085,7 +27091,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다."
+          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다.",
+          "title": "승인 카드 상태를 안전하게 처리"
         },
         {
           "taskId": "JUAI-CHECK-BOOTSTRAP",
@@ -27096,7 +27103,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "layout.mjs:22 서버 규칙. AI가 제안하고 운영진이 승인한 내용만 반영돼요."
+          "ssotEvidence": "layout.mjs:22 서버 규칙. AI가 제안하고 운영진이 승인한 내용만 반영돼요.",
+          "title": "처음 설정 안내를 승인 카드로 준비"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
