@@ -6433,7 +6433,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:110 - owned transport kill, ASUS unreachable, and restore/recovery tests;"
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:110 - owned transport kill, ASUS unreachable, and restore/recovery tests;",
+          "title": "멈춘 작업을 안전하게 정리"
         },
         {
           "taskId": "ACTL-REFRESH-MATRIX-EVIDENCE",
@@ -6444,7 +6445,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:109 - 1/2/4/8-agent refresh matrix and auto-refresh OFF/TUI cases;"
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:109 - 1/2/4/8-agent refresh matrix and auto-refresh OFF/TUI cases;",
+          "title": "여러 화면 새로고침 부담 확인"
         },
         {
           "taskId": "ACTL-RESULT-CARD-EVIDENCE",
@@ -6456,7 +6458,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 2. discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 2. discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "완료된 결과를 쉽게 복사"
         }
       ],
       "qaRuntime": [
@@ -10308,7 +10311,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-result-inbox.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: Run one offline check that the sole authorized packet AR-JUPLAN-001 is received and routed with its declared files and tests. Keep the check inside the existing Agent Relay contract fixtures."
+          "ssotEvidence": "Founder direction 2026-09-23: Run one offline check that the sole authorized packet AR-JUPLAN-001 is received and routed with its declared files and tests. Keep the check inside the existing Agent Relay contract fixtures.",
+          "title": "요청을 빠짐없이 전달 확인"
         }
       ],
       "qaRuntime": [
@@ -13516,7 +13520,8 @@
           "tests": [
             "npx vitest run tests/scan-summary.test.ts tests/daily.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안. 대상은 scan, daily, receipt 출력과 영수증 보기 화면."
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안. 대상은 scan, daily, receipt 출력과 영수증 보기 화면.",
+          "title": "결과를 쉽게 확인해요"
         },
         {
           "taskId": "JUCEIPT-RECEIPT-MISSING-NEXT-DAILY",
@@ -13528,7 +13533,8 @@
           "tests": [
             "npx vitest run tests/receipt-cli.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: receipt 명령 오류는 평문 한국어 3줄과 바로 할 다음 행동이어야 한다."
+          "ssotEvidence": "Founder direction 2026-09-25: receipt 명령 오류는 평문 한국어 3줄과 바로 할 다음 행동이어야 한다.",
+          "title": "다음 확인 방법을 안내해요"
         }
       ],
       "skills": {
@@ -22459,7 +22465,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 any later GO / DEFER / KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join per §2.3"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 any later GO / DEFER / KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join per §2.3",
+          "title": "결정 전 자료를 맞춰 확인하기"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-SECTION22-OPENING-VALID-JOIN",
@@ -22470,7 +22477,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
+          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists.",
+          "title": "일곱 작업 결과를 한눈에 확인하기"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-TALLY-CONFLICT-VALID-JOIN-R2",
@@ -22481,7 +22489,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:244 a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:244 a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join",
+          "title": "결정 전 근거를 다시 맞춰보기"
         }
       ],
       "skills": {
