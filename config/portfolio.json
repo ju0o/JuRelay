@@ -10053,7 +10053,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none."
+          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none.",
+          "title": "AI 연결이 없을 때 검수 통과 보류"
         },
         {
           "taskId": "JUPLAN-AR-RETRY-PROVIDER",
@@ -10066,7 +10067,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none."
+          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none.",
+          "title": "AI 연결이 없을 때 재시도 멈추기"
         },
         {
           "taskId": "JUPLAN-AR-RECONCILE-PROVIDER",
@@ -10079,7 +10081,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none."
+          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none.",
+          "title": "재시작 때 AI 연결이 없으면 다시 줄 세우지 않기"
         }
       ],
       "qaRuntime": [
@@ -13065,7 +13068,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안"
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안",
+          "title": "오늘 목록의 결과 문구를 쉬운 말로 바꾸기"
         },
         {
           "taskId": "JUCEIPT-SUMMARY-SHELL-PLAIN",
@@ -13078,7 +13082,8 @@
           "tests": [
             "npx vitest run tests/daily.test.ts tests/scan-summary.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안"
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안",
+          "title": "하루 요약에서 어려운 명령어 숨기기"
         }
       ],
       "skills": {
@@ -21789,7 +21794,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
+          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists.",
+          "title": "나중 결정은 같은 일만 인정"
         },
         {
           "taskId": "JUCEIPTPLAN-GTM-B1-VALID-JOIN",
@@ -21800,7 +21806,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join."
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join.",
+          "title": "하루 가치는 같은 일까지 미정"
         },
         {
           "taskId": "JUCEIPTPLAN-INDEX-NOTE-VALID-JOIN",
@@ -21813,7 +21820,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
+          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists.",
+          "title": "둘 다 있어도 같은 일을 기다림"
         }
       ],
       "skills": {
@@ -24673,7 +24681,8 @@
           "tests": [
             "node --test tests/feature-independent-toggle-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:46 모든 Feature는 서로 독립적으로 켜거나 끌 수 있다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:46 모든 Feature는 서로 독립적으로 켜거나 끌 수 있다.",
+          "title": "기능마다 따로 켜고 끌 수 있다는 안내 추가"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -27342,7 +27351,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:28 node setup.mjs # 채널·역할·포럼 태그·입장 질문 생성 (여러 번 실행해도 안전)"
+          "ssotEvidence": "README.md:28 node setup.mjs # 채널·역할·포럼 태그·입장 질문 생성 (여러 번 실행해도 안전)",
+          "title": "안내 글은 있을 때 고치고 없을 때만 올려요"
         },
         {
           "taskId": "JUAI-CHECK-SERVICE-GUARD",
@@ -27353,7 +27363,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:42 guard.mjs 새 버전이 켜지지 않으면 이전 버전으로 자동 복구"
+          "ssotEvidence": "README.md:42 guard.mjs 새 버전이 켜지지 않으면 이전 버전으로 자동 복구",
+          "title": "봇은 안전 확인 뒤 켜지고 꺼지면 다시 켜져요"
         },
         {
           "taskId": "JUAI-CHECK-BOTLOG-REDACT",
@@ -27364,7 +27375,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다."
+          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다.",
+          "title": "봇이 올리는 글은 비밀을 가리고 짧아요"
         },
         {
           "taskId": "JUAI-CHECK-HUB-ROUTES",
@@ -27375,7 +27387,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:39 bot.mjs 기능 전부"
+          "ssotEvidence": "README.md:39 bot.mjs 기능 전부",
+          "title": "인터넷·봇 확인 뒤 글·새 대화·반응을 받아요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
