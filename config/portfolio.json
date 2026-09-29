@@ -10176,7 +10176,8 @@
             "pnpm --filter @juplan/runtime test -- test/agent-relay-qa-gate.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:147 Independent QA returned FOUNDER_GATE, or REQUEST_CHANGES after the retry bound."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:147 Independent QA returned FOUNDER_GATE, or REQUEST_CHANGES after the retry bound.",
+          "title": "세 번 고쳐도 안 되면 그 일을 멈춤"
         },
         {
           "taskId": "JUPLAN-AR-RECONCILE-FOUNDER-GATE",
@@ -10189,7 +10190,8 @@
             "pnpm --filter @juplan/runtime test -- test/agent-relay-restart-reconcile.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane.",
+          "title": "연결이 끊겨도 멈춘 일은 안 돌림"
         }
       ],
       "qaRuntime": [
@@ -13260,7 +13262,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 빠진 확인 쉬운 설명과 영어 제목의 한국어 요약"
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 빠진 확인 쉬운 설명과 영어 제목의 한국어 요약",
+          "title": "영수증 화면에 남은 어려운 문구 쉽게 바꾸기"
         },
         {
           "taskId": "JUCEIPT-SUMMARY-STORED-EVIDENCE",
@@ -13273,7 +13276,8 @@
           "tests": [
             "npx vitest run tests/scan-summary.test.ts tests/daily.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: juceipt 명령 출력(scan, daily)의 영어와 개발자 문장을 쉬운 한국어로"
+          "ssotEvidence": "Founder direction 2026-09-25: juceipt 명령 출력(scan, daily)의 영어와 개발자 문장을 쉬운 한국어로",
+          "title": "하루 요약에 남은 어려운 문구 쉽게 바꾸기"
         }
       ],
       "skills": {
@@ -25008,7 +25012,8 @@
           "tests": [
             "node --test tests/unconfirmed-not-working-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:395 확인하지 않은 결과를 정상 작동한다고 표현하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:395 확인하지 않은 결과를 정상 작동한다고 표현하지 않는다.",
+          "title": "확인 안 된 일은 됐다고 안 말함"
         },
         {
           "taskId": "JUTELL-USER-FINAL-DECISION-PARITY",
@@ -25020,7 +25025,8 @@
           "tests": [
             "node --test tests/user-final-decision-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:106 최종 승인이나 배포 결정은 사용자가 한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:106 최종 승인이나 배포 결정은 사용자가 한다.",
+          "title": "최종 승인과 배포는 사용자가 결정"
         },
         {
           "taskId": "JUTELL-NO-ANSWER-STILL-SAFETY-PARITY",
@@ -25033,7 +25039,8 @@
           "tests": [
             "node --test tests/no-answer-still-safety-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:85 사용자가 답변 자체를 원하지 않는다고 명확히 요청했더라도 안전, 실패, 데이터 손실 가능성 또는 비밀정보 노출 문제가 발견되면 해당 내용은 알린다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:85 사용자가 답변 자체를 원하지 않는다고 명확히 요청했더라도 안전, 실패, 데이터 손실 가능성 또는 비밀정보 노출 문제가 발견되면 해당 내용은 알린다.",
+          "title": "답을 거절해도 위험한 일은 알림"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
