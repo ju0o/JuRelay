@@ -21713,6 +21713,17 @@
           ],
           "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:16-31 '이 05 문서가 현재 기준 시각화' 및 M3 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집",
           "title": "휴대폰에서 글과 버튼을 쉽게 누르기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-D023-VALID-JOIN-CLAUSE",
+          "scope": "In docs/decisions/DECISION_LOG.md change only the last sentence of D-023 so a later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join, keeping the 0-join fact and UNDECIDED status.",
+          "files": [
+            "docs/decisions/DECISION_LOG.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
         }
       ],
       "skills": {
