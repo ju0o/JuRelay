@@ -213,7 +213,7 @@ describe('layout contract (P1-P5, H1-H4)', () => {
     assert.ok(html.includes('id="lanes"') && html.includes('lane-a') && html.includes('lane-b') && html.includes('lane-c'));
     assert.ok(html.includes('chipHtml') && html.includes('laneOfAgent'), 'lane/chip renderers present');
     assert.ok(html.includes('id="chipsA"') && html.includes('id="chipsB"') && !html.includes('id="chipsC"'), 'lanes A/B only, C removed');
-    for (const id of ['bCrew', 'bLadder', 'bWbs', 'stReview', 'stCoding', 'stDone', 'stGoals', 'stNote', 'headDone', 'headTotal', 'laneNa', 'laneNb', 'chipsA', 'chipsB', 'barA', 'barB', 'pipeRelay', 'pipeWorker', 'pipeQa', 'pipeLoop']) {
+    for (const id of ['bTask', 'stReview', 'stCoding', 'stDone', 'stGoals', 'stNote', 'headDone', 'headTotal', 'laneNa', 'laneNb', 'chipsA', 'chipsB', 'barA', 'barB', 'pipeRelay', 'pipeWorker', 'pipeQa', 'pipeLoop', 'taskN', 'tcDone', 'tcReview', 'tcLeft', 'taskRows', 'goalCards', 'kDone', 'kReview', 'kLeft', 'kBlock', 'wbsTree', 'estRows', 'relList', 'erd', 'taskDone', 'taskTotal', 'nowArr']) {
       assert.ok(html.includes('id="' + id + '"'), id);
     }
   });
@@ -224,11 +224,23 @@ describe('layout contract (P1-P5, H1-H4)', () => {
     assert.ok(html.indexOf('id="diag"') > det, 'diag inside details');
     assert.ok(html.indexOf('id="buildTag"') > html.indexOf('class="strip"'), 'no hash in header');
   });
-  it('ladder RH=78 + bottom formula; WBS track 96 + runner top 48', () => {
-    assert.ok(html.includes('var RH = 78;'));
-    assert.ok(html.includes('16 + Math.max(cur, 0) * RH - 8'));
-    assert.ok(html.includes('height:96px'));
-    assert.ok(html.includes("runner.style.top = '60px'"));
+  it('v6: 5-tab rail + task/goal/proto/design panes', () => {
+    for (const t of ['now', 'task', 'goal', 'proto', 'design']) {
+      assert.ok(html.includes('data-tab="' + t + '"'), t);
+      assert.ok(html.includes('id="pane-' + t + '"'), 'pane-' + t);
+    }
+    assert.ok(!html.includes('id="pane-ladder"') && !html.includes('id="pane-wbs"'), 'old panes removed');
+    assert.ok(!html.includes('renderLadder') && !html.includes('renderWbs('), 'old renderers removed');
+    assert.ok(html.includes('renderTaskTab') && html.includes('renderGoalTab'), 'new renderers present');
+    assert.ok(html.includes('relay_pm_get_design'), 'design stub called');
+    assert.ok(html.includes('아직 계획 데이터가 없습니다'), 'empty-state copy present');
+    assert.ok(html.includes('id="erd"') && html.includes('erdSvg'), 'ERD svg renderer present');
+  });
+  it('v6: ERD has 9 nodes + 7 relations', () => {
+    const fns = html.match(/g \+= ent\([^)]*\)/g) || [];
+    assert.equal(fns.length, 9, 'ERD node count, got ' + fns.length);
+    const rels = (html.match(/\['[a-z_]+', '[0-9:NM]+', '[a-z_]+'/g) || []).length;
+    assert.ok(rels >= 7, 'relation rows, got ' + rels);
   });
   it('chip structure (avatar+name+role, no tag) + title preservation', () => {
     assert.ok(html.includes('cav-miss') && html.includes('ctx') && html.includes('laneOfAgent'));

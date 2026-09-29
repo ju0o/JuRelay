@@ -149,8 +149,83 @@ const WIDGET_HTML = `<!DOCTYPE html>
   }
   .tabs { display:flex; gap:6px; margin:8px 0 2px; }
   .tabs button { flex:1; border:1px solid var(--border); background:transparent; color:var(--muted);
-                 border-radius:8px; padding:6px 4px; font-size:12px; cursor:pointer; white-space:nowrap; }
-  .tabs button.on { color:var(--text); border-color:var(--text); font-weight:700; }
+                 border-radius:8px; padding:6px 4px; font-size:12px; cursor:pointer; white-space:nowrap; flex:none; }
+  .tabs button.on { color:var(--text); border-color:var(--text); font-weight:700; background:var(--panel); }
+  @media (max-width:480px) { .tabs { overflow-x:auto; } }
+  /* v6 control tower */
+  .nowcard { border:1px solid var(--border); border-radius:10px; padding:8px 10px; margin:6px 0 2px; }
+  .now-top { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; }
+  .now-top .hpill { margin-left:auto; }
+  .now-pm { font-size:11px; color:var(--muted); margin-top:2px; }
+  .now-arr { font-size:12px; font-weight:600; margin-top:2px; }
+  .tasksum { border:1px solid var(--border); border-radius:10px; padding:8px 10px; margin:6px 0; }
+  .tasksum-top { display:flex; font-size:12px; } .tasksum-top b { margin-left:auto; }
+  .bar3 { display:flex; height:6px; border-radius:3px; background:#262c37; margin:6px 0; overflow:hidden; }
+  .bar3 i { display:block; height:100%; }
+  .bar3 .bdone { background:#2ea86a; } .bar3 .breview { background:#f0b429; } .bar3 .bleft { background:#3a4250; }
+  .taskcounts { display:flex; gap:12px; font-size:11px; color:var(--muted); }
+  .taskcounts b { font-size:13px; }
+  .tc-done b { color:#2ea86a; } .tc-review b { color:#f0b429; }
+  .taskrows { display:flex; flex-direction:column; gap:6px; margin-top:6px; }
+  .trow { display:flex; align-items:center; gap:8px; border:1px solid var(--border); border-radius:8px; padding:6px 8px; font-size:12px; }
+  .trow .tid { font-size:10px; font-family:ui-monospace,Menlo,monospace; color:var(--muted); flex:none; }
+  .trow .tti { flex:1; min-width:0; white-space:nowrap; overflow:hidden; }
+  .trow .tst { font-size:10px; padding:1px 7px; border-radius:9px; flex:none; border:1px solid var(--border); color:var(--muted); }
+  .trow.st-done .tst { color:#2ea86a; border-color:#2ea86a; }
+  .trow.st-review .tst { color:#f0b429; border-color:#f0b429; }
+  .trow.st-working { border-left:3px solid #4a9eff; }
+  .trow.st-working .tst { color:#4a9eff; border-color:#4a9eff; }
+  .goalcard { background:linear-gradient(135deg,#1a1524,#141a24); border:1px solid #2e2a44; border-radius:11px; padding:12px; margin:6px 0; }
+  .goalcard .gt { font-size:15px; font-weight:650; }
+  .goalcard .gw { font-size:11px; color:var(--muted); margin-top:4px; }
+  .goalcard .gs { font-size:11px; margin-top:6px; }
+  .kpis { display:flex; background:var(--panel); border:1px solid var(--border); border-radius:9px; margin-top:6px; overflow:hidden; flex-wrap:wrap; }
+  .kpi { flex:1; min-width:70px; padding:8px 10px; }
+  .kpi .n { font-size:17px; font-weight:660; }
+  .kpi .k { font-size:10px; color:var(--muted); }
+  .wf { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0; }
+  .mock { background:#0c0e12; border:1px solid var(--border); border-radius:8px; padding:8px; min-height:120px; }
+  .mock .mb { background:var(--panel); border:1px solid var(--border); border-radius:5px; padding:5px 7px; margin-bottom:5px; font-size:10px; color:var(--muted); }
+  .mock .row { display:flex; gap:5px; margin-bottom:5px; }
+  .mock .bx { flex:1; background:var(--panel); border:1px dashed #333b49; border-radius:5px; min-height:30px; display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--muted); }
+  .wflist { display:flex; flex-direction:column; gap:6px; }
+  .wfrow { display:flex; gap:8px; align-items:flex-start; font-size:11px; padding:6px 8px; background:var(--panel); border:1px solid var(--border); border-radius:7px; }
+  .wfrow .n { width:18px; height:18px; border-radius:5px; background:#4a9eff; color:#06121f; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; flex:none; }
+  .wfrow .tt { font-size:12px; font-weight:600; } .wfrow .ds { font-size:10px; color:var(--muted); }
+  .tabs2 { display:flex; gap:3px; margin:6px 0; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:3px; }
+  .tabs2 button { flex:1; background:transparent; border:0; color:var(--muted); padding:6px; border-radius:6px; cursor:pointer; font-size:11px; }
+  .tabs2 button.on { background:#1b2029; color:var(--text); }
+  .dtabpane { display:none; } .dtabpane.on { display:block; }
+  .dia { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:10px; overflow-x:auto; }
+  .dia svg { display:block; min-width:620px; width:100%; height:auto; }
+  .ent { fill:#1b2029; stroke:#39414f; stroke-width:1; }
+  .ent-h { fill:#242b36; stroke:#39414f; stroke-width:1; }
+  .ent-t { fill:#e8eaed; font-size:11px; font-weight:600; font-family:system-ui,sans-serif; }
+  .ent-c { fill:#98a0ae; font-size:9.5px; font-family:ui-monospace,Menlo,monospace; }
+  .ent-pk { fill:#f0b429; font-size:9.5px; font-family:ui-monospace,Menlo,monospace; }
+  .ent-fk { fill:#4a9eff; font-size:9.5px; font-family:ui-monospace,Menlo,monospace; }
+  .rel { stroke:#4a5464; stroke-width:1.2; fill:none; }
+  .rel-l { fill:#98a0ae; font-size:9px; }
+  .cnt { stroke:#5c6470; stroke-width:1; fill:none; stroke-dasharray:3 2; }
+  .cnt-l { fill:#5c6470; font-size:8.5px; }
+  .rel2 { display:flex; flex-direction:column; gap:5px; margin-top:8px; }
+  .relrow { display:flex; gap:8px; align-items:center; font-size:11px; padding:5px 8px; background:var(--panel); border:1px solid var(--border); border-radius:6px; }
+  .relrow .a { font-family:ui-monospace,Menlo,monospace; color:#4a9eff; flex:none; }
+  .relrow .ar { color:var(--muted); flex:none; }
+  .relrow .b { font-family:ui-monospace,Menlo,monospace; color:#f0b429; flex:none; }
+  .relrow .d { color:var(--muted); font-size:10px; }
+  .wbs { display:flex; flex-direction:column; gap:6px; margin-top:6px; }
+  .wbsrow { display:flex; gap:8px; align-items:center; font-size:11px; }
+  .wbsrow .ind { flex:none; color:var(--muted); font-size:10px; white-space:pre; }
+  .wbsrow .bar2 { flex:1; border:1px solid var(--border); background:var(--panel); border-radius:5px; display:flex; align-items:center; padding:3px 8px; gap:6px; min-width:0; }
+  .wbsrow .bar2 span { white-space:nowrap; overflow:hidden; }
+  .wbsrow .sz { font-size:9px; color:var(--muted); font-family:ui-monospace,Menlo,monospace; flex:none; }
+  .wbsrow .dep { font-size:9px; flex:none; }
+  .dep.done { color:#2ea86a; } .dep.working { color:#4a9eff; } .dep.wait { color:var(--muted); }
+  .estrows { display:flex; flex-direction:column; gap:6px; margin-top:6px; font-size:12px; }
+  .estrow { border:1px solid var(--border); border-radius:8px; padding:6px 8px; }
+  .estrow b { display:block; font-size:12px; } .estrow span { font-size:11px; color:var(--muted); }
+  .emptybox { border:1px dashed var(--border); border-radius:8px; padding:12px; margin-top:6px; font-size:12px; color:var(--muted); text-align:center; }
   .tabs .bdg { display:inline-block; min-width:18px; font-size:10px; border:1px solid var(--border);
               border-radius:10px; padding:0 5px; margin-left:4px; color:var(--muted); font-weight:400; }
   .tabs button.on .bdg { color:var(--text); border-color:var(--text); }
@@ -235,11 +310,20 @@ const WIDGET_HTML = `<!DOCTYPE html>
       <span class="step off" data-s="done"><i></i><span data-i="sDone">판정 완료</span></span>
     </div>
     <div class="tabs" id="tabs">
-      <button data-tab="crew" class="on">Builder<span class="bdg" id="bCrew">0</span></button>
-      <button data-tab="ladder"><span data-i="tabLadder">사다리</span><span class="bdg" id="bLadder">0</span></button>
-      <button data-tab="wbs">WBS<span class="bdg" id="bWbs">0</span></button>
+      <button data-tab="now" class="on">지금 상황</button>
+      <button data-tab="task">Task<span class="bdg" id="bTask">0</span></button>
+      <button data-tab="goal">Goal</button>
+      <button data-tab="proto">프로토타입</button>
+      <button data-tab="design">설계</button>
     </div>
-    <div class="tabpane on" id="pane-crew">
+    <div class="tabpane on" id="pane-now">
+      <div class="nowcard" id="nowcard">
+        <div class="now-top"><span class="dot waiting pulse" id="dot2"></span><b>Agent Relay</b>
+          <span class="hpill">진행 <b id="taskDone">0</b>/<span id="taskTotal">0</span></span></div>
+        <div class="now-pm">PM = <span data-i="pmYou">이 대화</span>에서 진행 중</div>
+        <div class="now-arr" id="nowArr">대기 중</div>
+      </div>
+      <div class="pipe" id="pipe">
       <div class="lanes" id="lanes">
         <div class="lane lane-a">
           <div class="lane-head"><span class="lane-title">검토 중</span><span class="lane-desc">사람이 봐야 함</span><span class="lane-n" id="laneNa">0</span></div>
@@ -253,15 +337,53 @@ const WIDGET_HTML = `<!DOCTYPE html>
         </div>
       </div>
     </div>
-    <div class="tabpane" id="pane-ladder">
-      <div id="goalBadges"></div>
-      <div class="ladder-wrap">
-        <div class="ladder-stage" id="ladderStage"><div class="climber" id="climber"></div></div>
-        <div class="tasklist" id="taskList"></div>
+    <div class="tabpane" id="pane-task">
+      <div class="tasksum" id="tasksum">
+        <div class="tasksum-top"><span>진행할 Task</span><b>총 <span id="taskN">0</span>개</b></div>
+        <div class="bar3" id="bar3"><i class="bdone" id="barDone" style="width:0%"></i><i class="breview" id="barReview" style="width:0%"></i><i class="bleft" id="barLeft" style="width:100%"></i></div>
+        <div class="taskcounts"><span class="tc-done">완료 <b id="tcDone">0</b></span><span class="tc-review">검토 <b id="tcReview">0</b></span><span class="tc-left">남음 <b id="tcLeft">0</b></span></div>
+      </div>
+      <div class="taskrows" id="taskRows"></div>
+    </div>
+    <div class="tabpane" id="pane-goal">
+      <div id="goalCards"></div>
+      <div class="kpis" id="goalKpis">
+        <div class="kpi"><span class="n" id="kDone">0</span><span class="k">완료한 일</span></div>
+        <div class="kpi"><span class="n" id="kReview">0</span><span class="k">확인 필요</span></div>
+        <div class="kpi"><span class="n" id="kLeft">0</span><span class="k">남은 일</span></div>
+        <div class="kpi"><span class="n" id="kBlock">0</span><span class="k">막힌 것</span></div>
       </div>
     </div>
-    <div class="tabpane" id="pane-wbs">
-      <div class="wbs-wrap"><div class="track" id="track"><div class="track-fill" id="trackFill"></div><div class="runner" id="runner"></div><div class="wgoal" id="wbsGoal"></div></div></div>
+    <div class="tabpane" id="pane-proto">
+      <div class="sub">프로토타입 &amp; 와이어프레임 — 이 채팅에서 기획한 화면 구성</div>
+      <div class="wf">
+        <div class="mock"><div class="mb">▣ 프로젝트 대시보드</div><div class="row"><span class="bx">진행률</span><span class="bx">상태</span></div><div class="row"><span class="bx">에이전트</span><span class="bx">대기</span></div></div>
+        <div class="mock"><div class="mb">▣ 작업 상세</div><div class="row"><span class="bx">헤더</span><span class="bx">실행</span></div><div class="row"><span class="bx">로그 스트림</span></div></div>
+        <div class="mock"><div class="mb">▣ 설정 화면</div><div class="row"><span class="bx h32">옵션</span><span class="bx h32">저장</span></div></div>
+        <div class="mock"><div class="mb">▣ 모바일</div><div class="row"><span class="bx h32">요약</span><span class="bx h32">알림</span></div></div>
+      </div>
+      <div class="wflist">
+        <div class="wfrow"><span class="n">1</span><span><span class="tt">PM 위젯 (이 화면)</span><br><span class="ds">실시간 환경 상태</span></span></div>
+        <div class="wfrow"><span class="n">2</span><span><span class="tt">Agent-Relay Electron GUI</span><br><span class="ds">데스크톱 관제</span></span></div>
+        <div class="wfrow"><span class="n">3</span><span><span class="tt">JuControler 대시보드</span><br><span class="ds">상위 감시 도구</span></span></div>
+      </div>
+    </div>
+    <div class="tabpane" id="pane-design">
+      <div class="tabs2" id="dtabs">
+        <button data-dtab="erd" class="on">ERD</button>
+        <button data-dtab="wbs">WBS</button>
+        <button data-dtab="est">예상 시간</button>
+      </div>
+      <div class="dtabpane on" id="dpane-erd">
+        <div class="dia"><svg id="erd" viewBox="0 0 780 470" style="width:100%;height:auto" role="img" aria-label="ERD"></svg></div>
+        <div class="rel2" id="relList"></div>
+      </div>
+      <div class="dtabpane" id="dpane-wbs">
+        <div class="wbs" id="wbsTree"></div>
+      </div>
+      <div class="dtabpane" id="dpane-est">
+        <div class="estrows" id="estRows"></div>
+      </div>
     </div>
     <div class="update" id="update"></div>
     <div class="cards" id="cards"></div>
@@ -347,6 +469,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var doneCount = 0;
       var lastDeliveries = [];
       var lastDash = null;
+      var lastAgentTotal = 0;
       var spriteNote = '';
       var stCodingEl = document.getElementById('stCoding');
       var stReviewEl = document.getElementById('stReview');
@@ -463,11 +586,12 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (headTotalEl) headTotalEl.textContent = String(list.length);
         // "무엇을 하고 있나": arrivals first, then review, else waiting.
         try {
-          if (stNoteEl) {
-            stNoteEl.textContent = nWait > 0
-              ? t('envArrived').replace('{n}', String(nWait))
-              : (doing > 0 ? t('envReview') : t('envWait'));
-          }
+          var noteText = nWait > 0
+            ? t('envArrived').replace('{n}', String(nWait))
+            : (doing > 0 ? t('envReview') : t('envWait'));
+          if (stNoteEl) stNoteEl.textContent = noteText;
+          var nowArr = document.getElementById('nowArr');
+          if (nowArr) nowArr.textContent = noteText;
         } catch (e) {}
         var steps = stepsEl.querySelectorAll('.step');
         setStep(steps[0], list.length > 0 ? 'on' : 'off');
@@ -609,7 +733,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
             return function () {
               for (var j = 0; j < btns.length; j++) btns[j].className = '';
               btn.className = 'on';
-              var panes = ['crew', 'ladder', 'wbs'];
+              var panes = ['now', 'task', 'goal', 'proto', 'design'];
               for (var k = 0; k < panes.length; k++) {
                 document.getElementById('pane-' + panes[k]).className =
                   'tabpane' + (btn.getAttribute('data-tab') === panes[k] ? ' on' : '');
@@ -637,75 +761,210 @@ const WIDGET_HTML = `<!DOCTYPE html>
         var label = (task && (task.title || task.taskId)) || ('Task ' + (i + 1));
         return esc(label);
       }
-      function renderLadder(taskList, goals) {
-        var tasks = (taskList || []).slice(0, 20);
-        var stage = document.getElementById('ladderStage');
-        var list = document.getElementById('taskList');
-        var badges = document.getElementById('goalBadges');
-        var RH = 78;
-        stage.style.height = (tasks.length * RH + 48) + 'px';
+      function taskStatus(task) {
+        if (isDoneTask(task)) return 'done';
+        var pm = task && task.pmState;
+        if (pm === 'VERIFYING' || pm === 'CHANGES_REQUESTED' || pm === 'CHANGES') return 'review';
+        if (task && task.executionState === 'RUNNING') return 'working';
+        return 'planned';
+      }
+      function taskStatusLabel(st) {
+        if (st === 'done') return t('done');
+        if (st === 'review') return t('doing');
+        if (st === 'working') return t('working');
+        return t('wait');
+      }
+      function renderTaskTab(taskList) {
+        var tasks = (taskList || []).slice(0, 30);
+        var rows = document.getElementById('taskRows');
+        var done = 0, review = 0;
         var cur = -1;
         for (var i = 0; i < tasks.length; i++) {
-          if (!isDoneTask(tasks[i])) { cur = i; break; }
+          var st = taskStatus(tasks[i]);
+          if (st === 'done') done++;
+          else if (st === 'review') review++;
+          if (cur < 0 && st !== 'done') cur = i;
         }
-        if (cur < 0 && tasks.length) cur = tasks.length - 1;
-        var climber = document.getElementById('climber');
-        if (!applySheet(climber, 'climb', SHEET_W.climb, SHEET_W.climbH)) {
-          markSheetMissing(climber, SHEET_W.climb, SHEET_W.climbH, 'climb');
-        }
-        climber.style.bottom = (16 + Math.max(cur, 0) * RH - 8) + 'px';
+        var left = tasks.length - done - review;
+        setNum(document.getElementById('taskN'), tasks.length);
+        setNum(document.getElementById('tcDone'), done);
+        setNum(document.getElementById('tcReview'), review);
+        setNum(document.getElementById('tcLeft'), left);
+        setBadge('bTask', tasks.length);
+        try {
+          var tot = tasks.length || 1;
+          document.getElementById('barDone').style.width = Math.round((done / tot) * 100) + '%';
+          document.getElementById('barReview').style.width = Math.round((review / tot) * 100) + '%';
+          document.getElementById('barLeft').style.width = Math.round((left / tot) * 100) + '%';
+        } catch (e) {}
+        try {
+          var tn = document.getElementById('taskDone');
+          var tt = document.getElementById('taskTotal');
+          if (tn) tn.textContent = String(done);
+          if (tt) tt.textContent = String(tasks.length);
+        } catch (e) {}
         var html = '';
         for (var j = 0; j < tasks.length; j++) {
-          var cls = isDoneTask(tasks[j]) ? 'done' : (j === cur ? 'cur' : 'todo');
-          html += '<div class="trow ' + cls + '">' + taskTitleOf(tasks[j], j) + '</div>';
+          var s2 = taskStatus(tasks[j]);
+          html += '<div class="trow st-' + s2 + (j === cur ? ' cur' : '') + '">'
+            + '<span class="tid">' + esc((tasks[j] && tasks[j].taskId) || ('T' + j)) + '</span>'
+            + '<span class="tti" title="' + taskTitleOf(tasks[j], j) + '">' + taskTitleOf(tasks[j], j) + '</span>'
+            + '<span class="tst">' + esc(taskStatusLabel(s2)) + '</span></div>';
         }
-        list.innerHTML = html;
-        var openTasks = 0;
-        for (var q = 0; q < tasks.length; q++) {
-          if (!isDoneTask(tasks[q])) openTasks++;
-        }
-        setBadge('bLadder', openTasks);
-        var g = '';
-        for (var k = 0; k < (goals || []).length; k++) {
-          g += '<span class="goalbadge">' + esc(goals[k].title || goals[k].goalId) + '</span>';
-        }
-        badges.innerHTML = g;
+        try { if (rows) rows.innerHTML = html; } catch (e) {}
+        return { done: done, review: review, left: left, total: tasks.length };
       }
-      function renderWbs(taskList, goals) {
-        var tasks = (taskList || []).slice(0, 20);
-        var track = document.getElementById('track');
-        var fill = document.getElementById('trackFill');
-        var runner = document.getElementById('runner');
-        var wgoal = document.getElementById('wbsGoal');
-        var cur = -1;
-        for (var i = 0; i < tasks.length; i++) {
-          if (!isDoneTask(tasks[i])) { cur = i; break; }
+      function renderGoalTab(goals, taskCounts) {
+        var box = document.getElementById('goalCards');
+        var list = (goals || []).slice(0, 5);
+        var html = '';
+        for (var i = 0; i < list.length; i++) {
+          var g = list[i] || {};
+          html += '<div class="goalcard"><div class="gt">' + esc(g.title || g.goalId || 'Goal') + '</div>'
+            + '<div class="gs">' + esc(g.status || '') + '</div></div>';
         }
-        if (cur < 0 && tasks.length) cur = tasks.length - 1;
-        var frac = tasks.length > 1 ? Math.max(cur, 0) / (tasks.length - 1) : 1;
-        fill.style.width = Math.round(frac * 100) + '%';
-        if (!applySheet(runner, 'run', RUN_W, RUN_H)) {
-          markSheetMissing(runner, RUN_W, RUN_H, 'run');
+        if (!html) {
+          html = '<div class="emptybox">아직 계획 데이터가 없습니다</div>';
         }
-        runner.style.top = '60px';
-        runner.style.left = 'calc(' + Math.round(frac * 100) + '% - 12px)';
-        var nodes = '';
-        for (var j = 0; j < tasks.length; j++) {
-          var done = isDoneTask(tasks[j]);
-          nodes += '<span class="wnode' + (done ? ' hit' : '') + '" title="' + taskTitleOf(tasks[j], j)
-            + '" style="left:' + Math.round(tasks.length > 1 ? j / (tasks.length - 1) * 100 : 0) + '%"></span>';
+        try { if (box) box.innerHTML = html; } catch (e) {}
+        var tc = taskCounts || { done: 0, review: 0, left: 0 };
+        setNum(document.getElementById('kDone'), tc.done);
+        setNum(document.getElementById('kReview'), tc.review);
+        setNum(document.getElementById('kLeft'), tc.left);
+        setNum(document.getElementById('kBlock'), 0);
+      }
+      function erdSvg() {
+        function ent(x, y, w, h, title, rows) {
+          var s = '<g><rect class="ent" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"/>'
+            + '<path class="ent-h" d="M' + x + ',' + (y + 6) + ' a6,6 0 0 1 6,-6 h' + (w - 12)
+            + ' a6,6 0 0 1 6,6 v14 h-' + w + ' z"/>'
+            + '<text class="ent-t" x="' + (x + 12) + '" y="' + (y + 17) + '">' + title + '</text>';
+          for (var i = 0; i < rows.length; i++) {
+            var r = rows[i];
+            var cls = r[0] === 'pk' ? 'ent-pk' : (r[0] === 'fk' ? 'ent-fk' : 'ent-c');
+            var mark = r[0] === 'pk' ? '● ' : (r[0] === 'fk' ? '○ ' : '  ');
+            s += '<text class="' + cls + '" x="' + (x + 12) + '" y="' + (y + 38 + i * 16) + '">' + mark + r[1] + '</text>';
+          }
+          return s + '</g>';
         }
-        track.querySelectorAll('.wnode').forEach(function (el) { el.remove(); });
-        var tmp = document.createElement('div');
-        tmp.innerHTML = nodes;
-        while (tmp.firstChild) track.appendChild(tmp.firstChild);
-        wgoal.textContent = (goals && goals[0] && (goals[0].title || goals[0].goalId)) || '';
-        var openGoals = 0;
-        for (var gq = 0; gq < (goals || []).length; gq++) {
-          var gg = goals[gq];
-          if (gg && gg.status !== 'COMPLETED' && gg.status !== 'DONE') openGoals++;
+        var g = '';
+        g += ent(20, 20, 150, 112, 'goals', [['pk', 'id'], ['c', 'title'], ['c', 'why'], ['c', 'status'], ['c', 'created_at']]);
+        g += ent(240, 20, 165, 128, 'tasks', [['pk', 'id'], ['fk', 'goal_id'], ['c', 'title'], ['c', 'status'], ['c', 'size'], ['c', 'seq']]);
+        g += ent(480, 20, 150, 128, 'agents', [['pk', 'id'], ['c', 'name'], ['c', 'role'], ['c', 'state'], ['c', 'runtime'], ['c', 'sheet']]);
+        g += ent(470, 215, 160, 96, 'task_runs', [['pk', 'id'], ['fk', 'task_id'], ['fk', 'agent_id'], ['c', 'started_at']]);
+        g += ent(240, 200, 165, 112, 'deliveries', [['pk', 'id'], ['fk', 'task_id'], ['c', 'run_no'], ['c', 'verdict'], ['c', 'created_at']]);
+        g += ent(20, 200, 150, 112, 'messages', [['pk', 'id'], ['fk', 'delivery_id'], ['c', 'role'], ['c', 'body'], ['c', 'at']]);
+        g += ent(20, 360, 150, 96, 'test_runs', [['pk', 'id'], ['fk', 'delivery_id'], ['c', 'result'], ['c', 'at']]);
+        g += ent(240, 360, 165, 96, 'wbs_nodes', [['pk', 'id'], ['fk', 'goal_id'], ['fk', 'parent_id'], ['c', 'title']]);
+        g += ent(480, 360, 150, 96, 'designs', [['pk', 'id'], ['fk', 'goal_id'], ['c', 'kind'], ['c', 'payload']]);
+        g += '<line class="rel" x1="170" y1="60" x2="240" y2="60"/>';
+        g += '<text class="rel-l" x="205" y="52" text-anchor="middle">1:N</text>';
+        g += '<line class="rel" x1="405" y1="80" x2="480" y2="80"/>';
+        g += '<text class="rel-l" x="442" y="72" text-anchor="middle">N:M</text>';
+        g += '<line class="rel" x1="300" y1="148" x2="300" y2="200"/>';
+        g += '<text class="rel-l" x="292" y="178" text-anchor="end">1:N</text>';
+        g += '<line class="rel" x1="405" y1="240" x2="470" y2="250"/>';
+        g += '<text class="rel-l" x="440" y="236" text-anchor="middle">1:N</text>';
+        g += '<line class="rel" x1="240" y1="245" x2="170" y2="245"/>';
+        g += '<text class="rel-l" x="205" y="237" text-anchor="middle">1:N</text>';
+        g += '<line class="rel" x1="105" y1="312" x2="105" y2="360"/>';
+        g += '<text class="rel-l" x="97" y="340" text-anchor="end">1:N</text>';
+        g += '<line class="cnt" x1="95" y1="148" x2="95" y2="200"/>';
+        g += '<text class="cnt-l" x="102" y="178">0..N</text>';
+        return g;
+      }
+      var RELS = [
+        ['goals', '1:N', 'tasks', '목표를 작업으로 분해'],
+        ['tasks', 'N:M', 'agents', 'task_runs 중간 테이블 경유'],
+        ['tasks', '1:N', 'deliveries', '시도마다 기록'],
+        ['deliveries', '1:N', 'messages', 'PM ↔ Worker 대화'],
+        ['deliveries', '1:N', 'test_runs', '테스터 검증'],
+        ['goals', '1:N', 'wbs_nodes', 'self FK 계층'],
+        ['goals', '1:N', 'designs', 'ERD/와이어프레임/프로토타입'],
+      ];
+      function renderDesignStatic() {
+        try {
+          var svg = document.getElementById('erd');
+          if (svg && !svg.getAttribute('data-drawn')) {
+            svg.innerHTML = erdSvg();
+            svg.setAttribute('data-drawn', '1');
+          }
+          var rl = document.getElementById('relList');
+          if (rl && !rl.getAttribute('data-drawn')) {
+            var html = '';
+            for (var i = 0; i < RELS.length; i++) {
+              html += '<div class="relrow"><span class="a">' + esc(RELS[i][0]) + '</span>'
+                + '<span class="ar">' + esc(RELS[i][1]) + '</span>'
+                + '<span class="b">' + esc(RELS[i][2]) + '</span>'
+                + '<span class="d">' + esc(RELS[i][3]) + '</span></div>';
+            }
+            rl.innerHTML = html;
+            rl.setAttribute('data-drawn', '1');
+          }
+        } catch (e) { /* static art best-effort */ }
+      }
+      function renderWbsNodes(nodes) {
+        var box = document.getElementById('wbsTree');
+        var list = nodes || [];
+        var html = '';
+        if (!list.length) {
+          html = '<div class="emptybox">아직 계획 데이터가 없습니다<br>Goal을 먼저 만드세요</div>';
+        } else {
+          var byParent = {};
+          for (var i = 0; i < list.length; i++) {
+            var n = list[i] || {};
+            var p = n.parent_id || '';
+            if (!byParent[p]) byParent[p] = [];
+            byParent[p].push(n);
+          }
+          var walk = function (pid, depth) {
+            var out = '';
+            var kids = byParent[pid] || [];
+            for (var k = 0; k < kids.length; k++) {
+              var nd = kids[k];
+              var st = nd.status === 'done' ? 'done' : (nd.status === 'in-progress' || nd.status === 'working' ? 'working' : 'wait');
+              var dep = st === 'done' ? '✓ 완료' : (st === 'working' ? '→ 작업 중' : '· 대기');
+              var ind = depth === 0 ? '▓' : (k === kids.length - 1 ? '└' : '├');
+              out += '<div class="wbsrow"><span class="ind">' + ind + '</span>'
+                + '<span class="bar2"><span>' + esc(nd.title || nd.id || '') + '</span></span>'
+                + '<span class="sz">' + esc(nd.size || '') + '</span>'
+                + '<span class="dep ' + st + '">' + dep + '</span></div>';
+              out += walk(nd.id, depth + 1);
+            }
+            return out;
+          };
+          html = walk('', 0);
         }
-        setBadge('bWbs', openGoals);
+        try { if (box) box.innerHTML = html; } catch (e) {}
+      }
+      function renderEst(taskCounts) {
+        var box = document.getElementById('estRows');
+        var tc = taskCounts || { done: 0, review: 0, left: 0 };
+        var html = '<div class="estrow"><b>✓ 완료된 일 ' + tc.done + '건</b></div>'
+          + '<div class="estrow"><b>! 확인 대기 ' + tc.review + '건</b><span>답장 오면 자동 진행</span></div>'
+          + '<div class="estrow"><b>→ 진행 예정 ' + tc.left + '건</b></div>';
+        try { if (box) box.innerHTML = html; } catch (e) {}
+      }
+      function initDesignTabs() {
+        try {
+          var dt = document.getElementById('dtabs');
+          if (!dt || dt.getAttribute('data-wired')) return;
+          dt.setAttribute('data-wired', '1');
+          var btns = dt.querySelectorAll('button');
+          for (var i = 0; i < btns.length; i++) {
+            btns[i].onclick = (function (btn) {
+              return function () {
+                for (var j = 0; j < btns.length; j++) btns[j].className = '';
+                btn.className = 'on';
+                var panes = ['erd', 'wbs', 'est'];
+                for (var k = 0; k < panes.length; k++) {
+                  var p = document.getElementById('dpane-' + panes[k]);
+                  if (p) p.className = 'dtabpane' + (btn.getAttribute('data-dtab') === panes[k] ? ' on' : '');
+                }
+              };
+            })(btns[i]);
+          }
+        } catch (e) { /* subtabs best-effort */ }
       }
       // R1-R5: name normalization (mapping at the data level, never CSS cut).
       // "Builder via live checkout" -> {name:"Live", role:"Builder"}.
@@ -936,12 +1195,12 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
       function renderAgents(dash) {
         var agents = activeAgents((dash && dash.agents) || []);
+        try { lastAgentTotal = agents.length; } catch (e) {}
         var working = 0;
         for (var w = 0; w < agents.length; w++) {
           if (agents[w] && agents[w].state === 'working') working++;
         }
         pipeWorking = working;
-        setBadge('bCrew', agents.length);
         setNum(stCodingEl, working);
         setSeg('sgCoding', working, 'eseg blue');
         var buckets = { A: [], B: [] };
@@ -977,7 +1236,6 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
         setNum(stGoalsEl, gTotal);
         setSeg('sgGoals', gTotal, 'eseg muted');
-        setBadge('bWbs', gOpen);
       }
       // Proven spike bridge (behavioral authority): register the response
       // listener synchronously, then postMessage, then return the promise.
@@ -1042,8 +1300,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
             } catch (e) {}
           });
           var badgeN = 0;
-          try { badgeN = parseInt((document.getElementById('bCrew') || {}).textContent || '0', 10); } catch (e) {}
-          if (isNaN(badgeN)) badgeN = 0;
+          try { badgeN = (typeof lastAgentTotal === 'number') ? lastAgentTotal : 0; } catch (e) {}
           var sheetW = '';
           try {
             var sp = document.querySelector('.crew-sp');
@@ -1102,8 +1359,16 @@ const WIDGET_HTML = `<!DOCTYPE html>
                   barB.style.width = Math.round((doneT / taskList.length) * 100) + '%';
                 }
               } catch (eBar) { /* progress best-effort */ }
-              try { renderLadder(taskList, goals); } catch (eL) { logLine('render ladder error: ' + eL.message); }
-              try { renderWbs(taskList, goals); } catch (eW) { logLine('render wbs error: ' + eW.message); }
+              var taskCounts = null;
+              try { taskCounts = renderTaskTab(taskList); } catch (eT) { logLine('render tasktab error: ' + eT.message); }
+              try { renderGoalTab(goals, taskCounts); } catch (eG) { logLine('render goaltab error: ' + eG.message); }
+              try {
+                initDesignTabs();
+                renderDesignStatic();
+                var dz = await callTool('relay_pm_get_design', {});
+                renderWbsNodes(dz && dz.nodes);
+                renderEst(taskCounts);
+              } catch (eD) { /* design best-effort */ }
             } catch (e3) { /* task views best-effort */ }
           } catch (e2) {
             setDiag('dashboard 실패: ' + String((e2 && e2.message) || e2).slice(0, 120) + spriteNote);

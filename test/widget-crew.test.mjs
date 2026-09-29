@@ -25,9 +25,11 @@ describe('crew widget spec', () => {
     assert.doesNotMatch(html, /hue-rotate/);
     assert.ok(!html.includes('ladder-rail') && !html.includes('ladder-rung'));
   });
-  it('has 3 tabs + ladder geometry + wbs runner', () => {
-    assert.ok(html.includes('data-tab="crew"') && html.includes('data-tab="ladder"') && html.includes('data-tab="wbs"'));
-    assert.ok(html.includes('climber') && html.includes('trackFill') && html.includes('applySheet'));
+  it('has 5-tab rail (v6 control tower)', () => {
+    for (const t of ['now', 'task', 'goal', 'proto', 'design']) {
+      assert.ok(html.includes('data-tab="' + t + '"'), t);
+    }
+    assert.ok(html.includes('applySheet'));
   });
   it('injects asset base, keeps wake contract', () => {
     assert.ok(html.includes('https://example.invalid/w/dig-sheet.png') || html.includes('example.invalid'));
@@ -54,6 +56,6 @@ describe('crew widget spec', () => {
     assert.ok(html.includes('id="fallback"'), 'static fallback shell');
     assert.ok(html.includes('id="diag"'), 'dashboard status line element');
     assert.ok(html.includes('dashboard ok ·') && html.includes('dashboard 실패:'), 'diag covers ok + fail');
-    assert.ok(html.includes('render agents error') && html.includes('render ladder error') && html.includes('render wbs error'), 'per-view render guards');
+    assert.ok(html.includes('render agents error') && html.includes('render tasktab error') && html.includes('render goaltab error'), 'per-view render guards');
   });
 });
