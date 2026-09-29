@@ -92,6 +92,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .pnode { flex:1; background:#161a21; border:1px solid #262c37; border-radius:8px; padding:4px 2px; text-align:center; min-width:0; }
   .pnode b { display:block; font-size:12px; }
   .pnode span { font-size:10px; color:var(--muted); white-space:nowrap; }
+  /* QA wait is secondary information: dimmer than the review count so the eye reads "4 review" first.
+     It stays hidden entirely when nothing is waiting, so a healthy pipeline looks unchanged. */
+  .pnode .pwait { color:var(--muted); opacity:.62; margin-left:4px; }
+  .pnode .pwait:empty { display:none; }
   .edge { align-self:center; color:var(--muted); font-size:12px; flex:none; }
   .ploop { flex-basis:100%; text-align:center; font-size:10px; color:var(--muted); margin-top:2px; }
   .ploop.hot { color:#f0b429; font-weight:700; }
@@ -289,7 +293,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       <span class="edge">→</span>
       <div class="pnode"><b>Worker</b><span id="pipeWorker">0 active</span></div>
       <span class="edge">→</span>
-      <div class="pnode"><b>QA</b><span id="pipeQa">0 review</span></div>
+      <div class="pnode"><b>QA</b><span id="pipeQa">0 review</span><span id="pipeQaWait" class="pwait"></span></div>
       <div class="ploop" id="pipeLoop">↩ 확인 후 계속</div>
     </div>
     <div class="env" id="env">
@@ -1153,6 +1157,18 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var pipeNWait = 0;
       var pipeDoing = 0;
       var pipeWorking = 0;
+      // QA slot pressure from the portfolio runner (dash.qa), or null when the runner has not written
+      // its capacity mirror yet. It explains WHY a queue exists — it never changes the review count,
+      // and it never feeds the "검토 중" lane, which belongs to the Founder alone.
+      var pipeQaWait = null;
+      function applyQaCapacity(cap) {
+        try {
+          pipeQaWait = cap && typeof cap.qaWaiting === 'number' && cap.qaWaiting > 0 ? cap.qaWaiting : 0;
+          var el = document.getElementById('pipeQaWait');
+          if (el) el.textContent = pipeQaWait ? '· ' + pipeQaWait + ' 대기' : '';
+          updatePipe();
+        } catch (e) {}
+      }
       function updatePipe() {
         try {
           setPipeText('pipeRelay', pipeNWait + ' delivery');
@@ -1195,6 +1211,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
       function renderAgents(dash) {
         var agents = activeAgents((dash && dash.agents) || []);
+        applyQaCapacity((dash && dash.qa) || null);
         try { lastAgentTotal = agents.length; } catch (e) {}
         var working = 0;
         for (var w = 0; w < agents.length; w++) {

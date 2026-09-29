@@ -24,6 +24,39 @@ interface AgentEntry {
   model: string | null;
 }
 
+interface QaCapacity {
+  qaActive: number;
+  qaWaiting: number;
+  qaTotal: number;
+  maxQa: number;
+  updatedAt?: string;
+}
+
+/**
+ * QA slot pressure from the portfolio runner.
+ *
+ * Read from the runner's own tiny qa-capacity.json mirror, never from state.json: the widget polls this
+ * tool every couple of seconds and state.json is ~10 MB of 2 000+ tasks, so parsing it per poll would
+ * cost more than the widget itself. A missing or unreadable file simply means "no reading available",
+ * and the widget falls back to the count it already had.
+ */
+function readQaCapacity(dataRoot: string): QaCapacity | null {
+  try {
+    const raw = fs.readFileSync(path.join(dataRoot, 'portfolio-execution', 'qa-capacity.json'), 'utf8');
+    const parsed = JSON.parse(raw) as Partial<QaCapacity>;
+    if (typeof parsed.qaActive !== 'number' || typeof parsed.qaWaiting !== 'number') return null;
+    return {
+      qaActive: parsed.qaActive,
+      qaWaiting: parsed.qaWaiting,
+      qaTotal: typeof parsed.qaTotal === 'number' ? parsed.qaTotal : parsed.qaActive + parsed.qaWaiting,
+      maxQa: typeof parsed.maxQa === 'number' ? parsed.maxQa : 1,
+      ...(parsed.updatedAt ? { updatedAt: parsed.updatedAt } : {}),
+    };
+  } catch {
+    return null;
+  }
+}
+
 function latestLaunchModel(folders: string[]): string | null {
   // Newest run folder first; read worker-launch.log `model` when present.
   const sorted = [...folders].sort().reverse().slice(0, 3);
@@ -79,7 +112,8 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
       description:
         'One bounded snapshot for the visual PM widget: agents with working|idle ' +
         'state, current task, and model when known; task counts by state; goals; ' +
-        'pending delivery count. Pure read — never judges, dispatches, or mutates.',
+        'pending delivery count; QA slot pressure (qa). Pure read — never judges, ' +
+        'dispatches, or mutates.',
       inputSchema: objectSchema({}),
       handler: async (args: Record<string, unknown>) => {
         rejectUnknownFields(args, []);
@@ -123,7 +157,7 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
         } catch {
           pendingDeliveries = 0;
         }
-        return { project, agents, tasks: byState, goals, pendingDeliveries };
+        return { project, agents, tasks: byState, goals, pendingDeliveries, qa: readQaCapacity(dataRoot) };
       },
     },
   ];
