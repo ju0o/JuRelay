@@ -13247,6 +13247,33 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안",
           "title": "어려운 내용 없이 결과를 보여줘요"
+        },
+        {
+          "taskId": "JUCEIPT-VIEW-STORED-EVIDENCE",
+          "scope": "On the receipt view and today list, replace stored visible lines that still contain Evidence, the exact delivered text README 설치 안내 보완, or 실행/비교 with the existing plain Korean sentences, and add founder render tests that those strings stay off the visible surface.",
+          "files": [
+            "src/render/index.ts",
+            "src/render/today.ts",
+            "tests/receipt-render-founder.test.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면의 빠진 확인 쉬운 설명과 영어 제목의 한국어 요약"
+        },
+        {
+          "taskId": "JUCEIPT-SUMMARY-STORED-EVIDENCE",
+          "scope": "In plainStoredCheck, replace stored scan and daily lines that still contain Evidence, 실행/비교, 실행 비용을 직접 확인, 사람 검토/확인을 수행, or 금지된 명령의 영향 with plain Korean sentences, and cover those lines in the summary tests.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/scan-summary.test.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts tests/daily.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: juceipt 명령 출력(scan, daily)의 영어와 개발자 문장을 쉬운 한국어로"
         }
       ],
       "skills": {
