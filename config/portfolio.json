@@ -13948,6 +13948,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "문제 개수를 알기 쉽게 안내"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-L2-STATUS-PLAIN",
+          "scope": "In renderLevel2 of src/render/index.ts, replace 저장된 변경으로 복원 가능, 정보 없음, and 제한적 with the four Level 1 해요체 rollback sentences keyed on presentation.rollback_summary.status (available 저장된 이전 상태로 되돌릴 수 있어요, partial 일부만 되돌릴 수 있어요, unknown 되돌릴 방법이 기록에 없어요, unavailable 되돌릴 수 없어요), still show a different rollback detail inside that folded section, and replace 확인 명령 기록 없음 — 최종 보고만으로는 확인 완료로 보지 않음 with 확인 명령 기록이 없어요 — 끝냈다는 말만으로는 확인된 것으로 보지 않아요.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: 영수증 보기 화면의 판정 뜻과 빠진 확인을 쉬운 한국어로"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-INDEX-PHONE-WRAP",
+          "scope": "In dailyIndexHtml of src/daily/index.ts, add overflow-wrap:anywhere so the visible summary and the folded 원문 보기, including long receipt paths, do not scroll sideways at phone width, and assert that CSS in tests/daily-background.test.ts.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily-background.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily-background.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23: founder-ux — 화면은 휴대폰 너비에서 가로로 스크롤되면 안 된다"
         }
       ],
       "skills": {
