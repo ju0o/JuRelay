@@ -6710,7 +6710,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다."
+          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다.",
+          "title": "actl 설치 후 실행과 검사 아이콘 확인"
         },
         {
           "taskId": "ACTL-PACKAGE-CONSOLE-FLAGS",
@@ -6722,7 +6723,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:106 Windows installer build and installation of this exact commit;"
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:106 Windows installer build and installation of this exact commit;",
+          "title": "보드는 화면만 뜨고 actl은 글창도 확인"
         },
         {
           "taskId": "ACTL-GUI-REFRESH-OFF-EVIDENCE",
@@ -6734,7 +6736,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "ROOT_CAUSE_REPORT.md:137 NOT_PROVEN in this run. The test harness did not drive the GUI toggle through a real Windows desktop input channel."
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:137 NOT_PROVEN in this run. The test harness did not drive the GUI toggle through a real Windows desktop input channel.",
+          "title": "actl 화면이 저절로 바뀌지 않는지 확인"
         }
       ],
       "qaRuntime": [
@@ -13959,7 +13962,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: 영수증 보기 화면의 판정 뜻과 빠진 확인을 쉬운 한국어로"
+          "ssotEvidence": "Founder direction 2026-09-23: 영수증 보기 화면의 판정 뜻과 빠진 확인을 쉬운 한국어로",
+          "title": "영수증에 되돌릴 수 있는지 쉽게 보여요"
         },
         {
           "taskId": "JUCEIPT-DAILY-INDEX-PHONE-WRAP",
@@ -13971,7 +13975,8 @@
           "tests": [
             "npx vitest run tests/daily-background.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: founder-ux — 화면은 휴대폰 너비에서 가로로 스크롤되면 안 된다"
+          "ssotEvidence": "Founder direction 2026-09-23: founder-ux — 화면은 휴대폰 너비에서 가로로 스크롤되면 안 된다",
+          "title": "휴대폰에서 하루 요약이 옆으로 안 밀려요"
         }
       ],
       "skills": {
@@ -26199,7 +26204,8 @@
           "tests": [
             "node --test tests/no-tool-importance-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:443 실행 권한이나 도구가 없을 때는 해당 검증의 중요도에 따라 결정한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:443 실행 권한이나 도구가 없을 때는 해당 검증의 중요도에 따라 결정한다.",
+          "title": "못 확인한 일은 중요도로 결정"
         },
         {
           "taskId": "JUTELL-LOCAL-PROCESS-ONLY-PARITY",
@@ -26211,7 +26217,8 @@
           "tests": [
             "node --test tests/local-process-only-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:203 이 기능들은 127.0.0.1 또는 로컬 프로세스에서만 동작한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:203 이 기능들은 127.0.0.1 또는 로컬 프로세스에서만 동작한다.",
+          "title": "내 컴퓨터에서만 쓰고 밖으로는 안 나감"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -29240,7 +29247,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:17 | CommandCode | 환영 인사·프로필 폼, 피드백 첫 코멘트, 공동 프로젝트 알림 | Laguna S 2.1 자체 무료 모델 (실패 시 OpenCode 무료 모델) |"
+          "ssotEvidence": "README.md:17 | CommandCode | 환영 인사·프로필 폼, 피드백 첫 코멘트, 공동 프로젝트 알림 | Laguna S 2.1 자체 무료 모델 (실패 시 OpenCode 무료 모델) |",
+          "title": "도구별 모델 안내를 그대로 지키기"
         },
         {
           "taskId": "JUAI-CHECK-README-MENTOR-COUNT",
@@ -29251,7 +29259,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:20 - `#질문-답변`에 입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다."
+          "ssotEvidence": "README.md:20 - `#질문-답변`에 입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다.",
+          "title": "실무자 최대 인원 안내를 지키기"
         },
         {
           "taskId": "JUAI-CHECK-ADMIN-UNCLEAR",
@@ -29262,7 +29271,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:13 | Claude | 공지·규칙 초안 → 승인 카드, 어제 요약, 건의 정리, 스팸 관리, 서버 주인 명령 실행 | Claude Code CLI (Haiku) |"
+          "ssotEvidence": "README.md:13 | Claude | 공지·규칙 초안 → 승인 카드, 어제 요약, 건의 정리, 스팸 관리, 서버 주인 명령 실행 | Claude Code CLI (Haiku) |",
+          "title": "명령을 못 알아들으면 안내만 하기"
         },
         {
           "taskId": "JUAI-CHECK-BADGE-ROLE-MISS",
@@ -29273,7 +29283,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 그 밖에: 봇들끼리 수다(`#봇-놀이터`), 자주 묻는 질문 재사용, 답변 👍/👎, 키워드 구독, 피드백 보너스, 주간 리포트, 월간 배지, 프로젝트 목록 자동 갱신."
+          "ssotEvidence": "README.md:19 그 밖에: 봇들끼리 수다(`#봇-놀이터`), 자주 묻는 질문 재사용, 답변 👍/👎, 키워드 구독, 피드백 보너스, 주간 리포트, 월간 배지, 프로젝트 목록 자동 갱신.",
+          "title": "피드백 장인 없으면 역할 안 바꿈"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
