@@ -10204,7 +10204,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 /"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:131 A JuPlan PAUSE decision keeps V1 stable and holds V1.1 /",
+          "title": "멈춘 일은 끊긴 뒤에도 그대로 둬요"
         }
       ],
       "qaRuntime": [
@@ -22111,7 +22112,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
+          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists.",
+          "title": "자료가 맞아야 다음 결정을 진행"
         }
       ],
       "skills": {
@@ -27817,7 +27819,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신"
+          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신",
+          "title": "최근 프로젝트와 설명을 확인해요"
         },
         {
           "taskId": "JUAI-CHECK-FREE-DOWN-ALERT",
@@ -27828,7 +27831,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:40 ai.mjs AI CLI 실행·격리·무료 모델 자동 교체"
+          "ssotEvidence": "README.md:40 ai.mjs AI CLI 실행·격리·무료 모델 자동 교체",
+          "title": "무료 이용 모델이 없으면 알려요"
         },
         {
           "taskId": "JUAI-CHECK-CARD-STATUS",
@@ -27839,7 +27843,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다."
+          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다.",
+          "title": "결정된 카드에서 선택 버튼을 숨겨요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
