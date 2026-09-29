@@ -10248,6 +10248,19 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:128 After the bound is exhausted, the task is `HOLD`. The runner does not",
           "title": "재시도 한도 초과 시 새 작업 방지"
+        },
+        {
+          "taskId": "JUPLAN-AR-RECONCILE-NIGHT-DRAIN",
+          "scope": "Append an optional night-drain argument after retryQueue on reconcileRestart, applyRestartReconcile, and runRestartReconcile so a night-run drain turns only the provider-outage requeue into dispatch none and invents no Product task, while an omitted or not-draining fact and in-flight recovery stay unchanged.",
+          "files": [
+            "packages/runtime/src/agentRelayRestartReconcile.ts",
+            "packages/runtime/test/agent-relay-restart-reconcile.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:149 Night-run freeze / drain: in-flight work may finish; nothing new is dispatched."
         }
       ],
       "qaRuntime": [
