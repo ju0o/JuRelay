@@ -28315,6 +28315,39 @@
           ],
           "ssotEvidence": "layout.mjs:89 [프로필 작성] 버튼으로 SNS 닉네임과 지금 만드는 걸 등록하면 자기소개가 자동으로 올라가요.",
           "title": "질문자 정보로 답변을 맞춰줘"
+        },
+        {
+          "taskId": "JUAI-CHECK-IMPLEMENT-EMPTY",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that implement returns the existing 기능 구현 결과 없음 card when the feature commit fails and does not reach the feature_ready apply card.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "layout.mjs:199 \"○○ 기능 넣어줘 → 봇이 직접 코드 수정 → 적용 카드\""
+        },
+        {
+          "taskId": "JUAI-CHECK-CONNECT-SKIP",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that connect warns and continues when a bot token is missing or login fails, before saving that client and before throwing that no bot logged in.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:3 \"AI 봇 4명이 나눠서 운영하는 디스코드 커뮤니티 봇.\""
+        },
+        {
+          "taskId": "JUAI-CHECK-TALK-OPENER",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that startTalk throws the existing 봇 수다 첫마디를 못 만들었어요 error before posting the playground header or storing a talk session when the opener has no text.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 \"봇들끼리 수다(`#봇-놀이터`)\""
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
