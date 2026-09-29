@@ -12998,7 +12998,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts tests/pipeline.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 빠진 확인 항목의 쉬운 설명"
+          "ssotEvidence": "Founder direction 2026-09-25: 빠진 확인 항목의 쉬운 설명",
+          "title": "영수증이 쉬운 말로 보여요"
         },
         {
           "taskId": "JUCEIPT-SUMMARY-STORED-CHECK",
@@ -13012,7 +13013,8 @@
           "tests": [
             "npx vitest run tests/scan-summary.test.ts tests/daily.test.ts tests/daily-corpus.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 빠진 확인 항목의 쉬운 설명"
+          "ssotEvidence": "Founder direction 2026-09-25: 빠진 확인 항목의 쉬운 설명",
+          "title": "요약 글이 쉬운 말로 나와요"
         }
       ],
       "skills": {
@@ -24531,7 +24533,8 @@
           "tests": [
             "node --test tests/scope-conflict-ssot-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:23 이 프로젝트 내부 문서 사이에서 제품 방향이 충돌할 경우, 승인된 결정 기록이 없다면 이 문서를 제품 범위 판단의 기준으로 사용한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:23 이 프로젝트 내부 문서 사이에서 제품 방향이 충돌할 경우, 승인된 결정 기록이 없다면 이 문서를 제품 범위 판단의 기준으로 사용한다.",
+          "title": "문서가 달라도 제품 방향은 하나로"
         },
         {
           "taskId": "JUTELL-CODE-BLOCK-REQUEST-ONLY-PARITY",
@@ -24543,7 +24546,8 @@
           "tests": [
             "node --test tests/code-block-request-only-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:128 사용자가 특정 코드나 파일 설명을 요청한 경우에만 코드 블록 설명을 제공한다. 전체 작업 보고서에서 모든 코드 블록을 설명하지 않는다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:128 사용자가 특정 코드나 파일 설명을 요청한 경우에만 코드 블록 설명을 제공한다. 전체 작업 보고서에서 모든 코드 블록을 설명하지 않는다.",
+          "title": "작업 보고서는 요청한 부분만 설명"
         },
         {
           "taskId": "JUTELL-IDE-CONFIRM-BEFORE-NAME-PARITY",
@@ -24555,7 +24559,8 @@
           "tests": [
             "node --test tests/ide-confirm-before-name-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:99 현재 환경이 실제 IDE인지 확인한 경우에만 IDE라는 표현을 사용한다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:99 현재 환경이 실제 IDE인지 확인한 경우에만 IDE라는 표현을 사용한다.",
+          "title": "개발 도구라고 확인한 뒤에만 부름"
         },
         {
           "taskId": "JUTELL-SAME-SCENARIO-CONDITIONS-PARITY",
@@ -24567,7 +24572,8 @@
           "tests": [
             "node --test tests/same-scenario-conditions-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:71 같은 시나리오를 반복할 때는 가능한 한 동일한 예제 프로젝트와 동일한 요청문을 사용한다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:71 같은 시나리오를 반복할 때는 가능한 한 동일한 예제 프로젝트와 동일한 요청문을 사용한다.",
+          "title": "다시 점검할 때도 같은 예시와 요청"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -27200,7 +27206,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:16 OpenCode | 질문 답변, 스레드 대화, GitHub 코드 리뷰, 활용 예시"
+          "ssotEvidence": "README.md:16 OpenCode | 질문 답변, 스레드 대화, GitHub 코드 리뷰, 활용 예시",
+          "title": "답을 못 만들면 잠시 뒤 다시 해달라고 안내"
         },
         {
           "taskId": "JUAI-CHECK-VOTE-EARLY-RETURN",
@@ -27211,7 +27218,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 답변 👍/👎"
+          "ssotEvidence": "README.md:19 답변 👍/👎",
+          "title": "로봇이나 다른 반응은 무시하고 싫어요만 남김"
         },
         {
           "taskId": "JUAI-CHECK-ANON-FAQ-RETURN",
@@ -27222,7 +27230,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용"
+          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용",
+          "title": "이름 없는 질문은 비슷한 기존 답을 그대로 씀"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
