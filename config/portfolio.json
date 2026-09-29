@@ -25611,6 +25611,30 @@
           ],
           "ssotEvidence": "docs/TEST_SCENARIOS.md:86 기준 상태를 기록하지 못했다면 변경 출처를 완전히 구분할 수 없다고 표시한다.",
           "title": "변경 전후 차이를 정확히 확인"
+        },
+        {
+          "taskId": "JUTELL-MAIN-FILE-CAUSE-INCLUDE-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §15.1's sentence that a test file or settings file may be a main file when it is the direct cause, as one bullet under report-format.md section 3, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/main-file-cause-include-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/main-file-cause-include-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:639 다만 테스트 실패의 직접 원인이 테스트 파일에 있거나, 설정 파일이 보안·배포·의존성에 영향을 주는 경우에는 해당 파일을 주요 파일로 포함할 수 있다."
+        },
+        {
+          "taskId": "JUTELL-SCOPE-GOAL-NO-EXTRA-QUESTION-PARITY",
+          "scope": "Add PRODUCT_SCOPE §5's V0.1 goal sentence, that a non-developer understands what changed, what was confirmed, and what to check without an extra question, as one line in the README section 지원 환경과 검증 범위 immediately before the existing visual-program sentence, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            "README.md",
+            "tests/scope-goal-no-extra-question-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/scope-goal-no-extra-question-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:151 AI Agent가 작업을 완료한 뒤 비개발자가 별도의 추가 질문 없이 무엇이 바뀌었고, 무엇이 실제로 확인됐으며, 무엇을 직접 확인해야 하는지 이해할 수 있게 한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
