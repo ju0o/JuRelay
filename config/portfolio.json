@@ -22363,7 +22363,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-29"
+          "ssotEvidence": "Founder direction 2026-09-29",
+          "title": "결과와 영수증을 맞춘 뒤 결정"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-TALLY-CONFLICT-VALID-JOIN",
@@ -22374,7 +22375,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:244 a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:244 a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join",
+          "title": "결과와 영수증 확인 전 판단 보류"
         }
       ],
       "skills": {
@@ -25404,7 +25406,8 @@
           "tests": [
             "node --test tests/learning-unrelated-terms-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:158 이 설정은 필요한 개발 용어 설명을 더 제공할 수 있다. 작업과 무관한 용어를 모두 설명하지는 않는다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:158 이 설정은 필요한 개발 용어 설명을 더 제공할 수 있다. 작업과 무관한 용어를 모두 설명하지는 않는다.",
+          "title": "필요한 용어만 쉽게 설명"
         },
         {
           "taskId": "JUTELL-MAIN-FILES-UNEQUAL-WEIGHT-PARITY",
@@ -25416,7 +25419,8 @@
           "tests": [
             "node --test tests/main-files-unequal-weight-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:267 모든 변경 파일을 같은 비중으로 설명하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:267 모든 변경 파일을 같은 비중으로 설명하지 않는다.",
+          "title": "중요한 변경만 핵심으로 설명"
         },
         {
           "taskId": "JUTELL-GLOSSARY-LONG-EXPLANATION-LIMIT-PARITY",
@@ -25428,7 +25432,8 @@
           "tests": [
             "node --test tests/glossary-long-explanation-limit-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:58 별도 용어 질문이나 승인에 중요한 개념인 경우에만 긴 개념 설명을 제공한다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:58 별도 용어 질문이나 승인에 중요한 개념인 경우에만 긴 개념 설명을 제공한다.",
+          "title": "긴 설명은 필요할 때만 제공"
         },
         {
           "taskId": "JUTELL-BASELINE-ORIGIN-UNSEPARABLE-PARITY",
@@ -25440,7 +25445,8 @@
           "tests": [
             "node --test tests/baseline-origin-unseparable-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:86 기준 상태를 기록하지 못했다면 변경 출처를 완전히 구분할 수 없다고 표시한다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:86 기준 상태를 기록하지 못했다면 변경 출처를 완전히 구분할 수 없다고 표시한다.",
+          "title": "변경 전후 차이를 정확히 확인"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -28325,7 +28331,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:199 \"○○ 기능 넣어줘 → 봇이 직접 코드 수정 → 적용 카드\""
+          "ssotEvidence": "layout.mjs:199 \"○○ 기능 넣어줘 → 봇이 직접 코드 수정 → 적용 카드\"",
+          "title": "기능 구현 실패를 안내해요"
         },
         {
           "taskId": "JUAI-CHECK-CONNECT-SKIP",
@@ -28336,7 +28343,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:3 \"AI 봇 4명이 나눠서 운영하는 디스코드 커뮤니티 봇.\""
+          "ssotEvidence": "README.md:3 \"AI 봇 4명이 나눠서 운영하는 디스코드 커뮤니티 봇.\"",
+          "title": "로그인 실패에도 계속 진행해요"
         },
         {
           "taskId": "JUAI-CHECK-TALK-OPENER",
@@ -28347,7 +28355,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 \"봇들끼리 수다(`#봇-놀이터`)\""
+          "ssotEvidence": "README.md:19 \"봇들끼리 수다(`#봇-놀이터`)\"",
+          "title": "첫 대화 문장이 없으면 알려줘요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
