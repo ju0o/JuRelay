@@ -6514,7 +6514,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "목록을 못 불러오거나 ASUS가 안 닿으면 안내"
         },
         {
           "taskId": "ACTL-DISPLAY-OTHER-STATES-EVIDENCE",
@@ -6526,7 +6527,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "일하는 중·답 기다림·연결 안 됨 표시"
         },
         {
           "taskId": "ACTL-SEND-FAIL-EVIDENCE",
@@ -6538,7 +6540,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "보내기 실패 이유를 한국어로 안내"
         }
       ],
       "qaRuntime": [
@@ -13651,7 +13654,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "src/render/today.ts:101 자세한 내용은 원문 보기에 있어요; Founder direction 2026-09-25"
+          "ssotEvidence": "src/render/today.ts:101 자세한 내용은 원문 보기에 있어요; Founder direction 2026-09-25",
+          "title": "오늘 카드의 검사 내용은 원문 보기에만"
         },
         {
           "taskId": "JUCEIPT-SCAN-NO-FALSE-TEST-REASON",
@@ -13663,7 +13667,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "src/sources/summary.ts:43 /test|테스트|검증|verify/i.test(receipt.task.request_text); Founder direction 2026-09-25"
+          "ssotEvidence": "src/sources/summary.ts:43 /test|테스트|검증|verify/i.test(receipt.task.request_text); Founder direction 2026-09-25",
+          "title": "통과 기록 없음은 검사가 안 됐을 때만"
         }
       ],
       "skills": {
@@ -22630,7 +22635,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:175 Use only §2.3 to intake a same-task row whose Claude-final and Receipt references reconcile into a valid join; until then, do not record M3 GO / DEFER / KILL. Founder direction 2026-09-23"
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:175 Use only §2.3 to intake a same-task row whose Claude-final and Receipt references reconcile into a valid join; until then, do not record M3 GO / DEFER / KILL. Founder direction 2026-09-23",
+          "title": "영수증 10건은 끝났고 다음 결정은 미정"
         },
         {
           "taskId": "JUCEIPTPLAN-P0-REPORT-ROADMAP-REFRESH-CLOSED",
@@ -22641,7 +22647,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:66 MASTER_ROADMAP status was refreshed: §2 line 96 and §12 line 561 now show the M3 join-gap state."
+          "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_PLANNING_GATE_01_REPORT.md:66 MASTER_ROADMAP status was refreshed: §2 line 96 and §12 line 561 now show the M3 join-gap state.",
+          "title": "계획 상태는 이미 최신, 새 결정 없음"
         }
       ],
       "skills": {
@@ -25749,7 +25756,8 @@
           "tests": [
             "node --test tests/user-action-definitions-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:329 사용자가 화면이나 실제 동작을 직접 확인해야 한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:329 사용자가 화면이나 실제 동작을 직접 확인해야 한다.",
+          "title": "해야 할 일 뜻을 분명히 하기"
         },
         {
           "taskId": "JUTELL-EVAL-SCORE-BANDS-PARITY",
@@ -25761,7 +25769,8 @@
           "tests": [
             "node --test tests/eval-score-bands-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:561 * 6~7점: 이해 가능"
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:561 * 6~7점: 이해 가능",
+          "title": "점수 세 단계 뜻을 분명히 하기"
         },
         {
           "taskId": "JUTELL-TECH-EVAL-MUST-PASS-PARITY",
@@ -25773,7 +25782,8 @@
           "tests": [
             "node --test tests/tech-eval-must-pass-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:624 모든 항목은 필수 평가 항목이다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:624 모든 항목은 필수 평가 항목이다.",
+          "title": "하나 실패면 탈락, 오탈자는 별도"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
