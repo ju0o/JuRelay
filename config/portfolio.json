@@ -14013,6 +14013,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: founder-ux — 화면은 휴대폰 너비에서 가로로 스크롤되면 안 된다",
           "title": "휴대폰에서 하루 요약이 옆으로 안 밀려요"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-READY-NO-PRIORITY",
+          "scope": "importance()에서 판정이 받아도 됨이면 파일 변경이 5개 이상이어도 우선 확인할 영수증에 넣지 않아, 모두 받아도 됨일 때 첫 문장과 빈 우선 목록이 같이 맞게 한다.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장과 빈 화면의 다음 행동이 화면의 실제 내용과 같아야 한다"
+        },
+        {
+          "taskId": "JUCEIPT-CLI-NEXT-WHEN-NO-GAP",
+          "scope": "run과 receipt에서 빠진 확인 항목이 없을 때는 다음 줄이 위에 나온 빠진 확인을 말하지 않고, 확인 후 받기는 다음: 결과를 한 번 보고 받으세요., 일부 완료는 다음: 남은 일을 확인하고 다시 맡기세요.로 둔다.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-cli.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장과 빈 화면의 다음 행동이 화면의 실제 내용과 같아야 한다"
         }
       ],
       "skills": {
