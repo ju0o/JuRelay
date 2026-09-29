@@ -28545,6 +28545,50 @@
           ],
           "ssotEvidence": "README.md:19 \"봇들끼리 수다(`#봇-놀이터`)\"",
           "title": "첫 대화 문장이 없으면 알려줘요"
+        },
+        {
+          "taskId": "JUAI-CHECK-STARTER-POLL",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that dailyStarter throws the existing incomplete-poll error before posting when the question is empty or fewer than two answers remain, posts a 24-hour single-choice poll through CommandCode in chat, and keeps only the last 30 starter questions.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:29 node check.mjs              # 로직 점검"
+        },
+        {
+          "taskId": "JUAI-CHECK-ALERT-COOLDOWN",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that alertFounder returns before saving or sending when the same alert key is less than 3 hours old, and that the Founder DM says the same alert is sent only once every 3 hours.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:39 - `bot.mjs` 기능 전부"
+        },
+        {
+          "taskId": "JUAI-CHECK-CATCHUP-LAB",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that catchUp calls labQuestion only for lab messages newer than last_seen that are not from a bot, not system messages, and do not already have a thread.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:29 node check.mjs              # 로직 점검"
+        },
+        {
+          "taskId": "JUAI-CHECK-DM-GUILD-SKIP",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that onDirect returns when the author is a bot or the message belongs to a guild, before fetching membership or calling takeQuota.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:39 - `bot.mjs` 기능 전부"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
