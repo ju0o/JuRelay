@@ -27075,6 +27075,28 @@
           ],
           "ssotEvidence": "README.md:49 서버 전체 하루 300회",
           "title": "사용량 부족 시 자동 답변 멈추기"
+        },
+        {
+          "taskId": "JUAI-CHECK-CARD-FAIL",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that a missing or non-OPEN approval card replies 이미 처리된 카드예요 before setCard, that 승인 sets RUNNING before execute and DONE only after it resolves, and that an execute throw restores OPEN and replies 실패했어요.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-BOOTSTRAP",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that bootstrap throws before createCard when the draft has no rules, creates the first rules and welcome notice only as approval cards without say or sayLong, includes LIMITS.daily in the prompt, and that tick schedules bootstrap with no hour gate.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "layout.mjs:22 서버 규칙. AI가 제안하고 운영진이 승인한 내용만 반영돼요."
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
