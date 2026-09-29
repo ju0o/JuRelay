@@ -13186,6 +13186,31 @@
             "npx vitest run tests/scan-summary.test.ts tests/daily.test.ts"
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안, 빠진 확인 항목의 쉬운 설명"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-KEEP-KOREAN-TITLE",
+          "scope": "In displayTitle in src/render/today.ts, keep taskTitle's Korean title when it equals the request so short titles such as 끝난 작업 and 기능 만들기 stay on the today card and detail, while a raw English request still stays hidden.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 영어 작업 제목을 쉬운 한국어 요약으로"
+        },
+        {
+          "taskId": "JUCEIPT-SUMMARY-SHELL-TOKEN-PARITY",
+          "scope": "In plainStoredCheck, replace stored scan and daily check lines that contain timeout, cp, mv, cat, sed, rg, a pipe, or 2>&1 with the existing plain Korean sentence, matching the receipt view.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts tests/scan-summary.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안"
         }
       ],
       "skills": {
