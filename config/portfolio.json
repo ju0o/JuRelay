@@ -13504,6 +13504,31 @@
           ],
           "ssotEvidence": "m2/tasks/m2-013/receipt.json:688 \"명시된 사람 검토/확인을 수행하고 완료 여부를 결정\"",
           "title": "오늘 기록에서 위험한 안내를 확인"
+        },
+        {
+          "taskId": "JUCEIPT-SUMMARY-ENGLISH-WORD",
+          "scope": "In plainStoredCheck, after the existing specific Korean rewrites, replace a stored scan or daily check line that still contains a word of 4 or more English letters with 결과를 직접 확인해 주세요, and cover that case in the scan and daily tests.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/scan-summary.test.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts tests/daily.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안. 대상은 scan, daily, receipt 출력과 영수증 보기 화면."
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-MISSING-NEXT-DAILY",
+          "scope": "When juceipt receipt is run without a run directory and there is no receipt to re-render, change the why and next-step lines so they send the Founder to juceipt daily instead of juceipt scan, and update the receipt CLI test.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/receipt-cli.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-cli.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: receipt 명령 오류는 평문 한국어 3줄과 바로 할 다음 행동이어야 한다."
         }
       ],
       "skills": {
