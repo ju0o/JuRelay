@@ -12987,6 +12987,32 @@
           ],
           "ssotEvidence": "Founder 2026-09-25 '그것도 막고 계속 진행해' (token waste: a broken base makes every task rebuild).",
           "title": "기존 시험 고치기 (이미 깨져 있던 것)"
+        },
+        {
+          "taskId": "JUCEIPT-RECEIPT-L1-STORED-PLAIN",
+          "scope": "In renderLevel1, when stored 받은 결과, 빠진 확인, 중요한 영향, or 받기 전 할 일 text contains Agent, 요청 항목, 미관찰, a file name, or a shell command, show the plain Korean sentence for that linked outcome, gap, or impact instead, keep already-plain sentences, leave file names inside 원문 보기, and add a regression that the old wording is absent from Level 1.",
+          "files": [
+            "src/render/index.ts",
+            "tests/receipt-render-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/receipt-render-founder.test.ts tests/pipeline.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 빠진 확인 항목의 쉬운 설명"
+        },
+        {
+          "taskId": "JUCEIPT-SUMMARY-STORED-CHECK",
+          "scope": "In buildScanSummary and koreanSummary, when a stored 빠진 확인 or 할 일 sentence contains Agent, 요청 항목, 미관찰, a file name, or a shell command, show the plain Korean sentence for that gap instead, keep already-plain sentences such as check it and 첫 번째 확인, update the scan test that expects the Agent 과정 미관찰 line, and leave the raw request inside 원문 보기.",
+          "files": [
+            "src/sources/summary.ts",
+            "src/daily/index.ts",
+            "tests/scan-summary.test.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/scan-summary.test.ts tests/daily.test.ts tests/daily-corpus.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 빠진 확인 항목의 쉬운 설명"
         }
       ],
       "skills": {
