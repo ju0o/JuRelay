@@ -76,6 +76,10 @@ const clientSrc = [
   extractFn(html, 'coreShort'),
   extractFn(html, 'tokensOf'),
   extractFn(html, 'parenRole'),
+  extractFn(html, 'agentRole'),
+  extractFn(html, 'isActive'),
+  extractFn(html, 'activeAgents'),
+  extractFn(html, 'laneOfAgent'),
   extractFn(html, 'mapFirst'),
   extractFn(html, 'firstWord'),
   extractFn(html, 'capName'),
@@ -87,7 +91,7 @@ const clientSrc = [
 
 const client = new Function(`
 ${clientSrc}
-return { normalizeAgent, capName, shortTaskTitle, sheetUrl, applySheet };
+return { normalizeAgent, capName, shortTaskTitle, sheetUrl, applySheet, agentRole, isActive, activeAgents, laneOfAgent };
 `)();
 
 function fakeEl() {
@@ -208,8 +212,8 @@ describe('layout contract (P1-P5, H1-H4)', () => {
     assert.ok(html.includes('.cav') && html.includes('width:20px') && html.includes('height:30px'));
     assert.ok(html.includes('id="lanes"') && html.includes('lane-a') && html.includes('lane-b') && html.includes('lane-c'));
     assert.ok(html.includes('chipHtml') && html.includes('laneOfAgent'), 'lane/chip renderers present');
-    assert.ok(html.includes('id="chipsA"') && html.includes('id="chipsB"') && html.includes('id="chipsC"'));
-    for (const id of ['bCrew', 'bLadder', 'bWbs', 'stAgents', 'stReview', 'stDone', 'stGoals', 'stNote', 'headDone', 'headTotal', 'laneNa', 'laneNb', 'laneNc', 'chipsA', 'chipsB', 'chipsC', 'barA', 'barB']) {
+    assert.ok(html.includes('id="chipsA"') && html.includes('id="chipsB"') && !html.includes('id="chipsC"'), 'lanes A/B only, C removed');
+    for (const id of ['bCrew', 'bLadder', 'bWbs', 'stReview', 'stCoding', 'stDone', 'stGoals', 'stNote', 'headDone', 'headTotal', 'laneNa', 'laneNb', 'chipsA', 'chipsB', 'barA', 'barB', 'pipeRelay', 'pipeWorker', 'pipeQa', 'pipeLoop']) {
       assert.ok(html.includes('id="' + id + '"'), id);
     }
   });
@@ -241,6 +245,29 @@ describe('layout contract (P1-P5, H1-H4)', () => {
     assert.ok(html.includes('id="selfcheck"') && html.includes('renderSelfcheck'), 'selfcheck block');
     assert.ok(html.includes('80px') || html.includes('want 80px'), 'sheetW sanity target');
     assert.ok(html.length < 100 * 1024, 'bundle <100KB, got ' + html.length);
+  });
+  it('F1 pipeline + 2 lanes + active filter (no resting)', () => {
+    assert.ok(!html.includes('resting') && !html.includes('쉬는 중'), 'resting fully removed');
+    assert.ok(client.agentRole({ workerId: 'qa-x' }) === 'qa');
+    assert.ok(client.agentRole({ workerId: 'builder-x' }) === 'worker');
+    assert.ok(client.isActive({ workerId: 'qa-x', state: 'idle' }) === true, 'idle QA still active');
+    assert.ok(client.isActive({ workerId: 'builder-x', state: 'idle' }) === false, 'idle builder excluded');
+    assert.ok(client.isActive({ workerId: 'builder-x', state: 'working' }) === true);
+    assert.deepEqual(
+      client.activeAgents([
+        { workerId: 'qa-a', state: 'idle' },
+        { workerId: 'builder-b', state: 'working' },
+        { workerId: 'builder-c', state: 'idle' },
+      ]).map(a => a.workerId),
+      ['qa-a', 'builder-b']);
+    assert.equal(client.laneOfAgent({ workerId: 'qa-a', state: 'idle' }), 'A');
+    assert.equal(client.laneOfAgent({ workerId: 'builder-b', state: 'working' }), 'B');
+    assert.equal(client.laneOfAgent({ workerId: 'builder-c', state: 'idle' }), null);
+    assert.ok(html.includes('코드 작성 중'), 'working ko relabeled');
+    assert.ok(html.includes('id="pipe"') && html.includes('pipeRelay') && html.includes('pipeWorker') && html.includes('pipeQa') && html.includes('pipeLoop'), 'pipeline flow present');
+    assert.ok(html.includes('noWorking') || html.includes('지금 코드를 작성하는 에이전트 없음'), 'empty-lane copy present');
+    assert.ok(html.includes('function agentRole') && html.includes('function isActive') && html.includes('function activeAgents'), 'F1 state fns present');
+    assert.ok(html.includes('stCoding') && !html.includes('stAgents'), 'strip: coding in, agents out');
   });
   it('dual CSP meta (ui.csp + legacy openai/widgetCSP)', () => {
     const meta = m.widgetResourceMeta('https://mcp.relay-agent.site/widgets/crew');

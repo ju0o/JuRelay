@@ -87,6 +87,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .lane-a { background:#1e1a12; border-color:#5a4a1e; }
   .lane-b { background:#141d29; border-color:#2c4a6e; }
   .lane-c { background:#161a21; border-color:#3d3466; }
+  /* F1 pipeline flow */
+  .pipe { display:flex; flex-wrap:wrap; align-items:stretch; gap:4px; margin:6px 0 2px; }
+  .pnode { flex:1; background:#161a21; border:1px solid #262c37; border-radius:8px; padding:4px 2px; text-align:center; min-width:0; }
+  .pnode b { display:block; font-size:12px; }
+  .pnode span { font-size:10px; color:var(--muted); white-space:nowrap; }
+  .edge { align-self:center; color:var(--muted); font-size:12px; flex:none; }
+  .ploop { flex-basis:100%; text-align:center; font-size:10px; color:var(--muted); margin-top:2px; }
+  .ploop.hot { color:#f0b429; font-weight:700; }
+  .lane-empty { font-size:11px; color:var(--muted); padding:4px 2px; }
   .lane-desc { font-size:10px; color:var(--muted); }
   .lane-n { margin-left:auto; font-size:14px; font-weight:700; }
   .bar { height:3px; border-radius:2px; background:#262c37; margin:6px 0; overflow:hidden; }
@@ -198,12 +207,22 @@ const WIDGET_HTML = `<!DOCTYPE html>
       <span class="lang"><button id="langKo" class="on">한국어</button><button id="langEn">EN</button></span>
       <span id="sub" class="subhide"></span>
     </div>
+    <div class="pipe" id="pipe">
+      <div class="pnode"><b>PM</b><span data-i="pmYou">이 대화</span></div>
+      <span class="edge">→</span>
+      <div class="pnode"><b>Agent Relay</b><span id="pipeRelay">0 delivery</span></div>
+      <span class="edge">→</span>
+      <div class="pnode"><b>Worker</b><span id="pipeWorker">0 active</span></div>
+      <span class="edge">→</span>
+      <div class="pnode"><b>QA</b><span id="pipeQa">0 review</span></div>
+      <div class="ploop" id="pipeLoop">↩ 확인 후 계속</div>
+    </div>
     <div class="env" id="env">
       <div class="env-title">지금 이 환경</div>
       <div class="env-row">
         <div class="env-nums">
-          <div class="eseg blue" id="sgAgents"><b id="stAgents">0</b><span>에이전트</span></div>
-          <div class="eseg amber" id="sgReview"><b id="stReview">0</b><span>검토중</span></div>
+          <div class="eseg amber" id="sgReview"><b id="stReview">0</b><span>검사 중</span></div>
+          <div class="eseg blue" id="sgCoding"><b id="stCoding">0</b><span>코드 작성 중</span></div>
           <div class="eseg green" id="sgDone"><b id="stDone">0</b><span>완료</span></div>
           <div class="eseg muted" id="sgGoals"><b id="stGoals">0</b><span>목표</span></div>
         </div>
@@ -231,10 +250,6 @@ const WIDGET_HTML = `<!DOCTYPE html>
           <div class="lane-head"><span class="lane-title">작업 중</span><span class="lane-desc">지금 코드를 쓰는 중</span><span class="lane-n" id="laneNb">0</span></div>
           <div class="bar"><i id="barB" style="width:0%"></i></div>
           <div class="chips" id="chipsB"></div>
-        </div>
-        <div class="lane lane-c">
-          <div class="lane-head"><span class="lane-title">휴식</span><span class="lane-desc">토큰 대기</span><span class="lane-n" id="laneNc">0</span></div>
-          <div class="chips" id="chipsC"></div>
         </div>
       </div>
     </div>
@@ -333,7 +348,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var lastDeliveries = [];
       var lastDash = null;
       var spriteNote = '';
-      var stAgentsEl = document.getElementById('stAgents');
+      var stCodingEl = document.getElementById('stCoding');
       var stReviewEl = document.getElementById('stReview');
       var stDoneEl = document.getElementById('stDone');
       var stGoalsEl = document.getElementById('stGoals');
@@ -437,6 +452,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
         cardsEl.innerHTML = html;
         var nWait = list.length - doing;
+        pipeNWait = nWait;
+        pipeDoing = doing;
+        updatePipe();
         setNum(stReviewEl, doing);
         setNum(stDoneEl, doneCount);
         setSeg('sgReview', doing, 'eseg amber');
@@ -474,7 +492,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
               reviewReady: 'PM 검토 준비됨', waking: 'GPT 깨우는 중…', wakeSent: '전송됨 — GPT에 알림',
               wakeFail: '전송 실패', initFail: '시작 실패', wait: '대기 중', doing: '검토 중',
               done: '완료', sWait: '대기', sDoing: '검토 요청', sDone: '판정 완료',
-              working: '일하는 중', resting: '쉬는 중', qaDoing: '검사하는 중',
+              working: '코드 작성 중', qaDoing: '검사하는 중',
+              noWorking: '지금 코드를 작성하는 에이전트 없음',
+              autoResume: '검사가 끝나면 자동으로 코딩이 다시 시작됩니다',
+              pmYou: '이 대화',
               spriteFail: '이미지 실패', spriteLoadFail: '스프라이트 로드 실패', spritesOk: '스프라이트', spritesFail: '스프라이트 실패',
               modelUnknown: '모델 정보 없음',
               remaining: '남은 일', goals: '목표', noAgents: '일하는 AI 없음',
@@ -483,7 +504,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
               reviewReady: 'PM review ready', waking: 'Waking GPT…', wakeSent: 'Wake sent — GPT notified',
               wakeFail: 'Wake failed', initFail: 'Initialization failed', wait: 'Waiting', doing: 'Reviewing',
               done: 'Done', sWait: 'Wait', sDoing: 'Review', sDone: 'Judged',
-              working: 'working', resting: 'resting', qaDoing: 'inspecting',
+              working: 'working', qaDoing: 'inspecting',
+              noWorking: 'No agent is writing code right now',
+              autoResume: 'Coding resumes automatically after review',
+              pmYou: 'This chat',
               spriteFail: 'sprite failed', spriteLoadFail: 'sprite load failed', spritesOk: 'sprites', spritesFail: 'sprites failed',
               modelUnknown: 'model unknown',
               remaining: 'Remaining', goals: 'Goals', noAgents: 'No active AI',
@@ -559,14 +583,20 @@ const WIDGET_HTML = `<!DOCTYPE html>
         el.style.animation = 'play ' + dur + 's steps(' + n + ') infinite';
         return true;
       }
+      function agentRole(a) {
+        return /qa/i.test(a.workerId || '') ? 'qa' : 'worker';
+      }
+      function isActive(a) {
+        return a.state === 'working' || agentRole(a) === 'qa';
+      }
+      function activeAgents(list) {
+        return (list || []).filter(isActive);
+      }
       function agentSheet(a) {
-        if (/qa/i.test(a.workerId || '')) return 'qa';
-        if (a.state === 'working') return 'dig';
-        return 'idle';
+        return agentRole(a) === 'qa' ? 'qa' : 'dig';
       }
       function agentStateLabel(a) {
-        if (/qa/i.test(a.workerId || '')) return t('qaDoing');
-        return a.state === 'working' ? t('working') : t('resting');
+        return agentRole(a) === 'qa' ? t('qaDoing') : t('working');
       }
       // ---- tabs (guarded: a tab failure must never kill init) ----
       try {
@@ -852,7 +882,26 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
       function laneOfAgent(a) {
         if (/qa/i.test((a && a.workerId) || '')) return 'A';
-        return (a && a.state) === 'working' ? 'B' : 'C';
+        return (a && a.state) === 'working' ? 'B' : null;
+      }
+      function setPipeText(id, text) {
+        try {
+          var el = document.getElementById(id);
+          if (el) el.textContent = text;
+        } catch (e) {}
+      }
+      // Shared pipe state: renderBoard owns deliveries, renderAgents owns workers.
+      var pipeNWait = 0;
+      var pipeDoing = 0;
+      var pipeWorking = 0;
+      function updatePipe() {
+        try {
+          setPipeText('pipeRelay', pipeNWait + ' delivery');
+          setPipeText('pipeWorker', pipeWorking + ' active');
+          setPipeText('pipeQa', pipeDoing + ' review');
+          var loop = document.getElementById('pipeLoop');
+          if (loop) loop.className = 'ploop' + (pipeDoing > 0 ? ' hot' : '');
+        } catch (e) {}
       }
       function chipHtml(a) {
         var norm = normalizeAgent(a);
@@ -886,28 +935,40 @@ const WIDGET_HTML = `<!DOCTYPE html>
         } catch (e) {}
       }
       function renderAgents(dash) {
-        var agents = (dash && dash.agents) || [];
+        var agents = activeAgents((dash && dash.agents) || []);
+        var working = 0;
+        for (var w = 0; w < agents.length; w++) {
+          if (agents[w] && agents[w].state === 'working') working++;
+        }
+        pipeWorking = working;
         setBadge('bCrew', agents.length);
-        setNum(stAgentsEl, agents.length);
-        setSeg('sgAgents', agents.length, 'eseg blue');
-        var buckets = { A: [], B: [], C: [] };
+        setNum(stCodingEl, working);
+        setSeg('sgCoding', working, 'eseg blue');
+        var buckets = { A: [], B: [] };
         for (var i = 0; i < agents.length; i++) {
           var a = agents[i] || {};
           try {
-            buckets[laneOfAgent(a)].push(chipHtml(a));
+            var lane = laneOfAgent(a);
+            if (lane) buckets[lane].push(chipHtml(a));
           } catch (e) { /* one bad agent never kills the lane */ }
         }
-        var lanes = ['A', 'B', 'C'];
-        var boxes = ['chipsA', 'chipsB', 'chipsC'];
-        var counts = ['laneNa', 'laneNb', 'laneNc'];
+        var lanes = ['A', 'B'];
+        var boxes = ['chipsA', 'chipsB'];
+        var counts = ['laneNa', 'laneNb'];
         for (var l = 0; l < lanes.length; l++) {
           try {
             var box = document.getElementById(boxes[l]);
-            if (box) box.innerHTML = buckets[lanes[l]].join('');
+            if (box) {
+              box.innerHTML = buckets[lanes[l]].join('')
+                || (lanes[l] === 'B'
+                  ? '<div class="lane-empty">' + esc(t('noWorking')) + '<br>' + esc(t('autoResume')) + '</div>'
+                  : '');
+            }
           } catch (e) {}
           setLaneCount(counts[l], buckets[lanes[l]].length);
         }
         paintLaneAvatars(document);
+        updatePipe();
         var goals = (dash && dash.goals) || [];
         var gTotal = goals.length;
         var gOpen = 0;
@@ -974,15 +1035,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
           var lanes = document.querySelectorAll('.lane').length;
           var envOk = !!document.getElementById('env');
           var laneSum = 0;
-          ['laneNa', 'laneNb', 'laneNc'].forEach(function (id) {
+          ['laneNa', 'laneNb'].forEach(function (id) {
             try {
               var n = parseInt((document.getElementById(id) || {}).textContent || '0', 10);
               if (!isNaN(n)) laneSum += n;
             } catch (e) {}
           });
-          var stripN = 0;
-          try { stripN = parseInt((document.getElementById('stAgents') || {}).textContent || '0', 10); } catch (e) {}
-          if (isNaN(stripN)) stripN = 0;
+          var badgeN = 0;
+          try { badgeN = parseInt((document.getElementById('bCrew') || {}).textContent || '0', 10); } catch (e) {}
+          if (isNaN(badgeN)) badgeN = 0;
           var sheetW = '';
           try {
             var sp = document.querySelector('.crew-sp');
@@ -1004,7 +1065,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
             'avatar loaded: ' + (av.length ? av.join(' ') : 'none yet'),
             'lane count: ' + lanes,
             'env strip exists: ' + envOk,
-            'count consistency: strip ' + stripN + ' vs lanes ' + laneSum + ' -> ' + (stripN === laneSum ? 'OK' : 'MISMATCH'),
+            'count consistency: badge ' + badgeN + ' vs lanes ' + laneSum + ' -> ' + (badgeN === laneSum ? 'OK' : 'MISMATCH'),
             'sheetW sanity: ' + (sheetW || '?') + (sheetW === '80px' ? ' OK' : ' (want 80px)'),
             'external image load: ' + ext,
             'bundle size: ' + bytes + ' chars'
