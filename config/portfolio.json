@@ -22286,6 +22286,28 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join",
           "title": "영수증은 진행, 오늘 가치는 답 맞기 전 대기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-M3-HOLD-VALID-JOIN",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md change only the §1 M3 state cell (line 43) from JOIN MISSING to VALID JOIN MISSING and the checked §4.3 hold line (line 147) so both keep UNDECIDED and a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:142 A later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join; Founder direction 2026-09-29"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-CLOSEOUT-MAPPING-VALID-JOIN",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md change only the Section 7 Proposed mapping row (line 243) and Proposed mapping basis row (line 244) so they keep UNDECIDED and state that a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:85 Add a row only when the same task key identifies both a Claude final and a Receipt and those references reconcile into a valid join; Founder direction 2026-09-29"
         }
       ],
       "skills": {
