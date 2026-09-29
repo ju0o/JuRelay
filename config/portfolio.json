@@ -10246,7 +10246,8 @@
             "pnpm --filter @juplan/runtime test test/agent-relay-restart-reconcile.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:128 After the bound is exhausted, the task is `HOLD`. The runner does not"
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:128 After the bound is exhausted, the task is `HOLD`. The runner does not",
+          "title": "재시도 한도 초과 시 새 작업 방지"
         }
       ],
       "qaRuntime": [
@@ -13401,7 +13402,8 @@
           "tests": [
             "npx vitest run tests/daily.test.ts tests/scan-summary.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 대상: juceipt 명령 출력(scan, daily, receipt)과 영수증 보기 화면 — 개발자 글자는 원문 보기 안"
+          "ssotEvidence": "Founder direction 2026-09-25: 대상: juceipt 명령 출력(scan, daily, receipt)과 영수증 보기 화면 — 개발자 글자는 원문 보기 안",
+          "title": "명령어가 요약에 드러나지 않게"
         },
         {
           "taskId": "JUCEIPT-TODAY-FINISH-LABEL",
@@ -13413,7 +13415,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts test/today-page.test.ts test/today-two-pane.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면은 맨 위 한 문장과 쉬운 한국어로, 누가 했는지와 끝난 시각을 바로 알 수 있게"
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면은 맨 위 한 문장과 쉬운 한국어로, 누가 했는지와 끝난 시각을 바로 알 수 있게",
+          "title": "오늘 영수증에 누가 언제 끝냈는지 표시"
         }
       ],
       "skills": {
@@ -22296,7 +22299,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:142 A later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join; Founder direction 2026-09-29"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:142 A later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join; Founder direction 2026-09-29",
+          "title": "결제 기능 출시 판단 보류"
         },
         {
           "taskId": "JUCEIPTPLAN-M3-CLOSEOUT-MAPPING-VALID-JOIN",
@@ -22307,7 +22311,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:85 Add a row only when the same task key identifies both a Claude final and a Receipt and those references reconcile into a valid join; Founder direction 2026-09-29"
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:85 Add a row only when the same task key identifies both a Claude final and a Receipt and those references reconcile into a valid join; Founder direction 2026-09-29",
+          "title": "결제 사용 가치 판단 보류"
         }
       ],
       "skills": {
@@ -25324,7 +25329,8 @@
           "tests": [
             "node --test tests/minimal-reduce-list-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:144 이 설정에서는 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동을 유지하고 내부 변화·주요 파일·변경 의미 설명·용어·일반 위험도 설명과 다음 행동 제안은 기본적으로 줄인다. 실패와 중요한 미확인 사항은 유지한다. `requestBuilder`는 보고서와 무관하므로 이 설정에서도 켜져 있다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:144 이 설정에서는 변경 요약, 사용자 변화, 검증 결과, 필요한 사용자 행동을 유지하고 내부 변화·주요 파일·변경 의미 설명·용어·일반 위험도 설명과 다음 행동 제안은 기본적으로 줄인다. 실패와 중요한 미확인 사항은 유지한다. `requestBuilder`는 보고서와 무관하므로 이 설정에서도 켜져 있다.",
+          "title": "필요한 변화만 간단히 안내"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
