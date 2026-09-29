@@ -6656,6 +6656,43 @@
             "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-REMOTE-ACTL-ARGV",
+          "scope": "Factor the current ssh argv for remote discover --json, version --json, and extract into pure helpers those functions call, record the three commands as OBSERVED with no ssh spawned, and mark live Windows runs NOT_PROVEN.",
+          "files": [
+            "src/actl/core/remote.py",
+            "src/actl/core/remote_actl_argv_evidence.py",
+            "tests/test_remote_actl_argv_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-RESULT-CLASS-EVIDENCE",
+          "scope": "Record offline send-result classes for a failed send, a still-pending result, and a new result with their Korean labels and clipboard permission as OBSERVED, reset correlation state around the recheck, and leave a live Windows copy NOT_PROVEN.",
+          "files": [
+            "src/actl/core/result_class_evidence.py",
+            "tests/test_result_class_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:11 에이전트에 입력을 보내고 완료된 결과를 추출해"
+        },
+        {
+          "taskId": "ACTL-INSTALL-CLIENT-RECHECK",
+          "scope": "Read packaging/JuActl.iss and scripts/install.ps1 and record the absence of Stop-Process, taskkill, and CloseApplications as OBSERVED source text, with a live MainPC client stop and install left NOT_PROVEN.",
+          "files": [
+            "src/actl/core/install_client_recheck.py",
+            "tests/test_install_client_recheck.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다."
         }
       ],
       "qaRuntime": [
