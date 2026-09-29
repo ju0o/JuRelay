@@ -10164,6 +10164,32 @@
           ],
           "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch.",
           "title": "재시작이 애매하면 재시도 중단"
+        },
+        {
+          "taskId": "JUPLAN-AR-QA-RETRY",
+          "scope": "Append an optional TaskPacketRetryQueue after restartQueue on decideQaTestGate so a REQUEST_CHANGES verdict past the three-attempt bound is HOLD with dispatch none and no invented Product task, while an omitted or not-past-bound fact keeps same-task retry and a passing ACCEPT still promotes.",
+          "files": [
+            "packages/runtime/src/agentRelayQaGate.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- test/agent-relay-qa-gate.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:147 Independent QA returned FOUNDER_GATE, or REQUEST_CHANGES after the retry bound."
+        },
+        {
+          "taskId": "JUPLAN-AR-RECONCILE-FOUNDER-GATE",
+          "scope": "Append an optional TaskPacketFounderGate after transportHold on reconcileRestart, applyRestartReconcile, and runRestartReconcile so a stopped lane turns the provider-outage requeue into dispatch none and invents no Product task, while an omitted fact or DEC-G012 isolation keeps that single requeue and does not call decideQaTestGate.",
+          "files": [
+            "packages/runtime/src/agentRelayRestartReconcile.ts",
+            "packages/runtime/test/agent-relay-restart-reconcile.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test -- test/agent-relay-restart-reconcile.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:161 A Founder Gate stops only this lane."
         }
       ],
       "qaRuntime": [
