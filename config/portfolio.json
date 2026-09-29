@@ -27807,6 +27807,39 @@
           ],
           "ssotEvidence": "README.md:46 OpenCode·Codex·CommandCode는 bwrap 임시 홈에서만 실행; README.md:40 무료 모델 자동 교체",
           "title": "안전하게 답변 이어받기"
+        },
+        {
+          "taskId": "JUAI-CHECK-PROJECTS-WINDOW",
+          "scope": "Add check.mjs assertions only that refreshProjects reads showcase threads from the last 180 days, that daysAgo says 오늘 for the same day and N일 전 after that, and that a blank starter first line becomes 설명 없음.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:19 프로젝트 목록 자동 갱신"
+        },
+        {
+          "taskId": "JUAI-CHECK-FREE-DOWN-ALERT",
+          "scope": "Add check.mjs assertions only that bot.mjs registers onAllFreeModelsDown to alert the Founder with the existing Korean all-free-models-down sentence, and that alertFounder returns before sending when that same key was stored within 3 hours.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:40 ai.mjs AI CLI 실행·격리·무료 모델 자동 교체"
+        },
+        {
+          "taskId": "JUAI-CHECK-CARD-STATUS",
+          "scope": "Add check.mjs assertions only that cardView drops the button row and sets the footer when a status is present, so a decided approval card no longer shows 승인, 보류, or 더 생각.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다."
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
