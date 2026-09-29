@@ -25130,6 +25130,54 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:85 사용자가 답변 자체를 원하지 않는다고 명확히 요청했더라도 안전, 실패, 데이터 손실 가능성 또는 비밀정보 노출 문제가 발견되면 해당 내용은 알린다.",
           "title": "답을 거절해도 위험한 일은 알림"
+        },
+        {
+          "taskId": "JUTELL-EMPTY-REPORT-ITEM-PARITY",
+          "scope": "Add BEGINNER_REPORT_SPEC §4's sentence 내용이 없는 항목은 짧게 표시하거나 생략할 수 있다 and the example 사용자에게 달라지는 점: 없음 as one line under report-format.md section 3, plus an offline node:test that both strings stay in the spec and the reference.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/empty-report-item-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/empty-report-item-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:106 내용이 없는 항목은 짧게 표시하거나 생략할 수 있다."
+        },
+        {
+          "taskId": "JUTELL-GLOSSARY-DEFINITION-FIRST-PARITY",
+          "scope": "Add GLOSSARY_POLICY §4.2's sentence 일반 정의를 먼저 쓰고, 프로젝트 역할을 확인한 경우에만 다음 문장으로 현재 역할을 설명한다 to glossary-ko.md section 7 without a new heading, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/glossary-definition-first-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/glossary-definition-first-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:89 일반 정의를 먼저 쓰고, 프로젝트 역할을 확인한 경우에만 다음 문장으로 현재 역할을 설명한다."
+        },
+        {
+          "taskId": "JUTELL-EVAL-PREVIEW-INVALID-PARITY",
+          "scope": "Add TEST_SCENARIOS §4.6's sentence 평가자가 기대 답변을 먼저 확인했다면 해당 평가는 유효한 비개발자 이해 평가로 인정하지 않는다 as one line under the 기대 답변 사전 확인 여부 field in tests/results/TEST_RUN_TEMPLATE.md, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            "tests/results/TEST_RUN_TEMPLATE.md",
+            "tests/eval-preview-invalid-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/eval-preview-invalid-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:130 평가자가 기대 답변을 먼저 확인했다면 해당 평가는 유효한 비개발자 이해 평가로 인정하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-FORCED-SAFETY-FACTS-PARITY",
+          "scope": "Add the five FEATURE_CONFIGURATION §6 bullets still missing from feature-registry.md, in this order: 데이터 손실 가능성, 요청 범위를 벗어난 변경, 작업 보류 사유, 높은 위험 또는 위험도 판정 불가, 안전·데이터 손실과 관련된 사용자 행동, as one bullet directly under the existing fact-only safety sentence, plus an offline node:test that those five strings stay in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/forced-safety-facts-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/forced-safety-facts-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:97 다음 정보는 관련 Feature가 꺼져 있어도 짧게 보고한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
