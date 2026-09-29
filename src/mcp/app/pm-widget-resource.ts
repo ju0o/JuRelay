@@ -605,8 +605,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
         setNum(stDoneEl, doneCount);
         setSeg('sgReview', doing, 'eseg amber');
         setSeg('sgDone', doneCount, 'eseg green');
-        if (headDoneEl) headDoneEl.textContent = String(doneCount);
-        if (headTotalEl) headTotalEl.textContent = String(list.length);
+        setNum(headDoneEl, doneCount);
+        if (headTotalEl) headTotalEl.textContent = String(list.length);   // list.length is always a number
         // "무엇을 하고 있나": arrivals first, then review, else waiting.
         try {
           var noteText = nWait > 0
@@ -1167,13 +1167,18 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (el) el.textContent = String(n);
         } catch (e) {}
       }
+      // 0 is a real value and must render as "0". null/undefined mean "not measured yet" and must not
+      // reach the screen as the words "null"/"undefined" — String(n) used to do exactly that, which is
+      // how a count could look like it was missing.
+      function hasCount(n) { return typeof n === 'number' && isFinite(n); }
       function setNum(el, n) {
-        try { if (el) el.textContent = String(n); } catch (e) {}
+        try { if (el) el.textContent = hasCount(n) ? String(n) : '—'; } catch (e) {}
       }
       function setSeg(id, n, base) {
         try {
           var el = document.getElementById(id);
-          if (el) el.className = (base || 'seg') + (n ? '' : ' dim');
+          // Dim only when there is genuinely nothing to show. A measured 0 keeps its normal colour.
+          if (el) el.className = (base || 'seg') + (hasCount(n) && n === 0 ? ' dim' : '');
         } catch (e) {}
       }
       function laneOfAgent(a) {
