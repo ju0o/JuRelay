@@ -16187,6 +16187,28 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23: Add one or two offline tests that run scripts/status-board.mjs on fixtures and check each Korean sentence in the getting-started guidance table is what the board prints.",
           "title": "화면 설명을 실제 결과와 맞춥니다"
+        },
+        {
+          "taskId": "JUCONTROLER-E2E-FAILURE-STEPS-MATCH",
+          "scope": "Add one offline test that reads every steps entry from the docs/getting-started.md e2e json example, forces scripts/e2e.sh to fail at run-status-board, and asserts the real JSON steps match those names and labels with ok false from that step on and message using that step's label.",
+          "files": [
+            "tests/e2e-failure-steps-doc-sync.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/e2e-failure-steps-doc-sync.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:32 하나가 실패하면 그 뒤 단계는 실행하지 않고 ok: false로 적습니다"
+        },
+        {
+          "taskId": "JUCONTROLER-GUIDE-FIVE-ENGLISH-LINES",
+          "scope": "Add one offline test that runs scripts/status-board.mjs for the five getting-started errors (missing file, bad JSON, invalid registry, unknown id, unclassified) and asserts each exits 1 with the table's Korean first stderr line plus a second English line, including the paragraph's Unable to read project registry and Unknown projectId examples and the fallback error text.",
+          "files": [
+            "tests/getting-started-five-english-lines.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/getting-started-five-english-lines.test.mjs"
+          ],
+          "ssotEvidence": "docs/getting-started.md:249 아래 다섯 가지 오류는 한국어 줄 바로 아래에 영어 줄이 하나 더 나옵니다"
         }
       ],
       "qaRuntime": [
