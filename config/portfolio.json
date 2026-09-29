@@ -13705,6 +13705,32 @@
           ],
           "ssotEvidence": "src/sources/summary.ts:43 /test|테스트|검증|verify/i.test(receipt.task.request_text); Founder direction 2026-09-25",
           "title": "통과 기록 없음은 검사가 안 됐을 때만"
+        },
+        {
+          "taskId": "JUCEIPT-CLI-NEXT-ON-SCREEN",
+          "scope": "In the default success output of run, receipt, scan, and daily, stop telling the Founder to open a receipt screen or summary whose path is hidden: set receiptNextAction to ready '다음: 지금 하실 일은 없어요.', review_required '다음: 위에 나온 빠진 확인을 보고 받으세요.', partial '다음: 위에 나온 빠진 확인을 보고 다시 맡기세요.', failed and cancelled '다음: 받지 말고 다시 맡기세요.', unknown '다음: 받기 전에 결과를 직접 확인하세요.'; on run and receipt, when the state is not ready and remaining_items is non-empty, print one '빠진 확인:' line right after the verdict, using the first item text only when it has no 4+ letter English word, file name, or shell command, otherwise the receipt-view kind sentence without the raw subject (비용을 확인할 수 없음 becomes 비용을 확인할 수 없어요); change the scan all-ready next line to '다음: 지금 하실 일은 없어요.' and the scan review next line to '다음: 확인이 필요한 작업부터 살펴보세요.'; change the daily review next line to '다음: 「제목」부터 확인하세요' while keeping the 나머지 count; leave the empty-scan next line, --show-raw paths, and '다시 열어 보세요' unchanged.",
+          "files": [
+            "src/cli/main.ts",
+            "tests/daily-cli.test.ts",
+            "tests/receipt-cli.test.ts",
+            "tests/sources-scan-cli.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-FAILED-LINES",
+          "scope": "In renderTodayList, when a receipt is failed, show the receipt view's three plain Korean lines outside 원문 보기 — 무엇이 실패했어요 with the failed action label (file.read 파일 확인, file.create 파일 만들기, file.modify 파일 변경, file.write 파일 저장, command.execute 명령 실행, external.request 외부 요청, cost.observe 비용 확인, repository.commit 변경 저장, otherwise 요청한 작업), 왜 실패했어요: 실행 중 문제가 생겨 끝까지 확인하지 못했어요, and 다음 할 일 using the same four branches as renderLevel1 — and do not show that block for ready or cancelled.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25"
         }
       ],
       "skills": {
