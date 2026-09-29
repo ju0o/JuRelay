@@ -26463,6 +26463,30 @@
           ],
           "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:71 사용자가 “코드만 수정하고 보고서는 작성하지 말라”고 요청한 경우에는 긴 보고서를 생성하지 않는다.",
           "title": "일만 부탁하면 긴 보고서를 안 만들기"
+        },
+        {
+          "taskId": "JUTELL-CONFIG-ERROR-REDACT-PARITY",
+          "scope": "Add FEATURE_CONFIGURATION §7's sentence 설정 오류 보고에는 설정 파일 전체나 값이 포함될 수 있는 내용을 출력하지 않는다. 예를 들어 glossarry처럼 지원하지 않는 이름만 표시할 수 있다. after the feature-registry 설정 오류 처리 table, leaving the existing eight error rows and the balanced fallback sentence unchanged, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/feature-registry.md",
+            "tests/config-error-redact-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/config-error-redact-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:126 설정 오류 보고에는 설정 파일 전체나 값이 포함될 수 있는 내용을 출력하지 않는다. 예를 들어 `glossarry`처럼 지원하지 않는 이름만 표시할 수 있다."
+        },
+        {
+          "taskId": "JUTELL-EVIDENCE-PHRASE-NO-REPEAT-PARITY",
+          "scope": "Add GLOSSARY_POLICY §5's bullet 모든 파일 설명에 같은 근거 문구를 반복하지 않음 as one bullet under report-format.md section 3, leaving the existing 중요한 파일 역할 주장에는 가능한 경우 근거를 연결함 bullet in place, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/evidence-phrase-no-repeat-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/evidence-phrase-no-repeat-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:108 모든 파일 설명에 같은 근거 문구를 반복하지 않음"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
