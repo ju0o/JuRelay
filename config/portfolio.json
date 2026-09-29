@@ -6842,6 +6842,42 @@
           ],
           "ssotEvidence": "BACKLOG.md:34 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
           "title": "보내는 중인 작업을 알려줘요"
+        },
+        {
+          "taskId": "ACTL-DOCTOR-TEXT-EVIDENCE",
+          "scope": "Add a pure source recheck that only reads src/actl/cli.py and records the doctor header '컴퓨터와 AI 연결 상태를 점검했어요 — 아래 결과를 확인해 주세요.' plus both footers '모든 항목을 확인했어요' and '일부 항목을 확인하지 못했어요 — 위 ✗ 표시를 확인해 주세요' as OBSERVED, with a live Windows doctor --ssh run as NOT_PROVEN, without calling _doctor, ssh, or tmux and without changing the JSON ok contract.",
+          "files": [
+            "src/actl/core/doctor_text_evidence.py",
+            "tests/test_doctor_text_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:244 That old installation is not evidence for the new transport."
+        },
+        {
+          "taskId": "ACTL-DISCOVER-KO-LINE",
+          "scope": "Add a pure recheck that calls cli._discover with one hand-built matched Codex detection and one agent-less detection, records the printed surface lines 'Codex · Team · 연결됨' and '알 수 없는 AI · 기본 폴더 · 연결 안 됨' plus '보기만 했어요 — 연결하려면 actl discover --apply' as OBSERVED, keeps pane ids only on the 원문 보기 line, and records a live Windows discover --ssh run as NOT_PROVEN, without calling discover(), ssh, or tmux.",
+          "files": [
+            "src/actl/core/discover_line_evidence.py",
+            "tests/test_discover_line_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-SEND-PRECHECK-EVIDENCE",
+          "scope": "Add a pure source recheck that records the Tk send notices '에이전트를 먼저 선택하세요' and '보낼 내용을 입력하세요' from src/actl/gui.py and the approval sentence '가 승인을 기다리고 있어요. 보내면 승인 창에 들어가요 — 화면에서 직접 확인하세요' from src/actl/core/activity.py as OBSERVED, with a live Windows send click as NOT_PROVEN, without calling send_blocked_reason, observe_activity, ssh, or tmux.",
+          "files": [
+            "src/actl/core/send_gate_evidence.py",
+            "tests/test_send_gate_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
         }
       ],
       "qaRuntime": [
