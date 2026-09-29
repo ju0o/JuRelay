@@ -63,13 +63,16 @@ export class CommandRuntimeAdapter extends RuntimeAdapter {
     if (!this.safeNonInteractive) return { id: this.id, owner: this.owner, runtime: this.runtime, ok: false, command: this.command, identity: result.output, reason: this.reason || "safe non-interactive execution contract is not configured" };
     return { id: this.id, owner: this.owner, runtime: this.runtime, ok: true, command: this.command, identity: result.output };
   }
-  async run({ workspace, prompt, sandbox, signal }) {
+  async run({ workspace, prompt, sandbox, signal, onChild, onOutput }) {
     const status = await this.availability();
     if (!status.ok) throw new Error(`${this.id} cannot execute: ${status.reason}`);
     const child = spawn(this.command, this.buildArgs({ prompt, workspace, sandbox }), { cwd: workspace, env: { ...process.env, ...GIT_IDENTITY(), ...this.env }, stdio: ["ignore", "pipe", "pipe"] });
     this.children.add(child);
+    // Stall watchdog observation: the runner needs this exact child (siblings may share the adapter) and
+    // a live view of output. Purely additive — a caller that passes neither hooks behaves exactly as before.
+    onChild?.(child);
     let text = ""; let stderr = "";
-    child.stdout.setEncoding("utf8"); child.stderr.setEncoding("utf8"); child.stdout.on("data", (chunk) => { text += chunk; }); child.stderr.on("data", (chunk) => { stderr += chunk; });
+    child.stdout.setEncoding("utf8"); child.stderr.setEncoding("utf8"); child.stdout.on("data", (chunk) => { text += chunk; onOutput?.(chunk.length); }); child.stderr.on("data", (chunk) => { stderr += chunk; onOutput?.(chunk.length); });
     const startedAt = new Date().toISOString();
     const abort = () => child.kill("SIGTERM"); signal?.addEventListener("abort", abort, { once: true });
     const result = await new Promise((resolve, reject) => { const timer = setTimeout(() => child.kill("SIGTERM"), this.timeoutMs); child.once("error", reject); child.once("close", (code, exitSignal) => { clearTimeout(timer); signal?.removeEventListener("abort", abort); resolve({ code, signal: exitSignal }); }); });

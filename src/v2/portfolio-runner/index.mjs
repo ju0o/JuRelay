@@ -9,6 +9,7 @@ import { homedir } from "node:os";
 import { realpath } from "node:fs/promises";
 import { FounderGateManager } from "../portfolio-jit/index.mjs";
 import { createRuntimeAdapters } from "../runtime-adapters/index.mjs";
+import { ProgressTracker, gitHead, hashFiles, parseTestVerdict, hashFileSet as hashFileSetOf, STALL_MS, MAX_RETRIES } from "./progress-tracker.mjs";
 
 export const STATES = Object.freeze(["QUEUED", "RUNNING", "QA", "REQUEST_CHANGES", "VERIFIED_DONE", "V1_COMPLETE", "HOLD", "BLOCKED_SCOPE", "BLOCKED_WORKTREE", "BLOCKED_TARGET", "BLOCKED_SSOT_CONFLICT", "BLOCKED_RUNTIME_ADAPTER", "BLOCKED_SECRET", "BLOCKED_PAYMENT", "BLOCKED_EXTERNAL", "FOUNDER_GATE", "INTEGRATION_TARGET"]);
 export const QA_VERDICTS = Object.freeze(["ACCEPT", "REQUEST_CHANGES", "FOUNDER_GATE"]);
@@ -130,6 +131,16 @@ function exec(command, args, options = {}) {
 // Agent Relay never pushes it and never touches the user's checkout; merging it anywhere else is the Founder's call.
 export const INTEGRATION_REF = "refs/heads/agent-relay/integration";
 const gitRef = (repo, ref) => exec("git", ["-C", repo, "rev-parse", "--verify", "-q", `${ref}^{commit}`]).then((r) => r.stdout.trim(), () => null);
+
+// The files the stall watchdog samples. Tracked, non-ignored, source-ish files only: node_modules and build
+// output churn on their own, and a hash over those would report progress while nothing meaningful happened.
+const WATCHED_EXT = /\.(m?[jt]sx?|py|rb|go|rs|java|kt|swift|c|h|cc|cpp|hpp|cs|php|scala|sh|sql|css|scss|json|ya?ml|toml|md|vue|svelte)$/i;
+const WATCHED_SKIP = /(^|\/)(node_modules|\.git|dist|build|out|target|coverage|\.next|\.nuxt|__pycache__|\.venv|venv|\.cache|coverage-report)\//;
+export async function gitTrackedFiles(workspace) {
+  if (!workspace) return [];
+  const out = await exec("git", ["-C", workspace, "ls-files"]).catch(() => ({ stdout: "" }));
+  return out.stdout.split("\n").map((f) => f.trim()).filter((f) => f && !WATCHED_SKIP.test(f) && WATCHED_EXT.test(f)).slice(0, 400);
+}
 const isAncestor = (repo, a, b) => exec("git", ["-C", repo, "merge-base", "--is-ancestor", a, b]).then(() => true, () => false);
 
 // Reuse the project's installed deps (root and per-package, e.g. pnpm workspaces) so build/typecheck/test really run
@@ -254,15 +265,18 @@ export class WorktreeManager {
 export class CodexDevelopmentRuntime {
   constructor({ command = discoverCodexCommand(), timeoutMs = 30 * 60_000, model = null } = {}) { this.command = command; this.timeoutMs = timeoutMs; this.model = model || process.env.CODEX_MODEL || null; this.children = new Set(); }
 
-  async run({ workspace, prompt, sandbox, signal }) {
+  async run({ workspace, prompt, sandbox, signal, onChild, onOutput }) {
     const output = join(workspace, `.agent-relay-${sandbox}-output.txt`);
     // NOTE: `codex exec -m <model>` rejects stdin `-` prompt form; with a model override the prompt goes positional.
     const args = ["exec", "--ephemeral", ...(sandbox === "workspace-write" ? ["--approve-for-me"] : ["--sandbox", sandbox]), "--skip-git-repo-check", "--cd", workspace, "--json", "-o", output, ...(this.model ? ["-m", this.model, prompt] : ["-"])];
     if (!this.command) throw new Error("CODEX_RUNTIME_UNAVAILABLE: set CODEX_BIN or install codex in a known runtime location");
     const child = spawn(this.command, args, { cwd: workspace, stdio: ["pipe", "pipe", "pipe"] });
     this.children.add(child);
+    // Stall watchdog observation: same additive contract as CommandRuntimeAdapter — the runner kills the
+    // exact child on a stall, and new stdout/stderr bytes are evidence of work (not a heartbeat).
+    onChild?.(child);
     let stdout = ""; let stderr = "";
-    child.stdout.setEncoding("utf8"); child.stderr.setEncoding("utf8"); child.stdout.on("data", (x) => { stdout += x; }); child.stderr.on("data", (x) => { stderr += x; });
+    child.stdout.setEncoding("utf8"); child.stderr.setEncoding("utf8"); child.stdout.on("data", (x) => { stdout += x; onOutput?.(x.length); }); child.stderr.on("data", (x) => { stderr += x; onOutput?.(x.length); });
     const startedAt = new Date().toISOString();
     if (this.model) child.stdin.end(); else child.stdin.end(prompt);
     const abort = () => child.kill("SIGTERM"); signal?.addEventListener("abort", abort, { once: true });
@@ -542,8 +556,15 @@ export class PortfolioRunner {
       const status = await adapter.availability();
       if (!status.ok) { tried.push(`${id}: ${status.reason}`); continue; }
       let result;
-      try { result = await adapter.run(request); }
-      catch (error) { const message = String(error.message || error); if (request.signal?.aborted || !(QUOTA_ERROR.test(message) || TRANSIENT_ERROR.test(message) || /exit null/.test(message))) throw error; cool(id); tried.push(`${id}: ${QUOTA_ERROR.test(message) ? "quota" : TRANSIENT_ERROR.test(message) ? "unavailable" : "timeout"}`); continue; }
+      // Stall watchdog: a runtime that stops producing *evidence of work* for ARL_STALL_MS is a stall, not
+      // a slow task. It is killed and folded into the existing chain fall-through (below), so the retry
+      // budget, cooldown, and NO_RUNTIME_AVAILABLE path stay the single source of truth. The adapter's own
+      // 30-minute timeout is untouched and remains the backstop.
+      const watch = this.startStallWatch(request, { attempts: this._stallAttempts ?? 0 });
+      try { result = await adapter.run({ ...request, onChild: watch.onChild, onOutput: watch.onOutput }); }
+      catch (error) { const message = String(error.message || error); if (request.signal?.aborted || !(QUOTA_ERROR.test(message) || TRANSIENT_ERROR.test(message) || /exit null/.test(message) || watch.stalled)) throw error; cool(id); tried.push(`${id}: ${QUOTA_ERROR.test(message) ? "quota" : TRANSIENT_ERROR.test(message) ? "unavailable" : watch.stalled ? "stalled" : "timeout"}`); continue; }
+      finally { watch.stop(); }
+      if (watch.stalled) { cool(id); tried.push(`${id}: stalled — ${watch.reason}`); continue; }
       if (validate) { try { validate(result.text); } catch { tried.push(`${id}: invalid output`); if (id !== ordered.at(-1)) { cool(id); continue; } } }
       this._strikes[id] = 0;
       this.routing = { cooldown: { ...this._cooldown }, last: { runtime: id, at: new Date().toISOString(), fallbacks: tried } };
@@ -551,6 +572,68 @@ export class PortfolioRunner {
     }
     this.routing = { cooldown: { ...this._cooldown }, last: { runtime: null, at: new Date().toISOString(), fallbacks: tried } };
     throw new Error(`NO_RUNTIME_AVAILABLE: ${tried.join("; ")}`);
+  }
+
+  /**
+   * Start the stall watchdog for one adapter run.
+   *
+   * Signals are evidence of work only: new stdout/stderr bytes, a new git HEAD, changed file content
+   * hashes, or a changed test verdict. mtime, spinner text, and heartbeats are explicitly NOT progress
+   * (N00_STATE_CONTRACTS.md:19), so a worker that keeps thinking in silence but is still emitting output
+   * is never killed — that is the difference from a heartbeat model.
+   *
+   * `attempts` is passed in from the caller (task.attempts, persisted in state.json) rather than read
+   * from the tracker, because the tracker's own counter dies with the process and would hand a
+   * restarting runner a fresh budget.
+   */
+  startStallWatch(request, { attempts = 0 } = {}) {
+    const stallMs = this.stallMs ?? STALL_MS;
+    const pollMs = this.stallPollMs ?? Math.max(250, Math.min(30_000, Math.floor(stallMs / 4)));
+    const workspace = request?.workspace;
+    const tracker = new ProgressTracker({ taskId: this._stallTaskId ?? "unknown", stallMs, maxRetries: MAX_RETRIES, now: () => Date.now() });
+    // Seed the retry budget from the caller. The tracker's own counter dies with the process, so a
+    // restarting runner would otherwise hand a task that already burned 3 attempts a fresh budget.
+    tracker.state.attempts = Number(attempts) || 0;
+    const watch = { child: null, stalled: false, reason: null, action: null, decision: null, tracker, killedAtMs: null, startedAtMs: Date.now() };
+    const fileSet = () => gitTrackedFiles(workspace);
+    const baseline = async () => {
+      const paths = await fileSet();
+      const entries = await hashFiles(paths);
+      return { hash: hashFileSetOf(entries), head: await gitHead(workspace), files: paths };
+    };
+    let last = null;
+    const started = Date.now();
+    // The first sample is the baseline, not progress: without it a worker that never touches anything
+    // would look "idle since construction" and be killed instantly.
+    baseline().then((b) => { last = b; tracker.record("file-hash", { hash: b.hash }); tracker.record("git-head", { head: b.head }); }).catch(() => {});
+    watch.onChild = (child) => { watch.child = child; };
+    watch.onOutput = (chars) => { if (chars > 0) tracker.record("output", { chars }); };
+    const timer = setInterval(async () => {
+      if (watch.stopped || watch.child?.killed) return;
+      const decision = tracker.evaluate();
+      if (!decision) {
+        let now = null;
+        try { now = await baseline(); } catch { return; }
+        const headMoved = last && now.head && last.head && now.head !== last.head;
+        const filesMoved = last && now.hash !== last.hash;
+        if (headMoved) tracker.record("git-head", { head: now.head });
+        if (filesMoved) tracker.record("file-hash", { hash: now.hash });
+        if (headMoved || filesMoved) last = now;
+        return;
+      }
+      watch.stopped = true;
+      watch.stalled = true;
+      watch.reason = decision.reason;
+      watch.action = decision.action;
+      watch.decision = decision;
+      // SIGTERM, not SIGKILL: the worker's own cleanup gets a chance, exactly like the 30-minute timeout.
+      try { watch.child?.kill("SIGTERM"); } catch { /* already gone */ }
+      watch.killedAtMs = Date.now() - started;
+    }, pollMs);
+    timer.unref?.();
+    watch.stop = () => { watch.stopped = true; clearInterval(timer); watch.stopped = true; };
+    watch.timer = timer;
+    return watch;
   }
 
     // ChatGPT PM judgment (Founder 2026-09-28): lanes with pmJudge:"chatgpt" get a
