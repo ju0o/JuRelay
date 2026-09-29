@@ -23143,6 +23143,30 @@
           ],
           "ssotEvidence": "docs/decisions/DECISION_LOG.md:251-254 plain Korean, one obvious next action, inline feedback, no raw task IDs or enum/status codes in user-facing output",
           "title": "JuCeipt 화면이 쉬운지 확인"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-FOUNDER-GLANCE",
+          "scope": "On docs/operations/PM_STATUS_BOARD.md only, add one plain-Korean glance sentence plus the five live-status lines (지금 하는 일, 여기까지 끝남, 확인 상태, 대표님 할 일: 없음, 다음 단계) stating M3 stays undecided until a same-task Claude-final and Receipt reference pair reconciles into a valid join, fold the existing English operating text under one 원문 보기 without rewriting it except changing Last updated from 2026-09-24 to 2026-09-29, and record no GO, DEFER, or KILL.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/qa/P0_FOUNDER_UX_AUDIT.md:30 상단에 지금 하실 일은 없어요 같은 한 문장을 두고 파일 경로·해시·영문 상태값은 원문 보기로 이동한다"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-SSOT-HEADER-DATE-SYNC",
+          "scope": "Change only the Last updated header lines in the WBS, GTM, and business-system index from 2026-09-19 or 2026-09-28 to 2026-09-29 so each header matches that file's latest edit, leaving every other sentence unchanged.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md",
+            "docs/business/GROWTH_MONETIZATION_GTM.md",
+            "docs/planning/BUSINESS_SYSTEM_INDEX.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:5 > Last updated: 2026-09-19"
         }
       ],
       "skills": {
