@@ -2867,7 +2867,8 @@
             "node test/docs-truth.test.mjs",
             "npm run typecheck"
           ],
-          "ssotEvidence": "BACKLOG.md:26 npm run dev에 watch/HMR 없음"
+          "ssotEvidence": "BACKLOG.md:26 npm run dev에 watch/HMR 없음",
+          "title": "개발 안내를 실제 기능과 맞춤"
         }
       ],
       "qaRuntime": [
@@ -6553,7 +6554,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다."
+          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다.",
+          "title": "설치 버전이 맞는지 확인"
         },
         {
           "taskId": "ACTL-BOARD-ENTRY-RECHECK",
@@ -6565,7 +6567,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다."
+          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다.",
+          "title": "Agent Relay 시작 설정을 확인"
         },
         {
           "taskId": "ACTL-PACKAGE-ARTIFACT-RECHECK",
@@ -6577,7 +6580,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 discover --ssh asus 재검증"
+          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 discover --ssh asus 재검증",
+          "title": "배포 파일 이름을 확인"
         }
       ],
       "qaRuntime": [
@@ -13718,7 +13722,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25"
+          "ssotEvidence": "Founder direction 2026-09-25",
+          "title": "실행 결과와 다음 할 일 안내"
         },
         {
           "taskId": "JUCEIPT-TODAY-FAILED-LINES",
@@ -13730,7 +13735,8 @@
           "tests": [
             "npm test"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25"
+          "ssotEvidence": "Founder direction 2026-09-25",
+          "title": "실패한 작업의 이유와 다음 할 일"
         }
       ],
       "skills": {
@@ -22721,7 +22727,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:146-149 — tally는 설명용 신호이며 유효한 same-task Claude-final/Receipt join 전에는 M3 판정을 만들지 않는다."
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:146-149 — tally는 설명용 신호이며 유효한 same-task Claude-final/Receipt join 전에는 M3 판정을 만들지 않는다.",
+          "title": "검증 근거를 정확히 구분하기"
         },
         {
           "taskId": "JUCEIPTPLAN-HTML05-FOUNDER-MOBILE-READABILITY",
@@ -22732,7 +22739,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 — M3는 유효한 same-task Claude-final/Receipt join 전까지 UNDECIDED로 유지한다."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 — M3는 유효한 same-task Claude-final/Receipt join 전까지 UNDECIDED로 유지한다.",
+          "title": "휴대폰에서도 화면을 쉽게 읽기"
         }
       ],
       "skills": {
@@ -28836,7 +28844,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23: no push/deploy/publish; bot.mjs:1016 \"no release per change\""
+          "ssotEvidence": "Founder direction 2026-09-23: no push/deploy/publish; bot.mjs:1016 \"no release per change\"",
+          "title": "릴리즈 제안 조건을 점검"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
