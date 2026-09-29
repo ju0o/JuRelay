@@ -24483,6 +24483,54 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:556 V0.1에서는 다음을 구현하지 않는다.",
           "title": "이번 버전에서 하지 않는 일"
+        },
+        {
+          "taskId": "JUTELL-SCOPE-CONFLICT-SSOT-PARITY",
+          "scope": "Add PRODUCT_SCOPE §1's document-conflict sentence as one bullet in AGENTS.md after the existing product-direction bullets and before the managed block, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            "AGENTS.md",
+            "tests/scope-conflict-ssot-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/scope-conflict-ssot-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:23 이 프로젝트 내부 문서 사이에서 제품 방향이 충돌할 경우, 승인된 결정 기록이 없다면 이 문서를 제품 범위 판단의 기준으로 사용한다."
+        },
+        {
+          "taskId": "JUTELL-CODE-BLOCK-REQUEST-ONLY-PARITY",
+          "scope": "Add GLOSSARY_POLICY §7's two sentences, that a code-block explanation is given only when the user asked to explain specific code or a file and that a full work report does not explain every code block, as one bullet under report-format.md section 6, plus an offline node:test that those sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/code-block-request-only-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/code-block-request-only-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:128 사용자가 특정 코드나 파일 설명을 요청한 경우에만 코드 블록 설명을 제공한다. 전체 작업 보고서에서 모든 코드 블록을 설명하지 않는다."
+        },
+        {
+          "taskId": "JUTELL-IDE-CONFIRM-BEFORE-NAME-PARITY",
+          "scope": "Add GLOSSARY_POLICY §4.3's sentence that IDE is used only after confirming the current environment is an actual IDE to the glossary-ko.md IDE block without a new heading, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/glossary-ko.md",
+            "tests/ide-confirm-before-name-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/ide-confirm-before-name-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:99 현재 환경이 실제 IDE인지 확인한 경우에만 IDE라는 표현을 사용한다."
+        },
+        {
+          "taskId": "JUTELL-SAME-SCENARIO-CONDITIONS-PARITY",
+          "scope": "Add TEST_SCENARIOS §4.1's sentence that a repeated scenario uses the same sample project and the same request as one sub-bullet under SKILL.md read-step 6, plus an offline node:test that the sentence stays in both files.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/same-scenario-conditions-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/same-scenario-conditions-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:71 같은 시나리오를 반복할 때는 가능한 한 동일한 예제 프로젝트와 동일한 요청문을 사용한다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
