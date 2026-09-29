@@ -17184,6 +17184,30 @@
           ],
           "ssotEvidence": "docs/getting-started.md:249 아래 다섯 가지 오류는 한국어 줄 바로 아래에 영어 줄이 하나 더 나옵니다",
           "title": "시작 오류를 쉽게 확인"
+        },
+        {
+          "taskId": "JUCONTROLER-V0-REGISTRY-ENTRY",
+          "scope": "Add fixtures/v0/registry.json with exactly one manual entry for the V0 target projectId agent-relay (sourceKind agent-relay-board, sourceRef agent-relay/runner, absolute workspaceRoot and dataRoot, no unknown fields) and an offline test that loadProjectRegistryEntries accepts it and returns only that entry.",
+          "files": [
+            "fixtures/v0/registry.json",
+            "tests/v0-registry-entry.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/v0-registry-entry.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23; docs/architecture.md:24 Agent Relay owns durable managed work, results, verification and PM judgments during V0"
+        },
+        {
+          "taskId": "JUCONTROLER-V0-RELAY-CURRENT",
+          "scope": "Add fixtures/v0/current.json as one saved Agent Relay night board (kind BOARD, fixed UTC observedAt, runner day IDLE and night RUNNING, lanes empty) and an offline test that copies it to a temp dataRoot, loads it with loadProjectStatusBoard at now equal to that observedAt, and asserts the only row is projectId agent-relay, status day=IDLE;night=RUNNING, stale false, source agent-relay-board id agent-relay/runner, with the committed file unchanged and no dispatch or second project.",
+          "files": [
+            "fixtures/v0/current.json",
+            "tests/v0-agent-relay-current.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/v0-agent-relay-current.test.mjs"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-23; docs/architecture.md:24 Agent Relay owns durable managed work, results, verification and PM judgments during V0"
         }
       ],
       "qaRuntime": [
