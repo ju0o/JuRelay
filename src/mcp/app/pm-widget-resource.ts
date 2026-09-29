@@ -96,6 +96,16 @@ const WIDGET_HTML = `<!DOCTYPE html>
      It stays hidden entirely when nothing is waiting, so a healthy pipeline looks unchanged. */
   .pnode .pwait { color:var(--muted); opacity:.62; margin-left:4px; }
   .pnode .pwait:empty { display:none; }
+  /* One card per real task, titled in plain Korean. The model name is tooltip-only: it is debugging
+     detail, never something the Founder has to read on the surface. */
+  .livecards { display:flex; flex-direction:column; gap:3px; margin-top:4px; }
+  .livecard { display:flex; align-items:baseline; gap:6px; padding:4px 6px; border-radius:6px;
+              background:#12161c; border:1px solid #232a34; min-width:0; }
+  .livecard .lt { font-size:11px; color:#e8ecf2; flex:1; min-width:0; }
+  .livecard .lr { font-size:9px; color:var(--muted); opacity:.7; flex:none; }
+  .livecard .lr:empty { display:none; }
+  .livecard .ldead { color:#f0b429; font-size:9px; flex:none; }
+  .live-empty { font-size:11px; color:var(--muted); padding:4px 2px; }
   .edge { align-self:center; color:var(--muted); font-size:12px; flex:none; }
   .ploop { flex-basis:100%; text-align:center; font-size:10px; color:var(--muted); margin-top:2px; }
   .ploop.hot { color:#f0b429; font-weight:700; }
@@ -333,11 +343,17 @@ const WIDGET_HTML = `<!DOCTYPE html>
           <div class="lane-head"><span class="lane-title">검토 중</span><span class="lane-desc">사람이 봐야 함</span><span class="lane-n" id="laneNa">0</span></div>
           <div class="bar"><i id="barA" style="width:100%"></i></div>
           <div class="chips" id="chipsA"></div>
+          <div class="livecards" id="liveA"></div>
         </div>
         <div class="lane lane-b">
           <div class="lane-head"><span class="lane-title">작업 중</span><span class="lane-desc">지금 코드를 쓰는 중</span><span class="lane-n" id="laneNb">0</span></div>
           <div class="bar"><i id="barB" style="width:0%"></i></div>
           <div class="chips" id="chipsB"></div>
+          <div class="livecards" id="liveB"></div>
+        </div>
+        <div class="lane lane-c">
+          <div class="lane-head"><span class="lane-title">대기</span><span class="lane-desc">자리가 나면 자동으로 시작해요</span><span class="lane-n" id="laneNc">0</span></div>
+          <div class="livecards" id="liveC"></div>
         </div>
       </div>
     </div>
@@ -539,7 +555,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var lang = 'ko';
       var sessionHandled = {};
       var claiming = false;
-      var POLL_MS = 1500;
+      // 10s instead of 1.5s. The widget sits open in a background chat for hours, and 1.5s is ~58k
+      // round trips a day per open widget for a status board that changes on the order of minutes.
+      // A hidden tab polls not at all, and catches up with one immediate poll when it comes back.
+      var POLL_MS = 10000;
 
       function setStatus(kind, text, sub) {
         dotEl.className = 'dot ' + kind;
@@ -623,6 +642,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
               working: '코드 작성 중', qaDoing: '검사하는 중',
               noWorking: '지금 코드를 작성하는 에이전트 없음',
               autoResume: '검사가 끝나면 자동으로 코딩이 다시 시작됩니다',
+              liveNoQa: '지금 검사 중인 작업 없어요',
+              liveNoBuild: '지금 코드를 작성하는 작업 없어요',
+              liveWaiting: '자리가 나면 자동으로 시작해요. 지금은 기다리는 중이에요',
+              liveNoWait: '기다리는 작업 없어요',
+              liveStuck: '멈춤',
+              liveTooltip: '작업',
+              liveTaskWord: '작업',
               pmYou: '이 대화',
               spriteFail: '이미지 실패', spriteLoadFail: '스프라이트 로드 실패', spritesOk: '스프라이트', spritesFail: '스프라이트 실패',
               modelUnknown: '모델 정보 없음',
@@ -635,6 +661,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
               working: 'working', qaDoing: 'inspecting',
               noWorking: 'No agent is writing code right now',
               autoResume: 'Coding resumes automatically after review',
+              liveNoQa: 'Nothing is being checked right now',
+              liveNoBuild: 'Nothing is being written right now',
+              liveWaiting: 'Starts automatically when a slot frees. Waiting for now',
+              liveNoWait: 'Nothing is waiting',
+              liveStuck: 'stuck',
+              liveTooltip: 'Task',
+              liveTaskWord: 'Task',
               pmYou: 'This chat',
               spriteFail: 'sprite failed', spriteLoadFail: 'sprite load failed', spritesOk: 'sprites', spritesFail: 'sprites failed',
               modelUnknown: 'model unknown',
@@ -1157,10 +1190,104 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var pipeNWait = 0;
       var pipeDoing = 0;
       var pipeWorking = 0;
-      // QA slot pressure from the portfolio runner (dash.qa), or null when the runner has not written
-      // its capacity mirror yet. It explains WHY a queue exists — it never changes the review count,
+      // QA slot pressure from the portfolio runner (dash.portfolio), or null when the runner has not
+      // written its live mirror yet. It explains WHY a queue exists — it never changes the review count,
       // and it never feeds the "검토 중" lane, which belongs to the Founder alone.
       var pipeQaWait = null;
+      var pipeLive = { builders: [], qa: [] };
+      /**
+       * A task id like JUAI-CHECK-RULE-FIRST-POST is unreadable to a non-developer, and a hardcoded
+       * dictionary would be wrong the moment a new task is written. So the rule is structural instead:
+       * a human-written title is already Korean prose and is used verbatim; only an id-shaped title is
+       * translated, by splitting it into words and keeping the product names readable. An empty result
+       * falls back to the raw id rather than showing a blank card.
+       */
+      var TITLE_WORDS = {
+        JUAI: 'AI 앱', JUCEIPT: '영수증', JUCEIPTPLAN: '영수증 계획', JUCONTROLER: '컨트롤러',
+        JCAPP: '앱', JUTELL: '알려줄', JUCENTER: '센터', JURADAR: '레이더', JUPLAN: '계획',
+        AI: 'AI', QA: '검사', CLI: '명령줄', API: 'API', UI: '화면', UX: '사용자 화면',
+        CHECK: '확인', NOTES: '메모', VALID: '검증', JOIN: '결합', RULE: '규칙', FIRST: '처음',
+        POST: '게시', STATUS: '상태', RUN: '실행', ORDER: '순서', PLAT: '화면', SCREEN: '화면',
+        HEADER: '머리말', DATE: '날짜', SYNC: '맞춤', DAILY: '매일', REVIEW: '검토', NO: '',
+        OPEN: '열기', INDEX: '목록', DECISION: '결정', ROW: '행', VALUE: '값', M2: 'M2',
+        BOOT: '부팅', RECOVERY: '복구', ANSWER: '답', STORE: '저장', EVIDENCE: '근거',
+        INFLIGHT: '전송 중', PRECHECK: '사전 확인', SENT: '전송', README: '안내', VIDEO: '영상',
+        MEDIA: '미디어', RESULT: '결과', FOLD: '접기', KO: '한국어', PLAIN: '일반', WORDS: '문장',
+        CONTRACT: '계약', FIELDS: '필드', SCHEMA: '구조', SYNC2: '맞춤', REPEAT: '반복',
+        PHRASE: '문구', PARITY: '일치', SCENARIO: '시나리오', IMPORTANT: '중요', UNVERIFIED: '미검증',
+        DISCOVER: '찾기', OUTLINE: '개요', GUIDE: '안내', TABLE: '표', SUMMARY: '요약',
+        NESTED: '중첩', SAFE: '안전', MOVE: '이동', EXPORT: '내보내기', DOC: '문서',
+        TASK: '작업', UPDATE: '개선', FIX: '수정', ADD: '추가', REMOVE: '삭제', SET: '설정',
+        GET: '가져오기', LIST: '목록', CREATE: '만들기', DELETE: '삭제', MERGE: '합치기',
+      };
+      function humanTitle(title, taskId) {
+        var raw = typeof title === 'string' ? title.trim() : '';
+        if (!raw) return taskId || '';
+        // Real prose (contains a space) is already meant for a human — never reformat it.
+        if (/\s/.test(raw)) return raw;
+        // TASK-NNNN is a plain counter, not a subject: "작업 0044" reads as a number, not two words.
+        var counter = /^TASK-(\d+)$/i.exec(raw);
+        if (counter) return t('liveTaskWord') + ' ' + counter[1];
+        // An id-shaped title: JUAI-CHECK-RULE-FIRST-POST → AI 앱 · 확인 · 규칙 · 처음 · 게시
+        var words = raw.split(/[-_]+/).filter(Boolean).map(function (w) {
+          var k = w.toUpperCase();
+          if (Object.prototype.hasOwnProperty.call(TITLE_WORDS, k)) return TITLE_WORDS[k];
+          return w.charAt(0).toLowerCase() + w.slice(1).toLowerCase();
+        }).filter(Boolean);
+        var out = words.join(' · ');
+        return out || raw;
+      }
+      /**
+       * Draw what the portfolio is doing, as one card per task.
+       *
+       * Lane A is the Founder's own column and keeps its ws meaning untouched. The live QA list is
+       * appended below it rather than replacing it, because "PM 확인 필요" is a decision the Founder makes
+       * and "a QA worker is running" is not. Lane C is a machine queue: a count only, no cards, and never
+       * folded into lane A.
+       *
+       * An entry whose title is missing falls back to the taskId, so a card is never blank. A dead pid is
+       * shown in amber: stuck is not the same as finished, and it must not read as either.
+       */
+      // P3: shorten at the data level, never with CSS ellipsis. The full title is in the tooltip.
+      var LIVE_TITLE_MAX = 48;
+      function liveCardHtml(e) {
+        var label = humanTitle(e && e.title, e && e.taskId);
+        if (!label) return '';
+        if (label.length > LIVE_TITLE_MAX) label = label.slice(0, LIVE_TITLE_MAX - 1) + '…';
+        var runtime = (e && e.runtime) ? esc(e.runtime) : '';
+        var tip = t('liveTooltip') + ': ' + esc((e && e.taskId) || '') + (runtime ? ' · ' + runtime : '')
+          + (e && e.model ? ' · ' + esc(e.model) : '');
+        return '<div class="livecard" title="' + tip + '">'
+          + '<span class="lt">' + esc(label) + '</span>'
+          + (e && e.alive === false ? '<span class="ldead">' + esc(t('liveStuck')) + '</span>' : '')
+          + '<span class="lr">' + runtime + '</span>'
+          + '</div>';
+      }
+      function renderLiveLanes() {
+        var qa = pipeLive.qa || [];
+        var builders = pipeLive.builders || [];
+        var boxA = document.getElementById('liveA');
+        if (boxA) {
+          boxA.innerHTML = qa.length
+            ? qa.map(liveCardHtml).join('')
+            : '<div class="live-empty">' + esc(t('liveNoQa')) + '</div>';
+        }
+        var boxB = document.getElementById('liveB');
+        if (boxB) {
+          boxB.innerHTML = builders.length
+            ? builders.map(liveCardHtml).join('')
+            : '<div class="live-empty">' + esc(t('liveNoBuild')) + '</div>';
+        }
+        // Lane C is a count only: a waiting task needs nothing from the Founder, only time.
+        var waiting = typeof pipeQaWait === 'number' ? pipeQaWait : 0;
+        setLaneCount('laneNc', waiting);
+        var boxC = document.getElementById('liveC');
+        if (boxC) {
+          boxC.innerHTML = waiting
+            ? '<div class="live-empty">' + esc(t('liveWaiting')) + '</div>'
+            : '<div class="live-empty">' + esc(t('liveNoWait')) + '</div>';
+        }
+      }
       function applyQaCapacity(cap) {
         try {
           pipeQaWait = cap && typeof cap.qaWaiting === 'number' && cap.qaWaiting > 0 ? cap.qaWaiting : 0;
@@ -1211,7 +1338,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
       function renderAgents(dash) {
         var agents = activeAgents((dash && dash.agents) || []);
-        applyQaCapacity((dash && dash.qa) || null);
+        // The portfolio is its own rail (Founder 2026-09-29). The ws agent list cannot describe it, so
+        // the live mirror is the only source for what the portfolio is doing right now. When it is
+        // missing — an older runner build — every list below falls back to empty rather than guessing.
+        var pf = (dash && dash.portfolio) || null;
+        applyQaCapacity(pf);
+        pipeLive = { builders: (pf && pf.builders) || [], qa: (pf && pf.qa) || [] };
+        try { renderLiveLanes(); } catch (eLive) { logLine('render live lanes error: ' + eLive.message); }
         try { lastAgentTotal = agents.length; } catch (e) {}
         var working = 0;
         for (var w = 0; w < agents.length; w++) {
@@ -1480,7 +1613,17 @@ const WIDGET_HTML = `<!DOCTYPE html>
             });
           } catch (ePre) { /* sprites best-effort; missing boxes cover failures */ }
           checkVersion();
-          setInterval(poll, POLL_MS);
+          // Pause while the tab is hidden, and catch up once on return. A background chat window should
+          // cost nothing: the numbers cannot change what the Founder is looking at if nobody is looking.
+          var pollTimer = setInterval(function () {
+            if (document.visibilityState === 'hidden') return;
+            poll();
+          }, POLL_MS);
+          try {
+            document.addEventListener('visibilitychange', function () {
+              if (document.visibilityState === 'visible') poll();
+            });
+          } catch (eVis) { /* polling simply keeps its fixed interval */ }
           setInitMark('poll-start');
           poll();
         } catch (e) {
