@@ -21888,6 +21888,28 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists.",
           "title": "둘 다 있어도 같은 일을 기다림"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-B1-VALID-JOIN",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md change only the business-track B1 state cell so a later GO, DEFER, or KILL stays limited to a same-task row whose Claude-final and Receipt references reconcile into a valid join, keeping the 0-join UNDECIDED hold and recording no new milestone decision.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-WBS-VALID-JOIN-CLAUSE",
+          "scope": "In docs/planning/BUSINESS_PRODUCT_WBS.md change only the §0 B1, §1 B1, §1 M3, §2.1, and §4.3 sentences that still collect a later GO, DEFER, or KILL from any captured row with both artifacts, so each instead waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join, keeping UNDECIDED and recording no new decision.",
+          "files": [
+            "docs/planning/BUSINESS_PRODUCT_WBS.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join."
         }
       ],
       "skills": {
