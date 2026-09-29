@@ -6917,6 +6917,42 @@
             "python3 tests/run_tests.py"
           ],
           "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-SEND-DELAY-EVIDENCE",
+          "scope": "Add a pure recheck that records SEND_STATE_KO for CLEARING_BACKGROUND, SEND_FAILED, and FOREGROUND_ACQUIRE_TIMEOUT as OBSERVED Korean lines and a live Windows send as NOT_PROVEN, without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/send_delay_evidence.py",
+            "tests/test_send_delay_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-COPY-DELAY-EVIDENCE",
+          "scope": "Add a pure recheck that records COPY_STATE_KO for COPY_CLEARING and COPY_ACQUIRE_TIMEOUT as OBSERVED Korean lines and a live Windows copy as NOT_PROVEN, without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/copy_delay_evidence.py",
+            "tests/test_copy_delay_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/core/send_truth.py:70 COPY_ACQUIRE_TIMEOUT: 복사 지연: 백그라운드 정리 초과"
+        },
+        {
+          "taskId": "ACTL-LOOP-STATUS-EVIDENCE",
+          "scope": "Add a pure recheck that records LOOP_STATE_KO for READY, RESULT_READY, and COPIED as OBSERVED Korean lines and a live Windows loop status as NOT_PROVEN, without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/loop_status_evidence.py",
+            "tests/test_loop_status_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "src/actl/core/send_truth.py:63 LOOP_COPIED: 복사 완료"
         }
       ],
       "qaRuntime": [
