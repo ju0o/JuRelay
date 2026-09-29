@@ -6593,7 +6593,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:106 Windows installer build and installation of this exact commit"
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:106 Windows installer build and installation of this exact commit",
+          "title": "설치 파일 준비 상태 확인"
         },
         {
           "taskId": "ACTL-REFRESH-MATRIX-MID",
@@ -6604,7 +6605,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:109 1/2/4/8-agent refresh matrix and auto-refresh OFF/TUI cases"
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:109 1/2/4/8-agent refresh matrix and auto-refresh OFF/TUI cases",
+          "title": "화면 새로고침 안정성 확인"
         },
         {
           "taskId": "ACTL-TRANSPORT-SPAWN-EVIDENCE",
@@ -6616,7 +6618,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:35 direct argv for initial SSH setup; no PowerShell wrapper per tmux operation"
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:35 direct argv for initial SSH setup; no PowerShell wrapper per tmux operation",
+          "title": "원격 연결 실행 상태 확인"
         }
       ],
       "qaRuntime": [
@@ -25922,7 +25925,8 @@
           "tests": [
             "node --test tests/confirmed-range-example-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:849 대신 확인한 범위를 정확하게 작성한다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:849 대신 확인한 범위를 정확하게 작성한다.",
+          "title": "확인한 범위를 정확히 알려드려요"
         },
         {
           "taskId": "JUTELL-NEXT-ACTION-OFF-PARITY",
@@ -25934,7 +25938,8 @@
           "tests": [
             "node --test tests/next-action-off-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:66 `nextActionSuggestions`가 꺼지면 보고서 끝의 다음 행동 제안을 생략한다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:66 `nextActionSuggestions`가 꺼지면 보고서 끝의 다음 행동 제안을 생략한다.",
+          "title": "필요한 다음 행동만 안내해요"
         },
         {
           "taskId": "JUTELL-EVAL-NOT-READY-WORDING-PARITY",
@@ -25946,7 +25951,8 @@
           "tests": [
             "node --test tests/eval-not-ready-wording-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:826 비개발자 이해 평가가 완료됐다고 판정하지 않는다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:826 비개발자 이해 평가가 완료됐다고 판정하지 않는다.",
+          "title": "평가 준비 상태를 쉽게 알려드려요"
         },
         {
           "taskId": "JUTELL-STATUS-DEFINITION-SSOT-PARITY",
@@ -25958,7 +25964,8 @@
           "tests": [
             "node --test tests/status-definition-ssot-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:8 본 문서에서 동일한 표현이 예시로 등장하더라도 상태 체계의 정의를 변경하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:8 본 문서에서 동일한 표현이 예시로 등장하더라도 상태 체계의 정의를 변경하지 않는다.",
+          "title": "상태 기준을 일관되게 알려드려요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
