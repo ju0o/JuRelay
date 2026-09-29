@@ -21631,6 +21631,18 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:103 P0 PASS does not make M2/M3/M4/M5 decisions or authorize B2/B3/B4/B5/B6 implementation."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-MOBILE-FOUNDER-UX-R2",
+          "scope": "캐노니컬 HTML 05에서 휴대폰 너비의 본문을 16px 이상으로 키우고 버튼·알약·원문 보기 클릭 높이를 44px 이상으로 하며 흐름 줄과 표의 가로 스크롤을 없애되, 보이는 영어와 P0·B0·M2·B1·M3·M4·M5·B2-B6 단계 번호와 현재 M3 연결 근거·원문 보기 경계는 그대로 둔다.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "python3 -c 'import re; from pathlib import Path; t=Path(\"docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html\").read_text(); b=re.search(r\"body\\{([^}]*)\\}\", t); m=re.search(r\"font(?:-size)?:\\s*(\\d+)px\", b.group(1)); assert m and int(m.group(1))>=16; assert \"min-width:900px\" not in t and not re.search(r\"overflow(?:-x)?\\s*:\\s*auto\", t); assert re.search(r\"min-height:\\s*44px\", t); assert \"overflow-wrap\" in t or \"word-break\" in t; assert t.count(\"원문 보기\")==16; assert \"이 05 문서가 현재 기준 시각화\" in t and \"후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집\" in t'",
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:16-31 '이 05 문서가 현재 기준 시각화' 및 M3 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집"
         }
       ],
       "skills": {
