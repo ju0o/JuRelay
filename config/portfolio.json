@@ -27630,6 +27630,39 @@
           ],
           "ssotEvidence": "README.md:39 bot.mjs 기능 전부",
           "title": "인터넷·봇 확인 뒤 글·새 대화·반응을 받아요"
+        },
+        {
+          "taskId": "JUAI-CHECK-FAQ-FOLLOWUP",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that the lab, anonymous, and Q&A faqReply early-returns pass their existing follow-up sentences, including the lab sentence that this reuse did not spend a question, and that faqReply posts that follow-up.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용"
+        },
+        {
+          "taskId": "JUAI-CHECK-LOUNGE-HELLO",
+          "scope": "Add check.mjs assertions only, leaving bot.mjs unchanged, that loungeWelcome posts through CommandCode in the chat channel, mentions the joining member, and adds interest and level text only from that member's onboarding roles.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:17 CommandCode | 환영 인사·프로필 폼"
+        },
+        {
+          "taskId": "JUAI-CHECK-AI-ISOLATION",
+          "scope": "Add check.mjs assertions only by reading ai.mjs as text and not importing it, leaving ai.mjs unchanged, that the codex command passes read-only and ephemeral flags, and that runWithFallback iterates OPENCODE_MODELS when the bench filter is empty.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "npm run check"
+          ],
+          "ssotEvidence": "README.md:46 OpenCode·Codex·CommandCode는 bwrap 임시 홈에서만 실행; README.md:40 무료 모델 자동 교체"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
