@@ -22449,6 +22449,28 @@
           ],
           "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:244 a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join",
           "title": "결과와 영수증 확인 전 판단 보류"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HTML05-PILL-B1-VALID-JOIN",
+          "scope": "In docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html change only the M3 hero pill Korean and its 원문 보기, plus the B1 gate-state Korean, so a later decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join, without editing the funnel sentence, styles, or other English, and without recording GO, DEFER, or KILL.",
+          "files": [
+            "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 any later GO / DEFER / KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join per §2.3"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-SECTION22-OPENING-VALID-JOIN",
+          "scope": "In docs/validation/M3_DAILY_VALUE_VALIDATION.md change only the §2.2 opening paragraph so the seven-task reconciliation states that no retained row has a same-task Claude-final and Receipt reference reconciled into a valid join, without editing the §2.2 closing sentence, the §3.1 tally sentence, or the Section 7 evidence-conflicts row, and without recording GO, DEFER, or KILL.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
         }
       ],
       "skills": {
