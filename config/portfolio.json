@@ -10218,7 +10218,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED.",
+          "title": "막힌 작업은 다시 만들지 않기"
         }
       ],
       "qaRuntime": [
@@ -13318,7 +13319,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "받은 결과를 쉽게 확인하기"
         },
         {
           "taskId": "JUCEIPT-DAILY-FORMAL-ACTION-PLAIN",
@@ -13330,7 +13332,8 @@
           "tests": [
             "npx vitest run tests/daily.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-23"
+          "ssotEvidence": "Founder direction 2026-09-23",
+          "title": "비용과 시험 결과 확인하기"
         }
       ],
       "skills": {
@@ -22163,7 +22166,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:175 Use only §2.3 to intake a same-task row containing both a Claude final and a Receipt whose references reconcile into a valid join; until then, do not record M3 GO / DEFER / KILL."
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:175 Use only §2.3 to intake a same-task row containing both a Claude final and a Receipt whose references reconcile into a valid join; until then, do not record M3 GO / DEFER / KILL.",
+          "title": "결정 기록의 근거를 맞춰 확인"
         },
         {
           "taskId": "JUCEIPTPLAN-READORDER-RECONCILE-JOIN",
@@ -22176,7 +22180,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join."
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join.",
+          "title": "결정 전에 근거 연결을 확인"
         }
       ],
       "skills": {
@@ -25141,7 +25146,8 @@
           "tests": [
             "node --test tests/empty-report-item-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:106 내용이 없는 항목은 짧게 표시하거나 생략할 수 있다."
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:106 내용이 없는 항목은 짧게 표시하거나 생략할 수 있다.",
+          "title": "내용 없는 항목을 간단히 보여줘요"
         },
         {
           "taskId": "JUTELL-GLOSSARY-DEFINITION-FIRST-PARITY",
@@ -25153,7 +25159,8 @@
           "tests": [
             "node --test tests/glossary-definition-first-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:89 일반 정의를 먼저 쓰고, 프로젝트 역할을 확인한 경우에만 다음 문장으로 현재 역할을 설명한다."
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:89 일반 정의를 먼저 쓰고, 프로젝트 역할을 확인한 경우에만 다음 문장으로 현재 역할을 설명한다.",
+          "title": "용어 뜻을 먼저 쉽게 알려줘요"
         },
         {
           "taskId": "JUTELL-EVAL-PREVIEW-INVALID-PARITY",
@@ -25165,7 +25172,8 @@
           "tests": [
             "node --test tests/eval-preview-invalid-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/TEST_SCENARIOS.md:130 평가자가 기대 답변을 먼저 확인했다면 해당 평가는 유효한 비개발자 이해 평가로 인정하지 않는다."
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:130 평가자가 기대 답변을 먼저 확인했다면 해당 평가는 유효한 비개발자 이해 평가로 인정하지 않는다.",
+          "title": "미리 본 답변은 평가에 쓰지 않아요"
         },
         {
           "taskId": "JUTELL-FORCED-SAFETY-FACTS-PARITY",
@@ -25177,7 +25185,8 @@
           "tests": [
             "node --test tests/forced-safety-facts-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:97 다음 정보는 관련 Feature가 꺼져 있어도 짧게 보고한다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:97 다음 정보는 관련 Feature가 꺼져 있어도 짧게 보고한다.",
+          "title": "안전과 위험 정보를 빠짐없이 알려줘요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
