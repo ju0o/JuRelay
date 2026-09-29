@@ -58,9 +58,25 @@ test('0 and missing are treated differently by the segment too', () => {
   const full = nodes.get('sgDone').className;
   setSeg('sgDone', null, 'eseg green');
   const missing = nodes.get('sgDone').className;
-  assert.notEqual(zero, full, 'zero is visually de-emphasised');
+  // PM contract: 0 and a positive count are both real, measured answers. Only an unmeasured counter is
+  // dimmed. An earlier version dimmed 0, which made "nothing to report" and "nothing to show yet" the
+  // same picture — the one distinction this status strip exists to make.
+  assert.ok(!/dim/.test(zero), 'a measured 0 is not dimmed');
+  assert.ok(!/dim/.test(full), 'a positive count is not dimmed');
+  assert.ok(/dim/.test(missing), 'only an unmeasured counter is dimmed');
   assert.notEqual(zero, missing, 'unmeasured is not the same state as zero');
-  assert.ok(/dim/.test(zero), 'an empty-but-known segment is dim');
+});
+
+test('only an unmeasured counter is dimmed', () => {
+  const { setSeg, nodes, doc } = load();
+  for (const measured of [0, 1, 4, 16, 100]) {
+    setSeg('sgDone', measured, 'eseg green');
+    assert.ok(!/dim/.test(nodes.get('sgDone').className), `${measured} is a real value and stays normal`);
+  }
+  for (const missing of [null, undefined, NaN, 'abc', {}]) {
+    setSeg('sgDone', missing, 'eseg green');
+    assert.ok(/dim/.test(nodes.get('sgDone').className), `${String(missing)} is unmeasured and is dimmed`);
+  }
 });
 
 test('every status-strip counter goes through the guarded path', () => {

@@ -1167,9 +1167,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (el) el.textContent = String(n);
         } catch (e) {}
       }
-      // 0 is a real value and must render as "0". null/undefined mean "not measured yet" and must not
-      // reach the screen as the words "null"/"undefined" — String(n) used to do exactly that, which is
-      // how a count could look like it was missing.
+      // A count is either measured or not. Measured means 0 or more and is shown in full colour, because
+      // "0" is a real answer. Unmeasured (null/undefined/NaN) shows "—" and is dimmed, so a board that
+      // has not counted yet never looks like a board reporting zero. Raw values must never reach the
+      // screen: String(n) used to print the words "null" and "undefined" there.
       function hasCount(n) { return typeof n === 'number' && isFinite(n); }
       function setNum(el, n) {
         try { if (el) el.textContent = hasCount(n) ? String(n) : '—'; } catch (e) {}
@@ -1177,8 +1178,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       function setSeg(id, n, base) {
         try {
           var el = document.getElementById(id);
-          // Dim only when there is genuinely nothing to show. A measured 0 keeps its normal colour.
-          if (el) el.className = (base || 'seg') + (hasCount(n) && n === 0 ? ' dim' : '');
+          if (el) el.className = (base || 'seg') + (hasCount(n) ? '' : ' dim');
         } catch (e) {}
       }
       function laneOfAgent(a) {
