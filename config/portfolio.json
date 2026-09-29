@@ -13625,6 +13625,30 @@
           ],
           "ssotEvidence": "src/cli/main.ts:208 할 일: 파일 내용을 고친 뒤 다시 시도하세요. Founder direction 2026-09-25 오류 3줄",
           "title": "깨진 영수증의 다음 단계를 쉽게"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-FOLD-CHECK-COMMAND",
+          "scope": "In renderTodayList, when a delivered line says the check detail is in 원문 보기, copy that receipt's validation outcome titles into that card's 원문 보기 only, and add a regression that the raw command stays after details and off the visible surface.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "src/render/today.ts:101 자세한 내용은 원문 보기에 있어요; Founder direction 2026-09-25"
+        },
+        {
+          "taskId": "JUCEIPT-SCAN-NO-FALSE-TEST-REASON",
+          "scope": "In importance(), use 테스트나 검증이 통과한 기록이 없어요 only when a validation outcome did not succeed, not when the request merely contains test, verify, latest, 테스트, or 검증, and add a regression for that false reason.",
+          "files": [
+            "src/sources/summary.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "src/sources/summary.ts:43 /test|테스트|검증|verify/i.test(receipt.task.request_text); Founder direction 2026-09-25"
         }
       ],
       "skills": {
