@@ -21993,6 +21993,28 @@
             "git diff --check"
           ],
           "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-ROADMAP-M3-VALID-JOIN",
+          "scope": "In docs/product/MASTER_ROADMAP.md change only the M3 status sentences at §2 line 96, the phase-result line 179, the milestone-table line 466, and §12 item 4 line 561 so each keeps M3 UNDECIDED and states that a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join, recording no milestone decision.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-BOARD-M3-VALID-JOIN",
+          "scope": "In docs/operations/PM_STATUS_BOARD.md change only the M3 integration cell line 36, the M3 milestone state line 58, the corpus bullet line 153, the daily-value paragraph line 169, next-step items 1 and 2 lines 173-174, and Next PM Moves rows 1 and 4 lines 264 and 267 so each keeps M3 UNDECIDED and states that a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join, leaving the B1 cell unchanged and recording no milestone decision.",
+          "files": [
+            "docs/operations/PM_STATUS_BOARD.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join"
         }
       ],
       "skills": {
