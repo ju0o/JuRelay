@@ -22471,6 +22471,17 @@
             "git diff --check"
           ],
           "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-M3-TALLY-CONFLICT-VALID-JOIN-R2",
+          "scope": "From base a0e182c9fd98cf4c99844d50ce3b4999b206c3c7 in a fresh worktree with writable Git metadata, change only the §2.2 closing sentence, §3.1 tally decision sentence, and Section 7 evidence-conflicts and actionable-bar cells so M3 stays unrecorded until a same-task Claude-final and Receipt reference pair reconciles into a valid join, then create the local commit.",
+          "files": [
+            "docs/validation/M3_DAILY_VALUE_VALIDATION.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/validation/M3_DAILY_VALUE_VALIDATION.md:244 a later GO, DEFER, or KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join"
         }
       ],
       "skills": {
