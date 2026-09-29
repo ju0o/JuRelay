@@ -9969,7 +9969,8 @@
             "pnpm --filter @juplan/runtime test test/agent-relay-accept-next.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED.",
+          "title": "작업이 막히면 다음 작업을 보내지 않아요"
         },
         {
           "taskId": "JUPLAN-AR-QA-BLOCKED",
@@ -9982,7 +9983,8 @@
             "pnpm --filter @juplan/runtime test test/agent-relay-qa-gate.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:91 BLOCKED holds the task. It does not invent a substitute Product task and does not continue to QA."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:91 BLOCKED holds the task. It does not invent a substitute Product task and does not continue to QA.",
+          "title": "검사가 막히면 통과 처리를 하지 않아요"
         },
         {
           "taskId": "JUPLAN-AR-RETRY-BLOCKED",
@@ -9995,7 +9997,8 @@
             "pnpm --filter @juplan/runtime test test/agent-relay-retry-policy.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED.",
+          "title": "작업이 막히면 다시 시도하지 않아요"
         }
       ],
       "qaRuntime": [
@@ -21615,7 +21618,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:16-31 \"이 05 문서가 현재 기준 시각화\" 및 M3 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집"
+          "ssotEvidence": "docs/visual/05_BUSINESS_SYSTEM_COMPLETE_MAP.html:16-31 \"이 05 문서가 현재 기준 시각화\" 및 M3 후속 판정은 Claude 최종본과 영수증이 모두 있는 캡처 행에서만 수집",
+          "title": "휴대폰에서도 내용과 연결 상태 보기"
         }
       ],
       "skills": {
@@ -24358,7 +24362,8 @@
           "tests": [
             "node --test tests/user-judgment-support-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:104 JuTell는 사용자가 판단할 수 있도록 검증 상태와 확인 항목을 제공한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:104 JuTell는 사용자가 판단할 수 있도록 검증 상태와 확인 항목을 제공한다.",
+          "title": "검증 상태와 확인 항목을 알려줘요"
         },
         {
           "taskId": "JUTELL-GIT-DIFF-MEANING-PARITY",
@@ -24370,7 +24375,8 @@
           "tests": [
             "node --test tests/git-diff-meaning-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:78 Git diff가 제공되더라도 코드 문법을 모르면 변경의 의미를 이해하기 어렵다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:78 Git diff가 제공되더라도 코드 문법을 모르면 변경의 의미를 이해하기 어렵다.",
+          "title": "변경 내용을 쉽게 이해할 수 있어요"
         },
         {
           "taskId": "JUTELL-PROFILE-DEPTH-PARITY",
@@ -24382,7 +24388,8 @@
           "tests": [
             "node --test tests/profile-depth-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:79 `learning`은 용어 설명 한도를 늘릴 수 있다. `detailed`는 복잡하거나 위험한 작업에서 파일과 검증 설명을 더 자세히 작성할 수 있다. 단순 작업에서는 실제 작업 규모에 맞게 줄인다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:79 `learning`은 용어 설명 한도를 늘릴 수 있다. `detailed`는 복잡하거나 위험한 작업에서 파일과 검증 설명을 더 자세히 작성할 수 있다. 단순 작업에서는 실제 작업 규모에 맞게 줄인다.",
+          "title": "필요한 설명 수준을 고를 수 있어요"
         },
         {
           "taskId": "JUTELL-V01-NOT-VISUAL-PROGRAM-PARITY",
@@ -24394,7 +24401,8 @@
           "tests": [
             "node --test tests/v01-not-visual-program-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:153 V0.1은 완성된 시각 프로그램이 아니다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:153 V0.1은 완성된 시각 프로그램이 아니다.",
+          "title": "검증 범위와 방법을 쉽게 알 수 있어요"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -26955,7 +26963,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "layout.mjs:120 스팸은 ${SPAM_WINDOW_MS / 60_000}분 안에 같은 글을 ${SPAM_REPEAT_CHANNELS}개 채널에 올리거나"
+          "ssotEvidence": "layout.mjs:120 스팸은 ${SPAM_WINDOW_MS / 60_000}분 안에 같은 글을 ${SPAM_REPEAT_CHANNELS}개 채널에 올리거나",
+          "title": "오래된 메시지는 스팸 판단에서 제외"
         },
         {
           "taskId": "JUAI-CHECK-MENTOR-ONCE",
@@ -26966,7 +26975,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:20 #질문-답변에 입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다."
+          "ssotEvidence": "README.md:20 #질문-답변에 입문자가 질문하면 분야가 맞는 실무자 최대 2명을 불러와 한마디를 부탁합니다.",
+          "title": "오늘 같은 멘토 중복 알림 막기"
         },
         {
           "taskId": "JUAI-CHECK-THREAD-BOT-SKIP",
@@ -26977,7 +26987,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 !익명은 OpenCode 개인 메시지에서만 작동"
+          "ssotEvidence": "README.md:8 !익명은 OpenCode 개인 메시지에서만 작동",
+          "title": "잘못된 글의 알림과 사용량 막기"
         },
         {
           "taskId": "JUAI-CHECK-FORUM-QUOTA-STOP",
@@ -26988,7 +26999,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:49 서버 전체 하루 300회"
+          "ssotEvidence": "README.md:49 서버 전체 하루 300회",
+          "title": "사용량 부족 시 자동 답변 멈추기"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
