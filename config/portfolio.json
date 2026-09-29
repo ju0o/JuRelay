@@ -6788,7 +6788,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 discover --ssh asus 재검증"
+          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 discover --ssh asus 재검증",
+          "title": "찾는 중이거나 오래됐거나 비었을 때 안내"
         },
         {
           "taskId": "ACTL-SEND-PANEL-EVIDENCE",
@@ -6800,7 +6801,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "보낼 창이 없거나 쉬거나 답이 있을 때 안내"
         },
         {
           "taskId": "ACTL-BOARD-EMPTY-BRANCH-EVIDENCE",
@@ -6812,7 +6814,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "환경별 보드가 비었거나 안 맞을 때 안내"
         }
       ],
       "qaRuntime": [
@@ -14089,7 +14092,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 버튼을 누르면 그 자리에 결과 문장이 보여야 함"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 버튼을 누르면 그 자리에 결과 문장이 보여야 함",
+          "title": "오늘 되돌리기는 짧게 안내"
         },
         {
           "taskId": "JUCEIPT-DAILY-REVIEW-NO-OPEN",
@@ -14101,7 +14105,8 @@
           "tests": [
             "npx vitest run tests/daily.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 빈 항목은 이유와 다음 행동을 말하고 숨은 경로로 보내지 않음"
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 빈 항목은 이유와 다음 행동을 말하고 숨은 경로로 보내지 않음",
+          "title": "빈 점검은 다음 할 일로 안내"
         }
       ],
       "skills": {
@@ -23153,7 +23158,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/qa/P0_FOUNDER_UX_AUDIT.md:30 상단에 지금 하실 일은 없어요 같은 한 문장을 두고 파일 경로·해시·영문 상태값은 원문 보기로 이동한다"
+          "ssotEvidence": "docs/qa/P0_FOUNDER_UX_AUDIT.md:30 상단에 지금 하실 일은 없어요 같은 한 문장을 두고 파일 경로·해시·영문 상태값은 원문 보기로 이동한다",
+          "title": "다음 결정이 아직임을 한눈에"
         },
         {
           "taskId": "JUCEIPTPLAN-SSOT-HEADER-DATE-SYNC",
@@ -23166,7 +23172,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:5 > Last updated: 2026-09-19"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:5 > Last updated: 2026-09-19",
+          "title": "계획 문서가 오늘 날짜로 보이게"
         }
       ],
       "skills": {
@@ -29508,7 +29515,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다."
+          "ssotEvidence": "README.md:3 서버 주인은 승인 카드에서 **승인 · 보류 · 더 생각**만 누릅니다.",
+          "title": "대표님과 서버 주인을 알고 버튼을 받아요"
         },
         {
           "taskId": "JUAI-CHECK-ANSWER-STORE",
@@ -29519,7 +29527,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용, 답변 👍/👎"
+          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용, 답변 👍/👎",
+          "title": "없는 글은 빼고 질문과 답을 알맞게 저장해요"
         },
         {
           "taskId": "JUAI-CHECK-SUB-CONFIRM",
@@ -29530,7 +29539,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 `!구독 단어`"
+          "ssotEvidence": "README.md:8 `!구독 단어`",
+          "title": "구독하면 그 단어를 구독했다고 받아요"
         },
         {
           "taskId": "JUAI-CHECK-SUB-SILENT",
@@ -29541,7 +29551,8 @@
           "tests": [
             "node check.mjs"
           ],
-          "ssotEvidence": "README.md:8 매칭 알림은 1인 하루 3회"
+          "ssotEvidence": "README.md:8 매칭 알림은 1인 하루 3회",
+          "title": "본인 글과 하루 한도는 알리지 않아요"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
