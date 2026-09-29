@@ -6881,6 +6881,42 @@
           ],
           "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
           "title": "안전하게 보낼 준비 확인"
+        },
+        {
+          "taskId": "ACTL-SEND-PHASE-EVIDENCE",
+          "scope": "Add a pure recheck that records send_truth.SEND_STATE_KO for SEND_QUEUED, SENDING, SUBMITTED, and START_ACKNOWLEDGED as OBSERVED Korean lines and a live Windows send progression as NOT_PROVEN, without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/send_phase_evidence.py",
+            "tests/test_send_phase_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-NO-RESULT-EVIDENCE",
+          "scope": "Add a pure recheck that classifies one failed send with no previous result hash as NO_RESULT, records the Korean label 결과 없음 and clipboard denial as OBSERVED, records a live Windows copy as NOT_PROVEN, and clears correlations before returning.",
+          "files": [
+            "src/actl/core/no_result_evidence.py",
+            "tests/test_no_result_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-COPY-PHASE-EVIDENCE",
+          "scope": "Add a pure recheck that records send_truth.COPY_STATE_KO for COPY_QUEUED and COPY_READING as OBSERVED Korean lines and live Windows copy progress as NOT_PROVEN, without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/copy_phase_evidence.py",
+            "tests/test_copy_phase_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
         }
       ],
       "qaRuntime": [
