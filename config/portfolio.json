@@ -23299,6 +23299,17 @@
           ],
           "ssotEvidence": "docs/planning/BUSINESS_SYSTEM_INDEX.md:38 PM_STATUS_BOARD.md for the decision",
           "title": "근거 확인 뒤 사업 판단 기록하기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-FUX-BOARD-GLANCE-NOTE",
+          "scope": "In docs/qa/P0_FOUNDER_UX_AUDIT.md add one dated note under the header stating that the board half of FUX-01 is the pre-glance audit surface, that PM_STATUS_BOARD.md now opens with the Korean glance and folds the English board under 원문 보기, and that the HTML findings stay open with no M3 GO, DEFER, or KILL recorded.",
+          "files": [
+            "docs/qa/P0_FOUNDER_UX_AUDIT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:1 지금은 JuCeipt의 M3 진행 상태를 확인하는 화면이에요. 같은 작업의 Claude 최종 답변과 영수증 참조가 유효하게 연결될 때까지 M3 결정은 기록하지 않아요."
         }
       ],
       "skills": {
