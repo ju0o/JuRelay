@@ -13347,6 +13347,32 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-23",
           "title": "비용과 시험 결과 확인하기"
+        },
+        {
+          "taskId": "JUCEIPT-SUMMARY-FORMAL-ACTION-REST",
+          "scope": "In plainStoredCheck, map lines that start with 실행 비용을 직접 확인 (including 실행 비용을 직접 확인하세요) to 비용을 확인해 주세요, map 명시된 내용을 직접 검토하고 끝났는지 결정하세요 to 적힌 내용을 직접 보고 끝났는지 정해 주세요, and map 금지된 명령이 남긴 영향을 직접 검토하고 필요하면 다시 요청하세요 to 하지 말라고 한 일이 실행됐어요. 영향을 확인해 주세요, and assert all three in tests/scan-summary.test.ts.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — scan·daily 출력의 개발자 말투를 쉬운 한국어로"
+        },
+        {
+          "taskId": "JUCEIPT-VIEW-FORMAL-ACTION-PLAIN",
+          "scope": "On the receipt view and today list, before the plain-text early return, show 적힌 내용을 직접 보고 끝났는지 정해 주세요 and 하지 말라고 한 일이 실행됐어요. 영향을 확인해 주세요 instead of those two stored 받기 전 할 일 lines, and show 하지 말라고 한 명령이 실행됐어요 instead of a visible 빠진 확인 line that contains 실행하지 말라고 한 명령이 관찰됨, without changing presentation JSON.",
+          "files": [
+            "src/render/index.ts",
+            "src/render/today.ts",
+            "tests/receipt-render-founder.test.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npm test"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 영수증 보기 화면의 빠진 확인과 할 일을 쉬운 한국어로"
         }
       ],
       "skills": {
