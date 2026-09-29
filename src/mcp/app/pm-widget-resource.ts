@@ -72,25 +72,29 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .env-nums { display:flex; flex:1; gap:12px; min-width:0; }
   .eseg b { display:block; font-size:21px; font-weight:650; line-height:1.1; }
   .eseg span { font-size:10px; color:var(--muted); white-space:nowrap; }
-  .eseg.blue b { color:#3b82f6; } .eseg.amber b { color:#d97706; }
-  .eseg.green b { color:#22b573; } .eseg.muted b { color:var(--muted); }
+  .eseg.blue b { color:#4a9eff; } .eseg.amber b { color:#f0b429; }
+  .eseg.green b { color:#2ea86a; } .eseg.muted b { color:#5c6470; }
   .eseg.dim { opacity:.38; }
-  .env-note { font-size:11px; color:var(--muted); white-space:nowrap; margin-left:auto; }
+  .env-note { font-size:11px; color:var(--muted); white-space:nowrap; margin-left:auto;
+              border:1px solid var(--border); border-radius:8px; padding:4px 8px; }
   @media (max-width:480px) { .env-row { flex-wrap:wrap; } .env-note { margin-left:0; } }
   /* A안 레인 3개 */
   .lanes { display:flex; flex-direction:column; gap:8px; margin:6px 0 2px; }
   .lane { background:#161a21; border:1px solid #262c37; border-radius:10px; padding:9px 11px; }
   .lane-head { display:flex; align-items:baseline; gap:8px; }
   .lane-title { font-size:12px; font-weight:700; }
-  .lane-a .lane-title { color:#d97706; } .lane-b .lane-title { color:#3b82f6; } .lane-c .lane-title { color:#8b5cf6; }
+  .lane-a .lane-title { color:#f0b429; } .lane-b .lane-title { color:#4a9eff; } .lane-c .lane-title { color:#8b7bd8; }
+  .lane-a { background:#1e1a12; border-color:#5a4a1e; }
+  .lane-b { background:#141d29; border-color:#2c4a6e; }
+  .lane-c { background:#161a21; border-color:#3d3466; }
   .lane-desc { font-size:10px; color:var(--muted); }
   .lane-n { margin-left:auto; font-size:14px; font-weight:700; }
-  .bar { height:4px; border-radius:2px; background:#262c37; margin:6px 0; overflow:hidden; }
+  .bar { height:3px; border-radius:2px; background:#262c37; margin:6px 0; overflow:hidden; }
   .bar i { display:block; height:100%; border-radius:2px; transition:width 1s ease; }
-  .lane-a .bar i { background:#d97706; } .lane-b .bar i { background:#3b82f6; }
+  .lane-a .bar i { background:#f0b429; } .lane-b .bar i { background:#4a9eff; }
   .chips { display:flex; flex-wrap:wrap; gap:6px; }
   .chip { display:flex; align-items:center; gap:6px; min-height:34px; border:1px solid #262c37;
-          border-radius:8px; padding:2px 8px 2px 2px; min-width:0; max-width:100%; }
+          border-radius:6px; padding:2px 8px 2px 2px; min-width:0; max-width:100%; }
   .cav { flex:none; width:20px; height:30px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; }
   .cav-miss { width:20px; height:30px; display:flex; align-items:center; justify-content:center;
              border:1px dashed var(--wait); border-radius:4px; font-size:11px; font-weight:700;
@@ -248,6 +252,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
     <div class="cards" id="cards"></div>
     <details class="dbg">
       <summary>debug · <span class="sub" id="buildTag">__WIDGET_BUILD__</span></summary>
+      <div class="sub" id="selfcheck">selfcheck 대기 중…</div>
       <div class="sub" id="diag">dashboard 상태 확인 중…</div>
       <div id="log"></div>
     </details>
@@ -482,6 +487,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var DURS = { run: 0.52, dig: 0.62, climb: 0.66, qa: 1.15, done: 0.9, blocked: 0.85, sleep: 2.4, idle: 2.6 };
             var SEP_RE = new RegExp('[ \\t\\n\\r_-]+');
       var SHEET_W = { crew: 20, crewH: 30, climb: 48, climbH: 74 };
+      var RUN_W = 24, RUN_H = 36;
       // --sheetW = -(N * displayW): sheet math from DISPLAY size only, never source pixels.
       function sheetGeom(state, w, h) {
         var n = FRAMES[state] || 4;
@@ -493,6 +499,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var SHEETS = ['run', 'dig', 'climb', 'qa', 'done', 'blocked', 'sleep', 'idle'];
       var sheetStatus = {};
       var sheetFailed = [];
+      var sheetDims = {};
       function sheetUrl(state) { return ASSET_BASE + '/' + state + '-sheet.png'; }
       function preloadSheets(done) {
         var pending = SHEETS.length;
@@ -508,7 +515,11 @@ const WIDGET_HTML = `<!DOCTYPE html>
           try {
             var img = new Image();
             var timer = setTimeout(function () { mark(false); }, 8000);
-            img.onload = function () { clearTimeout(timer); mark(true); };
+            img.onload = function () {
+              clearTimeout(timer);
+              try { sheetDims[s] = { w: img.naturalWidth, h: img.naturalHeight }; } catch (e) {}
+              mark(true);
+            };
             img.onerror = function () { clearTimeout(timer); mark(false); };
             img.src = sheetUrl(s);
           } catch (e) { mark(false); }
@@ -622,11 +633,11 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (cur < 0 && tasks.length) cur = tasks.length - 1;
         var frac = tasks.length > 1 ? Math.max(cur, 0) / (tasks.length - 1) : 1;
         fill.style.width = Math.round(frac * 100) + '%';
-        if (!applySheet(runner, 'run', SHEET_W.crew, SHEET_W.crewH)) {
-          markSheetMissing(runner, SHEET_W.crew, SHEET_W.crewH, 'run');
+        if (!applySheet(runner, 'run', RUN_W, RUN_H)) {
+          markSheetMissing(runner, RUN_W, RUN_H, 'run');
         }
-        runner.style.top = '48px';
-        runner.style.left = 'calc(' + Math.round(frac * 100) + '% - 16px)';
+        runner.style.top = '60px';
+        runner.style.left = 'calc(' + Math.round(frac * 100) + '% - 12px)';
         var nodes = '';
         for (var j = 0; j < tasks.length; j++) {
           var done = isDoneTask(tasks[j]);
@@ -647,6 +658,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
       // R1-R5: name normalization (mapping at the data level, never CSS cut).
       // "Builder via live checkout" -> {name:"Live", role:"Builder"}.
+      var AGENT_WORDS = /claude|codex|probe|builder|opencode|cline|cursor|grok/i;
       var NAME_MAP = [
         [/claude-code/i, 'Claude'],
         [/codex/i, 'Codex'],
@@ -720,13 +732,25 @@ const WIDGET_HTML = `<!DOCTYPE html>
       function tokensOf(s) {
         return String(s || '').trim().split(SEP_RE).filter(Boolean);
       }
+      var FILLERS = ['only', 'just'];
+      function parenRole(p) {
+        var first = String(p || '').split(',')[0].trim();
+        var lk = first.toLowerCase();
+        if (lk in PAREN_KO) return PAREN_KO[lk];
+        var toks = first.trim().split(/ +/).filter(Boolean);
+        var kept = toks.filter(function (x) { return x.indexOf('-') < 0; });
+        if (kept.length) toks = kept;
+        while (toks.length > 1 && FILLERS.indexOf(toks[toks.length - 1].toLowerCase()) >= 0) toks.pop();
+        var joined = toks.join(' ');
+        return capName(joined || first);
+      }
       function normalizeAgent(a) {
         var wid = String((a && a.workerId) || '');
         var raw = String((a && (a.displayName || a.workerId)) || '');
         // Version-stamped ids ("V0.2-B Codex 0.153.4 Managed"): last token = name, first = role.
         if (!/ via /i.test(raw)) {
-          var rawToks = tokensOf(raw);
-          if (rawToks.length >= 3 && /[0-9]+\.[0-9]+/.test(raw)) {
+          var rawToks = String(raw || '').trim().split(/ +/).filter(Boolean);
+          if (rawToks.length >= 3 && /[0-9]+[.][0-9]+/.test(raw)) {
             return {
               name: capName(rawToks[rawToks.length - 1]),
               role: capName(rawToks[0]),
@@ -738,14 +762,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (via) {
           var prefix = via[1].trim();
           var rest = via[2].trim();
-          var pm = rest.match(/^(.*?)\(([^()]*)\) *$/);
+          var pm = rest.match(/^(.*?)([(][^()]*[)]) *$/);
           var core = pm ? pm[1].trim() : rest;
-          var paren = pm ? pm[2].split(',')[0].trim() : null;
+          var paren = pm ? pm[2].split(',')[0].replace(/^[ (]+|[ )]+$/g, '').trim() : null;
           var isQa = /qa/i.test(prefix);
           var role;
           if (paren && !isQa) {
-            var pk = paren.toLowerCase();
-            role = (pk in PAREN_KO) ? PAREN_KO[pk] : capName(paren);
+            role = parenRole(paren);
           } else {
             role = mapFirst(NAME_MAP, isQa ? core : prefix)
               || mapFirst(ROLE_MAP, core)
@@ -757,10 +780,17 @@ const WIDGET_HTML = `<!DOCTYPE html>
             name = 'QA';
           } else {
             var cs = coreShort(core);
-            var hit = mapFirst(NAME_MAP, cs);
-            if (hit) name = hit;
-            else if (tokensOf(cs).length > 1) name = firstWord(cs) || cs;
-            else name = cs;
+            var cst = tokensOf(cs);
+            if (!paren && cst.length >= 3) {
+              name = cst[0] + ' ' + cst[cst.length - 1];
+              role = cst[cst.length - 2].toLowerCase();
+            } else {
+              var hit = mapFirst(NAME_MAP, cs);
+              if (hit) name = hit;
+              else if (AGENT_WORDS.test(cs)) name = cs;
+              else if (cst.length > 1) name = firstWord(cs) || cs;
+              else name = cs;
+            }
           }
           if (!name) name = 'Agent';
           return { name: capName(name), role: capName(role || 'Build'), full: raw };
@@ -773,11 +803,6 @@ const WIDGET_HTML = `<!DOCTYPE html>
         name2 = capName(name2);
         if (!role2) role2 = /(^|[^a-z])qa([^a-z]|$)/i.test(wid) ? 'QA' : 'Build';
         return { name: name2, role: role2, full: raw };
-      }
-        if (!name) name = 'Agent';
-        name = capName(name);
-        if (!role) role = /(^|[^a-z])qa([^a-z]|$)/i.test(wid) ? 'QA' : 'Build';
-        return { name: name, role: role, full: raw };
       }
       // Task titles: data-level single line (cap 30, full kept in title attr).
       function shortTaskTitle(task) {
@@ -795,14 +820,6 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (el) el.textContent = String(n);
         } catch (e) {}
       }
-      function setActive(n, total) {
-        try {
-          var a = document.getElementById('activeN');
-          var b = document.getElementById('activeT');
-          if (a) a.textContent = String(n);
-          if (b) b.textContent = String(total);
-        } catch (e) {}
-      }
       function setNum(el, n) {
         try { if (el) el.textContent = String(n); } catch (e) {}
       }
@@ -812,54 +829,73 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (el) el.className = (base || 'seg') + (n ? '' : ' dim');
         } catch (e) {}
       }
+      function laneOfAgent(a) {
+        if (/qa/i.test((a && a.workerId) || '')) return 'A';
+        return (a && a.state) === 'working' ? 'B' : 'C';
+      }
+      function chipHtml(a) {
+        var norm = normalizeAgent(a);
+        var sheet = agentSheet(a);
+        var avatar;
+        if (sheetStatus[sheet] === 'fail') {
+          var initial = esc(Array.from(norm.name).slice(0, 1).join('') || '?');
+          avatar = '<span class="cav-miss" title="' + esc(t('spriteLoadFail') + ': ' + sheet) + '">' + initial + '</span>';
+        } else {
+          avatar = '<span class="cav"><span class="crew-sp" data-sheet="' + sheet + '"></span></span>';
+        }
+        var taskTip = (a.taskTitle || a.taskId) ? ' | ' + (a.taskTitle || a.taskId) : '';
+        return '<span class="chip" title="' + esc(norm.full + taskTip) + '">' + avatar
+          + '<span class="ctx"><b>' + esc(norm.name) + '</b><i>' + esc(norm.role) + '</i></span></span>';
+      }
+      function paintLaneAvatars(root) {
+        try {
+          var stages = (root || document).querySelectorAll('.crew-sp');
+          for (var s = 0; s < stages.length; s++) {
+            var sh = stages[s].getAttribute('data-sheet');
+            if (sh === 'dig') applySheet(stages[s], 'dig', SHEET_W.crew, SHEET_W.crewH);
+            else if (sh === 'qa') applySheet(stages[s], 'qa', SHEET_W.crew, SHEET_W.crewH);
+            else applySheet(stages[s], 'idle', SHEET_W.crew, SHEET_W.crewH);
+          }
+        } catch (e) { /* avatars best-effort; chips stay readable */ }
+      }
+      function setLaneCount(id, n) {
+        try {
+          var el = document.getElementById(id);
+          if (el) el.textContent = String(n);
+        } catch (e) {}
+      }
       function renderAgents(dash) {
         var agents = (dash && dash.agents) || [];
         setBadge('bCrew', agents.length);
-        if (!agents.length) { agentsEl.innerHTML = '<div class="sub">' + esc(t('noAgents')) + '</div>'; setActive(0, 0); return; }
-        var html = '';
-        var active = 0;
+        setNum(stAgentsEl, agents.length);
+        setSeg('sgAgents', agents.length, 'eseg blue');
+        var buckets = { A: [], B: [], C: [] };
         for (var i = 0; i < agents.length; i++) {
           var a = agents[i] || {};
-          var norm = normalizeAgent(a);
-          var sheet = agentSheet(a);
-          if (a.state === 'working' || /qa/i.test(a.workerId || '')) active++;
-          var stageInner;
-          var sheetErr = '';
-          if (sheetStatus[sheet] === 'fail') {
-            // Visible missing-sprite avatar + named warning on the card. Never an empty slot.
-            var initial = esc(Array.from(norm.name).slice(0, 1).join('') || '?');
-            stageInner = '<div class="crew-missing" title="' + esc(t('spriteFail') + ': ' + sheet) + '">' + initial + '</div>';
-            sheetErr = '<div class="sprite-err">' + esc(t('spriteLoadFail') + ': ' + sheet) + '</div>';
-          } else {
-            stageInner = '<div class="crew-sp" data-sheet="' + sheet + '"></div>';
-          }
-          var tt = shortTaskTitle(a.taskTitle ? { title: a.taskTitle } : (a.taskId ? { taskId: a.taskId } : null));
-          var taskRow = tt.text
-            ? '<div class="task1" title="' + esc(tt.full) + '">' + esc(tt.text) + '</div>'
-            : '';
-          html += '<div class="crew-card"><div class="crew-top"><div class="avatar">' + stageInner + '</div>'
-            + '<div class="who"><span class="nm" title="' + esc(norm.full) + '">' + esc(norm.name) + '</span> '
-            + '<span class="pill ' + agentPillClass(a) + '">● ' + esc(agentStateLabel(a)) + '</span></div></div>'
-            + '<div class="role">' + esc(norm.role) + '</div>'
-            + taskRow + sheetErr + '</div>';
+          try {
+            buckets[laneOfAgent(a)].push(chipHtml(a));
+          } catch (e) { /* one bad agent never kills the lane */ }
         }
-        agentsEl.innerHTML = html;
-        var stages = agentsEl.querySelectorAll('.crew-sp');
-        for (var s = 0; s < stages.length; s++) {
-          var sh = stages[s].getAttribute('data-sheet');
-          if (sh === 'dig') applySheet(stages[s], 'dig', SHEET_W.crew, SHEET_W.crewH);
-          else if (sh === 'qa') applySheet(stages[s], 'qa', SHEET_W.crew, SHEET_W.crewH);
-          else applySheet(stages[s], 'idle', SHEET_W.crew, SHEET_W.crewH);
+        var lanes = ['A', 'B', 'C'];
+        var boxes = ['chipsA', 'chipsB', 'chipsC'];
+        var counts = ['laneNa', 'laneNb', 'laneNc'];
+        for (var l = 0; l < lanes.length; l++) {
+          try {
+            var box = document.getElementById(boxes[l]);
+            if (box) box.innerHTML = buckets[lanes[l]].join('');
+          } catch (e) {}
+          setLaneCount(counts[l], buckets[lanes[l]].length);
         }
-        setActive(active, agents.length);
-        var tasks = (dash && dash.tasks) || {};
-        var open = (tasks.RUNNING || 0) + (tasks.DISPATCHED || 0) + (tasks.READY || 0) + (tasks.PENDING || 0);
+        paintLaneAvatars(document);
         var goals = (dash && dash.goals) || [];
+        var gTotal = goals.length;
         var gOpen = 0;
         for (var j = 0; j < goals.length; j++) {
           if (goals[j] && goals[j].status !== 'COMPLETED' && goals[j].status !== 'DONE') gOpen++;
         }
-        remainEl.innerHTML = '<b>' + t('remaining') + '</b> ' + open + ' · <b>' + t('goals') + '</b> ' + gOpen;
+        setNum(stGoalsEl, gTotal);
+        setSeg('sgGoals', gTotal, 'eseg muted');
+        setBadge('bWbs', gOpen);
       }
       // Proven spike bridge (behavioral authority): register the response
       // listener synchronously, then postMessage, then return the promise.
@@ -908,6 +944,49 @@ const WIDGET_HTML = `<!DOCTYPE html>
         return r || {};
       }
 
+      function renderSelfcheck() {
+        try {
+          var el = document.getElementById('selfcheck');
+          if (!el) return;
+          var build = '';
+          try { build = (document.getElementById('buildTag') || {}).textContent || ''; } catch (e) {}
+          var lanes = document.querySelectorAll('.lane').length;
+          var envOk = !!document.getElementById('env');
+          var laneSum = 0;
+          ['laneNa', 'laneNb', 'laneNc'].forEach(function (id) {
+            try {
+              var n = parseInt((document.getElementById(id) || {}).textContent || '0', 10);
+              if (!isNaN(n)) laneSum += n;
+            } catch (e) {}
+          });
+          var stripN = 0;
+          try { stripN = parseInt((document.getElementById('stAgents') || {}).textContent || '0', 10); } catch (e) {}
+          if (isNaN(stripN)) stripN = 0;
+          var sheetW = '';
+          try {
+            var sp = document.querySelector('.crew-sp');
+            if (sp) sheetW = String(getComputedStyle(sp).backgroundSize || '').split(' ')[0] || '';
+          } catch (e) {}
+          var av = [];
+          for (var i = 0; i < SHEETS.length && av.length < 3; i++) {
+            if (sheetDims[SHEETS[i]]) av.push(SHEETS[i] + '=' + sheetDims[SHEETS[i]].w);
+          }
+          var ext = sheetFailed.length ? ('FAIL:' + sheetFailed.join(',')) : 'jsDelivr 8/8';
+          var bytes = 0;
+          try { bytes = document.documentElement.outerHTML.length; } catch (e) {}
+          var lines = [
+            'buildTag: ' + build.trim(),
+            'avatar loaded: ' + (av.length ? av.join(' ') : 'none yet'),
+            'lane count: ' + lanes,
+            'env strip exists: ' + envOk,
+            'count consistency: strip ' + stripN + ' vs lanes ' + laneSum + ' -> ' + (stripN === laneSum ? 'OK' : 'MISMATCH'),
+            'sheetW sanity: ' + (sheetW || '?') + (sheetW === '80px' ? ' OK' : ' (want 80px)'),
+            'external image load: ' + ext,
+            'bundle size: ' + bytes + ' chars'
+          ];
+          el.textContent = lines.join(' | ');
+        } catch (e) { /* selfcheck never breaks render */ }
+      }
       async function poll() {
         try {
           var list = await callTool('relay_pm_list_pending_deliveries', {});
@@ -927,6 +1006,16 @@ const WIDGET_HTML = `<!DOCTYPE html>
               var tl = await callTool('relay_pm_list_tasks', {});
               var taskList = (tl && tl.tasks) || [];
               var goals = (dash && dash.goals) || [];
+              try {
+                var doneT = 0;
+                for (var ti = 0; ti < taskList.length; ti++) {
+                  if (isDoneTask(taskList[ti])) doneT++;
+                }
+                var barB = document.getElementById('barB');
+                if (barB && taskList.length) {
+                  barB.style.width = Math.round((doneT / taskList.length) * 100) + '%';
+                }
+              } catch (eBar) { /* progress best-effort */ }
               try { renderLadder(taskList, goals); } catch (eL) { logLine('render ladder error: ' + eL.message); }
               try { renderWbs(taskList, goals); } catch (eW) { logLine('render wbs error: ' + eW.message); }
             } catch (e3) { /* task views best-effort */ }
@@ -952,6 +1041,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
           setStatus('waiting', t('connected'), t('waiting'));
           logLine('poll error: ' + e.message);
         }
+        renderSelfcheck();
       }
 
       async function handleDelivery(delivery) {

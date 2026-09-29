@@ -5,15 +5,29 @@
  */
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import vm from 'node:vm';
 
 const m = await import('../dist/server/mcp/app/pm-widget-resource.js');
 const html = m.pmWidgetHtml('https://example.invalid/w');
 
+describe('shipped script parses (no template-escape breakage)', () => {
+  it('client <script> compiles clean', () => {
+    const sc = html.match(/<script>([\s\S]*)<\/script>/)[1];
+    assert.doesNotThrow(() => new vm.Script(sc), 'served JS must parse');
+  });
+  it('every getElementById target exists in static DOM', () => {
+    const used = new Set([...html.matchAll(/getElementById\('([^']+)'\)/g)].map(x => x[1]));
+    const defined = new Set([...html.matchAll(/id="([^"]+)"/g)].map(x => x[1]));
+    const missing = [...used].filter(id => !defined.has(id));
+    assert.deepEqual(missing, [], 'dangling DOM refs (agentsEl-class bug): ' + missing.join(','));
+  });
+});
+
 function extractVar(src, name) {
-  if (name === 'SEP_RE') {
+  if (name === 'SEP_RE' || name === 'AGENT_WORDS') {
     // Served HTML holds real control chars (valid \t\n\r escapes evaluated).
-    const m = src.match(/var SEP_RE = [\s\S]*?;/);
-    assert.ok(m, 'client var SEP_RE present');
+    const m = src.match(new RegExp('var ' + name + ' = [\\s\\S]*?;'));
+    assert.ok(m, 'client var ' + name + ' present');
     return m[0];
   }
   const rx = new RegExp('var ' + name + ' = ');
@@ -54,6 +68,14 @@ const clientSrc = [
   extractVar(html, 'NAME_MAP'),
   extractVar(html, 'ROLE_MAP'),
   extractVar(html, 'KO_WORD'),
+  extractVar(html, 'AGENT_WORDS'),
+  extractVar(html, 'PAREN_KO'),
+  extractVar(html, 'FILLERS'),
+  extractFn(html, 'mapFirst'),
+  extractFn(html, 'stripVersions'),
+  extractFn(html, 'coreShort'),
+  extractFn(html, 'tokensOf'),
+  extractFn(html, 'parenRole'),
   extractFn(html, 'mapFirst'),
   extractFn(html, 'firstWord'),
   extractFn(html, 'capName'),
@@ -105,6 +127,22 @@ describe('name normalization (R1-R6)', () => {
     assert.equal(client.normalizeAgent({}).name, 'Agent');
     assert.equal(client.normalizeAgent({ displayName: 'Semantic Quality Assurance' }).name, '품질 검증');
   });
+  it('SEND-2 name table: 7 examples match exactly', () => {
+    const rows = [
+      [{ displayName: 'Builder via Claude Code (Pro profile, relay path, acceptEdits)' }, 'Claude Code', 'Pro profile'],
+      [{ displayName: 'Semantic QA via Codex CLI (read-only)' }, 'QA', 'Codex'],
+      [{ displayName: 'Builder via Codex CLI (config default model)' }, 'Codex', '기본 모델'],
+      [{ displayName: 'V0.2-B Codex 0.153.4 Managed' }, 'Managed', 'V0.2-B'],
+      [{ displayName: 'Builder via live Agent Relay checkout' }, 'live checkout', 'relay'],
+      [{ displayName: 'Builder via OpenCode (free tier only)' }, 'OpenCode', 'free tier'],
+      [{ displayName: 'Builder via Cline (cline-pass OAuth)' }, 'Cline', 'OAuth'],
+    ];
+    for (const [a, name, role] of rows) {
+      const r = client.normalizeAgent(a);
+      assert.equal(r.name, name, JSON.stringify(a));
+      assert.equal(r.role, role, JSON.stringify(a));
+    }
+  });
   it('R4/R6 caps hold across the battery', () => {
     const battery = [
       {}, { displayName: 'x' }, { displayName: 'Builder via live checkout' },
@@ -120,7 +158,7 @@ describe('name normalization (R1-R6)', () => {
       const cps = Array.from(r.name);
       if (/[가-힣]/.test(r.name)) assert.ok(cps.length <= 10, `${r.name} <= 10ko`);
       else assert.ok(cps.length <= 16, `${r.name} <= 16en`);
-      assert.ok(r.role.length > 0 && r.role.length <= 10, `role sane: ${r.role}`);
+      assert.ok(r.role.length > 0 && r.role.length <= 16, `role sane: ${r.role}`);
     }
   });
   it('task titles shorten at data level (30), full kept', () => {
@@ -133,30 +171,30 @@ describe('name normalization (R1-R6)', () => {
 });
 
 describe('avatar sheet geometry (display-size math)', () => {
-  it('dig 32x48 -> 128px bg, -128px offset, steps(4)', () => {
+  it('dig 20x30 -> 80px bg, -80px offset, steps(4)', () => {
     const el = fakeEl();
-    assert.equal(client.applySheet(el, 'dig', 32, 48), true);
-    assert.equal(el.style.backgroundSize, '128px 48px');
-    assert.equal(el._props['--sheetW'], '-128px');
+    assert.equal(client.applySheet(el, 'dig', 20, 30), true);
+    assert.equal(el.style.backgroundSize, '80px 30px');
+    assert.equal(el._props['--sheetW'], '-80px');
     assert.match(el.style.animation, /steps\(4\)/);
     assert.ok(el.style.backgroundImage.includes('dig-sheet.png'));
   });
-  it('run 32x48 -> 192px steps(6); climb 64x98 -> 256px steps(4)', () => {
+  it('run 24x36 -> 144px steps(6); climb 48x74', () => {
     const r = fakeEl();
-    client.applySheet(r, 'run', 32, 48);
-    assert.equal(r.style.backgroundSize, '192px 48px');
+    client.applySheet(r, 'run', 24, 36);
+    assert.equal(r.style.backgroundSize, '144px 36px');
     assert.match(r.style.animation, /steps\(6\)/);
     const c = fakeEl();
-    client.applySheet(c, 'climb', 64, 98);
-    assert.equal(c.style.backgroundSize, '256px 98px');
-    assert.equal(c._props['--sheetW'], '-256px');
+    client.applySheet(c, 'climb', 48, 74);
+    assert.equal(c.style.backgroundSize, '192px 74px');
+    assert.equal(c._props['--sheetW'], '-192px');
   });
   it('durations preserved per state', () => {
     const e = fakeEl();
-    client.applySheet(e, 'dig', 32, 48);
+    client.applySheet(e, 'dig', 20, 30);
     assert.match(e.style.animation, /0\.62s/);
     const e2 = fakeEl();
-    client.applySheet(e2, 'idle', 32, 48);
+    client.applySheet(e2, 'idle', 20, 30);
     assert.match(e2.style.animation, /2\.6s/);
   });
 });
@@ -165,12 +203,13 @@ describe('layout contract (P1-P5, H1-H4)', () => {
   it('no CSS ellipsis anywhere (P3: data-level shortening only)', () => {
     assert.ok(!html.includes('text-overflow'));
   });
-  it('responsive grid 2/3/4 cols + avatar + strip + badges', () => {
-    assert.ok(html.includes('grid-template-columns:repeat(2,1fr)'));
-    assert.ok(html.includes('@media (min-width:820px)') && html.includes('repeat(3,1fr)'));
-    assert.ok(html.includes('@media (min-width:1180px)') && html.includes('repeat(4,1fr)'));
-    assert.ok(html.includes('.avatar') && html.includes('width:32px') && html.includes('height:48px'));
-    for (const id of ['bCrew', 'bLadder', 'bWbs', 'activeN', 'activeT', 'segWait', 'segDoing', 'segDone']) {
+  it('lanes + chips + strip + badges (A-plan, no card grid)', () => {
+    assert.ok(!html.includes('repeat(2,1fr)') && !html.includes('crew-grid'), 'card grid removed');
+    assert.ok(html.includes('.cav') && html.includes('width:20px') && html.includes('height:30px'));
+    assert.ok(html.includes('id="lanes"') && html.includes('lane-a') && html.includes('lane-b') && html.includes('lane-c'));
+    assert.ok(html.includes('chipHtml') && html.includes('laneOfAgent'), 'lane/chip renderers present');
+    assert.ok(html.includes('id="chipsA"') && html.includes('id="chipsB"') && html.includes('id="chipsC"'));
+    for (const id of ['bCrew', 'bLadder', 'bWbs', 'stAgents', 'stReview', 'stDone', 'stGoals', 'stNote', 'headDone', 'headTotal', 'laneNa', 'laneNb', 'laneNc', 'chipsA', 'chipsB', 'chipsC', 'barA', 'barB']) {
       assert.ok(html.includes('id="' + id + '"'), id);
     }
   });
@@ -185,11 +224,21 @@ describe('layout contract (P1-P5, H1-H4)', () => {
     assert.ok(html.includes('var RH = 78;'));
     assert.ok(html.includes('16 + Math.max(cur, 0) * RH - 8'));
     assert.ok(html.includes('height:96px'));
-    assert.ok(html.includes("runner.style.top = '48px'"));
+    assert.ok(html.includes("runner.style.top = '60px'"));
   });
-  it('3-line card structure with pill + title preservation', () => {
-    assert.ok(html.includes('crew-top') && html.includes('class="role"') && html.includes('class="task1"'));
-    assert.ok(html.includes('● '));
+  it('chip structure (avatar+name+role, no tag) + title preservation', () => {
+    assert.ok(html.includes('cav-miss') && html.includes('ctx') && html.includes('laneOfAgent'));
+    assert.ok(html.includes('norm.full'), 'full name kept in title');
+  });
+  it('A-plan palette, lane variants, selfcheck, bundle cap', () => {
+    for (const hex of ['#4a9eff', '#f0b429', '#2ea86a', '#5c6470', '#8b7bd8']) {
+      assert.ok(html.includes(hex), hex);
+    }
+    assert.ok(html.includes('#1e1a12') && html.includes('#141d29'), 'per-lane bg variants');
+    assert.ok(html.includes('height:3px'), 'progress bar 3px');
+    assert.ok(html.includes('id="selfcheck"') && html.includes('renderSelfcheck'), 'selfcheck block');
+    assert.ok(html.includes('80px') || html.includes('want 80px'), 'sheetW sanity target');
+    assert.ok(html.length < 100 * 1024, 'bundle <100KB, got ' + html.length);
   });
   it('dual CSP meta (ui.csp + legacy openai/widgetCSP)', () => {
     const meta = m.widgetResourceMeta('https://mcp.relay-agent.site/widgets/crew');
