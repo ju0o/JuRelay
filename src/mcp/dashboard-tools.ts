@@ -24,33 +24,79 @@ interface AgentEntry {
   model: string | null;
 }
 
-interface QaCapacity {
+/**
+ * What the portfolio is doing right now, plus QA slot pressure.
+ *
+ * The portfolio is its own rail (Founder 2026-09-29): its workers are deliberately NOT in the ws worker
+ * registry, so `agents` — which comes from that registry — cannot describe them. This reads the runner's
+ * own small portfolio-live.json mirror instead, which carries the Korean task title, the AI, the pid and
+ * whether that process is alive.
+ *
+ * It never reads state.json: that is ~10 MB of 2 000+ tasks and this tool is polled continuously. A
+ * missing, malformed, or partial file yields null and the widget keeps the count it already had.
+ */
+export interface PortfolioLiveEntry {
+  taskId: string;
+  title: string;
+  projectId: string | null;
+  phase: 'build' | 'qa';
+  pid: number | null;
+  runtime: string | null;
+  model: string | null;
+  workerId: string;
+  workspace: string | null;
+  startedAt: string;
+  alive: boolean | null;
+}
+
+export interface PortfolioLive {
   qaActive: number;
   qaWaiting: number;
   qaTotal: number;
   maxQa: number;
+  builders: PortfolioLiveEntry[];
+  qa: PortfolioLiveEntry[];
   updatedAt?: string;
 }
 
-/**
- * QA slot pressure from the portfolio runner.
- *
- * Read from the runner's own tiny qa-capacity.json mirror, never from state.json: the widget polls this
- * tool every couple of seconds and state.json is ~10 MB of 2 000+ tasks, so parsing it per poll would
- * cost more than the widget itself. A missing or unreadable file simply means "no reading available",
- * and the widget falls back to the count it already had.
- */
-function readQaCapacity(dataRoot: string): QaCapacity | null {
+function num(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+function readPortfolioLive(dataRoot: string): PortfolioLive | null {
   try {
-    const raw = fs.readFileSync(path.join(dataRoot, 'portfolio-execution', 'qa-capacity.json'), 'utf8');
-    const parsed = JSON.parse(raw) as Partial<QaCapacity>;
-    if (typeof parsed.qaActive !== 'number' || typeof parsed.qaWaiting !== 'number') return null;
+    const raw = fs.readFileSync(path.join(dataRoot, 'portfolio-execution', 'portfolio-live.json'), 'utf8');
+    const parsed = JSON.parse(raw) as Partial<PortfolioLive>;
+    const qaActive = num(parsed.qaActive);
+    const qaWaiting = num(parsed.qaWaiting);
+    if (qaActive === null || qaWaiting === null) return null;
+    // A malformed entry is dropped rather than surfaced: the Founder must never see a half-built card.
+    const entry = (raw: unknown): PortfolioLiveEntry | null => {
+      const e = raw as Partial<PortfolioLiveEntry>;
+      if (!e || typeof e.taskId !== 'string' || !e.taskId) return null;
+      return {
+        taskId: e.taskId,
+        // Never an empty title — a blank card tells the Founder nothing.
+        title: typeof e.title === 'string' && e.title.trim() ? e.title.trim() : e.taskId,
+        projectId: typeof e.projectId === 'string' ? e.projectId : null,
+        phase: e.phase === 'qa' ? 'qa' : 'build',
+        pid: num(e.pid),
+        runtime: typeof e.runtime === 'string' ? e.runtime : null,
+        model: typeof e.model === 'string' ? e.model : null,
+        workerId: typeof e.workerId === 'string' && e.workerId ? e.workerId : `portfolio-${e.phase ?? 'build'}-${e.taskId}`,
+        workspace: typeof e.workspace === 'string' ? e.workspace : null,
+        startedAt: typeof e.startedAt === 'string' ? e.startedAt : new Date(0).toISOString(),
+        alive: typeof e.alive === 'boolean' ? e.alive : null,
+      };
+    };
     return {
-      qaActive: parsed.qaActive,
-      qaWaiting: parsed.qaWaiting,
-      qaTotal: typeof parsed.qaTotal === 'number' ? parsed.qaTotal : parsed.qaActive + parsed.qaWaiting,
-      maxQa: typeof parsed.maxQa === 'number' ? parsed.maxQa : 1,
-      ...(parsed.updatedAt ? { updatedAt: parsed.updatedAt } : {}),
+      qaActive,
+      qaWaiting,
+      qaTotal: num(parsed.qaTotal) ?? qaActive + qaWaiting,
+      maxQa: num(parsed.maxQa) ?? 1,
+      builders: Array.isArray(parsed.builders) ? parsed.builders.map(entry).filter((e): e is PortfolioLiveEntry => e !== null) : [],
+      qa: Array.isArray(parsed.qa) ? parsed.qa.map(entry).filter((e): e is PortfolioLiveEntry => e !== null) : [],
+      ...(typeof parsed.updatedAt === 'string' ? { updatedAt: parsed.updatedAt } : {}),
     };
   } catch {
     return null;
@@ -112,8 +158,9 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
       description:
         'One bounded snapshot for the visual PM widget: agents with working|idle ' +
         'state, current task, and model when known; task counts by state; goals; ' +
-        'pending delivery count; QA slot pressure (qa). Pure read — never judges, ' +
-        'dispatches, or mutates.',
+        'pending delivery count; and portfolio (the live portfolio rail: what its ' +
+        'workers are doing, with title, AI, pid, alive flag, and QA slot pressure). ' +
+        'Pure read — never judges, dispatches, or mutates.',
       inputSchema: objectSchema({}),
       handler: async (args: Record<string, unknown>) => {
         rejectUnknownFields(args, []);
@@ -157,7 +204,7 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
         } catch {
           pendingDeliveries = 0;
         }
-        return { project, agents, tasks: byState, goals, pendingDeliveries, qa: readQaCapacity(dataRoot) };
+        return { project, agents, tasks: byState, goals, pendingDeliveries, portfolio: readPortfolioLive(dataRoot) };
       },
     },
   ];
