@@ -10234,6 +10234,19 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
           "title": "계획에 없는 일은 다시 시키지도 만들지도 않아요"
+        },
+        {
+          "taskId": "JUPLAN-AR-RECONCILE-RETRY",
+          "scope": "Append an optional retry-queue argument after scopeHold on reconcileRestart, applyRestartReconcile, and runRestartReconcile so REQUEST_CHANGES past the three-attempt bound turns the one provider-outage requeue into dispatch none and invents no Product task, while an omitted or not-past-bound fact keeps that single requeue.",
+          "files": [
+            "packages/runtime/src/agentRelayRestartReconcile.ts",
+            "packages/runtime/test/agent-relay-restart-reconcile.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test test/agent-relay-restart-reconcile.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:128 After the bound is exhausted, the task is `HOLD`. The runner does not"
         }
       ],
       "qaRuntime": [
