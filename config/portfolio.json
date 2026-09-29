@@ -27332,6 +27332,50 @@
           ],
           "ssotEvidence": "README.md:19 자주 묻는 질문 재사용",
           "title": "이름 없는 질문은 비슷한 기존 답을 그대로 씀"
+        },
+        {
+          "taskId": "JUAI-CHECK-GUIDE-EDIT",
+          "scope": "Add check.mjs source assertions that setup.mjs edits existing 사용법, 봇-소스코드, and 운영진 messages in place and only sends replacements when those stored messages are missing.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:28 node setup.mjs # 채널·역할·포럼 태그·입장 질문 생성 (여러 번 실행해도 안전)"
+        },
+        {
+          "taskId": "JUAI-CHECK-SERVICE-GUARD",
+          "scope": "Add check.mjs assertions that juai-bot.service runs guard.mjs before bot.mjs and sets Restart=always, leaving the machine-specific paths unchanged.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:42 guard.mjs 새 버전이 켜지지 않으면 이전 버전으로 자동 복구"
+        },
+        {
+          "taskId": "JUAI-CHECK-BOTLOG-REDACT",
+          "scope": "Add a check.mjs source assertion that the bot log passes its text through redact() and slices it to 1900 characters before posting.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:47 AI 출력은 토큰·키·이메일·전화번호를 가린 뒤에만 디스코드로 나갑니다."
+        },
+        {
+          "taskId": "JUAI-CHECK-HUB-ROUTES",
+          "scope": "Add check.mjs assertions that connect waits for the network, throws when no bot logged in, and registers hub message, new-thread, and reaction handlers, leaving the existing OpenCode and threadUpdate assertions unchanged.",
+          "files": [
+            "check.mjs"
+          ],
+          "tests": [
+            "node check.mjs"
+          ],
+          "ssotEvidence": "README.md:39 bot.mjs 기능 전부"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
