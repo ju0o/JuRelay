@@ -13054,6 +13054,31 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 빠진 확인 항목의 쉬운 설명",
           "title": "요약 글이 쉬운 말로 나와요"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-STORED-PLAIN",
+          "scope": "In renderTodayList, replace visible 받은 결과, 빠진 확인, 중요한 영향, and 받기 전 할 일 lines that contain Agent, 요청 항목, 미관찰, a file name, or a shell command with the plain Korean sentences the receipt view already uses.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안"
+        },
+        {
+          "taskId": "JUCEIPT-SUMMARY-SHELL-PLAIN",
+          "scope": "Extend plainStoredCheck so daily and scan summaries hide vitest, tsc, curl, mkdir, rm, zsh, python3, and Bash or shell command the way the receipt view already does.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts tests/scan-summary.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안"
         }
       ],
       "skills": {
