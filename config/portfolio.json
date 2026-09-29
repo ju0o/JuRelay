@@ -22906,6 +22906,17 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 — M3는 유효한 same-task Claude-final/Receipt join 전까지 UNDECIDED로 유지한다.",
           "title": "휴대폰에서도 화면을 쉽게 읽기"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-ROADMAP-DIRECTIVE-DATE",
+          "scope": "In docs/product/MASTER_ROADMAP.md change only the header Last updated date and the section 12 As of date from 2026-09-24 to 2026-09-29 so the current directive timestamp matches the valid-join wording already in item 4, without changing any decision text.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/product/MASTER_ROADMAP.md:561 M3 remains UNDECIDED, and no GO/DEFER/KILL milestone decision is recorded until that condition is met."
         }
       ],
       "skills": {
