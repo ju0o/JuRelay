@@ -6827,7 +6827,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "복사 결과를 다시 확인해요"
         },
         {
           "taskId": "ACTL-SEND-INFLIGHT-EVIDENCE",
@@ -6839,7 +6840,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "보내는 중인 작업을 알려줘요"
         }
       ],
       "qaRuntime": [
@@ -26474,7 +26476,8 @@
           "tests": [
             "node --test tests/config-error-redact-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:126 설정 오류 보고에는 설정 파일 전체나 값이 포함될 수 있는 내용을 출력하지 않는다. 예를 들어 `glossarry`처럼 지원하지 않는 이름만 표시할 수 있다."
+          "ssotEvidence": "docs/FEATURE_CONFIGURATION.md:126 설정 오류 보고에는 설정 파일 전체나 값이 포함될 수 있는 내용을 출력하지 않는다. 예를 들어 `glossarry`처럼 지원하지 않는 이름만 표시할 수 있다.",
+          "title": "설정 오류에서 정보가 새지 않게 함"
         },
         {
           "taskId": "JUTELL-EVIDENCE-PHRASE-NO-REPEAT-PARITY",
@@ -26486,7 +26489,8 @@
           "tests": [
             "node --test tests/evidence-phrase-no-repeat-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/GLOSSARY_POLICY.md:108 모든 파일 설명에 같은 근거 문구를 반복하지 않음"
+          "ssotEvidence": "docs/GLOSSARY_POLICY.md:108 모든 파일 설명에 같은 근거 문구를 반복하지 않음",
+          "title": "근거 반복을 줄여 설명을 읽기 쉽게 함"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
