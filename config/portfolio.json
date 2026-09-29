@@ -9999,6 +9999,45 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED.",
           "title": "작업이 막히면 다시 시도하지 않아요"
+        },
+        {
+          "taskId": "JUPLAN-AR-ACCEPT-SCOPE",
+          "scope": "Append an optional TaskPacketScopeHold after blockedResult on selectNextAfterAccept and applyAcceptNext so out-of-scope work returns dispatch none and a null next id, while an omitted or clean AR-JUPLAN-001 fact keeps the next listed task.",
+          "files": [
+            "packages/runtime/src/agentRelayAcceptNext.ts",
+            "packages/runtime/test/agent-relay-accept-next.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-accept-next.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+        },
+        {
+          "taskId": "JUPLAN-AR-QA-SCOPE",
+          "scope": "Append an optional TaskPacketScopeHold after blockedResult on decideQaTestGate so out-of-scope work does not promote a passing ACCEPT and dispatches none, while an omitted or clean fact keeps today's promotion.",
+          "files": [
+            "packages/runtime/src/agentRelayQaGate.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-SCOPE",
+          "scope": "Append an optional TaskPacketScopeHold after blockedResult on decideRetry, applyRetryPolicy, and runSameTaskRetry so out-of-scope work does not retry and dispatches none, while an omitted or clean fact keeps the same-task retry.",
+          "files": [
+            "packages/runtime/src/agentRelayRetryPolicy.ts",
+            "packages/runtime/test/agent-relay-retry-policy.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
         }
       ],
       "qaRuntime": [
