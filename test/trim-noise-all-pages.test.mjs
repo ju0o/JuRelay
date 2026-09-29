@@ -43,7 +43,7 @@ test('승인 규칙, 계획, 작업 기록 render no second title and no 닫기'
   assertNoSecondTitle(records, '작업 기록');
   assertNoSecondTitle(approvalSrc, 'approvals.tsx');
 
-  assert.match(topbar, /<h1>\{pageCopy\.title\}<\/h1>/);
+  assert.match(topbar, /<h1>\{headerTitle\}<\/h1>/);
   assert.match(topbar, /<p className="shell-lead">\{pageCopy\.lead\}<\/p>/);
   assert.doesNotMatch(topbar, /<h2[\s>]/);
   assert.equal(topbar.includes('>닫기<'), false);

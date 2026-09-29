@@ -1,7 +1,7 @@
 /* CR-08 model quota board + approval learning — pure helper tests.
    Covers the helpers behind the '모델 사용량' panel and the per-rule
    approval stats (unused → '아직 자동 적용된 적 없음', else
-   '자동 적용 N회 · 마지막 YYYY-MM-DD') plus approvalCategoryLabel.
+   '자동 적용 N회 · 마지막 3일 전') plus approvalCategoryLabel.
    Runs against the compiled shared module (dist/server/shared/types.js),
    mirroring test/v03.test.mjs conventions. */
 import assert from "node:assert/strict";
@@ -59,21 +59,27 @@ test("approvalUsedCount — missing/invalid renders as 0", () => {
   assert.equal(approvalUsedCount({ usedCount: 3 }), 3);
 });
 
-test("approvalLastUsed — missing/invalid renders as '-', else YYYY-MM-DD", () => {
+test("approvalLastUsed — missing/invalid renders as '-', else relative Korean", () => {
+  const now = Date.parse("2026-09-23T12:34:56Z");
   assert.equal(approvalLastUsed({}), "-");
   assert.equal(approvalLastUsed({ lastUsedAt: "" }), "-");
   assert.equal(approvalLastUsed({ lastUsedAt: "   " }), "-");
   assert.equal(approvalLastUsed({ lastUsedAt: "not-a-date" }), "-");
-  assert.match(approvalLastUsed({ lastUsedAt: "2026-09-20T12:34:56Z" }), /^\d{4}-\d{2}-\d{2}$/);
-  assert.equal(approvalLastUsed({ lastUsedAt: "2026-09-20T12:34:56Z" }), "2026-09-20");
+  assert.equal(approvalLastUsed({ lastUsedAt: "2026-09-23T12:34:56Z" }, now), "방금");
+  assert.equal(approvalLastUsed({ lastUsedAt: "2026-09-23T12:31:56Z" }, now), "3분 전");
+  assert.equal(approvalLastUsed({ lastUsedAt: "2026-09-23T09:34:56Z" }, now), "3시간 전");
+  assert.equal(approvalLastUsed({ lastUsedAt: "2026-09-22T12:34:56Z" }, now), "어제");
+  assert.equal(approvalLastUsed({ lastUsedAt: "2026-09-20T12:34:56Z" }, now), "3일 전");
+  assert.equal(approvalLastUsed({ lastUsedAt: "2026-09-20T12:34:56Z" }, now).includes("2026-09-20"), false);
 });
 
-test("approvalStatsLine — unused → '아직 자동 적용된 적 없음', else '자동 적용 N회 · 마지막 YYYY-MM-DD'", () => {
+test("approvalStatsLine — unused → '아직 자동 적용된 적 없음', else relative Korean", () => {
+  const now = Date.parse("2026-09-23T00:00:00Z");
   assert.equal(approvalStatsLine({}), "아직 자동 적용된 적 없음");
   assert.equal(approvalStatsLine({ usedCount: 0 }), "아직 자동 적용된 적 없음");
   assert.equal(
-    approvalStatsLine({ usedCount: 7, lastUsedAt: "2026-09-20T00:00:00Z" }),
-    "자동 적용 7회 · 마지막 2026-09-20",
+    approvalStatsLine({ usedCount: 7, lastUsedAt: "2026-09-20T00:00:00Z" }, now),
+    "자동 적용 7회 · 마지막 3일 전",
   );
 });
 

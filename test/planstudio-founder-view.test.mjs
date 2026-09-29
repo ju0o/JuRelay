@@ -76,7 +76,7 @@ test("planStudio.tsx — English-heavy labels are gone", () => {
 test("planStudio.tsx — raw gate ID is collapsed", () => {
   assert.match(
     studioSrc,
-    /<details>\s*<summary>원문 보기<\/summary><p className="muted mono" style=\{\{ fontSize: 11 \}\}>\{gate\.gateId\}<\/p><\/details>/,
+    /<details>\s*<summary>원문 보기<\/summary><p className="muted mono" style=\{\{ fontSize: 14 \}\}>\{gate\.gateId\}<\/p><\/details>/,
     "gateId should render inside a collapsed raw-value disclosure",
   );
 });

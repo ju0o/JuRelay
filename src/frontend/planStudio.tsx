@@ -641,7 +641,7 @@ export function PlanStudio({ initialProject }: { initialProject?: string }): Rea
     setPendingDeleteId(null);
     setSelectedId(next.tasks[Math.min(at, next.tasks.length - 1)]?.id ?? null);
     setLastDeleted({ task: target, index: at });
-    void persist(next, 'save').then(() => flashInfo(`‘${target.title}’ 삭제됨`));
+    void persist(next, 'save').then(() => flashInfo(`‘${target.title}’ 지웠어요`));
   }
 
   function undoDelete(): void {
@@ -778,7 +778,7 @@ export function PlanStudio({ initialProject }: { initialProject?: string }): Rea
                 </ol>
                 {lastDeleted && (
                   <div className="plan-undo" role="status">
-                    <span>‘{lastDeleted.task.title}’ 삭제됨</span>
+                    <span>‘{lastDeleted.task.title}’ 지웠어요</span>
                     <button className="mini" onClick={undoDelete} disabled={busy === 'save'}>
                       되돌리기
                     </button>
@@ -829,7 +829,7 @@ export function PlanStudio({ initialProject }: { initialProject?: string }): Rea
                 return (
                   <div key={gate.gateId} className="plan-gate">
                     <p className="plan-gate-ask">{gate.title}</p>
-                    <details><summary>원문 보기</summary><p className="muted mono" style={{ fontSize: 11 }}>{gate.gateId}</p></details>
+                    <details><summary>원문 보기</summary><p className="muted mono" style={{ fontSize: 14 }}>{gate.gateId}</p></details>
                     <div className="plan-answers" role="group" aria-label="사람 확인 답">
                       {answers.map(answer => (
                         <button

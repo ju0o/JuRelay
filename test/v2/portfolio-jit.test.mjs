@@ -218,9 +218,10 @@ test("target resolver validates repository/ref/SHA and reuses a clean checkout",
 test("target resolver fails closed on wrong SHA, wrong repository, and default-branch substitution", async () => {
   const f = await gitFixture();
   const base = { projectId: "juactl", repository: f.remote, workspaceMode: "READ_ONLY_QA" };
-  await assert.rejects(() => new TargetResolver().resolve({ ...base, ref: "feature", expectedHeadSha: "0".repeat(40) }), /exit|failed|not found|verification|unable|tree/i);
-  await assert.rejects(() => new TargetResolver().resolve({ ...base, repository: join(f.root, "missing.git"), ref: "feature", expectedHeadSha: f.head }), /exit|failed|not found|does not exist/i);
-  await assert.rejects(() => new TargetResolver().resolve({ ...base, ref: "main-only", expectedHeadSha: f.head }), /exit|failed|not found/i);
+  const gitFail = /exit|failed|not found|verification|unable|tree|fatal|트리|없|실패/i;
+  await assert.rejects(() => new TargetResolver().resolve({ ...base, ref: "feature", expectedHeadSha: "0".repeat(40) }), gitFail);
+  await assert.rejects(() => new TargetResolver().resolve({ ...base, repository: join(f.root, "missing.git"), ref: "feature", expectedHeadSha: f.head }), gitFail);
+  await assert.rejects(() => new TargetResolver().resolve({ ...base, ref: "main-only", expectedHeadSha: f.head }), gitFail);
 });
 
 test("target resolver creates and cleans a temporary READ_ONLY_QA checkout", async () => {

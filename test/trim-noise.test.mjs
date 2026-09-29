@@ -102,7 +102,7 @@ test('inner head is gone and the rail box hides when the PC is connected', () =>
   assert.doesNotMatch(surface, /<h1>관제실<\/h1>/);
 
   const topbar = app.slice(app.indexOf('className="topbar-row"'), app.indexOf('className="shell-main"'));
-  assert.match(topbar, /<h1>\{pageCopy\.title\}<\/h1>/);
+  assert.match(topbar, /<h1>\{headerTitle\}<\/h1>/);
   assert.match(topbar, /<ConnectionBar \/>/);
   assert.equal(topbar.includes('shell-env'), false);
   assert.equal(topbar.includes('theme-toggle'), false);

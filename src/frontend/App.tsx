@@ -47,6 +47,8 @@ import {
   UpdateStatus,
   applyOrderByKeys,
   normalizeModelUsage,
+  RECORD_GUIDE_STORAGE_KEY,
+  recordGuideVisible,
   reorderArray,
 } from '../shared/types.js';
 
@@ -318,7 +320,13 @@ export function visibleRecordAgents(
 
 // ── 모달 타입 ─────────────────────────────────────────────────────────────────
 interface ModalState   { title: string; placeholder: string; onOk: (v: string) => void; }
-interface ConfirmState { text: string; confirmBtn?: string; onOk: () => void | Promise<void>; }
+interface ConfirmState {
+  text: string;
+  confirmBtn?: string;
+  /** Destructive confirms put the safe button first. Other confirms stay as they were. */
+  safeFirst?: boolean;
+  onOk: () => void | Promise<void>;
+}
 
 // ── ErrorBoundary ─────────────────────────────────────────────────────────────
 class ErrorBoundary extends Component<{ children: React.ReactNode }, { err: string | null }> {
@@ -669,7 +677,10 @@ function AppInner(): React.ReactElement {
   const [date, setDate]           = useState(todayLocal());
   // board/model usage — 설정된 런타임만 에이전트 칩에 보여주기 위한 원본
   const [boardModels, setBoardModels] = useState<unknown>(null);
-  const [msg, setMsg]             = useState<{ kind: 'ok' | 'err' | 'info'; text: string } | null>(null);
+  const [msg, setMsg]             = useState<{ kind: 'ok' | 'err' | 'info'; text: string; detail?: string } | null>(null);
+  const [recordGuideSeen, setRecordGuideSeen] = useState(() => {
+    try { return localStorage.getItem(RECORD_GUIDE_STORAGE_KEY) === '1'; } catch { return false; }
+  });
   const msgTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [modal, setModal]         = useState<ModalState | null>(null);
   const [confirm, setConfirm]     = useState<ConfirmState | null>(null);
@@ -963,16 +974,17 @@ function AppInner(): React.ReactElement {
     if (updateStatus?.phase === 'available' && updateStatus.nextVersion
       && noticedVersion.current !== updateStatus.nextVersion) {
       noticedVersion.current = updateStatus.nextVersion;
-      notify('info', `새 버전 ${updateStatus.nextVersion}이 있습니다. ⚙ 설정 → 업데이트에서 설치할 수 있습니다.`);
+      notify('info', '새 버전이 있어요. 설정에서 설치할 수 있어요.', updateStatus.nextVersion);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateStatus?.phase, updateStatus?.nextVersion]);
 
   // ── 알림 ─────────────────────────────────────────────────────────────────────
-  function notify(kind: 'ok' | 'err' | 'info', text: string): void {
+  function notify(kind: 'ok' | 'err' | 'info', text: string, detail?: string): void {
     if (msgTimer.current) clearTimeout(msgTimer.current);
-    setMsg({ kind, text });
-    msgTimer.current = setTimeout(() => setMsg(null), kind === 'err' ? 6000 : 4000);
+    setMsg({ kind, text, detail });
+    const holdMs = detail ? 12000 : kind === 'err' ? 6000 : 4000;
+    msgTimer.current = setTimeout(() => setMsg(null), holdMs);
   }
   function dismissMsg(): void {
     if (msgTimer.current) clearTimeout(msgTimer.current);
@@ -1057,7 +1069,7 @@ function AppInner(): React.ReactElement {
       const n = await peekNextRun(project, agent, date);
       if (n !== null) updateTab(tab.id, { run: n });
     }
-    notify('info', `새 탭 — ${agent}`);
+    notify('info', `${agent} 탭을 열었어요 ✓`);
   }
 
   // ── 탭 제거 ─────────────────────────────────────────────────────────────────
@@ -1101,15 +1113,16 @@ function AppInner(): React.ReactElement {
         next.add(`a:${h.date}:${h.agent}`);
         return { ...s, expandedKeys: next };
       }));
-      notify('info', `런 #${h.run} (${h.agent}) 불러옴`);
+      notify('info', '기록을 불러왔어요 ✓');
     };
 
     const hasContent = !!tab && hasUnsavedContent(tab);
     const isDifferentRun = tab?.folder !== h.folder;
     if (hasContent && isDifferentRun) {
       setConfirm({
-        text: `현재 탭에 저장되지 않은 내용이 있습니다.\n런 #${h.run} (${h.agent})을 불러오면 현재 내용이 사라집니다.`,
+        text: '저장하지 않은 내용이 있어요. 다른 기록을 열면 그 내용이 사라져요.',
         confirmBtn: '불러오기',
+        safeFirst: true,
         onOk: doLoad,
       });
       return;
@@ -1117,7 +1130,7 @@ function AppInner(): React.ReactElement {
     await doLoad();
   }
 
-  // ── 탭에서 새 런 ──────────────────────────────────────────────────────────────
+  // ── 탭에서 새 기록 ──────────────────────────────────────────────────────────────
   async function newRunInTab(tabId?: string): Promise<void> {
     const tid = tabId ?? activeTabId;
     const tab = tabs.find(t => t.id === tid);
@@ -1126,7 +1139,7 @@ function AppInner(): React.ReactElement {
     await refreshHistory();
     const n = await peekNextRun(project, tab.agent, date);
     if (n !== null) updateTab(tid, { run: n });
-    notify('info', `${tab.agent} — 새 런 준비됨`);
+    notify('info', '새 기록을 준비했어요 ✓');
   }
 
   // ── 에이전트 변경 (탭 내) ─────────────────────────────────────────────────────
@@ -1148,22 +1161,26 @@ function AppInner(): React.ReactElement {
     if (!tab || !dataRoot) return;
     let folder = resolved?.folder ?? tab.folder;
     if (!folder) {
-      if (!project) { notify('err', '프로젝트를 먼저 선택하세요.'); return; }
+      if (!project) { notify('err', '프로젝트를 먼저 고르세요.'); return; }
       const res = await getNextRun(project, tab.agent, date);
-      if (!res) { notify('err', '런 폴더를 생성할 수 없습니다.'); return; }
+      if (!res) { notify('err', '기록 폴더를 만들 수 없어요.'); return; }
       resolved = res;
       folder = res.folder;
     }
-    const runNo = resolved?.run ?? tab.run;
     try {
       await must({ op: 'prompt:save', folder, content: tab.prompt, overwrite });
       updateTab(tabId, { ...(resolved ?? {}), promptSaved: true });
-      notify('ok', `프롬프트 저장됨 ← ${tab.agent} #${runNo}`);
+      notify('ok', '말을 저장했어요 ✓');
       await refreshHistory();
     } catch (e) {
       const text = e instanceof Error ? e.message : String(e);
       if (!overwrite && text.includes('이미 있어')) {
-        setConfirm({ text: 'prompt.md가 이미 존재합니다. 덮어쓸까요?', confirmBtn: '덮어쓰기', onOk: () => void saveTabPrompt(tabId, true) });
+        setConfirm({
+          text: '이미 적어 둔 말이 있어요. 덮어쓰면 이전 내용이 사라져요.',
+          confirmBtn: '덮어쓰기',
+          safeFirst: true,
+          onOk: () => void saveTabPrompt(tabId, true),
+        });
         return;
       }
       notify('err', text);
@@ -1176,22 +1193,26 @@ function AppInner(): React.ReactElement {
     if (!tab || !dataRoot) return;
     let folder = resolved?.folder ?? tab.folder;
     if (!folder) {
-      if (!project) { notify('err', '프로젝트를 먼저 선택하세요.'); return; }
+      if (!project) { notify('err', '프로젝트를 먼저 고르세요.'); return; }
       const res = await getNextRun(project, tab.agent, date);
-      if (!res) { notify('err', '런 폴더를 생성할 수 없습니다.'); return; }
+      if (!res) { notify('err', '기록 폴더를 만들 수 없어요.'); return; }
       resolved = res;
       folder = res.folder;
     }
-    const runNo = resolved?.run ?? tab.run;
     try {
       await must({ op: 'result:save', folder, content: tab.result, overwrite });
       updateTab(tabId, { ...(resolved ?? {}), resultSaved: true });
-      notify('ok', `결과 저장됨 ← ${tab.agent} #${runNo}`);
+      notify('ok', '결과를 저장했어요 ✓');
       await refreshHistory();
     } catch (e) {
       const text = e instanceof Error ? e.message : String(e);
       if (!overwrite && text.includes('이미')) {
-        setConfirm({ text: 'result.md가 이미 존재합니다. 덮어쓸까요?', confirmBtn: '덮어쓰기', onOk: () => void saveTabResult(tabId, true) });
+        setConfirm({
+          text: '이미 적어 둔 결과가 있어요. 덮어쓰면 이전 내용이 사라져요.',
+          confirmBtn: '덮어쓰기',
+          safeFirst: true,
+          onOk: () => void saveTabResult(tabId, true),
+        });
         return;
       }
       notify('err', text);
@@ -1206,9 +1227,9 @@ function AppInner(): React.ReactElement {
     // (stale closure로 인해 prompt/result가 서로 다른 런에 저장되는 문제 방지)
     let resolved: RunFolderResult | undefined;
     if (!tab.folder) {
-      if (!project) { notify('err', '프로젝트를 먼저 선택하세요.'); return; }
+      if (!project) { notify('err', '프로젝트를 먼저 고르세요.'); return; }
       const res = await getNextRun(project, tab.agent, date);
-      if (!res) { notify('err', '런 폴더를 생성할 수 없습니다.'); return; }
+      if (!res) { notify('err', '기록 폴더를 만들 수 없어요.'); return; }
       resolved = res;
       updateTab(tabId, res);
     }
@@ -1228,16 +1249,17 @@ function AppInner(): React.ReactElement {
   // ── 내보내기 ──────────────────────────────────────────────────────────────────
   async function exportTabRun(tabId: string): Promise<void> {
     const tab = tabs.find(t => t.id === tabId);
-    if (!tab?.folder) { notify('err', '저장된 런이 없습니다. 먼저 저장하세요.'); return; }
+    if (!tab?.folder) { notify('err', '저장된 기록이 없어요. 먼저 저장해 주세요.'); return; }
     const res = await must<{ saved: boolean; filePath?: string }>({ op: 'run:export', folder: tab.folder });
-    if (res.saved && res.filePath) notify('ok', `내보내기 완료: ${res.filePath}`);
+    if (res.saved && res.filePath) notify('ok', '내보냈어요 ✓', res.filePath);
   }
 
   // ── 런 삭제 (히스토리에서) ────────────────────────────────────────────────────
   async function deleteHistoryRun(h: HistoryItem): Promise<void> {
     setConfirm({
-      text: `런 #${h.run} (${h.agent} · ${h.date})를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`,
-      confirmBtn: '삭제',
+      text: '이 기록을 지울까요? 지우면 되돌릴 수 없어요.',
+      confirmBtn: '지우기',
+      safeFirst: true,
       onOk: async () => {
         await must({ op: 'run:delete', folder: h.folder });
         setSessions(prev => prev.map(s =>
@@ -1249,17 +1271,17 @@ function AppInner(): React.ReactElement {
           }
         ));
         await refreshHistory();
-        notify('ok', `런 #${h.run} 삭제됨`);
+        notify('ok', '이 기록을 지웠어요 ✓');
       },
     });
   }
 
   // ── 날짜 폴더 삭제 ────────────────────────────────────────────────────────────
   async function deleteDate(dateStr: string): Promise<void> {
-    const runsCount = history.filter(h => h.date === dateStr).length;
     setConfirm({
-      text: `📅 ${dateStr} 전체를 삭제하시겠습니까?\n(런 ${runsCount}개 포함 모든 파일이 삭제됩니다)\n이 작업은 되돌릴 수 없습니다.`,
-      confirmBtn: '삭제',
+      text: '이 날짜의 기록을 모두 지울까요? 지우면 되돌릴 수 없어요.',
+      confirmBtn: '지우기',
+      safeFirst: true,
       onOk: async () => {
         await must({ op: 'date:delete', dataRoot, project, date: dateStr });
           setSessions(prev => prev.map(s => {
@@ -1268,17 +1290,17 @@ function AppInner(): React.ReactElement {
             return { ...s, tabs: s.tabs.map(t => affected.has(t.folder) ? { ...t, folder: '', run: '', prompt: '', result: '', tags: [], promptSaved: false, resultSaved: false } : t) };
           }));
         await refreshHistory();
-        notify('ok', `📅 ${dateStr} 삭제됨`);
+        notify('ok', '이 날짜의 기록을 지웠어요 ✓');
       },
     });
   }
 
   // ── 에이전트 폴더 삭제 ────────────────────────────────────────────────────────
   async function deleteAgent(dateStr: string, agentName: string): Promise<void> {
-    const runsCount = history.filter(h => h.date === dateStr && h.agent === agentName).length;
     setConfirm({
-      text: `🤖 ${agentName} (${dateStr}) 폴더를 삭제하시겠습니까?\n(런 ${runsCount}개 포함 모든 파일이 삭제됩니다)\n이 작업은 되돌릴 수 없습니다.`,
-      confirmBtn: '삭제',
+      text: '이 AI의 기록을 모두 지울까요? 지우면 되돌릴 수 없어요.',
+      confirmBtn: '지우기',
+      safeFirst: true,
       onOk: async () => {
         await must({ op: 'agent:delete', dataRoot, project, date: dateStr, agent: agentName });
           setSessions(prev => prev.map(s => {
@@ -1287,7 +1309,7 @@ function AppInner(): React.ReactElement {
             return { ...s, tabs: s.tabs.map(t => affected.has(t.folder) ? { ...t, folder: '', run: '', prompt: '', result: '', tags: [], promptSaved: false, resultSaved: false } : t) };
           }));
         await refreshHistory();
-        notify('ok', `🤖 ${agentName} (${dateStr}) 삭제됨`);
+        notify('ok', '이 AI의 기록을 지웠어요 ✓');
       },
     });
   }
@@ -1295,10 +1317,10 @@ function AppInner(): React.ReactElement {
   // ── 프로젝트 삭제 ─────────────────────────────────────────────────────────────
   async function deleteProject(projectName: string): Promise<void> {
     if (!projectName || projectName === ROOT_PROJECT) { notify('err', '루트 프로젝트는 삭제할 수 없습니다.'); return; }
-    const runsCount = history.length;
     setConfirm({
-      text: `⚠️ 프로젝트 "${projectName}" 전체를 삭제하시겠습니까?\n(런 ${runsCount}개 포함 모든 파일이 영구 삭제됩니다)\n이 작업은 절대 되돌릴 수 없습니다!`,
-      confirmBtn: '영구 삭제',
+      text: '이 프로젝트를 지울까요? 지우면 되돌릴 수 없어요.',
+      confirmBtn: '지우기',
+      safeFirst: true,
         onOk: async () => {
           setPdMode(false);
           await must({ op: 'project:delete', dataRoot, project: projectName });
@@ -1316,7 +1338,7 @@ function AppInner(): React.ReactElement {
         }
         const view = await must<ProjectViewData>({ op: 'project:view', dataRoot, project: ROOT_PROJECT });
         setProjects(view.projects);
-        notify('ok', `프로젝트 "${projectName}" 삭제됨`);
+        notify('ok', '이 프로젝트를 지웠어요 ✓');
       },
     });
   }
@@ -1335,7 +1357,7 @@ function AppInner(): React.ReactElement {
       }
     ));
     await refreshHistory();
-    notify('ok', `런을 ${toAgent} (${toDate})으로 이동했습니다.`);
+    notify('ok', '기록을 옮겼어요 ✓');
   }
 
   // ── 드래그 앤 드롭 파일 (편집창) ──────────────────────────────────────────────
@@ -1344,12 +1366,12 @@ function AppInner(): React.ReactElement {
       e.preventDefault();
       updateTab(tabId, pane === 'prompt' ? { promptDrag: false } : { resultDrag: false });
       const file = e.dataTransfer.files[0];
-      if (!file || !file.name.endsWith('.md')) { notify('err', '.md 파일만 드래그할 수 있습니다.'); return; }
+      if (!file || !file.name.endsWith('.md')) { notify('err', '.md 파일만 넣을 수 있어요.'); return; }
       const reader = new FileReader();
       reader.onload = (ev) => {
         const text = ev.target?.result as string;
         updateTab(tabId, pane === 'prompt' ? { prompt: text, promptSaved: false } : { result: text, resultSaved: false });
-        notify('info', `${file.name} 불러옴`);
+        notify('info', '파일을 불러왔어요 ✓');
       };
       reader.readAsText(file, 'utf-8');
     };
@@ -1577,7 +1599,7 @@ function AppInner(): React.ReactElement {
     const fresh = makeSession();
     setSessions([fresh]);
     setActiveSessionId(fresh.id);
-    notify('ok', `데이터 폴더 설정됨: ${s.dataRoot}`);
+    notify('ok', '저장 폴더를 정했어요 ✓', s.dataRoot);
     try {
       const view = await must<ProjectViewData>({ op: 'project:view', dataRoot: s.dataRoot, project: ROOT_PROJECT });
       setProjects(view.projects);
@@ -1585,7 +1607,7 @@ function AppInner(): React.ReactElement {
         const rootSess = makeSession(ROOT_PROJECT);
         setSessions([{ ...rootSess, history: view.history }]);
         setActiveSessionId(rootSess.id);
-        notify('ok', `기존 런 ${view.history.length}개를 발견했습니다.`);
+        notify('ok', `기록 ${view.history.length}개를 찾았어요 ✓`);
       }
     } catch { /* 오류 무시 */ }
   }
@@ -1699,7 +1721,7 @@ function AppInner(): React.ReactElement {
                 다른 폴더 고르기
               </button>
             </div>
-            <div className="muted" style={{ marginTop: 8, fontSize: 12, textAlign: 'center' }}>{settings.defaultDataRoot}</div>
+            <div className="muted" style={{ marginTop: 8, fontSize: 14, textAlign: 'center' }}>{settings.defaultDataRoot}</div>
           </div>
         </div>
       )}
@@ -1734,6 +1756,12 @@ function AppInner(): React.ReactElement {
                 {msg && (
                   <div className={`flash ${msg.kind}`}>
                     <span>{msg.text}</span>
+                    {msg.detail && (
+                      <details>
+                        <summary>원문 보기</summary>
+                        <p className="muted" style={{ fontSize: 14, margin: '6px 0 0' }}>{msg.detail}</p>
+                      </details>
+                    )}
                     <button className="flash-close" onClick={dismissMsg} title="닫기">✕</button>
                   </div>
                 )}
@@ -1833,7 +1861,7 @@ function AppInner(): React.ReactElement {
                     <h4>개발 도구</h4>
                     <div className="topbar-shortcuts">
                       <span title="모두 저장"><kbd>Ctrl+S</kbd> 저장</span>
-                      <span title="현재 탭 새 런"><kbd>Ctrl+N</kbd> 새 런</span>
+                      <span title="현재 탭 새 기록"><kbd>Ctrl+N</kbd> 새 기록</span>
                       <span title="병렬 탭 추가"><kbd>Ctrl+T</kbd> 새 탭</span>
                     </div>
                     <button
@@ -1844,13 +1872,13 @@ function AppInner(): React.ReactElement {
                     <button
                       className={`mini df-toggle${pdMode ? ' on' : ''}`}
                       disabled={!project}
-                      title={project ? `"${projectLabel(project)}" 프로젝트 사용성 기록` : '프로젝트를 먼저 선택하세요'}
+                      title={project ? `"${projectLabel(project)}" 프로젝트 사용성 기록` : '프로젝트를 먼저 고르세요'}
                       onClick={() => { setPdMode(m => !m); setDfMode(false); setControlRoomMode(false); setApprovalsMode(false); setPlanStudioMode(false); setShowSettings(false); }}
                     >프로젝트 사용 기록</button>
                     <button
                       className="mini qdf-toggle"
                       disabled={!project}
-                      title={project ? '불편한 순간 한 줄 기록 — 현재 프로젝트에 즉시 저장' : '프로젝트를 먼저 선택하세요'}
+                      title={project ? '불편한 순간 한 줄 기록 — 현재 프로젝트에 즉시 저장' : '프로젝트를 먼저 고르세요'}
                       onClick={() => setShowQuickDf(true)}
                     >＋ 피드백</button>
                   </div>
@@ -1859,6 +1887,20 @@ function AppInner(): React.ReactElement {
             </div>
           ) : (
             <>
+          {recordGuideVisible(recordGuideSeen, project, history.length) && (
+            <section className="record-guide" aria-label="기록 화면 안내">
+              <p>이 화면은 AI에게 준 말과 받은 결과를 모아 두는 곳이에요.</p>
+              <ol>
+                <li>무엇을 하는 곳인지: 작업 기록이에요.</li>
+                <li>필요한 것 하나: 왼쪽에서 프로젝트를 고르세요.</li>
+                <li>그다음: 말과 결과를 붙여 넣으면 날짜별로 쌓여요.</li>
+              </ol>
+              <button type="button" className="btn primary" onClick={() => {
+                try { localStorage.setItem(RECORD_GUIDE_STORAGE_KEY, '1'); } catch { /* 기억 실패는 이번 화면만 닫는다 */ }
+                setRecordGuideSeen(true);
+              }}>알겠어요</button>
+            </section>
+          )}
           <AutoWorklog />
           <details className="record-manual">
             <summary>직접 적는 기록 (예전 방식)</summary>
@@ -1969,7 +2011,7 @@ function AppInner(): React.ReactElement {
               <span className="flabel">저장 위치</span>
               <span className="fvalue breadcrumb mono">
                 {project
-                  ? `${project === ROOT_PROJECT ? '📂' : '📁'} ${projectLabel(project)} / 📅 ${date} / 🤖 ${activeTab?.agent ?? '?'} / 런 #${activeTab?.run || '?'}`
+                  ? `${project === ROOT_PROJECT ? '📂' : '📁'} ${projectLabel(project)} / 📅 ${date} / 🤖 ${activeTab?.agent ?? '?'} / 기록 #${activeTab?.run || '?'}`
                   : '← 왼쪽 사이드바에서 프로젝트를 선택하세요'}
               </span>
             </div>
@@ -2097,7 +2139,7 @@ function AppInner(): React.ReactElement {
                 <div className="tab-header">
                   <div className="tab-header-row">
                     <div className="agent-pills-wrap">
-                      <span className="flabel">에이전트 {activeTab.run && <span style={{ color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>— 런 #{activeTab.run}</span>}</span>
+                      <span className="flabel">에이전트 {activeTab.run && <span style={{ color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>— 기록 #{activeTab.run}</span>}</span>
                       <div className="agent-pills-row">
                         <div className="agent-pills">
                           {visibleAgents.map((a, i) => (
@@ -2233,9 +2275,9 @@ function AppInner(): React.ReactElement {
                     {/* 액션 버튼 */}
                     <div className="tab-actions">
                       <button className="btn" title="프롬프트 + 결과 모두 저장 (Ctrl+S)" onClick={() => void saveTabBoth(activeTab.id)}>모두 저장</button>
-                      <button className="btn" title="현재 런 폴더 열기" disabled={!activeTab.folder} onClick={() => void must({ op: 'folder:open', folder: activeTab.folder })}>📂 폴더</button>
-                      <button className="btn" title="런을 .md 파일로 내보내기" disabled={!activeTab.folder} onClick={() => void exportTabRun(activeTab.id)}>.md 내보내기</button>
-                      <button className="btn" title="현재 탭에서 새 런 시작 (Ctrl+N)" onClick={() => void newRunInTab(activeTab.id)}>새 런</button>
+                      <button className="btn" title="이 기록 폴더 열기" disabled={!activeTab.folder} onClick={() => void must({ op: 'folder:open', folder: activeTab.folder })}>폴더 열기</button>
+                      <button className="btn" title="기록을 .md 파일로 내보내기" disabled={!activeTab.folder} onClick={() => void exportTabRun(activeTab.id)}>.md로 내보내기</button>
+                      <button className="btn" title="현재 탭에서 새 기록 시작 (Ctrl+N)" onClick={() => void newRunInTab(activeTab.id)}>새 기록</button>
                     </div>
                   </div>
                 </div>
@@ -2378,10 +2420,21 @@ function AppInner(): React.ReactElement {
             <h3>확인</h3>
             <p style={{ whiteSpace: 'pre-line' }}>{confirm.text}</p>
             <div className="modalbtns">
-              <button className="btn" onClick={() => { const f = confirm.onOk; setConfirm(null); void f(); }}>
-                {confirm.confirmBtn ?? '확인'}
-              </button>
-              <button className="btn subtle" onClick={() => setConfirm(null)}>취소</button>
+              {confirm.safeFirst ? (
+                <>
+                  <button className="btn primary" onClick={() => setConfirm(null)}>남겨 두기</button>
+                  <button className="btn subtle" onClick={() => { const f = confirm.onOk; setConfirm(null); void f(); }}>
+                    {confirm.confirmBtn ?? '지우기'}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button className="btn" onClick={() => { const f = confirm.onOk; setConfirm(null); void f(); }}>
+                    {confirm.confirmBtn ?? '확인'}
+                  </button>
+                  <button className="btn subtle" onClick={() => setConfirm(null)}>취소</button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -2445,7 +2498,7 @@ function FileTree({
       <div className="proj-sidebar">
         <span className="proj-sidebar-label">프로젝트</span>
         {projects.length === 0 && (
-          <div style={{ fontSize: 11, color: 'var(--sb-muted)', padding: '4px 8px' }}>
+          <div style={{ fontSize: 14, color: 'var(--sb-muted)', padding: '4px 8px' }}>
             폴더를 선택하면<br />프로젝트가 표시됩니다
           </div>
         )}
@@ -2464,7 +2517,7 @@ function FileTree({
                 onClick={() => onPickProject(p.name)}
               >
                 <span className={`proj-item-dot${isActive ? ' on' : isOpen ? ' open' : ' off'}`} />
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 12, fontWeight: 500, color: 'inherit' }}>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 14, fontWeight: 500, color: 'inherit' }}>
                   {projLabel(p.name)}
                 </span>
               </button>
@@ -2484,7 +2537,7 @@ function FileTree({
       {/* 헤더 */}
       <div className="filetree-head">
         <span>📁 파일 트리</span>
-        <span className="tree-badge">{project ? `${totalRuns}개 런` : ''}</span>
+        <span className="tree-badge">{project ? `${totalRuns}개 기록` : ''}</span>
       </div>
 
       {/* 검색 */}
@@ -2501,14 +2554,14 @@ function FileTree({
       {/* 트리 본문 */}
       <div className="filetree-body">
         {noProject && (
-          <div className="muted" style={{ padding: '16px 10px', fontSize: 12, lineHeight: 1.6 }}>
+          <div className="muted" style={{ padding: '16px 10px', fontSize: 14, lineHeight: 1.6 }}>
             👆 프로젝트를 선택하거나<br />새로 만들면<br />파일 트리가 표시됩니다.
           </div>
         )}
 
         {!noProject && tree.length === 0 && (
-          <div className="muted" style={{ padding: '16px 10px', fontSize: 12 }}>
-            {search ? '검색 결과가 없습니다.' : '아직 저장된 런이 없습니다.\n프롬프트와 결과를 붙여넣고 저장해보세요!'}
+          <div className="muted" style={{ padding: '16px 10px', fontSize: 14 }}>
+            {search ? '검색 결과가 없습니다.' : '아직 저장된 기록이 없어요.\n프롬프트와 결과를 붙여 넣고 저장해 주세요.'}
           </div>
         )}
 
@@ -2525,7 +2578,7 @@ function FileTree({
                 <span className="tree-badge">{dateNode.totalRuns}개</span>
                 <button
                   className="row-del"
-                  title={`${dateNode.date} 날짜 전체 삭제 (런 ${dateNode.totalRuns}개)`}
+                  title={`${dateNode.date} 날짜 전체 삭제 (기록 ${dateNode.totalRuns}개)`}
                   onClick={e => { e.stopPropagation(); onDeleteDate(dateNode.date); }}
                 >🗑</button>
               </div>
@@ -2551,7 +2604,7 @@ function FileTree({
                       <span className="tree-badge">{agentNode.runs.length}</span>
                       <button
                         className="row-del"
-                        title={`${agentNode.name} (${dateNode.date}) 폴더 삭제 (런 ${agentNode.runs.length}개)`}
+                        title={`${agentNode.name} (${dateNode.date}) 폴더 삭제 (기록 ${agentNode.runs.length}개)`}
                         onClick={e => { e.stopPropagation(); onDeleteAgent(dateNode.date, agentNode.name); }}
                       >🗑</button>
                     </div>
@@ -2601,7 +2654,7 @@ function FileTree({
                           </button>
                           <button
                             className="tree-del"
-                            title="런 삭제"
+                            title="기록 삭제"
                             onClick={e => { e.stopPropagation(); onDeleteRun(histItem); }}
                           >✕</button>
                         </div>
@@ -3112,7 +3165,7 @@ function UpdateSection({ status, notify }: { status: UpdateStatus; notify: (kind
               <summary>{'원문 보기'}</summary>
               <pre style={{ whiteSpace: 'pre-wrap', marginTop: 8 }}>{status.errorMessage}</pre>
               {status.errorMessage && status.errorMessage.match(/40[134]|ENOTFOUND|ETIMEDOUT/) &&
-                <span className="muted" style={{ display: 'block', fontSize: 11 }}>
+                <span className="muted" style={{ display: 'block', fontSize: 14 }}>
                   Private 저장소는 공개 전환 전까지 앱 내 업데이트 확인이 제한될 수 있습니다.
                 </span>}
             </details>

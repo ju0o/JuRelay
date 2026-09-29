@@ -285,6 +285,9 @@ export function dfTypeFromText(text: string): DfType | null {
     const hit = map.find((m) => m.label.toUpperCase() === raw.toUpperCase());
     if (hit) return hit.value;
   }
+  for (const [value, label] of Object.entries(DF_TYPE_DISPLAY) as [DfType, string][]) {
+    if (label.toUpperCase() === raw.toUpperCase()) return value;
+  }
   return null;
 }
 
@@ -295,6 +298,38 @@ export function dfTypeLabel(type: DfType, kind: DfKind): string {
 }
 
 export const DF_PRIORITIES: DfPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
+
+/** Display-only priority labels. Stored values stay LOW/MEDIUM/HIGH. */
+export const DF_PRIORITY_LABELS: Record<DfPriority, string> = {
+  LOW: '낮음',
+  MEDIUM: '보통',
+  HIGH: '높음',
+};
+
+/**
+ * Screen labels for feedback kinds.
+ * File tokens stay in DF_TYPE_LABELS / PROJECT_DF_TYPE_LABELS
+ * (project files still write "UX / Friction") so old records keep parsing.
+ */
+export const DF_TYPE_DISPLAY: Record<DfType, string> = {
+  BUG: '오류',
+  UX: '불편',
+  IMPROVEMENT: '개선',
+  IDEA: '아이디어',
+  GOOD: '좋았던 점',
+  OTHER: '기타',
+};
+
+/** localStorage flag: the record-screen 3-step guide was dismissed. */
+export const RECORD_GUIDE_STORAGE_KEY = 'agent-relay.record-guide-seen';
+
+/**
+ * Show the one-time record guide only on a blank record screen.
+ * A chosen project or any saved history hides it, and so does a prior dismiss.
+ */
+export function recordGuideVisible(seen: boolean, project: string, historyCount: number): boolean {
+  return !seen && project.trim() === '' && historyCount === 0;
+}
 export const DF_STATUSES: DfStatus[] = ['OPEN', 'FIXED', 'HOLD'];
 
 // ── In-app updater ──────────────────────────────────────────────────────────
@@ -679,22 +714,46 @@ export function approvalUsedCount(rule: ApprovalRuleJson): number {
     : 0;
 }
 
-/** Missing/invalid lastUsedAt renders as '-'; otherwise YYYY-MM-DD. Pure — unit-tested. */
-export function approvalLastUsed(rule: ApprovalRuleJson): string {
+/**
+ * Relative Korean time for a past instant. Future times use a local clock.
+ * nowMs is injectable so tests can pin the clock.
+ */
+export function relativeKoreanTime(thenMs: number, nowMs: number): string {
+  const delta = nowMs - thenMs;
+  if (!Number.isFinite(delta)) return '-';
+  if (delta < 0) {
+    const at = new Date(thenMs);
+    const hour = at.getHours();
+    const minute = String(at.getMinutes()).padStart(2, '0');
+    const ampm = hour < 12 ? '오전' : '오후';
+    const h12 = hour % 12 === 0 ? 12 : hour % 12;
+    return `${ampm} ${h12}:${minute}`;
+  }
+  const minutes = Math.floor(delta / 60_000);
+  if (minutes < 1) return '방금';
+  if (minutes < 60) return `${minutes}분 전`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}시간 전`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return '어제';
+  if (days < 30) return `${days}일 전`;
+  const at = new Date(thenMs);
+  return `${at.getMonth() + 1}월 ${at.getDate()}일`;
+}
+
+/** Missing/invalid lastUsedAt renders as '-'; otherwise a relative Korean time. Pure — unit-tested. */
+export function approvalLastUsed(rule: ApprovalRuleJson, nowMs: number = Date.now()): string {
   if (typeof rule.lastUsedAt !== 'string' || !rule.lastUsedAt.trim()) return '-';
   const parsed = new Date(rule.lastUsedAt);
   if (Number.isNaN(parsed.getTime())) return '-';
-  const year = parsed.getFullYear();
-  const month = String(parsed.getMonth() + 1).padStart(2, '0');
-  const day = String(parsed.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return relativeKoreanTime(parsed.getTime(), nowMs);
 }
 
-/** usedCount 0 → '아직 자동 적용된 적 없음', otherwise '자동 적용 N회 · 마지막 YYYY-MM-DD'. Pure — unit-tested. */
-export function approvalStatsLine(rule: ApprovalRuleJson): string {
+/** usedCount 0 → '아직 자동 적용된 적 없음', otherwise '자동 적용 N회 · 마지막 3일 전'. Pure — unit-tested. */
+export function approvalStatsLine(rule: ApprovalRuleJson, nowMs: number = Date.now()): string {
   const used = approvalUsedCount(rule);
   if (used === 0) return '아직 자동 적용된 적 없음';
-  return `자동 적용 ${used}회 · 마지막 ${approvalLastUsed(rule)}`;
+  return `자동 적용 ${used}회 · 마지막 ${approvalLastUsed(rule, nowMs)}`;
 }
 
 /**

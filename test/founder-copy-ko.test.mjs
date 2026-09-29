@@ -57,7 +57,7 @@ test('lane goals are not hardcoded in the label source', () => {
   assert.equal(labelsTs.includes('통합 관제 화면'), false);
   assert.equal(labelsTs.includes('JuCeipt 기획'), false);
   assert.equal(labelsTs.includes('프로젝트 통합 제어와 운영 가시성'), false);
-  assert.match(labelsTs, /export const PROJECT_LABELS: Record<string, ProjectLabel> = \{\}/);
+  assert.match(labelsTs, /jutell: \{ name: 'JuTell', goal: '짧고 쉬운 작업 보고서' \}/);
 });
 
 /** WCAG relative luminance + contrast ratio. */

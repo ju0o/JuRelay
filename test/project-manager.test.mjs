@@ -170,5 +170,5 @@ test("lead and result lines beat .modcard p (13px gray): 16px, done reads teal",
   assert.match(css, /\.pm-note\.ok \{ color: var\(--accent\); \}/);
   assert.match(css, /\.pm-note\.err \{ color: var\(--pm-warn\); \}/);
   const modcardP = css.match(/\.modcard p\s*\{([^}]*)\}/)?.[1] ?? "";
-  assert.match(modcardP, /font-size: 13px/, "guard assumes .modcard p is still 13px gray");
+  assert.match(modcardP, /font-size: 14px/, "guard assumes .modcard p is 14px");
 });

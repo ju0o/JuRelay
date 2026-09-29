@@ -54,6 +54,32 @@ test('quick capture uses Korean labels + 빠른 피드백 dialog name', () => {
   assert.doesNotMatch(quick, /<span className="flabel">Priority<\/span>/);
   assert.doesNotMatch(quick, /자동 첨부 Context/);
   assert.doesNotMatch(quick, /Status는 OPEN으로/);
+  assert.match(sharedTypes, /LOW: '낮음'/);
+  assert.match(sharedTypes, /MEDIUM: '보통'/);
+  assert.match(sharedTypes, /HIGH: '높음'/);
+  assert.match(quick, /DF_PRIORITY_LABELS\[p\]/);
+  assert.match(panel, /DF_PRIORITY_LABELS\[p\]/);
+  assert.match(panel, /DF_PRIORITY_LABELS\[item\.priority\]/);
+  assert.match(quick, /상태는 열림으로 저장되고/);
+  assert.doesNotMatch(quick, /Status는 열림으로/);
+  assert.match(panel, /피드백 남기기/);
+  assert.doesNotMatch(panel, /\+ Feedback/);
+  assert.doesNotMatch(panel, /Project Feedback/);
+  assert.match(sharedTypes, /BUG: '오류'/);
+  assert.match(sharedTypes, /UX: '불편'/);
+  assert.match(sharedTypes, /IMPROVEMENT: '개선'/);
+  assert.match(sharedTypes, /IDEA: '아이디어'/);
+  assert.match(sharedTypes, /GOOD: '좋았던 점'/);
+  assert.match(sharedTypes, /OTHER: '기타'/);
+  assert.match(panel, /DF_TYPE_DISPLAY\[t\.value\]/);
+  assert.match(panel, /DF_TYPE_DISPLAY\[item\.type\]/);
+  assert.match(quick, /DF_TYPE_DISPLAY\[t\.value\]/);
+  assert.match(panel, /이 프로젝트 피드백 —/);
+  assert.match(panel, /Agent Relay 피드백/);
+  assert.match(panel, /함께 기록할 작업이 없어요/);
+  assert.doesNotMatch(panel, /Project Dogfooding/);
+  assert.doesNotMatch(panel, /App Dogfooding/);
+  assert.doesNotMatch(panel, /현재 작업 Context 없음/);
 });
 
 test('stored values and file tokens stay English', () => {

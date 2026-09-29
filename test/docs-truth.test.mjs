@@ -52,3 +52,37 @@ test('README quotes of app copy exist in the app source', () => {
   }
   assert.ok(!readme.includes('연결 안 됨'), "README must not quote '연결 안 됨'");
 });
+
+test('developer doc describes the existing watch launcher', () => {
+  const devDoc = fs.readFileSync(path.join(root, 'docs/DEVELOPER.md'), 'utf8');
+  const backlog = fs.readFileSync(path.join(root, 'BACKLOG.md'), 'utf8');
+  assert.ok(devDoc.includes('scripts/dev.mjs'), 'DEVELOPER.md should name scripts/dev.mjs');
+  assert.ok(!devDoc.includes('watch/HMR 없음'), 'DEVELOPER.md still says watch/HMR is missing');
+  assert.ok(backlog.includes('[x] `npm run dev` watch/HMR'), 'BACKLOG should mark watch/HMR done');
+});
+
+test('records doc matches the first-run folder screen', () => {
+  const records = fs.readFileSync(path.join(root, 'docs/RECORDS_AND_DOGFOODING.md'), 'utf8');
+  assert.ok(records.includes('기본 폴더 사용 (문서 › Agent Relay)'));
+  assert.ok(records.includes('저장 폴더'));
+  assert.ok(!records.includes('데이터 폴더를 먼저 선택하세요'));
+  assert.ok(!records.includes('설정 → Storage'));
+});
+
+test('backlog records the founder-polish items as done', () => {
+  const backlog = fs.readFileSync(path.join(root, 'BACKLOG.md'), 'utf8');
+  for (const line of [
+    '[x] 피드백 종류 화면 글자',
+    '[x] 피드백 패널 제목',
+    '[x] 알림에 폴더 경로를 그대로 쓰지 않음',
+    '[x] 본문 글자 14px 이상',
+    '[x] 빠져 있던 화면 검사',
+    '[x] 기록 삭제 확인',
+    '[x] 기록 화면 첫 안내',
+    '[x] 기록 버튼 글자',
+    '[x] 기록 알림을 결과 한 줄로',
+    '[x] 계획 화면에서 지운 뒤',
+  ]) {
+    assert.ok(backlog.includes(line), `BACKLOG missing ${line}`);
+  }
+});

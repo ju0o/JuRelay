@@ -69,6 +69,14 @@ test("user-facing copy has no op names, uses 진행 방식", async () => {
   assert.match(studio, /초안 저장됨/);
 });
 
+test("record deletes ask in plain Korean with the safe button first", async () => {
+  const app = await read("src/frontend/App.tsx");
+  assert.match(app, /이 기록을 지울까요\? 지우면 되돌릴 수 없어요\./);
+  assert.match(app, /safeFirst: true/);
+  assert.match(app, /남겨 두기/);
+  assert.doesNotMatch(app, /window\.confirm/);
+});
+
 test("inline-confirm styles exist", async () => {
   const css = await read("src/frontend/style.css");
   assert.match(css, /\.inline-confirm/);

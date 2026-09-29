@@ -56,5 +56,6 @@ test("hold buttons choose ids and hide generic resume while held", async () => {
   assert.match(source, /option: optionId/);
   assert.match(source, /holds\.length === 0 && <ResumeControl/);
   assert.match(source, /‘\{taskTitle\}’을 ‘\{option\}’로 진행할게요/);
-  assert.doesNotMatch(source, /if \(gateId\)[\s\S]*?controlRoom:resume/);
+  const holdButtons = source.slice(source.indexOf('function HoldOptionButtons'), source.indexOf('\nfunction ', source.indexOf('function HoldOptionButtons') + 1));
+  assert.doesNotMatch(holdButtons, /controlRoom:resume/);
 });

@@ -117,7 +117,7 @@ test('rows are one line each, and only founder holds are counted', () => {
     ['actl', '쉬는 중', 'muted'],
     ['juplan', '확인 필요', 'amber'],
     ['juceipt', '확인 필요', 'amber'],
-    ['jutell', '확인 필요', 'amber'],
+    ['JuTell', '확인 필요', 'amber'],
   ]);
   assert.equal(rows[0].doing, "Codex가 '영수증 화면 쉽게' 만드는 중 · 12분째");
   assert.equal(rows[1].doing, '지금 하는 일이 없어요');

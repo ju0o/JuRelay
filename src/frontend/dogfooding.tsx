@@ -13,10 +13,11 @@ import {
   DfStatus,
   DfType,
   DF_PRIORITIES,
+  DF_PRIORITY_LABELS,
   DF_STATUSES,
+  DF_TYPE_DISPLAY,
   DF_TYPE_LABELS,
   PROJECT_DF_TYPE_LABELS,
-  dfTypeLabel,
 } from '../shared/types.js';
 
 const STATUS_COLORS: Record<DfStatus, string> = {
@@ -85,8 +86,8 @@ export function DogfoodPanel(props: DogfoodPanelProps): React.ReactElement {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const title = isProject
-    ? `📋 Project Dogfooding — ${project || '(프로젝트 미선택)'}`
-    : '🐾 App Dogfooding';
+    ? `이 프로젝트 피드백 — ${project || '프로젝트를 아직 고르지 않았어요'}`
+    : 'Agent Relay 피드백';
   const subtitle = isProject
     ? '이 프로젝트를 실제로 사용하면서 발견한 문제·불편·아이디어'
     : 'Agent Relay 프로그램 자체를 개선하기 위한 기록';
@@ -230,7 +231,7 @@ export function DogfoodPanel(props: DogfoodPanelProps): React.ReactElement {
           </span>
         )}
         <button className="btn primary" onClick={() => setFormOpen(o => !o)}>
-          {formOpen ? '취소' : isProject ? '+ Project Feedback' : '+ Feedback'}
+          {formOpen ? '취소' : '피드백 남기기'}
         </button>
         <button className="btn subtle" onClick={props.onClose} title="작업 화면으로 돌아가기">닫기</button>
       </div>
@@ -241,18 +242,18 @@ export function DogfoodPanel(props: DogfoodPanelProps): React.ReactElement {
             <label className="field">
               <span className="flabel">종류</span>
               <select value={type} onChange={e => setType(e.target.value as DfType)}>
-                {typeOptions.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                {typeOptions.map(t => <option key={t.value} value={t.value}>{DF_TYPE_DISPLAY[t.value]}</option>)}
               </select>
             </label>
             <label className="field">
               <span className="flabel">중요도</span>
               <select value={priority} onChange={e => setPriority(e.target.value as DfPriority)}>
-                {DF_PRIORITIES.map(p => <option key={p} value={p}>{p}</option>)}
+                {DF_PRIORITIES.map(p => <option key={p} value={p}>{DF_PRIORITY_LABELS[p]}</option>)}
               </select>
             </label>
             <div className="field" style={{ flex: 2 }}>
               <span className="flabel">함께 기록된 정보</span>
-              <span className={`fvalue mono${contextLine() ? '' : ' muted'}`}>{contextLine() || '(현재 작업 Context 없음)'}</span>
+              <span className={`fvalue mono${contextLine() ? '' : ' muted'}`}>{contextLine() || '함께 기록할 작업이 없어요'}</span>
             </div>
           </div>
           <label className="field">
@@ -287,7 +288,7 @@ export function DogfoodPanel(props: DogfoodPanelProps): React.ReactElement {
         {shown.length === 0 && (
           <div className="muted" style={{ padding: 20 }}>
             {items.length === 0
-              ? (isProject ? '이 프로젝트에는 아직 피드백이 없습니다.' : '아직 피드백이 없습니다. 불편한 점을 + Feedback으로 남겨보세요.')
+              ? (isProject ? '이 프로젝트에는 아직 피드백이 없어요. 피드백 남기기를 눌러 적어 주세요.' : '아직 피드백이 없어요. 피드백 남기기를 눌러 적어 주세요.')
               : '해당 상태의 피드백이 없습니다.'}
           </div>
         )}
@@ -297,9 +298,9 @@ export function DogfoodPanel(props: DogfoodPanelProps): React.ReactElement {
             <div key={item.id} className={`df-row${expanded ? ' expanded' : ''}`}>
               <button className="mini df-viewbtn" onClick={() => setExpandedId(expanded ? null : item.id)} title="내용 보기">{expanded ? '▾' : '▸'}</button>
               <span className="mono df-id">{item.id}</span>
-              <span className="df-type">{dfTypeLabel(item.type, item.kind)}</span>
+              <span className="df-type">{DF_TYPE_DISPLAY[item.type]}</span>
               <span className="df-pri" style={{ color: PRIORITY_COLORS[item.priority], borderColor: PRIORITY_COLORS[item.priority] }}>
-                {item.priority}
+                {DF_PRIORITY_LABELS[item.priority]}
               </span>
               <button
                 className="df-status"

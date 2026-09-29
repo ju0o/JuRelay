@@ -367,7 +367,8 @@ export function resolveResultPath(folder: string): string {
 
 /**
  * Move a run folder to a new project/date/agent location.
- * Copies all files, deletes the source, returns the new folder path.
+ * Copies files and nested folders, then deletes the source.
+ * Returns the new folder path.
  */
 export function moveRun(
   fromFolder: string,
@@ -379,8 +380,12 @@ export function moveRun(
   const nextRun = nextRunNumber(dataRoot, project, toDate, toAgent);
   const destFolder = ensureRunFolder(dataRoot, project, toDate, toAgent, nextRun);
   for (const entry of fs.readdirSync(fromFolder, { withFileTypes: true })) {
-    if (entry.isFile()) {
-      fs.copyFileSync(path.join(fromFolder, entry.name), path.join(destFolder, entry.name));
+    const from = path.join(fromFolder, entry.name);
+    const to = path.join(destFolder, entry.name);
+    if (entry.isDirectory()) {
+      fs.cpSync(from, to, { recursive: true });
+    } else if (entry.isFile()) {
+      fs.copyFileSync(from, to);
     }
   }
   fs.rmSync(fromFolder, { recursive: true, force: true });

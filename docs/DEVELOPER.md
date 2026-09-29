@@ -6,9 +6,9 @@
 
 ```bash
 npm install
-npm run dev          # client(vite) + server(tsc) 빌드 후 electron 실행 (watch/HMR 없음)
+npm run dev          # scripts/dev.mjs — Vite HMR + tsc --watch. 실패하면 기존 빌드로 실행
 npm run typecheck
-npm test             # fs · vnext · v0.3 · v2(runner · night · founder) — pretest가 서버 빌드
+npm test             # pretest가 서버 빌드. fs · vnext · v0.3 · v2 · 관제실/밤작업/계획 회귀 포함
 npm run build:win    # Windows 패키징 → dist/ (Setup + Portable)
 ```
 
@@ -39,7 +39,7 @@ Night Run 운영 절차: [CORE_V1_AUTO_NIGHT_RUN.md](CORE_V1_AUTO_NIGHT_RUN.md)
 ## 업데이트 · 릴리스
 
 - 앱은 GitHub Releases를 업데이트 피드로 쓴다(electron-updater). 실행 후 조용히 1회 확인하고
-  자동 설치는 하지 않는다. ⚙ 설정 → About → [업데이트 확인].
+  자동 설치는 하지 않는다. 설정 → 앱 정보 → [업데이트 확인].
 - 저장소가 private이면 인증 없이 Release를 읽을 수 없어 확인이 실패한다.
   접근 권한이 있는 PC는 환경변수 `AGENT_RELAY_GH_TOKEN`으로 확인할 수 있다(바이너리에는 안 들어간다).
 - `v*` 태그를 push하면 GitHub Actions가 Windows 빌드 → 테스트 → Release 업로드를 실행한다.

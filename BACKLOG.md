@@ -23,9 +23,9 @@ Safety setup is intentionally Founder-run: see `docs/CORE_V1_AUTO_NIGHT_RUN.md`.
 
 ## 남은 개선 후보
 
-- [ ] `npm run dev`에 watch/HMR 없음 — 매번 전체 빌드 후 electron 실행 (package.json:11)
+- [x] `npm run dev` watch/HMR — `scripts/dev.mjs`가 Vite HMR과 `tsc --watch`를 켜고, 실패하면 기존 빌드 결과로 실행한다 (`package.json` `dev`)
 - [x] DevTools가 production에서도 F12로 열림 → development 전용으로 제한 (17afb3b, src/backend/main.ts:462-473 `if (!app.isPackaged)`)
-- [ ] `moveRun`이 런 폴더의 **최상위 파일만** 복사함 — 하위 폴더는 이동하지 않음 (src/backend/fs.ts:381-384; 후속 AGENTRELAY-V1-MOVE-RUN-RECURSIVE가 config/portfolio.json에 대기 중)
+- [x] `moveRun`이 하위 폴더까지 복사한 뒤 원본을 지운다 (`src/backend/fs.ts` `moveRun`, `test/fs.test.mjs`)
 - [x] `exportRunMarkdown`이 폴더 경로 깊이(4세그먼트)를 가정해 헤더를 파싱함 → 끝에서부터 상대 인덱싱 + `?? ''` 폴백으로 앱이 만드는 레이아웃에서 충돌 없이 동작 (src/backend/fs.ts:298-303; 희귀 중첩 경로 하드닝은 AGENTRELAY-V1-EXPORT-NESTED-PATH로 추적)
 - [x] 편집 탭 미저장 내용이 프로젝트 세션 전환/앱 종료 시 유실됨 → 세션 전환 확인 + 앱 종료 경고 (`will-prevent-unload` + `beforeunload`) (778c6ab, src/frontend/App.tsx:896-918, src/backend/main.ts:485-494)
 - [x] Dogfooding 피드백 검색/Type 필터는 미지원 → 검색 + Type 필터 추가 (06a212f, src/frontend/dogfooding.tsx)
@@ -36,6 +36,16 @@ Safety setup is intentionally Founder-run: see `docs/CORE_V1_AUTO_NIGHT_RUN.md`.
 - [x] Drag Reorder 터치 지원 — v0.3은 HTML5 mouse DnD만 → Pointer Events fallback으로 터치/펜 지원 (b80232b + 80f08c5, src/frontend/App.tsx shouldStartPointerReorder/resolvePointerDropIndex)
 - [x] electron-updater 의존성 트리 자동 점검 — packaged app에 production deps 수집 누락 시 빌드만으로 감지 안 됨 → `npm test`가 production dep + `dist/server` 포함을 검사 (9832a4f, test/v03.test.mjs P1/P2)
 - [x] Quick Capture 저장 직후 pdMode가 닫혀있으면 알림만 표시 → 저장 후 Project Dogfooding 목록을 바로 열어 보여줌 (e09b3f2, src/frontend/App.tsx:1723-1727 onSaved)
+- [x] 피드백 종류 화면 글자 — 오류/불편/개선/아이디어/좋았던 점/기타 (`DF_TYPE_DISPLAY`). 저장 파일 토큰은 `Type: UX / Friction` 유지 (`src/shared/types.ts`, `src/frontend/dogfooding.tsx`, `src/frontend/quickdf.tsx`)
+- [x] 피드백 패널 제목 — `이 프로젝트 피드백`, `Agent Relay 피드백`, 빈 작업은 `함께 기록할 작업이 없어요` (`src/frontend/dogfooding.tsx`)
+- [x] 알림에 폴더 경로를 그대로 쓰지 않음 — `내보냈어요 ✓`, `저장 폴더를 정했어요 ✓`. 경로는 `원문 보기` (`src/frontend/App.tsx` `notify`)
+- [x] 본문 글자 14px 이상 — `src/frontend/style.css`와 기록 화면 인라인 글자. 색과 배치는 그대로 (`test/style-guard.test.mjs`)
+- [x] 빠져 있던 화면 검사 — `npm run test:founder-copy`, `npm run test:screen-guards`가 `npm test`에 포함 (`package.json`)
+- [x] 기록 삭제 확인 — 기록/날짜/AI/프로젝트 모두 `남겨 두기`가 먼저, 그다음 `지우기` (`src/frontend/App.tsx`)
+- [x] 기록 화면 첫 안내 — 프로젝트도 기록도 없을 때 3줄, `알겠어요` 한 번이면 다시 안 나옴 (`recordGuideVisible`)
+- [x] 기록 버튼 글자 — `폴더 열기`, `.md로 내보내기`, `새 기록` (`src/frontend/App.tsx`)
+- [x] 기록 알림을 결과 한 줄로 — `말을 저장했어요 ✓`, `지웠어요 ✓`, `옮겼어요 ✓`. 덮어쓰기와 다른 기록 열기는 `남겨 두기`가 먼저 (`src/frontend/App.tsx`)
+- [x] 계획 화면에서 지운 뒤 `지웠어요`, 사람 확인 번호는 14px (`src/frontend/planStudio.tsx`)
 
 ## 완료된 것 (v0.2.0)
 

@@ -152,7 +152,7 @@ test('the live card renders pills, a chip, and folded original text from the lan
   assert.doesNotMatch(text, /T-77|VERIFIED_DONE|HOLD|QUEUED/);
   assert.match(html, /<details><summary>원문 보기<\/summary>.*T-77/s);
   assert.equal((html.match(/<button/g) ?? []).length, 0);
-  assert.match(html, /Agent Relay/);
+  assert.match(html, /class="cr-project-name">agent-relay</);
   const pausedHtml = renderToStaticMarkup(React.createElement(LiveStatusCard, {
     lane: { project: 'actl', paused: true, workerChain: ['claude'] },
   }));

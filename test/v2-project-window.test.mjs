@@ -13,7 +13,7 @@ test("window key ignores case/space so a second click focuses instead of duplica
 test("window title is 'Agent Relay · <프로젝트 이름>' (unknown ids fall back to the id)", () => {
   assert.equal(projectWindowTitle("agent-relay"), "Agent Relay · agent-relay");
   assert.equal(projectWindowTitle("jucontroler-app"), "Agent Relay · jucontroler-app");
-  assert.equal(projectWindowTitle("jutell"), "Agent Relay · jutell");
+  assert.equal(projectWindowTitle("jutell"), "Agent Relay · JuTell");
   assert.equal(projectWindowTitle("other-lane"), "Agent Relay · other-lane");
 });
 
@@ -29,7 +29,8 @@ test("main validates the id, reuses preload options and keeps one window per key
   assert.match(main, /isValidProjectId\(projectId\)/);
   assert.match(main, /projectWindows\.get\(key\)/);
   assert.match(main, /existing\.focus\(\)/);
-  assert.equal(main.match(/webPreferences: WEB_PREFERENCES\(\)/g).length, 2);
+  assert.match(main, /webPreferences: WEB_PREFERENCES\(\)/);
+  assert.match(main, /webPreferences: \{ \.\.\.WEB_PREFERENCES\(\)/);
   assert.match(await read("src/backend/preload.ts"), /ipcRenderer\.invoke\('window:openProject'/);
 });
 

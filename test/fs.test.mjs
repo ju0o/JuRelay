@@ -91,6 +91,16 @@ async function main() {
   if (list.some((p) => p.name === 'HERMESS')) PASS('projects list contains HERMESS');
   else FAIL('projects list missing HERMESS');
 
+  console.log('13) moveRun keeps nested files');
+  const nestedDir = path.join(folder1, 'notes');
+  fs.mkdirSync(nestedDir, { recursive: true });
+  fs.writeFileSync(path.join(nestedDir, 'extra.md'), 'nested keep\n');
+  const moved = relay.moveRun(folder1, base, project, date, agent2);
+  const nestedKept = path.join(moved, 'notes', 'extra.md');
+  if (fs.existsSync(nestedKept) && fs.readFileSync(nestedKept, 'utf8').includes('nested keep') && !fs.existsSync(folder1)) {
+    PASS('nested file survived moveRun');
+  } else FAIL('moveRun dropped a nested file or left the source');
+
   const ok = process.exitCode === undefined;
   console.log('\n결과:', ok ? 'ALL PASS' : 'SOME FAILED');
 }

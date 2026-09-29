@@ -14,6 +14,8 @@ import {
   DfPriority,
   DfType,
   DF_PRIORITIES,
+  DF_PRIORITY_LABELS,
+  DF_TYPE_DISPLAY,
   PROJECT_DF_TYPE_LABELS,
 } from '../shared/types.js';
 
@@ -106,13 +108,13 @@ export function QuickDogfood(props: QuickDogfoodProps): React.ReactElement {
               <label className="field">
                 <span className="flabel">종류</span>
                 <select value={type} onChange={e => setType(e.target.value as DfType)}>
-                  {PROJECT_DF_TYPE_LABELS.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                  {PROJECT_DF_TYPE_LABELS.map(t => <option key={t.value} value={t.value}>{DF_TYPE_DISPLAY[t.value]}</option>)}
                 </select>
               </label>
               <label className="field">
                 <span className="flabel">중요도</span>
                 <select value={priority} onChange={e => setPriority(e.target.value as DfPriority)}>
-                  {DF_PRIORITIES.map(p => <option key={p} value={p}>{p}</option>)}
+                  {DF_PRIORITIES.map(p => <option key={p} value={p}>{DF_PRIORITY_LABELS[p]}</option>)}
                 </select>
               </label>
               <label className="field" style={{ flex: 2 }}>
@@ -125,8 +127,8 @@ export function QuickDogfood(props: QuickDogfoodProps): React.ReactElement {
                 />
               </label>
             </div>
-            <p className="muted" style={{ fontSize: 11, margin: '6px 0 0' }}>
-              Status는 열림으로, Project/Date/Agent/Run은 현재 작업 상태로 자동 기록됩니다.
+            <p className="muted" style={{ fontSize: 16, margin: '6px 0 0' }}>
+              상태는 열림으로 저장되고, 지금 보고 있는 프로젝트와 작업이 함께 기록돼요.
             </p>
           </div>
         )}
