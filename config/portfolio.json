@@ -23350,6 +23350,29 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:1 지금은 JuCeipt의 M3 진행 상태를 확인하는 화면이에요. 같은 작업의 Claude 최종 답변과 영수증 참조가 유효하게 연결될 때까지 M3 결정은 기록하지 않아요.",
           "title": "현황을 한눈에 확인"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-ROADMAP-DIAGRAM-VALID-JOIN",
+          "scope": "In docs/product/MASTER_ROADMAP.md change only the section 2 current-position diagram line that labels M3 as integrated so it also states that M3 stays UNDECIDED until a same-task Claude-final and Receipt reference pair reconciles into a valid join, and record no GO, DEFER, or KILL.",
+          "files": [
+            "docs/product/MASTER_ROADMAP.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-29; docs/operations/PM_STATUS_BOARD.md:1 같은 작업의 Claude 최종 답변과 영수증 참조가 유효하게 연결될 때까지 M3 결정은 기록하지 않아요."
+        },
+        {
+          "taskId": "JUCEIPTPLAN-HANDOFF-NOTE-M3-UNDECIDED",
+          "scope": "In the header notes of the planning-gate handoff and the quarantine handoff, change only the clause that the status board shows M3 active so each note also states that M3 stays UNDECIDED until a same-task Claude-final and Receipt reference pair reconciles into a valid join, and record no GO, DEFER, or KILL.",
+          "files": [
+            "docs/handoffs/BUSINESS_SYSTEM_PLANNING_GATE_01.md",
+            "docs/handoffs/UNPLANNED_WORK_QUARANTINE_01.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-29; docs/operations/PM_STATUS_BOARD.md:69 M3 remains UNDECIDED; any later GO / DEFER / KILL waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join per §2.3"
         }
       ],
       "skills": {
