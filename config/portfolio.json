@@ -6488,6 +6488,42 @@
           ],
           "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
           "title": "복사하면 결과를 한글로 알려 주기"
+        },
+        {
+          "taskId": "ACTL-DISCOVER-FAIL-EVIDENCE",
+          "scope": "Add a pure recheck that records gui._state_message('list_failed') and gui._state_message('unreachable', target='asus') as OBSERVED Korean lines and a live Windows discover failure as NOT_PROVEN, with sshSpawned and tkStarted false, without changing board behavior or starting ssh, Tk, or discover.",
+          "files": [
+            "src/actl/core/discover_fail_evidence.py",
+            "tests/test_discover_fail_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-DISPLAY-OTHER-STATES-EVIDENCE",
+          "scope": "Add a pure recheck that records gui._card_header and gui._card_line for one working row, one approval-waiting row, and one disconnected row as OBSERVED lines (일하는 중, 답 기다림, 연결 안 됨) with no pane id, and records the live Windows board as NOT_PROVEN, without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/display_state_evidence.py",
+            "tests/test_display_state_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-SEND-FAIL-EVIDENCE",
+          "scope": "Add a pure recheck that records gui._send_failure_text for a network error, a contention error, and a generic error as the three existing Korean lines OBSERVED, and a live Windows send failure as NOT_PROVEN, without starting Tk or ssh or printing the raw error.",
+          "files": [
+            "src/actl/core/send_fail_evidence.py",
+            "tests/test_send_fail_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
         }
       ],
       "qaRuntime": [
