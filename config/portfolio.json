@@ -6460,6 +6460,32 @@
           ],
           "ssotEvidence": "BACKLOG.md:34 2. discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
           "title": "완료된 결과를 쉽게 복사"
+        },
+        {
+          "taskId": "ACTL-SEND-OUTCOME-EVIDENCE",
+          "scope": "Add pure _send_outcome_text(status) in src/actl/gui.py, use it for the acked, submitted, and ambiguous notices in Board.on_send, and record those Korean lines as OBSERVED with the live Windows send NOT_PROVEN, without starting Tk or ssh or claiming the Founder board flow.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/core/send_outcome_evidence.py",
+            "tests/test_send_outcome_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+        },
+        {
+          "taskId": "ACTL-COPY-OUTCOME-EVIDENCE",
+          "scope": "Add pure _copy_outcome_text(kind, chars=0) in src/actl/gui.py, use it for the success, empty, and clipboard-failure notices in Board.on_copy, and record those Korean lines as OBSERVED with a live Windows copy completion NOT_PROVEN, without starting Tk or ssh or claiming the Founder board flow.",
+          "files": [
+            "src/actl/gui.py",
+            "src/actl/core/copy_outcome_evidence.py",
+            "tests/test_copy_outcome_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
         }
       ],
       "qaRuntime": [
