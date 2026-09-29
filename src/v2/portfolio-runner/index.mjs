@@ -252,18 +252,19 @@ export class WorktreeManager {
 }
 
 export class CodexDevelopmentRuntime {
-  constructor({ command = discoverCodexCommand(), timeoutMs = 30 * 60_000 } = {}) { this.command = command; this.timeoutMs = timeoutMs; this.children = new Set(); }
+  constructor({ command = discoverCodexCommand(), timeoutMs = 30 * 60_000, model = null } = {}) { this.command = command; this.timeoutMs = timeoutMs; this.model = model || process.env.CODEX_MODEL || null; this.children = new Set(); }
 
   async run({ workspace, prompt, sandbox, signal }) {
     const output = join(workspace, `.agent-relay-${sandbox}-output.txt`);
-    const args = ["exec", "--ephemeral", ...(sandbox === "workspace-write" ? ["--approve-for-me"] : ["--sandbox", sandbox]), "--skip-git-repo-check", "--cd", workspace, "--json", "-o", output, "-"];
+    // NOTE: `codex exec -m <model>` rejects stdin `-` prompt form; with a model override the prompt goes positional.
+    const args = ["exec", "--ephemeral", ...(sandbox === "workspace-write" ? ["--approve-for-me"] : ["--sandbox", sandbox]), "--skip-git-repo-check", "--cd", workspace, "--json", "-o", output, ...(this.model ? ["-m", this.model, prompt] : ["-"])];
     if (!this.command) throw new Error("CODEX_RUNTIME_UNAVAILABLE: set CODEX_BIN or install codex in a known runtime location");
     const child = spawn(this.command, args, { cwd: workspace, stdio: ["pipe", "pipe", "pipe"] });
     this.children.add(child);
     let stdout = ""; let stderr = "";
     child.stdout.setEncoding("utf8"); child.stderr.setEncoding("utf8"); child.stdout.on("data", (x) => { stdout += x; }); child.stderr.on("data", (x) => { stderr += x; });
     const startedAt = new Date().toISOString();
-    child.stdin.end(prompt);
+    if (this.model) child.stdin.end(); else child.stdin.end(prompt);
     const abort = () => child.kill("SIGTERM"); signal?.addEventListener("abort", abort, { once: true });
     const exit = await new Promise((resolvePromise, reject) => { const timer = setTimeout(() => child.kill("SIGTERM"), this.timeoutMs); child.once("error", reject); child.once("close", (code, exitSignal) => { clearTimeout(timer); signal?.removeEventListener("abort", abort); resolvePromise({ code, signal: exitSignal }); }); });
     this.children.delete(child);
@@ -296,7 +297,25 @@ export function runTestGate(workspace, tests, { timeoutMs = 15 * 60_000, signal 
   return (async () => { const results = []; for (const cmd of tests || []) { const result = await runOneCommand(cmd); results.push(result); if (result.code !== 0) return { ok: false, results }; } return { ok: true, results }; })();
 }
 
-// Founder plan harness (Founder 2026-09-23, the most important agent rule): what the Founder already planned is settled.
+// Effective model per runtime id (Founder 2026-09-28: every task shows its model).
+// codex-family: pinned model on the impl, else the host's codex config default.
+// Other runtimes: model unknown from here (their CLIs own it) → null.
+let _codexConfigModel = null;
+function workerModelFor(runtimeId, adapters) {
+  if (!runtimeId || !String(runtimeId).startsWith("codex")) return null;
+  try {
+    const implModel = adapters?.[runtimeId]?.runtimeImpl?.model;
+    if (implModel) return implModel;
+    if (_codexConfigModel === null) {
+      const text = readFileSync(join(homedir(), ".codex", "config.toml"), "utf8");
+      const m = text.match(/^\s*model\s*=\s*"([^"]+)"/m);
+      _codexConfigModel = m ? m[1] : false;
+    }
+    return _codexConfigModel || null;
+  } catch {
+    return null;
+  }
+}
 export const FOUNDER_PLAN_HARNESS = "Founder plan harness: the SSOT, the Founder direction and this task packet were already planned with the Founder and are settled. Do not ask about them or re-open them. Follow the plan straight through. Before changing anything, check the files, tests and dependencies the task needs, so nothing surprising appears mid-way. Resolve anything inside the plan yourself. The Founder only sees results.";
 
 // Skills + Founder memory for one role (Founder 2026-09-24, A-25/A-26). Skills: lane config skills.{pm,worker,qa} = names of
@@ -343,6 +362,37 @@ export function builderPrompt(task) {
 export function qaPrompt(task, base) {
   return `${FOUNDER_PLAN_HARNESS}\nYou are an independent read-only QA Agent. Do not modify files, commit, or push. Use FOUNDER_GATE only for money, secrets/credentials, external publish/push or scope outside the task packet; anything the plan already covers is ACCEPT or REQUEST_CHANGES. Verify task ${task.taskId} by inspecting git diff ${base}..HEAD (the supplied base is the parent, not the candidate commit), then run relevant read-only-safe checks. The runner executes the listed tests itself after you, so a test blocked only by the read-only sandbox (EROFS) is not a reason to reject; say so. Any type error, failing check you can run, scope violation, or missing test coverage when the task's files include a test file and a harness exists, IS a reason (do not demand tests the task's file list cannot contain): verdict REQUEST_CHANGES with concrete findings. Validate scope. Also check that the change really delivers what the task title and scope promise: a stub, a hard-coded value, a placeholder or a much thinner behaviour than described is REQUEST_CHANGES even when the tests pass. For every new or changed HTTP/API route or handler, check it enforces the same authentication and ownership checks as its neighbouring routes; a route that lets one user read or change another user's data is REQUEST_CHANGES. End with exactly one line: QA_PACKET: ${JSON.stringify({ schema: "agent-relay.qa.v1", taskId: task.taskId, verdict: "<ACCEPT|REQUEST_CHANGES|FOUNDER_GATE>", tests: [], findings: [], summary: "<evidence>" })}`;
 }
+
+// PM_JUDGMENT packet parser: tolerates SSE escaping ({\"...\"}), trailing text
+// after the packet, and pretty/multi-line JSON. Returns {decision, reason} or null.
+export function parsePmJudgmentPacket(text, firstCandidate) {
+  const normalized = String(text || "").replace(/\\"/g, '"');
+  const candidates = [];
+  if (firstCandidate) candidates.push(firstCandidate.replace(/\\"/g, '"'));
+  const tag = normalized.indexOf("PM_JUDGMENT:");
+  if (tag >= 0) {
+    const tail = normalized.slice(tag);
+    let depth = 0, start = -1;
+    for (let i = 0; i < tail.length; i++) {
+      if (tail[i] === "{") { if (start < 0) start = i; depth++; }
+      else if (tail[i] === "}") {
+        depth--;
+        if (start >= 0 && depth === 0) { candidates.push(tail.slice(start, i + 1)); break; }
+      }
+    }
+  }
+  for (const candidate of candidates) {
+    try {
+      const parsed = JSON.parse(candidate);
+      if (parsed?.decision === "ACCEPT" || parsed?.decision === "CHANGES") return parsed;
+    } catch { /* try next */ }
+  }
+  return null;
+}
+  // PM verdict through our own path (codex-chatgpt-web Responses transport,
+  // honestly labeled external tool, swappable backend). ACCEPT → promote.
+  // CHANGES → rework like QA REQUEST_CHANGES. Transport failure → record and
+  // proceed (pilot rule: never strand a lane on PM infra).
 
 export class PortfolioRunner {
   constructor({ manifest, statePath, worktreeRoot, gateRoot, intakeRoot, resultRoot, runtime = new CodexDevelopmentRuntime(), runtimeAdapters, worktrees = new WorktreeManager(worktreeRoot), gateManager, testGate = runTestGate, manifestPath = null }) {
@@ -503,9 +553,48 @@ export class PortfolioRunner {
     throw new Error(`NO_RUNTIME_AVAILABLE: ${tried.join("; ")}`);
   }
 
+    // ChatGPT PM judgment (Founder 2026-09-28): lanes with pmJudge:"chatgpt" get a
+  async requestChatGptJudgment(project, task, signal) {
+    const at = new Date().toISOString();
+    const via = "codex-chatgpt-web";
+    const fallback = (reason) => ({ decision: "TRANSPORT_FAILED", reason, at, via });
+    try {
+      const auth = JSON.parse(await readFile(join(homedir(), ".codex", "auth.json"), "utf8"));
+      const token = auth?.tokens?.access_token;
+      if (typeof token !== "string" || !token.trim()) return fallback("no codex auth token");
+      const summary = [
+        `Task ${task.taskId}: ${task.title || task.scope || ""}`.slice(0, 300),
+        `Scope: ${String(task.scope || "").slice(0, 800)}`,
+        `Changed: ${(task.result?.changedFiles || []).join(", ").slice(0, 300)}`,
+        `Result: ${String(task.result?.summary || "").slice(0, 500)}`,
+        `QA: ${task.qa?.verdict} — ${String((task.qa?.findings || []).join("; ") || task.qa?.summary || "").slice(0, 400)}`,
+      ].join("\n");
+      const prompt = `You are the supervising PM. Judge whether the work below fulfills its scope. Reply with a short Korean reason first, then end with EXACTLY one line: PM_JUDGMENT: {"decision": "ACCEPT"} or PM_JUDGMENT: {"decision": "CHANGES", "reason": "<why>"}\n\n${summary}`;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(new Error("pm-judgment timeout")), 5 * 60_000);
+      signal?.addEventListener("abort", () => controller.abort(signal.reason), { once: true });
+      let text = "";
+      try {
+        const res = await fetch("http://127.0.0.1:17841/v1/responses", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token.trim()}` }, body: JSON.stringify({ model: process.env.CHATGPT_PM_MODEL || "gpt-6-astra", input: [{ role: "user", content: prompt }], store: false, stream: true }), signal: controller.signal });
+        text = await res.text();
+        if (!res.ok) return fallback(`transport HTTP ${res.status}`);
+      } finally { clearTimeout(timer); }
+      const match = text.match(/PM_JUDGMENT:\s*(\{[^}]*\})/);
+      const parsed = parsePmJudgmentPacket(text, match?.[1]);
+      if (!parsed) return fallback("unparseable judgment");
+      if (parsed?.decision === "ACCEPT") return { decision: "ACCEPT", reason: String(parsed.reason || ""), at, via };
+      if (parsed?.decision === "CHANGES") return { decision: "CHANGES", reason: String(parsed.reason || "no reason").slice(0, 500), at, via };
+      return fallback("unparseable judgment");
+    } catch (error) {
+      return fallback(String(error?.message || error).slice(0, 200));
+    }
+  }
+
   async runOne(task, state, { signal } = {}) {
     const project = this.manifest.projects.find((item) => item.id === task.projectId);
-    const workerChain = chainOf(project?.runtime || project?.owner); const qaChain = chainOf(project?.qaRuntime || project?.runtime || project?.owner);
+    // Task-level runtime override (Founder 2026-09-28 complexity tiers):
+    // simple = default chain, hard = codex-luna, complex debug/arch = codex-terra.
+    const workerChain = chainOf(task.runtime || project?.runtime || project?.owner); const qaChain = chainOf(task.qaRuntime || project?.qaRuntime || project?.runtime || project?.owner);
     let adapter = null; let availability = { ok: false, reason: "runtime adapter not configured" };
     for (const id of workerChain) { const candidate = this.runtimeAdapters[id]; if (!candidate) continue; const status = await candidate.availability(); availability = status; if (status.ok) { adapter = candidate; break; } }
     if (!definitions(project).some((definition) => definition.taskId === task.taskId)) { task.state = project?.state || "BLOCKED_SCOPE"; return; }
@@ -519,7 +608,7 @@ export class PortfolioRunner {
       for (;;) {
       const workerCtx = await agentContext(project, "worker", { taskId: task.taskId, memoryStore: this.manifest?.memoryStore, memory: this.manifest?.memoryDelivery === true });
       const builderRun = await this.runChain(workerChain, { workspace: builder.path, sandbox: "workspace-write", prompt: workerCtx.text + builderPrompt({ ...task, projectId: project.id }), signal }, parseResultPacket);
-      task.builderEvidence = { skills: workerCtx.skills, memories: workerCtx.memories, pid: builderRun.pid, workspace: builder.path, base: builder.base, startedAt: builderRun.startedAt, exitCode: builderRun.code, runtime: builderRun.runtime, fallbacks: builderRun.fallbacks };
+      task.builderEvidence = { skills: workerCtx.skills, memories: workerCtx.memories, pid: builderRun.pid, workspace: builder.path, base: builder.base, startedAt: builderRun.startedAt, exitCode: builderRun.code, runtime: builderRun.runtime, model: workerModelFor(builderRun.runtime, this.runtimeAdapters), fallbacks: builderRun.fallbacks };
       task.result = parseResultPacket(builderRun.text); await this.publishResult(task); if (task.result.status !== "IMPLEMENTED") { task.state = "HOLD"; break; } task.state = "QA"; state.activeBuilders = state.activeBuilders.filter((item) => item.taskId !== task.taskId); state.activeQa.push({ taskId: task.taskId, pid: null, workspace: builder.path, owner: "agent-relay", managed: true }); await this.save(state);
       await this._acquireQa();
       let qaRun;
@@ -528,7 +617,7 @@ export class PortfolioRunner {
       const qaCtx = await agentContext(project, "qa", { taskId: task.taskId, memoryStore: this.manifest?.memoryStore, memory: this.manifest?.memoryDelivery === true });
       try { task.qaAttempts += 1; qaRun = await this.runChain(qaOrder, { workspace: builder.path, sandbox: "read-only", prompt: qaCtx.text + qaPrompt(task, builder.base), signal }, parseQaPacket); }
       finally { this._releaseQa(); }
-      task.qaEvidence = { skills: qaCtx.skills, memories: qaCtx.memories, pid: qaRun.pid, startedAt: qaRun.startedAt, exitCode: qaRun.code, runtime: qaRun.runtime, fallbacks: qaRun.fallbacks, ...(qaRun.runtime === builderRun.runtime ? { sameAsBuilder: true } : {}) }; task.qa = parseQaPacket(qaRun.text); state.activeQa = state.activeQa.filter((item) => item.taskId !== task.taskId);
+      task.qaEvidence = { skills: qaCtx.skills, memories: qaCtx.memories, pid: qaRun.pid, startedAt: qaRun.startedAt, exitCode: qaRun.code, runtime: qaRun.runtime, model: workerModelFor(qaRun.runtime, this.runtimeAdapters), fallbacks: qaRun.fallbacks, ...(qaRun.runtime === builderRun.runtime ? { sameAsBuilder: true } : {}) }; task.qa = parseQaPacket(qaRun.text); state.activeQa = state.activeQa.filter((item) => item.taskId !== task.taskId);
       if (task.qa.verdict === "ACCEPT" && !task.verificationOnly && this.testGate) {
         const headOf = () => exec("git", ["-C", builder.path, "rev-parse", "HEAD"]).then((result) => result.stdout.trim(), () => null);
         const head = await headOf();
@@ -543,6 +632,13 @@ export class PortfolioRunner {
         if (failed && !moved && head && builder.base && !/-BASEFIX(-R\d+)?$/.test(task.taskId) && await this.baseFails(builder.path, builder.base, head, failed.cmd, signal)) {
           state.baseBroken = { ...(state.baseBroken || {}), [project.id]: { base: builder.base, cmd: failed.cmd, taskId: task.taskId, tail: String(failed.tail || "").slice(-1500), at: new Date().toISOString() } };
           task.state = "HOLD"; task.error = `BASE_BROKEN: \`${failed.cmd}\` already fails on ${builder.base.slice(0, 7)} before this change`; await this.publishResult(task); break;
+        }
+      }
+      if (task.qa.verdict === "ACCEPT" && project.pmJudge === "chatgpt" && !task.verificationOnly) {
+        task.pmJudgment = await this.requestChatGptJudgment(project, task, signal);
+        await this.save(state);
+        if (task.pmJudgment.decision === "CHANGES") {
+          task.qa = { ...task.qa, verdict: "REQUEST_CHANGES", findings: [...(task.qa.findings || []), `PM_CHATGPT: ${task.pmJudgment.reason}`] };
         }
       }
       if (task.qa.verdict === "ACCEPT") { task.promotionRef = await this.worktrees.promote?.(project, task.taskId, task.result.commitSha, builder.path) || `candidate:${task.result.commitSha}`; if (this.worktrees.integrate && !task.verificationOnly) task.integration = await this.worktrees.integrate(project, task).catch((error) => ({ state: "NOT_INTEGRATED", reason: String(error.message || error).slice(0, 500) }));

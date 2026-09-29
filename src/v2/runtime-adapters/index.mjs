@@ -47,7 +47,7 @@ export class RuntimeAdapter {
 }
 
 export class CodexRuntimeAdapter extends RuntimeAdapter {
-  constructor(runtime) { super({ id: "codex", owner: "codex", runtime: "codex", available: true }); this.runtimeImpl = runtime; }
+  constructor(runtime, { id = "codex", owner = "codex", runtimeId = "codex" } = {}) { super({ id, owner, runtime: runtimeId, available: true }); this.runtimeImpl = runtime; }
   async availability() { return { id: this.id, owner: this.owner, runtime: this.runtime, ok: true, command: this.runtimeImpl.command }; }
   async run(request) { return this.runtimeImpl.run(request); }
   async stop() { await this.runtimeImpl.stop?.(); }
@@ -85,6 +85,14 @@ export function createRuntimeAdapters({ codex, commands = {} } = {}) {
   const claudeAt = (id, dir) => new CommandRuntimeAdapter({ id, owner: id, runtime: id, command: commands.claude || process.env.CLAUDE_BIN || known("claude"), probeArgs: ["--help"], safeNonInteractive: true, buildArgs: CLI_ARGS.claude, env: { CLAUDE_CONFIG_DIR: dir } });
   return {
     codex: new CodexRuntimeAdapter(codex),
+    "codex-luna": new CodexRuntimeAdapter(
+      new codex.constructor({ command: codex.command, timeoutMs: codex.timeoutMs, model: process.env.CODEX_LUNA_MODEL || "gpt-5.6-luna" }),
+      { id: "codex-luna", owner: "codex-luna", runtimeId: "codex-luna" },
+    ),
+    "codex-terra": new CodexRuntimeAdapter(
+      new codex.constructor({ command: codex.command, timeoutMs: codex.timeoutMs, model: process.env.CODEX_TERRA_MODEL || "gpt-5.6-terra" }),
+      { id: "codex-terra", owner: "codex-terra", runtimeId: "codex-terra" },
+    ),
     opencode: cli("opencode", commands.opencode || process.env.OPENCODE_BIN || "/usr/local/bin/opencode"),
     "opencode-free": new CommandRuntimeAdapter({ id: "opencode-free", owner: "opencode", runtime: "opencode-free", command: commands.opencode || process.env.OPENCODE_BIN || "/usr/local/bin/opencode", probeArgs: ["--version"], safeNonInteractive: true, buildArgs: CLI_ARGS["opencode-free"] }),
     cline: cli("cline", commands.cline || process.env.CLINE_BIN || "/usr/local/bin/cline"),
