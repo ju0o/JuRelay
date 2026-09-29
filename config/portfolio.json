@@ -6395,7 +6395,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 `discover --ssh asus` 재검증"
+          "ssotEvidence": "BACKLOG.md:27 새 Windows 빌드/설치본에서 `discover --ssh asus` 재검증",
+          "title": "발견 기능의 연결 상태 점검"
         },
         {
           "taskId": "ACTL-TK-DISPLAY-EVIDENCE",
@@ -6407,7 +6408,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
+          "ssotEvidence": "BACKLOG.md:34 `discover`, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다.",
+          "title": "연결된 작업판 표시 상태 기록"
         },
         {
           "taskId": "ACTL-REFRESH-COUNT-EVIDENCE",
@@ -6418,7 +6420,8 @@
           "tests": [
             "python3 tests/run_tests.py"
           ],
-          "ssotEvidence": "BACKLOG.md:28 독립 QA에서 warm transport, process 수와 refresh 동작 측정"
+          "ssotEvidence": "BACKLOG.md:28 독립 QA에서 warm transport, process 수와 refresh 동작 측정",
+          "title": "새로고침 사용량과 실행 상태 기록"
         }
       ],
       "qaRuntime": [
@@ -10131,7 +10134,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task."
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:142 PM transport is not connected; the lane is held without inventing a Product task.",
+          "title": "연결 끊김 때 잘못된 재전송 방지"
         },
         {
           "taskId": "JUPLAN-AR-QA-RESTART",
@@ -10144,7 +10148,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch."
+          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch.",
+          "title": "재시작이 애매하면 승인 반영 보류"
         },
         {
           "taskId": "JUPLAN-AR-RETRY-RESTART",
@@ -10157,7 +10162,8 @@
             "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
             "pnpm typecheck"
           ],
-          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch."
+          "ssotEvidence": "docs/agent-relay/restart-reconcile.json:103 Ambiguous state is held fail-closed. The runner does not dispatch.",
+          "title": "재시작이 애매하면 재시도 중단"
         }
       ],
       "qaRuntime": [
@@ -13172,7 +13178,8 @@
           "tests": [
             "npx vitest run tests/receipt-render-founder.test.ts tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안, 빠진 확인 항목의 쉬운 설명"
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안, 빠진 확인 항목의 쉬운 설명",
+          "title": "작업 결과를 쉽게 확인해요"
         },
         {
           "taskId": "JUCEIPT-SUMMARY-FORMAL-GAP",
@@ -13185,7 +13192,8 @@
           "tests": [
             "npx vitest run tests/scan-summary.test.ts tests/daily.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안, 빠진 확인 항목의 쉬운 설명"
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안, 빠진 확인 항목의 쉬운 설명",
+          "title": "확인할 내용을 쉽게 알려줘요"
         },
         {
           "taskId": "JUCEIPT-TODAY-KEEP-KOREAN-TITLE",
@@ -13197,7 +13205,8 @@
           "tests": [
             "npx vitest run tests/today-founder.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 영어 작업 제목을 쉬운 한국어 요약으로"
+          "ssotEvidence": "Founder direction 2026-09-25: 영어 작업 제목을 쉬운 한국어 요약으로",
+          "title": "오늘 카드에 작업 이름을 보여줘요"
         },
         {
           "taskId": "JUCEIPT-SUMMARY-SHELL-TOKEN-PARITY",
@@ -13210,7 +13219,8 @@
           "tests": [
             "npx vitest run tests/daily.test.ts tests/scan-summary.test.ts"
           ],
-          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안"
+          "ssotEvidence": "Founder direction 2026-09-25: 개발자 글자는 원문 보기 안",
+          "title": "어려운 내용 없이 결과를 보여줘요"
         }
       ],
       "skills": {
@@ -16197,7 +16207,8 @@
           "tests": [
             "node --test tests/e2e-failure-steps-doc-sync.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:32 하나가 실패하면 그 뒤 단계는 실행하지 않고 ok: false로 적습니다"
+          "ssotEvidence": "docs/getting-started.md:32 하나가 실패하면 그 뒤 단계는 실행하지 않고 ok: false로 적습니다",
+          "title": "실패 단계부터 상태를 정확히 안내"
         },
         {
           "taskId": "JUCONTROLER-GUIDE-FIVE-ENGLISH-LINES",
@@ -16208,7 +16219,8 @@
           "tests": [
             "node --test tests/getting-started-five-english-lines.test.mjs"
           ],
-          "ssotEvidence": "docs/getting-started.md:249 아래 다섯 가지 오류는 한국어 줄 바로 아래에 영어 줄이 하나 더 나옵니다"
+          "ssotEvidence": "docs/getting-started.md:249 아래 다섯 가지 오류는 한국어 줄 바로 아래에 영어 줄이 하나 더 나옵니다",
+          "title": "시작 오류를 쉽게 확인"
         }
       ],
       "qaRuntime": [
@@ -21981,7 +21993,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists."
+          "ssotEvidence": "Founder direction 2026-09-29: Capture only same-task rows containing both a Claude final and a Receipt, reconcile their references, and keep M3 undecided until a valid join exists.",
+          "title": "사업 진행 여부를 정확히 판단"
         },
         {
           "taskId": "JUCEIPTPLAN-WBS-VALID-JOIN-CLAUSE",
@@ -21992,7 +22005,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join."
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:369 A later M3 GO, DEFER, or KILL is recorded only for a same-task row whose Claude-final and Receipt references reconcile into a valid join.",
+          "title": "사업 계획의 판단 기준을 통일"
         },
         {
           "taskId": "JUCEIPTPLAN-ROADMAP-M3-VALID-JOIN",
@@ -22003,7 +22017,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join",
+          "title": "연동 단계의 진행 여부를 판단"
         },
         {
           "taskId": "JUCEIPTPLAN-BOARD-M3-VALID-JOIN",
@@ -22014,7 +22029,8 @@
           "tests": [
             "git diff --check"
           ],
-          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join"
+          "ssotEvidence": "docs/planning/BUSINESS_PRODUCT_WBS.md:43 any later GO / DEFER / KILL decision waits for a same-task row whose Claude-final and Receipt references reconcile into a valid join",
+          "title": "연동 결과를 정확히 확인"
         }
       ],
       "skills": {
@@ -24887,7 +24903,8 @@
           "tests": [
             "node --test tests/preexisting-no-delete-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:450 기존 변경을 임의로 삭제하거나 되돌리지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:450 기존 변경을 임의로 삭제하거나 되돌리지 않는다.",
+          "title": "기존 변경을 안전하게 보존하기"
         },
         {
           "taskId": "JUTELL-NO-FOLDER-LIST-PARITY",
@@ -24899,7 +24916,8 @@
           "tests": [
             "node --test tests/no-folder-list-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:413 비개발자에게 폴더와 코드 구조만 나열하지 않는다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:413 비개발자에게 폴더와 코드 구조만 나열하지 않는다.",
+          "title": "폴더보다 사용자 가치로 설명하기"
         },
         {
           "taskId": "JUTELL-V01-TWO-SCENARIO-PARITY",
@@ -24911,7 +24929,8 @@
           "tests": [
             "node --test tests/v01-two-scenario-parity.test.mjs"
           ],
-          "ssotEvidence": "docs/PRODUCT_SCOPE.md:584 V0.1은 핵심 시나리오 1개와 보조 시나리오 1개로 검증한다."
+          "ssotEvidence": "docs/PRODUCT_SCOPE.md:584 V0.1은 핵심 시나리오 1개와 보조 시나리오 1개로 검증한다.",
+          "title": "핵심과 보조 흐름 함께 확인하기"
         },
         {
           "taskId": "JUTELL-REPORT-STATE-TABLE-ROWS",
@@ -24923,7 +24942,8 @@
           "tests": [
             "node --test tests/report-state-table-rows.test.mjs"
           ],
-          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:425 필요한 핵심 검증이 모두 통과했고 중요한 미확인 사항이 없음"
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:425 필요한 핵심 검증이 모두 통과했고 중요한 미확인 사항이 없음",
+          "title": "검증 결과를 알기 쉽게 안내하기"
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
@@ -27640,7 +27660,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용"
+          "ssotEvidence": "README.md:19 자주 묻는 질문 재사용",
+          "title": "질문 뒤 추가 안내까지 받기"
         },
         {
           "taskId": "JUAI-CHECK-LOUNGE-HELLO",
@@ -27651,7 +27672,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:17 CommandCode | 환영 인사·프로필 폼"
+          "ssotEvidence": "README.md:17 CommandCode | 환영 인사·프로필 폼",
+          "title": "새 멤버에게 맞춤 인사 받기"
         },
         {
           "taskId": "JUAI-CHECK-AI-ISOLATION",
@@ -27662,7 +27684,8 @@
           "tests": [
             "npm run check"
           ],
-          "ssotEvidence": "README.md:46 OpenCode·Codex·CommandCode는 bwrap 임시 홈에서만 실행; README.md:40 무료 모델 자동 교체"
+          "ssotEvidence": "README.md:46 OpenCode·Codex·CommandCode는 bwrap 임시 홈에서만 실행; README.md:40 무료 모델 자동 교체",
+          "title": "안전하게 답변 이어받기"
         }
       ],
       "note": "lane added by night plan request 2026-09-25",
