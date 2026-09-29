@@ -10041,6 +10041,45 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility.",
           "title": "범위 밖 작업 재시도 차단"
+        },
+        {
+          "taskId": "JUPLAN-AR-QA-PROVIDER",
+          "scope": "Append an optional TaskPacketProviderFailure after scopeHold on decideQaTestGate so an empty runtime chain does not promote a passing ACCEPT and dispatches none, while an omitted or configured fall-through fact keeps today's promotion, and update the existing signature checks in the QA test.",
+          "files": [
+            "packages/runtime/src/agentRelayQaGate.ts",
+            "packages/runtime/test/agent-relay-qa-gate.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-qa-gate.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none."
+        },
+        {
+          "taskId": "JUPLAN-AR-RETRY-PROVIDER",
+          "scope": "Append an optional TaskPacketProviderFailure after scopeHold on decideRetry, applyRetryPolicy, and runSameTaskRetry so an empty runtime chain does not retry and dispatches none, while an omitted or configured fall-through fact keeps the same-task retry, and update the existing signature checks in the retry test.",
+          "files": [
+            "packages/runtime/src/agentRelayRetryPolicy.ts",
+            "packages/runtime/test/agent-relay-retry-policy.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-retry-policy.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none."
+        },
+        {
+          "taskId": "JUPLAN-AR-RECONCILE-PROVIDER",
+          "scope": "Append an optional TaskPacketProviderFailure to reconcileRestart, applyRestartReconcile, and runRestartReconcile so an empty runtime chain turns the one provider-outage requeue into dispatch none, while an omitted or configured fall-through fact keeps today's single requeue and the existing catalog proof.",
+          "files": [
+            "packages/runtime/src/agentRelayRestartReconcile.ts",
+            "packages/runtime/test/agent-relay-restart-reconcile.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/provider-failure.json:44 While the runtime chain is empty, a quota, timeout, or transient provider failure keeps AR-JUPLAN-001, leaves its files and tests unchanged, adds no provider, and dispatches none."
         }
       ],
       "qaRuntime": [
