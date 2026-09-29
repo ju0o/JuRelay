@@ -25723,6 +25723,42 @@
           ],
           "ssotEvidence": "docs/PRODUCT_SCOPE.md:151 AI Agent가 작업을 완료한 뒤 비개발자가 별도의 추가 질문 없이 무엇이 바뀌었고, 무엇이 실제로 확인됐으며, 무엇을 직접 확인해야 하는지 이해할 수 있게 한다.",
           "title": "질문 없이 바뀐 것·확인된 것·볼 것 알기"
+        },
+        {
+          "taskId": "JUTELL-USER-ACTION-DEFINITIONS-PARITY",
+          "scope": "Add the single definition sentence under each BEGINNER_REPORT_SPEC ### 9.1–9.4 heading, not the examples, as one bullet directly under the 사용자 행동 line in report-format.md §1, plus an offline node:test that those four sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/references/report-format.md",
+            "tests/user-action-definitions-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/user-action-definitions-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/BEGINNER_REPORT_SPEC.md:329 사용자가 화면이나 실제 동작을 직접 확인해야 한다."
+        },
+        {
+          "taskId": "JUTELL-EVAL-SCORE-BANDS-PARITY",
+          "scope": "Add the three TEST_SCENARIOS §7.3 score-band bullets in order as one new bullet in the README section 지원 환경과 검증 범위, leaving the existing V0.1 sentences in place, plus an offline node:test that those three lines stay aligned.",
+          "files": [
+            "README.md",
+            "tests/eval-score-bands-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/eval-score-bands-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:561 * 6~7점: 이해 가능"
+        },
+        {
+          "taskId": "JUTELL-TECH-EVAL-MUST-PASS-PARITY",
+          "scope": "Add the three TEST_SCENARIOS §8 sentences after the evaluation table, that every item is required, one failure fails the scenario, and typos are improvement notes, as one bullet under SKILL.md step 16, plus an offline node:test that those sentences stay aligned.",
+          "files": [
+            ".agents/skills/beginner-bridge/SKILL.md",
+            "tests/tech-eval-must-pass-parity.test.mjs"
+          ],
+          "tests": [
+            "node --test tests/tech-eval-must-pass-parity.test.mjs"
+          ],
+          "ssotEvidence": "docs/TEST_SCENARIOS.md:624 모든 항목은 필수 평가 항목이다."
         }
       ],
       "note": "lane added by night plan request 2026-09-24",
