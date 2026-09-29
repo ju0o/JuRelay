@@ -6699,6 +6699,42 @@
           ],
           "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다.",
           "title": "설치 중 기존 프로그램 보호"
+        },
+        {
+          "taskId": "ACTL-INSTALL-LAUNCH-RECHECK",
+          "scope": "Add a pure recheck that reads packaging/JuActl.iss and records the [Run] flags nowait, postinstall, and skipifsilent plus the JuActl Doctor icon parameters as OBSERVED source text, and records a live MainPC install launch and live doctor run as NOT_PROVEN, without starting the installer or SSH.",
+          "files": [
+            "src/actl/core/install_launch_recheck.py",
+            "tests/test_install_launch_recheck.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:33 MainPC의 기존 JuActl 클라이언트를 중지하고 새 빌드로 설치한다."
+        },
+        {
+          "taskId": "ACTL-PACKAGE-CONSOLE-FLAGS",
+          "scope": "Add a pure recheck that reads scripts/build-exe.ps1 and records JuActlBoard --noconsole and JuActl --console as OBSERVED source flags, and records the built exe window subsystem and any live console window as NOT_PROVEN, without running PyInstaller or SSH.",
+          "files": [
+            "src/actl/core/package_console_recheck.py",
+            "tests/test_package_console_recheck.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:106 Windows installer build and installation of this exact commit;"
+        },
+        {
+          "taskId": "ACTL-GUI-REFRESH-OFF-EVIDENCE",
+          "scope": "Add a pure recheck that reads src/actl/gui.py and records the absence of self.root.after(self.refresh_interval_ms as OBSERVED manual-refresh source evidence, and records a live Windows process sample with the board open as NOT_PROVEN, without changing refresh behavior or starting the board.",
+          "files": [
+            "src/actl/core/gui_refresh_evidence.py",
+            "tests/test_gui_refresh_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "ROOT_CAUSE_REPORT.md:137 NOT_PROVEN in this run. The test harness did not drive the GUI toggle through a real Windows desktop input channel."
         }
       ],
       "qaRuntime": [
