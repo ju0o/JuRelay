@@ -6422,6 +6422,41 @@
           ],
           "ssotEvidence": "BACKLOG.md:28 독립 QA에서 warm transport, process 수와 refresh 동작 측정",
           "title": "새로고침 사용량과 실행 상태 기록"
+        },
+        {
+          "taskId": "ACTL-OWNED-KILL-EVIDENCE",
+          "scope": "Record a fake reader-EOF owned-process kill as OBSERVED and live MainPC restore as NOT_PROVEN, without starting ssh or changing transport behavior.",
+          "files": [
+            "src/actl/core/recovery_evidence.py",
+            "tests/test_recovery_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:110 - owned transport kill, ASUS unreachable, and restore/recovery tests;"
+        },
+        {
+          "taskId": "ACTL-REFRESH-MATRIX-EVIDENCE",
+          "scope": "Record offline warm-refresh remote-call counts for 1 pane and 8 panes as OBSERVED and the live MainPC matrix as NOT_PROVEN, using the existing fake runners and no real ssh or auto-refresh toggle.",
+          "files": [
+            "tests/test_refresh_matrix_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "docs/incidents/P0_WINDOWS_REMOTE_TRANSPORT_FIX.md:109 - 1/2/4/8-agent refresh matrix and auto-refresh OFF/TUI cases;"
+        },
+        {
+          "taskId": "ACTL-RESULT-CARD-EVIDENCE",
+          "scope": "Record the Tk result-ready card line as OBSERVED and a live Windows copy click as NOT_PROVEN, without starting Tk or ssh.",
+          "files": [
+            "src/actl/core/result_card_evidence.py",
+            "tests/test_result_card_evidence.py"
+          ],
+          "tests": [
+            "python3 tests/run_tests.py"
+          ],
+          "ssotEvidence": "BACKLOG.md:34 2. discover, 보드 표시, 보내기→결과→복사 흐름을 독립 QA로 확인한다."
         }
       ],
       "qaRuntime": [
