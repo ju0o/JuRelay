@@ -10220,6 +10220,19 @@
           ],
           "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:146 The Worker returned BLOCKED.",
           "title": "막힌 작업은 다시 만들지 않기"
+        },
+        {
+          "taskId": "JUPLAN-AR-RECONCILE-SCOPE",
+          "scope": "Append an optional scope-hold argument after blockedResult on reconcileRestart, applyRestartReconcile, and runRestartReconcile so out-of-scope work turns the one provider-outage requeue into dispatch none and invents no Product task, while an omitted or in-scope fact keeps that single requeue, and update the existing signature assertions in the restart reconcile test.",
+          "files": [
+            "packages/runtime/src/agentRelayRestartReconcile.ts",
+            "packages/runtime/test/agent-relay-restart-reconcile.test.ts"
+          ],
+          "tests": [
+            "pnpm --filter @juplan/runtime test:run test/agent-relay-restart-reconcile.test.ts",
+            "pnpm typecheck"
+          ],
+          "ssotEvidence": "docs/agent-relay/AR-JUPLAN-001.md:151 The requested work would change V1 Product semantics, reopen DEC-G012, expand providers, or change public visibility."
         }
       ],
       "qaRuntime": [
