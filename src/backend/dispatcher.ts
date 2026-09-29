@@ -55,6 +55,7 @@ import {
   readFallbackRecord,
   writeFallbackRecord,
 } from './worker-fallback.js';
+import { emitRunFailedWake, emitWake } from './wake-queue.js';
 import { resolveClaudeConfigContext } from '../integrations/claude/profile.js';
 import { ensureDispatchCaptureManager } from './capture-service.js';
 import {
@@ -739,6 +740,38 @@ async function handleChildExit(
         },
       });
     } catch { /* ignore */ }
+    // F0 Phase 1: every non-zero exit leaves a durable wake record
+    // (RUN_FAILED, explicit RUNNING→RUN_FAILED transition). Record-only:
+    // the Supervisor consumes wakes without blocking on them.
+    try {
+      const tried = fallbackTriedByTask.get(live.key) ?? [];
+      emitRunFailedWake(live.dataRoot, live.project, {
+        goalId: task.goalId,
+        taskId: live.taskId,
+        runId: live.runId ?? '',
+        workerId: live.workerId,
+        reasonText: `worker exit code=${exitCode}` + (signal ? ` signal=${signal}` : '') + ` [${advice.kind}] ${advice.reason}`,
+        failureCategory: advice.kind === 'provider' ? 'transient' : 'unknown',
+        attemptsUsed: tried.length + 1,
+        nextRecommendedAction: advice.fallbackTo ? 'fallback' : 'retry',
+      });
+      if (advice.fallbackTo) {
+        emitWake(live.dataRoot, live.project, {
+          reason: 'FALLBACK',
+          goalId: task.goalId,
+          taskId: live.taskId,
+          runId: live.runId ?? '',
+          workerId: live.workerId,
+          oldState: task.executionState,
+          newState: 'FAILED',
+          reasonText: `fallback ${live.workerId} -> ${advice.fallbackTo}: ${advice.reason}`,
+          failureCategory: 'transient',
+          blockerSummary: `fallback to ${advice.fallbackTo}`,
+          nextRecommendedAction: 'fallback',
+          attemptsUsed: tried.length + 1,
+        });
+      }
+    } catch { /* wake records never break dispatch */ }
 
     // Non-zero: disarm capture + release observation lock (idempotent).
     await cleanupObservationLifecycle(live);
