@@ -267,8 +267,13 @@ export class CodexDevelopmentRuntime {
 
   async run({ workspace, prompt, sandbox, signal, onChild, onOutput }) {
     const output = join(workspace, `.agent-relay-${sandbox}-output.txt`);
-    // NOTE: `codex exec -m <model>` rejects stdin `-` prompt form; with a model override the prompt goes positional.
-    const args = ["exec", "--ephemeral", ...(sandbox === "workspace-write" ? ["--approve-for-me"] : ["--sandbox", sandbox]), "--skip-git-repo-check", "--cd", workspace, "--json", "-o", output, ...(this.model ? ["-m", this.model, prompt] : ["-"])];
+    // The prompt always goes in on stdin, never as a positional argument. With `--json -o <file>` in the
+    // argv, a trailing positional is not consumed as the prompt: codex either ignores it and asks
+    // "what prompt do you mean?", or the argument count shifts and the text lands as a --profile value
+    // and the process exits 2. That killed the codex fallback path outright (2026-09-29 E2E), leaving the
+    // portfolio dependent on whichever runtime came first. stdin is unaffected by argv layout, and it
+    // also keeps a long prompt out of `ps` output.
+    const args = ["exec", "--ephemeral", ...(sandbox === "workspace-write" ? ["--approve-for-me"] : ["--sandbox", sandbox]), "--skip-git-repo-check", "--cd", workspace, "--json", "-o", output, ...(this.model ? ["-m", this.model] : [])];
     if (!this.command) throw new Error("CODEX_RUNTIME_UNAVAILABLE: set CODEX_BIN or install codex in a known runtime location");
     const child = spawn(this.command, args, { cwd: workspace, stdio: ["pipe", "pipe", "pipe"] });
     this.children.add(child);
@@ -278,7 +283,7 @@ export class CodexDevelopmentRuntime {
     let stdout = ""; let stderr = "";
     child.stdout.setEncoding("utf8"); child.stderr.setEncoding("utf8"); child.stdout.on("data", (x) => { stdout += x; onOutput?.(x.length); }); child.stderr.on("data", (x) => { stderr += x; onOutput?.(x.length); });
     const startedAt = new Date().toISOString();
-    if (this.model) child.stdin.end(); else child.stdin.end(prompt);
+    child.stdin.end(prompt);
     const abort = () => child.kill("SIGTERM"); signal?.addEventListener("abort", abort, { once: true });
     const exit = await new Promise((resolvePromise, reject) => { const timer = setTimeout(() => child.kill("SIGTERM"), this.timeoutMs); child.once("error", reject); child.once("close", (code, exitSignal) => { clearTimeout(timer); signal?.removeEventListener("abort", abort); resolvePromise({ code, signal: exitSignal }); }); });
     this.children.delete(child);
