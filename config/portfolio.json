@@ -23066,6 +23066,17 @@
           ],
           "ssotEvidence": "docs/operations/PM_STATUS_BOARD.md:36 — M3는 유효한 same-task Claude-final/Receipt join 전까지 UNDECIDED로 유지한다.",
           "title": "모바일에서 안내를 쉽게 읽음"
+        },
+        {
+          "taskId": "JUCEIPTPLAN-P0-FOUNDER-UX-AUDIT",
+          "scope": "PM_STATUS_BOARD와 canonical HTML의 Founder-facing 표면을 Founder UX 규칙으로 독립 감사하고, raw 내부 코드·영어 노출·다음 행동 부재를 bounded QA 보고서에 기록한다.",
+          "files": [
+            "docs/qa/P0_FOUNDER_UX_AUDIT.md"
+          ],
+          "tests": [
+            "git diff --check"
+          ],
+          "ssotEvidence": "docs/decisions/DECISION_LOG.md:251-254 plain Korean, one obvious next action, inline feedback, no raw task IDs or enum/status codes in user-facing output"
         }
       ],
       "skills": {
