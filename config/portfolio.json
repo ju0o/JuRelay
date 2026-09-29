@@ -14078,6 +14078,30 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 맨 위 한 문장과 빈 화면의 다음 행동이 화면의 실제 내용과 같아야 한다",
           "title": "빠진 확인이 없으면 다음 할 일을 맞게 안내"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-ROLLBACK-OUTSIDE",
+          "scope": "In renderTodayList, when rollback status is available, put the receipt view's outside-computer caveat only in the hidden rollback panel, keep the short sentence on the visible 되돌리기 line, and leave raw rollback detail inside 원문 보기.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/today-founder.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 버튼을 누르면 그 자리에 결과 문장이 보여야 함"
+        },
+        {
+          "taskId": "JUCEIPT-DAILY-REVIEW-NO-OPEN",
+          "scope": "In koreanSummary, replace the empty review 할 일 and the empty evidence-source line that say 영수증을 열어 with plain Korean next steps that do not point at a hidden receipt file.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 빈 항목은 이유와 다음 행동을 말하고 숨은 경로로 보내지 않음"
         }
       ],
       "skills": {
