@@ -13389,6 +13389,31 @@
           ],
           "ssotEvidence": "Founder direction 2026-09-25: 비개발자 UX — 영수증 보기 화면의 빠진 확인과 할 일을 쉬운 한국어로",
           "title": "오늘 목록과 영수증을 쉽게 보여요"
+        },
+        {
+          "taskId": "JUCEIPT-SUMMARY-SHELL-PARTICLE",
+          "scope": "In plainStoredCheck, hide a shell command on scan and daily summaries even when a Korean particle is attached, such as curl로, npm을, or git이, and keep the existing sentence 결과를 직접 확인해 주세요.",
+          "files": [
+            "src/daily/index.ts",
+            "tests/daily.test.ts",
+            "tests/scan-summary.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/daily.test.ts tests/scan-summary.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 대상: juceipt 명령 출력(scan, daily, receipt)과 영수증 보기 화면 — 개발자 글자는 원문 보기 안"
+        },
+        {
+          "taskId": "JUCEIPT-TODAY-FINISH-LABEL",
+          "scope": "On the today receipt list, show which AI finished and the local finish time on the detail panel as well as the card, using 에 끝남 when a time exists and 끝난 시각 기록이 없어요 when it does not.",
+          "files": [
+            "src/render/today.ts",
+            "tests/today-founder.test.ts"
+          ],
+          "tests": [
+            "npx vitest run tests/today-founder.test.ts test/today-page.test.ts test/today-two-pane.test.ts"
+          ],
+          "ssotEvidence": "Founder direction 2026-09-25: 영수증 보기 화면은 맨 위 한 문장과 쉬운 한국어로, 누가 했는지와 끝난 시각을 바로 알 수 있게"
         }
       ],
       "skills": {
