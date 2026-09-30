@@ -1658,9 +1658,35 @@ const WIDGET_HTML = `<!DOCTYPE html>
 </html>
 `;
 
-const WIDGET_HASH = createHash('sha256').update(WIDGET_HTML, 'utf8').digest('hex').slice(0, 8);
+// The URI is the cache key, so its identity must be the widget's content.
+//
+// The pipeline is one-way, with no feedback loop:
+//
+//   1. WIDGET_HTML — the evaluated template, so escapes are resolved exactly as the browser will see
+//      them. Hashing the raw source text instead is wrong: the template contains sequences like
+//      '[ \\t\\n\\r_-]+' whose source and runtime forms differ, which made the fingerprint disagree
+//      with the bytes actually served.
+//   2. fingerprint = hash(WIDGET_HTML with every placeholder normalised back to its token)
+//   3. URI = ui://agent-relay/pm-widget-<fingerprint>
+//   4. pmWidgetHtml() substitutes the URI, asset base and build stamp into the template
+//
+// Step 2 is what breaks the cycle. __WIDGET_URI__ appears inside the template, so hashing the
+// substituted output would feed the URI into its own input. Normalising the placeholders first means
+// the fingerprint depends only on the widget's real content, never on the URI derived from it.
+//
+// BUILD_DATE is substituted after the fingerprint, so two processes serving the same source agree on
+// one URI and a clock reading can never look like a content change.
+function widgetFingerprintSource(html: string): string {
+  return html
+    .split('__WIDGET_URI__').join('{{WIDGET_URI}}')
+    .split('__ASSET_BASE__').join('{{ASSET_BASE}}')
+    .split('__WIDGET_BUILD__').join('{{WIDGET_BUILD}}');
+}
+const WIDGET_HASH = createHash('sha256').update(widgetFingerprintSource(WIDGET_HTML), 'utf8').digest('hex').slice(0, 8);
 const BUILD_DATE = new Date().toISOString().slice(0, 16).replace('T', ' ');
 export const PM_WIDGET_RESOURCE_URI = `ui://agent-relay/pm-widget-${WIDGET_HASH}`;
+/** The identity the URI is derived from, exposed so callers can assert the two agree. */
+export const PM_WIDGET_CONTENT_FINGERPRINT = WIDGET_HASH;
 export const PM_WIDGET_RESOURCE_NAME = 'Agent Relay PM';
 export const PM_WIDGET_MIME_TYPE = 'text/html;profile=mcp-app';
 // Host CSP allowlist (OpenAI Apps SDK / MCP Apps): the widget loads sprite

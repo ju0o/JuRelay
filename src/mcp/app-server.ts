@@ -155,12 +155,13 @@ export function buildAppTools(ctx: PmServerContext): AppTool[] {
       // ChatGPT compatibility alias (Apps SDK honors this alongside ui.resourceUri).
       'openai/outputTemplate': PM_WIDGET_RESOURCE_URI,
     },
-    // Per-call unique URI in the PATH (not query — some hosts normalize
-    // query strings away when caching renders). Every open is uncacheable.
+    // Returns the registered URI exactly. A per-call nonce used to be appended here to defeat host
+    // caching, but the Apps contract treats the resource URI as the cache key: a URI that is not
+    // registered is not a resource, and minting one per call only blurred the identity of what was
+    // actually served. Content changes produce a new URI on their own, so no cache-bust is needed.
     handler: async () => {
-      const widget = `${PM_WIDGET_RESOURCE_URI}--${Date.now()}`;
-      accessLog(`open_widget -> ${widget}`);
-      return { ok: true, widget };
+      accessLog(`open_widget -> ${PM_WIDGET_RESOURCE_URI}`);
+      return { ok: true, widget: PM_WIDGET_RESOURCE_URI };
     },
   });
   return tools;
@@ -227,18 +228,13 @@ function newAppServer(tools: AppTool[]): SdkServerInstance {
     ReadResourceRequestSchema,
     async (req: { params: { uri?: string } }) => {
       const uri = req.params.uri;
-      // Accept per-call nonce suffixes (--<ms> or legacy ?t=<ms>); identity is the base URI.
-      const base = (uri || '').split(/[?]/)[0].split('--')[0];
-      // Stale-cache healing: conversations pinned to a previous content hash
-      // would otherwise get "Unknown resource" and render a white view.
-      // Any pm-widget-<8hex> URI serves the current bundle; the bundle's own
-      // version check then converges (banner, never auto-reload).
-      const staleWidget = /^ui:\/\/agent-relay\/pm-widget-[0-9a-f]{8}$/.test(base || '');
-      if (base !== PM_WIDGET_RESOURCE_URI && !staleWidget) {
+      // The URI is the cache key, so it is also the identity. A previous content hash is a different
+      // resource and must fail as unknown rather than quietly serve today's HTML: silently healing it
+      // is what let one URI mean two different widgets in the first place, and a host caching the old
+      // render would have been handed content it never asked for. Re-mounting a conversation that
+      // pinned an older hash is the caller's decision, made through relay_pm_open_widget.
+      if (uri !== PM_WIDGET_RESOURCE_URI) {
         throw new Error(`Unknown resource: ${uri}`);
-      }
-      if (staleWidget && base !== PM_WIDGET_RESOURCE_URI) {
-        accessLog(`read_resource stale hash -> current bundle (${base})`);
       }
       accessLog(`read_resource ${uri}`);
       return {
