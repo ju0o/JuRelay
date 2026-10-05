@@ -5,14 +5,43 @@
  *     agents (workerId, display name, working|idle, current task, model if known),
  *     task counts by state, goal list, pending delivery count.
  * Pure read. No judgment, no dispatch, no mutation.
+ *
+ * P1.8A — project-centric truth, added without changing a single existing key.
+ *
+ * The old `tasks` counter is a count of *persisted* executionState strings, so a
+ * Task whose worker died weeks ago was still counted as RUNNING next to a live
+ * one. The additive block answers the questions that counter could not:
+ *
+ *   projectIdentity  the canonical identity of this storage scope
+ *   projects[]        one row per logical project: its Goal, its Task, the agent,
+ *                     the model, executionState AND runtimeState, last activity,
+ *                     and the next PM action
+ *   summary           persistedRunning vs actualActiveRuns / staleRuns /
+ *                     orphanRuns / readyTasks / verificationPending
+ *   selectedProject   the ONE project the view is about (TASK 7, option C)
+ *   activeProjects[]  every project where something may still be running
+ *
+ * An ORPHAN run is never counted as active, and the legacy keys keep their exact
+ * previous shape so the existing widget cannot crash on this change.
  */
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as goalTask from '../backend/goal-task.js';
 import * as dispatcher from '../backend/dispatcher.js';
 import * as pmDelivery from '../backend/pm-delivery.js';
+import {
+  buildProjectRuntimeViews,
+  selectProjectView,
+  type ProjectRuntimeSnapshot,
+} from '../backend/runtime-truth.js';
+import {
+  loadProjectRegistry,
+  resolveProjectIdentity,
+  type ProjectIdentity,
+} from '../backend/project-identity.js';
 import { PM_WIDGET_RESOURCE_URI, PM_WIDGET_RESOURCE_VERSION } from './app/pm-widget-resource.js';
 import { objectSchema, rejectUnknownFields } from './schemas.js';
+import type { GoalRecord, TaskRecord } from '../shared/types.js';
 import type { McpTool, PmServerContext } from './server.js';
 
 interface AgentEntry {
@@ -139,6 +168,45 @@ function runFoldersFor(dataRoot: string, project: string, workerId: string): str
   return out;
 }
 
+/**
+ * The canonical identity of this storage scope. Cheap, read-only, and asked for
+ * often enough to deserve its own tool (see project-tools.ts).
+ */
+export function scopeProjectIdentity(dataRoot: string, project: string): ProjectIdentity {
+  return resolveProjectIdentity({ scope: project, registry: loadProjectRegistry(dataRoot) });
+}
+
+/**
+ * Runtime truth for every logical project in this scope.
+ *
+ * Deliberately never reads the whole Run tree: it consults the Dispatcher's live
+ * handles, one /proc sweep (3 s cache), and only the newest linked Run folder of
+ * in-flight Tasks. A malformed Task is skipped rather than failing the read.
+ */
+export function runtimeSnapshot(
+  dataRoot: string,
+  project: string,
+  tasks?: readonly TaskRecord[],
+  goals?: readonly GoalRecord[],
+): ProjectRuntimeSnapshot {
+  const taskList = tasks ?? goalTask.listTasks(dataRoot, project, undefined);
+  let goalList: readonly GoalRecord[];
+  try {
+    goalList = goals ?? goalTask.listGoals(dataRoot, project);
+  } catch {
+    goalList = [];
+  }
+  return buildProjectRuntimeViews({
+    tasks: taskList,
+    goals: goalList,
+    scope: project,
+    scopeIdentity: scopeProjectIdentity(dataRoot, project),
+    registry: loadProjectRegistry(dataRoot),
+    liveHandles: dispatcher.listActiveDispatches(project),
+    orphanSuspectedOf: (taskId) => dispatcher.getRecoveryRecord(dataRoot, project, taskId) !== undefined,
+  });
+}
+
 export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
   const { dataRoot, project } = ctx;
   return [
@@ -157,13 +225,20 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
       name: 'relay_pm_get_dashboard',
       description:
         'One bounded snapshot for the visual PM widget: agents with working|idle ' +
-        'state, current task, and model when known; task counts by state; goals; ' +
-        'pending delivery count; and portfolio (the live portfolio rail: what its ' +
-        'workers are doing, with title, AI, pid, alive flag, and QA slot pressure). ' +
+        'state, current task, and model when known; task counts by persisted ' +
+        'state; goals; pending delivery count; and portfolio (the live portfolio ' +
+        'rail: what its workers are doing, with title, AI, pid, alive flag, and ' +
+        'QA slot pressure). ' +
+        'P1.8A: also returns projectIdentity, projects[] (per-project Goal, Task, ' +
+        'agent, model, executionState AND runtimeState, lastActivityAt, ' +
+        'nextAction), summary (actualActiveRuns / staleRuns / orphanRuns / ' +
+        'readyTasks / verificationPending vs persistedRunning), selectedProject ' +
+        'and activeProjects[]. Pass projectId to choose which project the view is ' +
+        'about. ' +
         'Pure read — never judges, dispatches, or mutates.',
-      inputSchema: objectSchema({}),
+      inputSchema: objectSchema({ projectId: { type: 'string' } }),
       handler: async (args: Record<string, unknown>) => {
-        rejectUnknownFields(args, []);
+        rejectUnknownFields(args, ['projectId']);
         const tasks = goalTask.listTasks(dataRoot, project, undefined);
         const byState: Record<string, number> = {};
         const agentTask = new Map<string, { taskId: string; title: string; running: boolean }>();
@@ -204,7 +279,63 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
         } catch {
           pendingDeliveries = 0;
         }
-        return { project, agents, tasks: byState, goals, pendingDeliveries, portfolio: readPortfolioLive(dataRoot) };
+        // P1.8A — the block that makes a stored RUNNING distinguishable from a
+        // live Run. Never throws: a read tool that dies on one bad record is
+        // worse than one that omits it.
+        let runtime: ProjectRuntimeSnapshot | null = null;
+        try {
+          runtime = runtimeSnapshot(dataRoot, project, tasks);
+        } catch {
+          runtime = null;
+        }
+        const selected = runtime
+          ? selectProjectView(runtime, args.projectId)
+          : { project: null, basis: 'SCOPE' as const };
+        const identity = scopeProjectIdentity(dataRoot, project);
+        const summary = runtime
+          ? {
+            projects: runtime.summary.projects,
+            tasks: runtime.summary.tasks,
+            persistedRunning: runtime.summary.persistedRunning,
+            actualActiveRuns: runtime.summary.activeRuns,
+            staleRuns: runtime.summary.staleRuns,
+            orphanRuns: runtime.summary.orphanRuns,
+            readyTasks: runtime.summary.readyTasks,
+            verificationPending: runtime.summary.verificationPending,
+            generatedAt: runtime.generatedAt,
+          }
+          : {
+            projects: 0,
+            tasks: 0,
+            persistedRunning: 0,
+            actualActiveRuns: 0,
+            staleRuns: 0,
+            orphanRuns: 0,
+            readyTasks: 0,
+            verificationPending: 0,
+            generatedAt: new Date().toISOString(),
+          };
+        return {
+          project,
+          agents,
+          tasks: byState,
+          goals,
+          pendingDeliveries,
+          portfolio: readPortfolioLive(dataRoot),
+          projectIdentity: {
+            projectId: identity.projectId,
+            projectName: identity.projectName,
+            scope: project,
+            legacy: identity.legacy,
+            genericBucket: identity.genericBucket,
+            source: identity.source,
+          },
+          projects: runtime ? runtime.projects : [],
+          activeProjects: runtime ? runtime.activeProjects : [],
+          selectedProject: selected.project,
+          selectedProjectBasis: selected.basis,
+          summary,
+        };
       },
     },
   ];

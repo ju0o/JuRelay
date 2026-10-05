@@ -44,6 +44,7 @@ import type { McpTool, PmServerContext } from './server.js';
 import { buildPmWakeTools } from './app/pm-wake-tools.js';
 import { buildAssetPmTools } from './asset-tools.js';
 import { buildDashboardTools } from './dashboard-tools.js';
+import { buildProjectTools } from './project-tools.js';
 import { buildExecutionPlanReadTools, buildExecutionPlanWriteTools } from './execution-plan-tools.js';
 
 // Phase I3F-2: accept/changes/retry CAS values are frozen single-value enums
@@ -310,13 +311,21 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
       name: 'relay_pm_create_task',
       description:
         'V1-G1 PM Task intake: create ONE canonical V1 Task from a finalized Task Contract. ' +
-        'The mandatory goalId is handled internally via a deterministic V1 technical container Goal ' +
-        '(create/reuse, no manual Goal management). ' +
+        'Project identity: pass projectId (and optionally projectName) to say which product this ' +
+        'Task belongs to — e.g. projectId="juintake". The Task is then filed under that project ' +
+        'and under that project\'s own technical container Goal ("JuIntake V1 Task Inbox"), so ' +
+        'projects never share one Inbox. When omitted, the identity is resolved from this ' +
+        "process's storage scope (a generic 'ws' scope resolves to the Agent Relay project) — " +
+        'the bucket name is never used as the identity. ' +
+        'The mandatory goalId is handled internally via a deterministic per-project technical ' +
+        'container Goal (create/reuse, no manual Goal management). ' +
         'Task is prepared to READY+PENDING via the frozen PLANNED→READY transition for the next dispatch stage. ' +
         'Does NOT dispatch, accept, complete any Goal, or orchestrate. ' +
         'Runtime fields (goalId/executionState/pmState/runId/paths) are not accepted.',
       inputSchema: objectSchema(
         {
+          projectId: { type: 'string' },
+          projectName: { type: 'string' },
           title: { type: 'string' },
           goal: { type: 'string' },
           reason: { type: 'string' },
@@ -326,7 +335,9 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
         ['title', 'goal', 'reason', 'scope'],
       ),
       handler: async (args) => {
-        rejectUnknownFields(args, ['title', 'goal', 'reason', 'scope', 'completionCriteria']);
+        rejectUnknownFields(args, [
+          'projectId', 'projectName', 'title', 'goal', 'reason', 'scope', 'completionCriteria',
+        ]);
         const title = requireString(args, 'title');
         const goalText = requireString(args, 'goal');
         if (typeof args.reason !== 'string') {
@@ -342,12 +353,20 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
           }
           completionCriteria = [...(args.completionCriteria as string[])];
         }
+        if (args.projectName !== undefined && args.projectId === undefined) {
+          throw new McpError(
+            'INVALID_ARGUMENT',
+            'projectName만으로는 프로젝트가 지정되지 않습니다. projectId도 함께 주세요.',
+          );
+        }
         try {
           return await v1Intake.createV1TaskFromContract(dataRoot, project, {
             title,
             goal: goalText,
             reason: args.reason as string,
             scope: args.scope as string,
+            ...(args.projectId !== undefined ? { projectId: args.projectId as string } : {}),
+            ...(args.projectName !== undefined ? { projectName: args.projectName as string } : {}),
             ...(completionCriteria !== undefined ? { completionCriteria } : {}),
           });
         } catch (err) {
@@ -941,5 +960,14 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
 
 /** All PM tools (read + write + wake + asset + dashboard). No Worker tools included. */
 export function buildAllPmTools(ctx: PmServerContext): McpTool[] {
-  return [...buildPmReadTools(ctx), ...buildPmWriteTools(ctx), ...buildPmWakeTools(ctx), ...buildAssetPmTools(ctx), ...buildDashboardTools(ctx)];
+  return [
+    ...buildPmReadTools(ctx),
+    ...buildPmWriteTools(ctx),
+    ...buildPmWakeTools(ctx),
+    ...buildAssetPmTools(ctx),
+    ...buildDashboardTools(ctx),
+    // P1.8A: project identity reads belong to every PM surface, not only the
+    // widget app server, so a stdio PM can answer "which project is this?".
+    ...buildProjectTools(ctx),
+  ];
 }

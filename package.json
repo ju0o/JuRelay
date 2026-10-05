@@ -125,7 +125,8 @@
     "test:asset-harness": "node --test test/asset-harness.test.mjs",
     "test:asset-chatgpt": "node --test test/asset-chatgpt.test.mjs",
     "test:relay-worker-opencode-impl": "node --test test/relay-worker-opencode-impl.test.mjs",
-    "test:relay-worker-codex": "node --test test/relay-worker-codex.test.mjs"
+    "test:relay-worker-codex": "node --test test/relay-worker-codex.test.mjs",
+    "test:p1-8a-project-identity-runtime-truth": "node --test test/p1-8a-project-identity-runtime-truth.test.mjs"
   },
   "main": "dist/server/backend/main.js",
   "bin": {

@@ -38,6 +38,7 @@ import {
 } from '../shared/types.js';
 import { ensureRunId, projectDir, readRunMeta, writeRunMeta } from './fs.js';
 import { validateTaskQaContractFields } from './qa-contract.js';
+import { deriveProjectName, normalizeProjectId } from './project-identity.js';
 import {
   buildTaskContract,
   deriveAcceptanceAndQaFromContract,
@@ -427,6 +428,36 @@ function normalizeTags(input: unknown): string[] | undefined {
 }
 
 /**
+ * P1.8A — normalize the optional logical project identity into persistable
+ * fields. Both-or-neither: an identity is written whole or not at all, so a Task
+ * never carries an id without a name. Absent stays absent (legacy record).
+ */
+function identityFields(projectId?: unknown, projectName?: unknown): { projectId?: string; projectName?: string } {
+  const hasId = typeof projectId === 'string' && projectId.trim().length > 0;
+  const hasName = typeof projectName === 'string' && projectName.trim().length > 0;
+  if (!hasId && !hasName) return {};
+  if (!hasId) throw new Error('projectName이 있으면 projectId도 필요합니다.');
+  const id = normalizeProjectId(projectId);
+  const name = hasName
+    ? requireNonEmptyString(projectName, 'projectName').replace(/\s+/g, ' ')
+    : deriveProjectName(id);
+  return { projectId: id, projectName: name };
+}
+
+function assertStoredIdentity(record: { projectId?: string; projectName?: string }, kind: string): void {
+  if (record.projectId === undefined && record.projectName === undefined) return;
+  if (typeof record.projectId !== 'string' || !record.projectId.trim()) {
+    throw new Error(`${kind} projectId가 올바르지 않습니다.`);
+  }
+  if (typeof record.projectName !== 'string' || !record.projectName.trim()) {
+    throw new Error(`${kind} projectName이(가) 필요합니다.`);
+  }
+  if (normalizeProjectId(record.projectId) !== record.projectId) {
+    throw new Error(`${kind} projectId 형식이 올바르지 않습니다: ${record.projectId}`);
+  }
+}
+
+/**
  * Detect A→…→A cycles for proposed deps of selfTaskId within the given adjacency.
  */
 export function wouldCreateDependencyCycle(
@@ -532,6 +563,7 @@ export function validateGoalRecord(g: GoalRecord): void {
   }
   if (!GOAL_ID_RE.test(g.goalId)) throw new Error(`잘못된 Goal ID: ${g.goalId}`);
   if (!g.project) throw new Error('Goal project가 필요합니다.');
+  assertStoredIdentity(g, 'Goal');
   if (!g.title?.trim()) throw new Error('Goal title이 필요합니다.');
   if (!g.goalStatement?.trim()) throw new Error('Goal goalStatement가 필요합니다.');
   if (!isGoalStatus(g.status)) throw new Error(`알 수 없는 Goal status: ${String(g.status)}`);
@@ -562,6 +594,7 @@ export function validateTaskRecord(t: TaskRecord): void {
   if (!TASK_ID_RE.test(t.taskId)) throw new Error(`잘못된 Task ID: ${t.taskId}`);
   if (!GOAL_ID_RE.test(t.goalId)) throw new Error(`잘못된 Goal ID: ${t.goalId}`);
   if (!t.project) throw new Error('Task project가 필요합니다.');
+  assertStoredIdentity(t, 'Task');
   if (!t.title?.trim()) throw new Error('Task title이 필요합니다.');
   if (!t.goal?.trim()) throw new Error('Task goal이 필요합니다.');
   if (typeof t.reason !== 'string') throw new Error('Task reason이 필요합니다.');
@@ -709,6 +742,7 @@ export function normalizeTaskRecord(raw: Record<string, unknown>): TaskRecord {
     taskId: String(raw.taskId ?? ''),
     goalId: String(raw.goalId ?? ''),
     project: String(raw.project ?? ''),
+    ...identityFields(raw.projectId, raw.projectName),
     title: String(raw.title ?? ''),
     goal: String(raw.goal ?? ''),
     reason: typeof raw.reason === 'string' ? raw.reason : '',
@@ -797,6 +831,7 @@ export function renderGoalMarkdown(g: GoalRecord): string {
     '',
     `mode: ${g.permissionPolicy.mode}`,
     '',
+    `project: ${g.project}${g.projectId ? ` (${g.projectName ?? g.projectId})` : ' (legacy scope — no project identity)'}`,
     `createdAt: ${g.createdAt}`,
     `updatedAt: ${g.updatedAt}`,
     '',
@@ -864,6 +899,7 @@ export function renderTaskMarkdown(t: TaskRecord): string {
       : '(none)',
     '',
     `goalId: ${t.goalId}`,
+    `project: ${t.project}${t.projectId ? ` (${t.projectName ?? t.projectId})` : ' (legacy scope — no project identity)'}`,
     `createdAt: ${t.createdAt}`,
     `updatedAt: ${t.updatedAt}`,
     '',
@@ -909,6 +945,9 @@ export function persistTaskRecord(dataRoot: string, project: string, record: Tas
 export interface GoalCreateInput {
   title: string;
   goalStatement: string;
+  /** P1.8A — logical project identity (project argument remains the storage scope). */
+  projectId?: string;
+  projectName?: string;
   description?: string;
   tags?: string[];
   completionCriteria?: string[];
@@ -938,6 +977,7 @@ export function createGoal(
       schemaVersion: GOAL_TASK_SCHEMA_VERSION,
       goalId,
       project,
+      ...identityFields(input.projectId, input.projectName),
       title,
       goalStatement,
       status,
@@ -1027,6 +1067,13 @@ export function updateGoal(
 
 export interface TaskCreateInput {
   goalId: string;
+  /**
+   * P1.8A — canonical logical project identity. `project` (the function
+   * argument) stays the storage scope; these two fields say which *product* the
+   * Task belongs to. Frozen here: TaskUpdatePatch cannot change them.
+   */
+  projectId?: string;
+  projectName?: string;
   title: string;
   goal: string;
   reason: string;
@@ -1158,6 +1205,7 @@ export function createTask(
       taskId,
       goalId,
       project,
+      ...identityFields(input.projectId, input.projectName),
       title,
       goal,
       reason: input.reason,

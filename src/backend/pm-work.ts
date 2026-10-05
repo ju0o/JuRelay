@@ -3,11 +3,20 @@
  *
  * No writes. No claiming. No markDelivered. No dispatch.
  * Logical IDs only — no physical Run folders / workspace paths.
+ *
+ * P1.8A: a persisted RUNNING with no live worker is no longer invisible to NEXT
+ * discovery. The Dispatcher's recovery registry is process-local and only
+ * populated after a scan, so on a fresh process a Task whose worker died
+ * yesterday looked like plain running work. Orphans are therefore also derived
+ * from runtime evidence (runtime-truth), which is pure and side-effect free.
+ * STALE is deliberately NOT escalated here: a silent worker is something to
+ * watch, and the dashboard already reports it as STALE · WATCH_SILENT_WORKER.
  */
 import { listPendingPmEvents } from './event.js';
 import { listGoals, listTasks } from './goal-task.js';
 import { evaluateGoalCompletion, resolveCurrentAttemptRunId } from './goal-task-runtime.js';
-import { getRecoveryRecord, isDispatchBlocked } from './dispatcher.js';
+import { getRecoveryRecord, isDispatchBlocked, listActiveDispatches } from './dispatcher.js';
+import { collectTaskRuntime } from './runtime-truth.js';
 import type {
   GoalStatus,
   PermissionMode,
@@ -89,18 +98,29 @@ export function getNextWork(dataRoot: string, project: string): GetNextWorkResul
   const goalById = new Map(goals.map((g) => [g.goalId, g]));
 
   // STOP_* from task states / recovery
+  const liveHandles = listActiveDispatches(proj);
   for (const task of tasks) {
     const goal = goalById.get(task.goalId);
     const mode = goal?.permissionPolicy?.mode ?? 'PLAN';
 
-    if (isDispatchBlocked(root, proj, task.taskId) || getRecoveryRecord(root, proj, task.taskId)) {
+    const registryBlocked = isDispatchBlocked(root, proj, task.taskId)
+      || !!getRecoveryRecord(root, proj, task.taskId);
+    // Runtime evidence is authoritative even before the recovery scan has run.
+    const runtime = collectTaskRuntime({
+      task,
+      liveHandles,
+      orphanSuspectedOf: (id) => isDispatchBlocked(root, proj, id),
+    });
+    if (registryBlocked || runtime.runtimeState === 'ORPHAN') {
       items.push({
         kind: 'STOP_ORPHAN',
         priority: KIND_ORDER.STOP_ORPHAN,
         project: proj,
         goalId: task.goalId,
         taskId: task.taskId,
-        reason: 'ORPHAN_SUSPECTED — owner recovery required',
+        reason: registryBlocked
+          ? 'ORPHAN_SUSPECTED — owner recovery required'
+          : `ORPHAN (runtime) — ${runtime.reason}`,
         policy: { mode },
       });
     }

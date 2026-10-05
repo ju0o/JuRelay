@@ -58,9 +58,53 @@ intake/dispatch/verification/judgment/retry/execution-plan + wake + widget:
   (`mark_delivered/ack/ignore`, `mark_delivery_delivered/ack_delivery/ignore_delivery`)
 - `relay_pm_get_next_work` (NEXT discovery), `relay_pm_get_verification_context`,
   `relay_pm_list_pending_deliveries`, `relay_pm_get_delivery`
+- P1.8A: `relay_pm_list_projects` (프로젝트 목록 + 런타임 진실),
+  `relay_pm_get_dashboard`의 `projects[] / summary / selectedProject`
 - wake: `relay_pm_claim_wake`, `relay_pm_mark_wake_failed`, `relay_pm_get_wake_status`
 - worker surface(별도 프로세스): `relay_worker_get_assignment/task_context/run_context`,
   `relay_worker_submit_claim/result/progress`, `relay_worker_report_blocked`
+
+## P1.8A — Project identity + runtime truth
+
+`--project ws`는 **storage scope**(`dataRoot/ws/_relay/...`)일 뿐이며 제품 정체성이 아니다.
+P1.8A부터 Task/Goal은 두 축을 분리해 가진다.
+
+- `project` (변경 없음) = 저장 scope. 마이그레이션 없음.
+- `projectId` / `projectName` = 논리 제품 정체성. intake 시 확정되고 이후 동결
+  (`TaskUpdatePatch`/`GoalUpdatePatch`에서 변경 불가).
+- 해석은 결정적: `EXPLICIT(호출자 지정)` → `REGISTRY(dataRoot/_relay/projects.json)` →
+  `SCOPE_DEFAULT(ws → agent-relay / "Agent Relay")` → `SCOPE_LEGACY(선언 없는 일반 scope,
+  legacy=true로 플래그)`. generic bucket 이름을 정체성으로 mint하지 않으므로
+  신규 Task에 `project="ws"`가 자동으로 붙는 구조는 제거되었다.
+- P1.8A 이전 기록은 일괄 이관하지 않는다. identity가 없는 record는 `RECORD_LEGACY`
+  (`legacy=true`, projectName은 bucket 문자열 그대로)로 읽힌다.
+
+Goal 격리: technical container Goal이 **프로젝트별**이다. 컨테이너는
+`project:<projectId>` tag로만 재사용되므로 `JuIntake V1 Task Inbox`의 Task가
+`JuCar V1 Task Inbox` 아래로 들어갈 수 없다. tag 없는 역사 컨테이너
+(`V1 Single-Task Inbox`, 예: GOAL-0002)는 신규 프로젝트에 재사용·변경되지 않는다.
+
+런타임 진실: `executionState`(저장값)와 `runtimeState`(증거 파생)를 분리한다.
+증거 순서 = ① 이 프로세스의 live Dispatcher handle(+pid 생존) ② 이 머신의 live worker
+프로세스(`/proc` probe, 3초 캐시) ③ Run folder 최신 쓰기(observation).
+셋 다 없는데 persisted가 RUNNING이면 `ORPHAN`이며 정상 RUNNING으로 세지 않는다.
+
+```text
+runtimeState ∈ ACTIVE | STALE | ORPHAN | IDLE | UNKNOWN
+  ACTIVE   살아 있는 워커 + fresh 증거
+  STALE    살아 있지만 fresh window(15분) 초과 무음
+  ORPHAN   RUNNING/DISPATCHED인데 live 프로세스·active binding·fresh 관측 모두 없음
+  IDLE     persisted 상태가 in-flight 아님
+  UNKNOWN  증거를 평가할 수 없음(죽었다고 단정하지 않음)
+```
+
+Dashboard는 additive 확장이다(`project`/`agents`/`tasks`/`goals`/`pendingDeliveries`/
+`portfolio` 키 shape 불변 → 기존 widget 무영향). 추가 키:
+`projectIdentity`, `projects[]`, `activeProjects[]`, `selectedProject`,
+`selectedProjectBasis`, `summary{ persistedRunning, actualActiveRuns, staleRuns,
+orphanRuns, readyTasks, verificationPending }`. `relay_pm_get_dashboard({projectId})`로
+"지금 어떤 프로젝트를 보고 있는가"를 명시적으로 고를 수 있고, 어떤 기준이 쓰였는지는
+`selectedProjectBasis`(ARGUMENT / LAST_ACTIVE / SCOPE)로 항상 함께 나온다.
 
 ## Widget lifecycle
 

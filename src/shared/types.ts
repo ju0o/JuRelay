@@ -432,6 +432,15 @@ export interface GoalRecord {
   schemaVersion: number;
   goalId: string;
   project: string;
+  /**
+   * P1.8A — canonical logical project identity. `project` above is the storage
+   * scope (dataRoot/<project>/...); this is the product. Optional because a Goal
+   * written before P1.8A has none and is never back-filled: it is reported as a
+   * legacy scope instead of being given a fabricated product identity.
+   */
+  projectId?: string;
+  /** Human-readable display name for the project. Frozen at creation. */
+  projectName?: string;
   title: string;
   goalStatement: string;
   status: GoalStatus;
@@ -497,6 +506,14 @@ export interface TaskRecord {
   taskId: string;
   goalId: string;
   project: string;
+  /**
+   * P1.8A — canonical logical project identity (`project` is the storage scope).
+   * Set at intake, frozen afterwards, and absent on every record written before
+   * P1.8A. Absent is read as "legacy scope", never as a guessed product.
+   */
+  projectId?: string;
+  /** Human-readable display name for the project. Frozen at intake. */
+  projectName?: string;
   title: string;
   goal: string;
   reason: string;
