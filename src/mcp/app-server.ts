@@ -56,6 +56,17 @@ import {
   pmWidgetHtml,
   widgetResourceMeta,
 } from './app/pm-widget-resource.js';
+// DEBUG-ONLY (P1.8B): the minimal mount probe. Isolated in its own module so P1.8B can delete it
+// and the production widget path, CSP and identity stay untouched.
+import {
+  WIDGET_PROBE_MIME_TYPE,
+  WIDGET_PROBE_RESOURCE_DESCRIPTION,
+  WIDGET_PROBE_RESOURCE_NAME,
+  WIDGET_PROBE_RESOURCE_URI,
+  WIDGET_PROBE_HTML,
+  buildWidgetProbeTool,
+  widgetProbeResourceMeta,
+} from './app/widget-probe.js';
 import { mapCoreError } from './errors.js';
 
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any */
@@ -164,6 +175,8 @@ export function buildAppTools(ctx: PmServerContext): AppTool[] {
       return { ok: true, widget: PM_WIDGET_RESOURCE_URI };
     },
   });
+  // DEBUG-ONLY (P1.8B): the mount probe. Removed once the server-vs-host boundary is proven.
+  tools.push(buildWidgetProbeTool() as AppTool);
   return tools;
 }
 
@@ -221,6 +234,14 @@ function newAppServer(tools: AppTool[]): SdkServerInstance {
         mimeType: PM_WIDGET_MIME_TYPE,
         _meta: widgetResourceMeta(process.env['WIDGET_ASSET_BASE'] || ''),
       },
+      // DEBUG-ONLY (P1.8B): the static mount probe. Removed after diagnosis.
+      {
+        uri: WIDGET_PROBE_RESOURCE_URI,
+        name: WIDGET_PROBE_RESOURCE_NAME,
+        description: WIDGET_PROBE_RESOURCE_DESCRIPTION,
+        mimeType: WIDGET_PROBE_MIME_TYPE,
+        _meta: widgetProbeResourceMeta(),
+      },
     ],
   }));
 
@@ -228,6 +249,20 @@ function newAppServer(tools: AppTool[]): SdkServerInstance {
     ReadResourceRequestSchema,
     async (req: { params: { uri?: string } }) => {
       const uri = req.params.uri;
+      // DEBUG-ONLY (P1.8B): the probe is a second, independent URI with its own identity.
+      if (uri === WIDGET_PROBE_RESOURCE_URI) {
+        accessLog(`read_resource ${uri} (probe)`);
+        return {
+          contents: [
+            {
+              uri: WIDGET_PROBE_RESOURCE_URI,
+              mimeType: WIDGET_PROBE_MIME_TYPE,
+              _meta: widgetProbeResourceMeta(),
+              text: WIDGET_PROBE_HTML,
+            },
+          ],
+        };
+      }
       // The URI is the cache key, so it is also the identity. A previous content hash is a different
       // resource and must fail as unknown rather than quietly serve today's HTML: silently healing it
       // is what let one URI mean two different widgets in the first place, and a host caching the old

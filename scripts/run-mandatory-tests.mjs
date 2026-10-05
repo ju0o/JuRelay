@@ -75,6 +75,7 @@ export const MANDATORY_SUITES = [
   'test:relay-worker-opencode-impl',
   'test:relay-worker-codex',
   'test:p1-8a-project-identity-runtime-truth',
+  'test:p1-8b-widget-mount-contract',
   'test:actl-managed-bridge',
   'test:b15-fix-01-a',
   'test:b15-fix-03-a',
