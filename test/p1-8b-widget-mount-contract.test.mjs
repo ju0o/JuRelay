@@ -1,18 +1,16 @@
 /**
- * P1.8B — widget mount contract regression.
+ * P1.8B — production widget mount contract regression.
  *
- * The Founder reports the ChatGPT widget does not visually open. Before blaming 85 KB of widget
- * code, these tests pin the parts of the chain that CAN be proven headlessly, so that any future
- * mount failure is either a host problem or a proven server problem — never an assumption:
+ * ChatGPT App tool discovery may be cached. After an MCP tool-catalog change, use Agent Relay
+ * Local → 앱 관리 → 도구 새로 고침 before diagnosing the server/widget.
  *
  *   A  the live render-tool descriptor carries _meta.ui.resourceUri
  *   B  the ChatGPT alias openai/outputTemplate equals the standard ui.resourceUri
- *   C  resources/list contains both render URIs
+ *   C  resources/list contains the production render URI
  *   D  resources/read returns text/html;profile=mcp-app and echoes the exact requested URI
  *   E  the render handler answers without changing the URI
  *   F  an arbitrary/stale nonce URI is rejected instead of silently serving today's HTML
  *   G  changing the widget content changes the URI (identity follows content, both directions)
- *   P  the debug probe is genuinely minimal: no script, no network, no CDN, no CSP dependency
  *
  * They run the real registration path (buildAppTools + the SDK request handlers) through the live
  * HTTP server, over the same port the tunnel reaches, so nothing here is a unit-test shortcut.
@@ -27,7 +25,6 @@ const dist = (p) => path.join(repo, 'dist/server', p);
 
 const { buildAppTools, startMcpAppServer } = await import(dist('mcp/app-server.js'));
 const widget = await import(dist('mcp/app/pm-widget-resource.js'));
-const probe = await import(dist('mcp/app/widget-probe.js'));
 
 const PRODUCTION_URI = 'ui://agent-relay/pm-widget-8b6a452e';
 
@@ -98,12 +95,11 @@ test('A + B the live render-tool descriptor carries both UI metadata keys on one
   });
 });
 
-test('C resources/list carries every render URI with the MCP App MIME', async () => {
+test('C resources/list registers the production widget with the MCP App MIME', async () => {
   await withLiveServer(async ({ rpc }) => {
     const { resources } = (await rpc('resources/list', {})).result;
     const uris = resources.map((r) => r.uri);
     assert.ok(uris.includes(PRODUCTION_URI), 'the production widget URI is listed');
-    assert.ok(uris.includes(probe.WIDGET_PROBE_RESOURCE_URI), 'the debug probe URI is listed');
     for (const r of resources) {
       assert.equal(r.mimeType, 'text/html;profile=mcp-app', `${r.uri} must be an MCP App resource`);
     }
@@ -114,14 +110,12 @@ test('C resources/list carries every render URI with the MCP App MIME', async ()
 
 test('D resources/read returns the right MIME and echoes the exact URI', async () => {
   await withLiveServer(async ({ rpc }) => {
-    for (const uri of [PRODUCTION_URI, probe.WIDGET_PROBE_RESOURCE_URI]) {
-      const read = await rpc('resources/read', { uri });
-      const contents = read.result.contents;
-      assert.equal(contents.length, 1, `${uri} returns exactly one content`);
-      assert.equal(contents[0].mimeType, 'text/html;profile=mcp-app', uri);
-      assert.equal(contents[0].uri, uri, 'the read URI is byte-identical to the requested URI');
-      assert.ok(contents[0].text.length > 0, `${uri} HTML is non-empty`);
-    }
+    const read = await rpc('resources/read', { uri: PRODUCTION_URI });
+    const contents = read.result.contents;
+    assert.equal(contents.length, 1, 'production URI returns exactly one content');
+    assert.equal(contents[0].mimeType, 'text/html;profile=mcp-app');
+    assert.equal(contents[0].uri, PRODUCTION_URI, 'the read URI is byte-identical to the requested URI');
+    assert.ok(contents[0].text.length > 0, 'production HTML is non-empty');
   });
 });
 
@@ -146,7 +140,6 @@ test('F a stale or arbitrary URI is rejected instead of silently serving today\'
       'ui://agent-relay/pm-widget-deadbeef',
       'ui://agent-relay/pm-widget-f39176b7--1790611854233', // the historical nonce form
       'ui://agent-relay/pm-widget-8b6a452e?cachebust=1',
-      'ui://agent-relay/widget-probe-deadbeef',
     ]) {
       const read = await rpc('resources/read', { uri: bogus });
       assert.ok(read.error, `${bogus} must not resolve`);
@@ -180,25 +173,6 @@ test('G the URI follows the content in both directions', () => {
   // The served HTML carries the registered URI and never a per-process date in its identity.
   const html = pmWidgetHtml('');
   assert.ok(html.includes(PRODUCTION_URI), 'the served HTML refers to its own registered URI');
-});
-
-test('P the debug probe is minimal enough to be evidence', () => {
-  const { WIDGET_PROBE_HTML, WIDGET_PROBE_RESOURCE_URI, WIDGET_PROBE_MIME_TYPE } = probe;
-  assert.equal(WIDGET_PROBE_MIME_TYPE, 'text/html;profile=mcp-app');
-  assert.match(WIDGET_PROBE_HTML, /MOUNT_OK/);
-  assert.ok(WIDGET_PROBE_HTML.includes('Agent Relay Widget Probe'));
-  // Nothing that could fail on its own inside the host sandbox:
-  assert.ok(!/<script/i.test(WIDGET_PROBE_HTML), 'no script');
-  assert.ok(!/fetch\(|XMLHttpRequest|WebSocket|EventSource/.test(WIDGET_PROBE_HTML), 'no network call');
-  assert.ok(!/https?:\/\//.test(WIDGET_PROBE_HTML), 'no external origin, so no CSP can block it');
-  assert.ok(!/relay_pm_/.test(WIDGET_PROBE_HTML), 'no Agent Relay dependency');
-  assert.equal(
-    WIDGET_PROBE_RESOURCE_URI,
-    `ui://agent-relay/widget-probe-${createHash('sha256').update(WIDGET_PROBE_HTML, 'utf8').digest('hex').slice(0, 8)}`,
-    'the probe URI is content-derived like the production one',
-  );
-  // A probe with no CSP declaration is intentional: it loads nothing, so there is nothing to allow.
-  assert.deepEqual(probe.widgetProbeResourceMeta(), { ui: { prefersBorder: true } });
 });
 
 test('existing headless PM tools still work alongside the render surface', async () => {
