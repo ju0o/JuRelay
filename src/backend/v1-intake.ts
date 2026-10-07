@@ -53,6 +53,7 @@ import {
   resolveProjectIdentity,
   type ProjectIdentity,
 } from './project-identity.js';
+import { assertGoalAcceptsTask, UserGoalError } from './user-goal.js';
 import type { GoalRecord, TaskRecord } from '../shared/types.js';
 
 /** Frozen marker identifying the internal V1 technical container. */
@@ -78,6 +79,12 @@ export interface V1TaskContractInput {
   projectId?: string;
   projectName?: string;
   completionCriteria?: string[];
+  /**
+   * P1.8C-05 — when provided, create the Task under this existing user Goal.
+   * Fail closed if missing / wrong project / disallowed state.
+   * When omitted, preserve the technical per-project Inbox container behaviour.
+   */
+  goalId?: string;
 }
 
 export interface V1IntakeResult {
@@ -252,7 +259,27 @@ export async function createV1TaskFromContract(
     projectId: input.projectId,
     projectName: input.projectName,
   });
-  const { goal, reused } = await ensureV1ContainerGoal(dataRoot, project, identity);
+
+  let goal: GoalRecord;
+  let reused = false;
+  const explicitGoalId = typeof input.goalId === 'string' && input.goalId.trim()
+    ? input.goalId.trim()
+    : '';
+
+  if (explicitGoalId) {
+    // P1.8C-05 — bind to the exact user Goal. Never fall back to Inbox.
+    try {
+      goal = assertGoalAcceptsTask(dataRoot, project, explicitGoalId, identity.projectId);
+    } catch (err) {
+      if (err instanceof UserGoalError) throw err;
+      throw err;
+    }
+    reused = true;
+  } else {
+    const ensured = await ensureV1ContainerGoal(dataRoot, project, identity);
+    goal = ensured.goal;
+    reused = ensured.reused;
+  }
 
   const created = await createTask(dataRoot, project, {
     goalId: goal.goalId,

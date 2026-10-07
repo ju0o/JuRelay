@@ -378,6 +378,37 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .rtpill.ORPHAN { color:var(--err); border-color:var(--err); }
   .rtpill.IDLE { color:var(--muted); }
   .rtpill.UNKNOWN { color:var(--muted); }
+  /* P1.8C-05 — Goal → Task preview → explicit Run */
+  .pdash-actions { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .pdash-actions button { min-height:44px; padding:8px 16px; border-radius:10px; border:1px solid var(--border);
+                          background:var(--panel); color:var(--text); font-size:14px; font-weight:650; cursor:pointer; }
+  .pdash-actions button.primary { background:#1b4fbf; border-color:#1b4fbf; color:#fff; }
+  .pdash-actions button:disabled { opacity:.45; cursor:not-allowed; }
+  .pdash-actions .hint { font-size:12px; color:var(--muted); }
+  .goalflow { margin-top:10px; border:1px solid var(--border); border-radius:10px; padding:12px; background:var(--panel); }
+  .goalflow h3 { margin:0 0 8px; font-size:14px; }
+  .goalflow label { display:block; font-size:12px; color:var(--muted); margin:8px 0 4px; }
+  .goalflow input, .goalflow textarea { width:100%; font-size:14px; padding:10px 12px; border-radius:8px;
+    border:1px solid var(--border); background:var(--bg); color:var(--text); min-height:44px; }
+  .goalflow textarea { min-height:72px; resize:vertical; }
+  .goalflow .row { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .goalflow .row button { min-height:44px; padding:8px 16px; border-radius:10px; border:1px solid var(--border);
+    background:var(--panel); color:var(--text); font-size:14px; font-weight:650; cursor:pointer; }
+  .goalflow .row button.primary { background:#1b4fbf; border-color:#1b4fbf; color:#fff; }
+  .goalflow .row button:disabled { opacity:.45; cursor:not-allowed; }
+  .goalflow .err { margin-top:8px; font-size:12px; color:var(--err); }
+  .goalflow .ok { margin-top:8px; font-size:12px; color:var(--ok); }
+  .taskprev { margin-top:10px; border:1px solid #1b4fbf; border-radius:10px; padding:12px; background:#121a2a; }
+  .taskprev h3 { margin:0 0 8px; font-size:14px; }
+  .taskprev .line { font-size:13px; margin:4px 0; }
+  .taskprev .line b { color:var(--muted); font-weight:600; margin-right:6px; }
+  .taskprev .crit { margin:4px 0 0 16px; font-size:12px; color:var(--muted); }
+  .taskprev .row { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; align-items:center; }
+  .taskprev .row button { min-height:44px; padding:8px 16px; border-radius:10px; border:1px solid var(--border);
+    background:var(--panel); color:var(--text); font-size:14px; font-weight:650; cursor:pointer; }
+  .taskprev .row button.primary { background:#0a7d33; border-color:#0a7d33; color:#fff; }
+  .taskprev .row button:disabled { opacity:.45; cursor:not-allowed; }
+  .taskprev .status { font-size:12px; color:var(--muted); margin-top:8px; }
 </style>
 </head>
 <body>
@@ -456,6 +487,40 @@ const WIDGET_HTML = `<!DOCTYPE html>
       </div>
       <div class="pdash-counts" id="pdCounts" aria-label="상태 요약"></div>
       <div class="pdash-warn hide" id="pdWarn" role="alert"></div>
+      <div class="pdash-actions" id="pdActions">
+        <button type="button" class="primary" id="pdNewGoalBtn">새 Goal</button>
+        <span class="hint" id="pdActionHint"></span>
+      </div>
+      <div class="goalflow hide" id="pdGoalFlow" aria-label="Goal 만들기">
+        <h3>새 Goal</h3>
+        <p class="sub">목표만 만들고 멈춥니다. 작업은 바로 시작하지 않아요.</p>
+        <label for="pdGoalTitleIn">Goal 제목</label>
+        <input id="pdGoalTitleIn" type="text" maxlength="120" placeholder="예: 첫 Goal→작업 흐름 확인" />
+        <label for="pdGoalStmtIn">하고 싶은 일</label>
+        <textarea id="pdGoalStmtIn" maxlength="800" placeholder="한두 문장으로 적어 주세요"></textarea>
+        <div class="row">
+          <button type="button" id="pdGoalCancel">취소</button>
+          <button type="button" class="primary" id="pdGoalContinue">이어서 Task 준비</button>
+        </div>
+        <div class="err hide" id="pdGoalErr" role="alert"></div>
+        <div class="ok hide" id="pdGoalOk"></div>
+      </div>
+      <div class="taskprev hide" id="pdTaskPrev" aria-label="Task 미리보기">
+        <h3>시작 전 확인</h3>
+        <div class="line"><b>Goal</b><span id="tpGoal"></span></div>
+        <div class="line"><b>Task</b><span id="tpTask"></span></div>
+        <div class="line"><b>범위</b><span id="tpScope"></span></div>
+        <div class="line"><b>완료 기준</b></div>
+        <ul class="crit" id="tpCrit"></ul>
+        <div class="line"><b>Builder</b><span id="tpBuilder"></span></div>
+        <div class="line"><b>작업 폴더</b><span id="tpWorkspace"></span></div>
+        <div class="row">
+          <button type="button" id="tpCancel">닫기</button>
+          <button type="button" class="primary" id="tpRun" disabled>작업 시작</button>
+        </div>
+        <div class="status" id="tpStatus"></div>
+        <div class="err hide" id="tpErr" role="alert"></div>
+      </div>
     </section>
     <div class="pipe" id="pipe">
       <div class="pnode"><b>PM</b><span data-i="pmYou">이 대화</span></div>
@@ -1755,7 +1820,283 @@ const WIDGET_HTML = `<!DOCTYPE html>
             warnEl.textContent = warnings.map(function (w) { return w.message || w.code; }).join(' · ');
           }
         }
+        updateGoalRunAffordance(view);
       }
+
+      var pendingPreview = null;
+      var runInFlight = false;
+
+      function setGoalFlowVisible(show) {
+        setElHide('pdGoalFlow', !show);
+        if (show) {
+          setElHide('pdTaskPrev', true);
+          var err = document.getElementById('pdGoalErr');
+          var ok = document.getElementById('pdGoalOk');
+          if (err) { err.classList.add('hide'); err.textContent = ''; }
+          if (ok) { ok.classList.add('hide'); ok.textContent = ''; }
+        }
+      }
+
+      function setTaskPrevVisible(show) {
+        setElHide('pdTaskPrev', !show);
+      }
+
+      function updateGoalRunAffordance(view) {
+        var p = view && view.project;
+        var legacyBlocked = !!(p && (p.legacy || p.profileState === 'LEGACY' || p.profileState === 'UNCONFIGURED' || p.workspaceConflict));
+        var canCreate = !!(p && !legacyBlocked);
+        var newBtn = document.getElementById('pdNewGoalBtn');
+        var hint = document.getElementById('pdActionHint');
+        if (newBtn) {
+          newBtn.disabled = !canCreate || runInFlight;
+          newBtn.classList.toggle('hide', !!(pendingPreview && pendingPreview.taskId));
+        }
+        if (hint) {
+          if (legacyBlocked) hint.textContent = '이 프로젝트에서는 작업을 시작할 수 없어요.';
+          else if (!view.goal) hint.textContent = 'Goal을 만들면 여기서 작업을 준비할 수 있어요.';
+          else if (view.task && view.task.executionState === 'READY') hint.textContent = '준비된 Task가 있어요. 아래에서 확인하고 시작하세요.';
+          else hint.textContent = '';
+        }
+        // If dashboard already has READY task + eligibility, keep preview available.
+        var elig = view && view.runEligibility;
+        if (view && view.task && view.task.executionState === 'READY' && elig && elig.ok && !pendingPreview) {
+          pendingPreview = {
+            goalId: view.goal && view.goal.goalId,
+            goalTitle: view.goal && view.goal.title,
+            taskId: view.task.taskId,
+            taskTitle: view.task.title,
+            scope: (p && p.workspacePath) || '',
+            criteria: [],
+            builder: elig.desiredBuilder || ((view.assignment && view.assignment.builders) || [])[0] || '',
+            workerId: elig.workerId,
+            workspaceRoot: elig.workspaceRoot || (p && p.workspacePath) || '',
+            projectId: p && p.projectId
+          };
+        }
+        if (pendingPreview && pendingPreview.taskId) {
+          renderTaskPreview(pendingPreview, elig || (view && view.runEligibility));
+          setTaskPrevVisible(true);
+        }
+      }
+
+      function renderTaskPreview(preview, elig) {
+        setElText('tpGoal', preview.goalTitle || preview.goalId || '');
+        setElText('tpTask', preview.taskTitle || preview.taskId || '');
+        setElText('tpScope', preview.scope || '');
+        setElText('tpBuilder', (preview.builder || '') + (preview.workerId ? ' → ' + preview.workerId : ''));
+        setElText('tpWorkspace', preview.workspaceRoot || '');
+        var ul = document.getElementById('tpCrit');
+        if (ul) {
+          ul.innerHTML = '';
+          var crit = preview.criteria || [];
+          if (!crit.length) {
+            var li0 = document.createElement('li');
+            li0.textContent = '(없음)';
+            ul.appendChild(li0);
+          } else {
+            for (var i = 0; i < crit.length; i++) {
+              var li = document.createElement('li');
+              li.textContent = String(crit[i]);
+              ul.appendChild(li);
+            }
+          }
+        }
+        var runBtn = document.getElementById('tpRun');
+        var status = document.getElementById('tpStatus');
+        var ok = !!(elig && elig.ok && elig.workerId && elig.workspaceRoot && preview.taskId);
+        if (runBtn) {
+          runBtn.disabled = !ok || runInFlight;
+          var label = '작업 시작';
+          if (preview.builder) label = '작업 시작 · ' + preview.builder;
+          runBtn.textContent = label;
+        }
+        if (status) {
+          if (ok) status.textContent = '확인 후 시작을 누르면 Worker가 한 번만 실행됩니다.';
+          else if (elig && elig.blockers && elig.blockers.length) {
+            status.textContent = '시작 불가: ' + elig.blockers.join(', ');
+          } else {
+            status.textContent = '시작 조건을 확인하는 중…';
+          }
+        }
+      }
+
+      async function prepareGoalAndTask() {
+        var titleEl = document.getElementById('pdGoalTitleIn');
+        var stmtEl = document.getElementById('pdGoalStmtIn');
+        var errEl = document.getElementById('pdGoalErr');
+        var okEl = document.getElementById('pdGoalOk');
+        var contBtn = document.getElementById('pdGoalContinue');
+        var title = (titleEl && titleEl.value || '').trim();
+        var statement = (stmtEl && stmtEl.value || '').trim();
+        if (errEl) { errEl.classList.add('hide'); errEl.textContent = ''; }
+        if (okEl) { okEl.classList.add('hide'); okEl.textContent = ''; }
+        if (!title || !statement) {
+          if (errEl) { errEl.classList.remove('hide'); errEl.textContent = '제목과 하고 싶은 일을 적어 주세요.'; }
+          return;
+        }
+        var projectId = lastProjectDash && lastProjectDash.project && lastProjectDash.project.projectId;
+        var workspace = lastProjectDash && lastProjectDash.project && lastProjectDash.project.workspacePath;
+        if (!projectId) {
+          if (errEl) { errEl.classList.remove('hide'); errEl.textContent = '프로젝트가 없어요. 먼저 프로젝트를 준비해 주세요.'; }
+          return;
+        }
+        if (contBtn) contBtn.disabled = true;
+        try {
+          // 1) create Goal only (PLANNING, no Task/Run)
+          var gRes = await callTool('relay_pm_create_goal', {
+            projectId: projectId,
+            title: title,
+            statement: statement
+          });
+          var goal = gRes && gRes.goal;
+          if (!goal || !goal.goalId) throw new Error('Goal 만들기에 실패했어요.');
+          if (gRes.sideEffects && (gRes.sideEffects.tasksCreated || gRes.sideEffects.runsCreated || gRes.sideEffects.workersSpawned)) {
+            throw new Error('Goal만 만들어야 하는데 다른 작업이 함께 생겼어요.');
+          }
+          // 2) bounded Task contract under that Goal
+          var criteria = [
+            '목표에 맞는 결과를 보고한다',
+            '요청 범위를 벗어나지 않는다'
+          ];
+          var tRes = await callTool('relay_pm_create_task', {
+            projectId: projectId,
+            goalId: goal.goalId,
+            title: title.slice(0, 80),
+            goal: statement,
+            reason: '사용자가 Goal에서 준비한 작업',
+            scope: workspace || projectId,
+            completionCriteria: criteria
+          });
+          var task = tRes && tRes.task;
+          if (!task || !task.taskId) throw new Error('Task 만들기에 실패했어요.');
+          if (task.executionState !== 'READY') throw new Error('Task가 READY가 아니에요: ' + task.executionState);
+          if (task.goalId !== goal.goalId) throw new Error('Task가 방금 만든 Goal에 연결되지 않았어요.');
+          // 3) activate Goal PLANNING → ACTIVE (canonical)
+          try {
+            await callTool('relay_pm_activate_goal', {
+              goalId: goal.goalId,
+              expectedGoalStatus: 'PLANNING',
+              reason: 'c05:activate-before-explicit-run'
+            });
+          } catch (eAct) {
+            // Already ACTIVE is fine; other errors surface.
+            var am = String((eAct && eAct.message) || eAct);
+            if (am.indexOf('CONFLICT') < 0 && am.indexOf('ACTIVE') < 0) throw eAct;
+          }
+          // 4) resolve eligibility (no dispatch yet)
+          var elig = await callTool('relay_pm_resolve_run', {
+            taskId: task.taskId,
+            projectId: projectId
+          });
+          pendingPreview = {
+            goalId: goal.goalId,
+            goalTitle: goal.title || title,
+            taskId: task.taskId,
+            taskTitle: task.title || title,
+            scope: task.scope || workspace || '',
+            criteria: task.completionCriteria || criteria,
+            builder: (elig && elig.desiredBuilder) || '',
+            workerId: elig && elig.workerId,
+            workspaceRoot: (elig && elig.workspaceRoot) || workspace || '',
+            projectId: projectId
+          };
+          if (okEl) {
+            okEl.classList.remove('hide');
+            okEl.textContent = 'Goal과 Task를 준비했어요. 아직 Worker는 시작하지 않았어요.';
+          }
+          setGoalFlowVisible(false);
+          renderTaskPreview(pendingPreview, elig);
+          setTaskPrevVisible(true);
+          try {
+            var refreshed = await callTool('relay_pm_get_project', { projectId: projectId });
+            renderProjectDash(refreshed);
+          } catch (eRef) { /* preview already shown */ }
+        } catch (ePrep) {
+          if (errEl) {
+            errEl.classList.remove('hide');
+            errEl.textContent = String((ePrep && ePrep.message) || ePrep).slice(0, 240);
+          }
+        } finally {
+          if (contBtn) contBtn.disabled = false;
+        }
+      }
+
+      async function explicitOwnerRun() {
+        if (runInFlight) return;
+        if (!pendingPreview || !pendingPreview.taskId) return;
+        var errEl = document.getElementById('tpErr');
+        var status = document.getElementById('tpStatus');
+        var runBtn = document.getElementById('tpRun');
+        if (errEl) { errEl.classList.add('hide'); errEl.textContent = ''; }
+        runInFlight = true;
+        if (runBtn) runBtn.disabled = true;
+        try {
+          var resolved = await callTool('relay_pm_resolve_run', {
+            taskId: pendingPreview.taskId,
+            projectId: pendingPreview.projectId
+          });
+          if (!resolved || !resolved.ok) {
+            throw new Error('시작 불가: ' + ((resolved && resolved.blockers) || []).join(', '));
+          }
+          if (status) status.textContent = '작업을 시작하는 중…';
+          var disp = await callTool('relay_pm_dispatch_owner_approved', {
+            taskId: resolved.taskId,
+            workerId: resolved.workerId,
+            workspaceRoot: resolved.workspaceRoot,
+            expectedExecutionState: 'READY'
+          });
+          if (status) {
+            status.textContent = '시작했어요'
+              + (disp && disp.runId ? (' · 실행 ' + disp.runId) : '')
+              + (resolved.workerId ? (' · ' + resolved.workerId) : '');
+          }
+          var projectIdAfter = pendingPreview.projectId;
+          pendingPreview = null;
+          try {
+            var refreshed = await callTool('relay_pm_get_project', projectIdAfter ? { projectId: projectIdAfter } : {});
+            renderProjectDash(refreshed);
+            setTaskPrevVisible(false);
+          } catch (eRef2) { /* keep status line */ }
+        } catch (eRun) {
+          if (errEl) {
+            errEl.classList.remove('hide');
+            errEl.textContent = String((eRun && eRun.message) || eRun).slice(0, 240);
+          }
+          if (status) status.textContent = '시작에 실패했어요. 다시 시도할 수 있어요.';
+          // Re-enable only if still READY (duplicate protection may have moved state)
+          try {
+            var again = await callTool('relay_pm_resolve_run', {
+              taskId: pendingPreview.taskId,
+              projectId: pendingPreview.projectId
+            });
+            renderTaskPreview(pendingPreview, again);
+          } catch (eAgain) { /* leave disabled */ }
+        } finally {
+          runInFlight = false;
+        }
+      }
+
+      function wireGoalRunUi() {
+        var newBtn = document.getElementById('pdNewGoalBtn');
+        var cancel = document.getElementById('pdGoalCancel');
+        var cont = document.getElementById('pdGoalContinue');
+        var tpCancel = document.getElementById('tpCancel');
+        var tpRun = document.getElementById('tpRun');
+        if (newBtn) newBtn.addEventListener('click', function () {
+          setGoalFlowVisible(true);
+          var t = document.getElementById('pdGoalTitleIn');
+          if (t) t.focus();
+        });
+        if (cancel) cancel.addEventListener('click', function () { setGoalFlowVisible(false); });
+        if (cont) cont.addEventListener('click', function () { prepareGoalAndTask(); });
+        if (tpCancel) tpCancel.addEventListener('click', function () {
+          setTaskPrevVisible(false);
+          pendingPreview = null;
+        });
+        if (tpRun) tpRun.addEventListener('click', function () { explicitOwnerRun(); });
+      }
+      wireGoalRunUi();
+
       async function poll() {
         try {
           var list = await callTool('relay_pm_list_pending_deliveries', {});

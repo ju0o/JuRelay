@@ -29,6 +29,8 @@ import * as retryDispatch from '../backend/retry-dispatch.js';
 import * as orphanResolution from '../backend/orphan-resolution.js';
 import * as completedRunRecovery from '../backend/completed-run-recovery.js';
 import * as taskActions from '../backend/task-actions.js';
+import { createUserGoal, UserGoalError } from '../backend/user-goal.js';
+import { resolveOwnerDispatch } from '../backend/dispatch-resolve.js';
 import { startGoalLoop } from '../backend/goal-loop.js';
 import { authorizeEffect, PermissionDeniedError } from '../backend/permission-gate.js';
 import type { GoalStatus, EventDeliveryStatus } from '../shared/types.js';
@@ -46,6 +48,17 @@ import { buildAssetPmTools } from './asset-tools.js';
 import { buildDashboardTools } from './dashboard-tools.js';
 import { buildProjectTools } from './project-tools.js';
 import { buildExecutionPlanReadTools, buildExecutionPlanWriteTools } from './execution-plan-tools.js';
+
+function mapUserGoalError(err: unknown): never {
+  if (err instanceof UserGoalError) {
+    if (err.code === 'NOT_FOUND') throw new McpError('NOT_FOUND', err.message);
+    if (err.code === 'GOAL_PROJECT_MISMATCH' || err.code === 'GOAL_STATE_NOT_ALLOWED') {
+      throw new McpError('INVALID_STATE', err.message);
+    }
+    throw new McpError('INVALID_ARGUMENT', err.message);
+  }
+  throw mapCoreError(err);
+}
 
 // Phase I3F-2: accept/changes/retry CAS values are frozen single-value enums
 // (no permissive multi-state compatibility) — see ACCEPT_EXEC_ONLY etc. below.
@@ -87,6 +100,28 @@ export function buildPmReadTools(ctx: PmServerContext): McpTool[] {
       handler: async (args) => {
         rejectUnknownFields(args, ['goalId']);
         return goalTask.getGoal(dataRoot, project, requireString(args, 'goalId'));
+      },
+    },
+    {
+      name: 'relay_pm_resolve_run',
+      description:
+        'P1.8C-05 pure read: resolve whether an explicit owner Run is eligible for a READY Task. ' +
+        'Returns workerId (from C02 desired Builder via WorkerRegistry), workspaceRoot ' +
+        '(canonical project path), and blockers (LEGACY/UNCONFIGURED/no Builder/etc). ' +
+        'Does NOT dispatch. Pass the returned fields to relay_pm_dispatch_owner_approved.',
+      inputSchema: objectSchema({
+        taskId: { type: 'string' },
+        projectId: { type: 'string' },
+      }),
+      handler: async (args) => {
+        rejectUnknownFields(args, ['taskId', 'projectId']);
+        return resolveOwnerDispatch({
+          dataRoot,
+          scope: project,
+          taskId: typeof args.taskId === 'string' ? args.taskId : undefined,
+          projectId: typeof args.projectId === 'string' ? args.projectId : undefined,
+          hostRoots: ctx.goalLoop?.workspaceRoot ? [ctx.goalLoop.workspaceRoot] : undefined,
+        });
       },
     },
     {
@@ -308,6 +343,56 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
   const tools: McpTool[] = [
     ...buildExecutionPlanWriteTools(ctx),
     {
+      name: 'relay_pm_create_goal',
+      description:
+        'P1.8C-05: create ONE user Goal and stop. Initial status PLANNING. ' +
+        'Optional projectId binds the Goal to a logical product (defaults via scope identity). ' +
+        'Does NOT create Tasks, Runs, Workers, or dispatch. Does NOT activate the Goal. ' +
+        'Use relay_pm_create_task with goalId to attach a Task, then relay_pm_activate_goal, ' +
+        'then explicit relay_pm_dispatch_owner_approved for Run.',
+      inputSchema: objectSchema(
+        {
+          projectId: { type: 'string' },
+          projectName: { type: 'string' },
+          title: { type: 'string' },
+          statement: { type: 'string' },
+          description: { type: 'string' },
+          completionCriteria: { type: 'array', items: { type: 'string' } },
+        },
+        ['title', 'statement'],
+      ),
+      handler: async (args) => {
+        rejectUnknownFields(args, [
+          'projectId', 'projectName', 'title', 'statement', 'description', 'completionCriteria',
+        ]);
+        if (args.projectName !== undefined && args.projectId === undefined) {
+          throw new McpError(
+            'INVALID_ARGUMENT',
+            'projectName만으로는 프로젝트가 지정되지 않습니다. projectId도 함께 주세요.',
+          );
+        }
+        let completionCriteria: string[] | undefined;
+        if (args.completionCriteria !== undefined) {
+          if (!Array.isArray(args.completionCriteria) || !args.completionCriteria.every((x) => typeof x === 'string')) {
+            throw new McpError('INVALID_ARGUMENT', '잘못된 인자 형식: completionCriteria');
+          }
+          completionCriteria = [...(args.completionCriteria as string[])];
+        }
+        try {
+          return await createUserGoal(dataRoot, project, {
+            title: requireString(args, 'title'),
+            statement: requireString(args, 'statement'),
+            ...(args.projectId !== undefined ? { projectId: args.projectId as string } : {}),
+            ...(args.projectName !== undefined ? { projectName: args.projectName as string } : {}),
+            ...(typeof args.description === 'string' ? { description: args.description } : {}),
+            ...(completionCriteria !== undefined ? { completionCriteria } : {}),
+          });
+        } catch (err) {
+          mapUserGoalError(err);
+        }
+      },
+    },
+    {
       name: 'relay_pm_create_task',
       description:
         'V1-G1 PM Task intake: create ONE canonical V1 Task from a finalized Task Contract. ' +
@@ -317,15 +402,17 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
         'projects never share one Inbox. When omitted, the identity is resolved from this ' +
         "process's storage scope (a generic 'ws' scope resolves to the Agent Relay project) — " +
         'the bucket name is never used as the identity. ' +
-        'The mandatory goalId is handled internally via a deterministic per-project technical ' +
-        'container Goal (create/reuse, no manual Goal management). ' +
+        'P1.8C-05: optional goalId attaches the Task to an existing user Goal (must exist, ' +
+        'same project, PLANNING|ACTIVE). When goalId is omitted, behaviour is unchanged: ' +
+        'deterministic per-project technical Inbox Goal. ' +
         'Task is prepared to READY+PENDING via the frozen PLANNED→READY transition for the next dispatch stage. ' +
         'Does NOT dispatch, accept, complete any Goal, or orchestrate. ' +
-        'Runtime fields (goalId/executionState/pmState/runId/paths) are not accepted.',
+        'Runtime fields (executionState/pmState/runId/paths) are not accepted.',
       inputSchema: objectSchema(
         {
           projectId: { type: 'string' },
           projectName: { type: 'string' },
+          goalId: { type: 'string' },
           title: { type: 'string' },
           goal: { type: 'string' },
           reason: { type: 'string' },
@@ -336,7 +423,7 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
       ),
       handler: async (args) => {
         rejectUnknownFields(args, [
-          'projectId', 'projectName', 'title', 'goal', 'reason', 'scope', 'completionCriteria',
+          'projectId', 'projectName', 'goalId', 'title', 'goal', 'reason', 'scope', 'completionCriteria',
         ]);
         const title = requireString(args, 'title');
         const goalText = requireString(args, 'goal');
@@ -367,10 +454,11 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
             scope: args.scope as string,
             ...(args.projectId !== undefined ? { projectId: args.projectId as string } : {}),
             ...(args.projectName !== undefined ? { projectName: args.projectName as string } : {}),
+            ...(typeof args.goalId === 'string' ? { goalId: args.goalId } : {}),
             ...(completionCriteria !== undefined ? { completionCriteria } : {}),
           });
         } catch (err) {
-          throw mapCoreError(err);
+          mapUserGoalError(err);
         }
       },
     },

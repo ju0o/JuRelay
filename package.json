@@ -131,7 +131,8 @@
     "test:p1-8c01-project-profile-selection": "node --test test/p1-8c01-project-profile-selection.test.mjs",
     "test:p1-8c02-project-agent-assignment": "node --test test/p1-8c02-project-agent-assignment.test.mjs",
     "test:p1-8c03-first-run-bootstrap": "node --test test/p1-8c03-first-run-bootstrap.test.mjs",
-    "test:p1-8c04-project-dashboard": "node --test test/p1-8c04-project-dashboard.test.mjs"
+    "test:p1-8c04-project-dashboard": "node --test test/p1-8c04-project-dashboard.test.mjs",
+    "test:p1-8c05-goal-task-dispatch": "node --test test/p1-8c05-goal-task-dispatch.test.mjs"
   },
   "main": "dist/server/backend/main.js",
   "bin": {

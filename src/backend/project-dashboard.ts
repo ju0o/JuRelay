@@ -18,7 +18,7 @@ import {
   type SelectedProjectBasis,
 } from './project-profile.js';
 import { loadUiState } from './ui-state.js';
-import { loadProjectRegistry } from './project-identity.js';
+import { loadProjectRegistry, normalizeProjectId } from './project-identity.js';
 import {
   buildProjectRuntimeViews,
   type LiveHandleLike,
@@ -27,6 +27,10 @@ import {
   type TaskRuntimeState,
   type NextActionCode,
 } from './runtime-truth.js';
+import {
+  resolveOwnerDispatch,
+  type ResolveDispatchResult,
+} from './dispatch-resolve.js';
 import type { GoalRecord, TaskRecord } from '../shared/types.js';
 
 /** Hard cap on recent task rows in the response. */
@@ -116,6 +120,8 @@ export interface ProjectDashboardView {
     goalText: string | null;
     taskText: string | null;
   };
+  /** P1.8C-05 — explicit Run eligibility (pure read; never dispatches). */
+  runEligibility: ResolveDispatchResult | null;
   generatedAt: string;
   sideEffects: {
     goalsCreated: 0;
@@ -203,6 +209,46 @@ function runtimeToProject(rt: ProjectRuntimeView): ProjectDashboardProject {
     workspaceConflict: false,
     legacy: rt.legacy,
   };
+}
+
+/**
+ * P1.8C-05 — surface a user Goal even before any Task exists.
+ * Prefer runtime-truth activeGoal (task-led). Else newest PLANNING|ACTIVE
+ * non-v1-internal Goal bound to this projectId.
+ */
+function pickDashboardGoal(
+  goals: readonly GoalRecord[],
+  projectId: string | null,
+  runtimeActive: { goalId: string; title: string; status: string } | null | undefined,
+): ProjectDashboardGoal | null {
+  if (runtimeActive) {
+    return {
+      goalId: runtimeActive.goalId,
+      title: runtimeActive.title,
+      status: runtimeActive.status,
+    };
+  }
+  if (!projectId) return null;
+  const expected = normalizeProjectId(projectId);
+  const open = goals
+    .filter((g) => {
+      if (g.status !== 'PLANNING' && g.status !== 'ACTIVE') return false;
+      const tags = Array.isArray(g.tags) ? g.tags : [];
+      if (tags.includes('v1-internal')) return false;
+      const pid = typeof g.projectId === 'string' && g.projectId.trim()
+        ? normalizeProjectId(g.projectId)
+        : null;
+      return pid === expected;
+    })
+    .sort((a, b) => {
+      const ta = Date.parse(a.updatedAt || a.createdAt || '') || 0;
+      const tb = Date.parse(b.updatedAt || b.createdAt || '') || 0;
+      if (tb !== ta) return tb - ta;
+      return b.goalId.localeCompare(a.goalId);
+    });
+  const hit = open[0];
+  if (!hit) return null;
+  return { goalId: hit.goalId, title: hit.title, status: hit.status };
 }
 
 function buildWarnings(
@@ -333,13 +379,11 @@ export function getProjectDashboard(input: GetProjectDashboardInput): ProjectDas
     };
   }
 
-  const goal: ProjectDashboardGoal | null = rt?.activeGoal
-    ? {
-      goalId: rt.activeGoal.goalId,
-      title: rt.activeGoal.title,
-      status: rt.activeGoal.status,
-    }
-    : null;
+  const goal: ProjectDashboardGoal | null = pickDashboardGoal(
+    goals,
+    project?.projectId ?? null,
+    rt?.activeGoal ?? null,
+  );
 
   const task: ProjectDashboardTask | null = rt?.activeTask
     ? mapTask(rt.activeTask)
@@ -360,6 +404,22 @@ export function getProjectDashboard(input: GetProjectDashboardInput): ProjectDas
   const emptyGoal = !goal;
   const emptyTask = !task;
 
+  let runEligibility: ResolveDispatchResult | null = null;
+  if (task && task.executionState === 'READY' && project && !project.legacy) {
+    try {
+      runEligibility = resolveOwnerDispatch({
+        dataRoot,
+        scope,
+        taskId: task.taskId,
+        projectId: project.projectId,
+        hostRoots: input.hostRoots,
+        includeCwdHostRoot: input.includeCwdHostRoot,
+      });
+    } catch {
+      runEligibility = null;
+    }
+  }
+
   return {
     schemaVersion: 'project-dashboard.v1',
     basis: resolved.basis,
@@ -379,6 +439,7 @@ export function getProjectDashboard(input: GetProjectDashboardInput): ProjectDas
       goalText: emptyGoal ? '아직 진행 중인 Goal이 없습니다.' : null,
       taskText: emptyTask ? '지금 보고 있는 Task가 없습니다.' : null,
     },
+    runEligibility,
     generatedAt: runtime.generatedAt,
     sideEffects: { ...ZERO_SIDE_EFFECTS },
   };

@@ -349,6 +349,7 @@ export function buildProjectTools(ctx: PmServerContext): McpTool[] {
           nextActionText: view.nextActionText,
           warnings: view.warnings,
           empty: view.empty,
+          runEligibility: view.runEligibility,
           generatedAt: view.generatedAt,
           sideEffects: view.sideEffects,
           summary: {
