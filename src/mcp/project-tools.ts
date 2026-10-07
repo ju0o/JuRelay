@@ -1,11 +1,10 @@
 /**
- * Project/design read stubs (widget v6 control tower).
+ * Project/design tools (widget control tower).
  *
- *   relay_pm_get_project — goal + tasks + summary for the Goal/Task tabs.
- *   relay_pm_get_design  — WBS nodes + designs for the design tab.
+ *   relay_pm_get_project — P1.8C-04 bounded single-project dashboard read model
+ *   relay_pm_get_design  — WBS nodes + designs (still stub empty shapes)
  *
- * v6 ships these as stubs (empty shapes → widget shows empty states).
- * v7 wires real data. Pure read. No judgment, no dispatch, no mutation.
+ * Pure read for get_project / get_design. No judgment, no dispatch, no mutation.
  *
  * P1.8A adds `relay_pm_list_projects`: the direct answer to "which projects are
  * registered, and which of them is actually running?". It reads the same runtime
@@ -19,6 +18,9 @@
  * P1.8C-02 adds desired-role assignment tools (zero execution):
  *   relay_pm_get_project_assignments
  *   relay_pm_set_project_assignments
+ *
+ * P1.8C-04 turns `relay_pm_get_project` into the canonical bounded selected-
+ * project dashboard (not a full `relay_pm_get_dashboard` clone).
  */
 import * as goalTask from '../backend/goal-task.js';
 import {
@@ -27,6 +29,10 @@ import {
   setProjectAssignments,
   type AssignmentBindingInput,
 } from '../backend/project-assignment.js';
+import {
+  getProjectDashboard,
+  PROJECT_DASHBOARD_MAX_RECENT_TASKS,
+} from '../backend/project-dashboard.js';
 import {
   getProjectProfile,
   listProjectProfiles,
@@ -304,17 +310,61 @@ export function buildProjectTools(ctx: PmServerContext): McpTool[] {
     {
       name: 'relay_pm_get_project',
       description:
-        'Project snapshot for the widget control tower (goal, tasks, summary). ' +
-        'Stub in v6: returns empty shapes; the widget renders empty states. Pure read.',
-      inputSchema: objectSchema({}),
+        'Bounded single-project dashboard for the selected (or explicit) project. ' +
+        'Returns project/path, desired assignment, active Goal, current Task with ' +
+        'runtimeState (ACTIVE|STALE|ORPHAN|IDLE|UNKNOWN distinct from persisted ' +
+        'executionState), nextAction/nextActionText, bounded counts, and at most ' +
+        `${PROJECT_DASHBOARD_MAX_RECENT_TASKS} recent Tasks. ` +
+        'Optional projectId overrides the view for this read only — never persists ' +
+        'selection. Pure read: zero Goals/Tasks/Runs/workers/assignment/workspace/' +
+        'selection mutations. Prefer this over relay_pm_get_dashboard for the ' +
+        'selected-project screen (dashboard can exceed host token budgets).',
+      inputSchema: objectSchema({ projectId: { type: 'string' } }),
       handler: async (args: Record<string, unknown>) => {
-        rejectUnknownFields(args, []);
+        rejectUnknownFields(args, ['projectId']);
+        const projectId = typeof args.projectId === 'string' && args.projectId.trim()
+          ? args.projectId.trim()
+          : undefined;
+        const view = getProjectDashboard({
+          dataRoot: ctx.dataRoot,
+          scope: ctx.project,
+          projectId,
+          hostRoots: ctx.goalLoop?.workspaceRoot ? [ctx.goalLoop.workspaceRoot] : undefined,
+        });
         return {
-          goal: null,
-          tasks: [],
+          // Storage scope (MCP --project), distinct from view.project object.
+          scope: ctx.project,
+          schemaVersion: view.schemaVersion,
+          basis: view.basis,
+          argumentOverride: view.argumentOverride,
+          project: view.project,
+          assignment: view.assignment,
+          goal: view.goal,
+          task: view.task,
+          recentTasks: view.recentTasks,
+          // Alias for older Goal/Task tab code that expected `tasks[]`.
+          tasks: view.recentTasks,
+          counts: view.counts,
+          nextAction: view.nextAction,
+          nextActionText: view.nextActionText,
+          warnings: view.warnings,
+          empty: view.empty,
+          generatedAt: view.generatedAt,
+          sideEffects: view.sideEffects,
           summary: {
-            done: 0, review: 0, remaining: 0, total: 0,
-            elapsed_hours: 0, review_hours: 0, remaining_hours: 0,
+            done: 0,
+            review: view.counts.verificationPending,
+            remaining: view.counts.readyTasks,
+            total: view.counts.tasks,
+            elapsed_hours: 0,
+            review_hours: 0,
+            remaining_hours: 0,
+            persistedRunning: view.counts.persistedRunning,
+            actualActiveRuns: view.counts.actualActiveRuns,
+            staleRuns: view.counts.staleRuns,
+            orphanRuns: view.counts.orphanRuns,
+            readyTasks: view.counts.readyTasks,
+            verificationPending: view.counts.verificationPending,
           },
         };
       },

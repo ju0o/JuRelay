@@ -343,6 +343,41 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .proj-menu button:hover, .proj-menu button:focus { background:var(--panel); }
   .proj-menu .cur { font-weight:700; }
   .main-view.hide-for-boot { display:none !important; }
+  /* P1.8C-04 project dashboard */
+  .pdash { border:1px solid var(--border); border-radius:10px; padding:12px; margin:8px 0;
+           background:var(--panel); }
+  .pdash-head .pn { font-size:16px; font-weight:700; }
+  .pdash-head .pp { font-size:11px; color:var(--muted); word-break:break-all; margin-top:2px;
+                    font-family:ui-monospace,Menlo,monospace; }
+  .pdash-head .pa { font-size:12px; margin-top:6px; }
+  .pdash-next { margin:10px 0; padding:10px 12px; border-radius:9px; border:1px solid #1b4fbf;
+                background:#0f1a33; }
+  .pdash-next .nl { font-size:11px; color:var(--muted); }
+  .pdash-next .nt { font-size:15px; font-weight:700; margin-top:2px; }
+  .pdash-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+  @media (max-width:520px) { .pdash-grid { grid-template-columns:1fr; } }
+  .pdash-card { border:1px solid var(--border); border-radius:8px; padding:10px; background:var(--bg); }
+  .pdash-card h3 { margin:0 0 6px; font-size:12px; color:var(--muted); font-weight:600; }
+  .pdash-card .tt { font-size:14px; font-weight:650; }
+  .pdash-card .meta { font-size:11px; color:var(--muted); margin-top:4px; }
+  .pdash-card .empty { font-size:13px; color:var(--muted); }
+  .pdash-counts { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .pdash-counts .c { font-size:11px; border:1px solid var(--border); border-radius:12px;
+                     padding:4px 9px; color:var(--muted); }
+  .pdash-counts .c b { color:var(--text); }
+  .pdash-counts .c.warn { border-color:var(--wait); color:var(--wait); }
+  .pdash-counts .c.err { border-color:var(--err); color:var(--err); }
+  .pdash-counts .c.ok { border-color:var(--ok); color:var(--ok); }
+  .pdash-warn { margin-top:8px; padding:8px 10px; border-radius:8px; border:1px solid var(--wait);
+                background:#2a1f08; color:#ffd9a0; font-size:12px; }
+  .pdash-warn.err { border-color:var(--err); background:#2a1212; color:#ffb4b4; }
+  .rtpill { display:inline-block; font-size:10px; border:1px solid var(--border); border-radius:10px;
+            padding:1px 7px; margin-left:4px; color:var(--muted); }
+  .rtpill.ACTIVE { color:#4a9eff; border-color:#4a9eff; }
+  .rtpill.STALE { color:var(--wait); border-color:var(--wait); }
+  .rtpill.ORPHAN { color:var(--err); border-color:var(--err); }
+  .rtpill.IDLE { color:var(--muted); }
+  .rtpill.UNKNOWN { color:var(--muted); }
 </style>
 </head>
 <body>
@@ -395,6 +430,33 @@ const WIDGET_HTML = `<!DOCTYPE html>
       </div>
     </div>
     <div id="mainView">
+    <section class="pdash" id="projectDash" aria-label="프로젝트 대시보드">
+      <div class="pdash-head" id="pdHead">
+        <div class="pn" id="pdName">프로젝트 불러오는 중…</div>
+        <div class="pp" id="pdPath"></div>
+        <div class="pa" id="pdAssign"></div>
+      </div>
+      <div class="pdash-next" id="pdNext" role="status">
+        <div class="nl">다음</div>
+        <div class="nt" id="pdNextText">확인 중…</div>
+      </div>
+      <div class="pdash-grid">
+        <div class="pdash-card" id="pdGoalCard">
+          <h3>Goal</h3>
+          <div class="tt" id="pdGoalTitle"></div>
+          <div class="meta" id="pdGoalMeta"></div>
+          <div class="empty hide" id="pdGoalEmpty">아직 진행 중인 Goal이 없습니다.</div>
+        </div>
+        <div class="pdash-card" id="pdTaskCard">
+          <h3>지금 Task</h3>
+          <div class="tt" id="pdTaskTitle"></div>
+          <div class="meta" id="pdTaskMeta"></div>
+          <div class="empty hide" id="pdTaskEmpty">지금 보고 있는 Task가 없습니다.</div>
+        </div>
+      </div>
+      <div class="pdash-counts" id="pdCounts" aria-label="상태 요약"></div>
+      <div class="pdash-warn hide" id="pdWarn" role="alert"></div>
+    </section>
     <div class="pipe" id="pipe">
       <div class="pnode"><b>PM</b><span data-i="pmYou">이 대화</span></div>
       <span class="edge">→</span>
@@ -1585,6 +1647,115 @@ const WIDGET_HTML = `<!DOCTYPE html>
           el.textContent = lines.join(' | ');
         } catch (e) { /* selfcheck never breaks render */ }
       }
+      var lastProjectDash = null;
+      function setElText(id, text) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = text == null ? '' : String(text);
+      }
+      function setElHide(id, hide) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (hide) el.classList.add('hide');
+        else el.classList.remove('hide');
+      }
+      function renderProjectDash(view) {
+        lastProjectDash = view || null;
+        if (!view) return;
+        var p = view.project;
+        setElText('pdName', p ? (p.projectName || p.projectId) : '프로젝트 없음');
+        setElText('pdPath', p && p.workspacePath
+          ? p.workspacePath
+          : (p && p.profileState === 'UNCONFIGURED' ? 'Workspace not configured' : ''));
+        var assign = view.assignment;
+        var assignLine = '';
+        if (assign) {
+          assignLine = 'PM ' + (assign.pm || '(없음)')
+            + ' · Builder ' + ((assign.builders && assign.builders.length) ? assign.builders.join(', ') : '(없음)')
+            + ' · QA ' + ((assign.qa && assign.qa.length) ? assign.qa.join(', ') : '(없음)');
+        }
+        setElText('pdAssign', assignLine);
+        setElText('pdNextText', view.nextActionText || '진행 중인 작업 없음');
+
+        if (view.goal) {
+          setElHide('pdGoalEmpty', true);
+          setElHide('pdGoalTitle', false);
+          setElHide('pdGoalMeta', false);
+          setElText('pdGoalTitle', view.goal.title || view.goal.goalId);
+          setElText('pdGoalMeta', (view.goal.status || '') + (view.goal.goalId ? ' · ' + view.goal.goalId : ''));
+        } else {
+          setElText('pdGoalTitle', '');
+          setElText('pdGoalMeta', '');
+          setElHide('pdGoalEmpty', false);
+          var ge = document.getElementById('pdGoalEmpty');
+          if (ge) ge.textContent = (view.empty && view.empty.goalText) || '아직 진행 중인 Goal이 없습니다.';
+        }
+
+        if (view.task) {
+          setElHide('pdTaskEmpty', true);
+          setElHide('pdTaskTitle', false);
+          setElHide('pdTaskMeta', false);
+          setElText('pdTaskTitle', view.task.title || view.task.taskId);
+          var meta = [];
+          meta.push('상태 ' + (view.task.executionState || '?'));
+          meta.push('실행 ' + (view.task.runtimeState || '?'));
+          if (view.task.agent) meta.push('워커 ' + view.task.agent);
+          if (view.task.model) meta.push('모델 ' + view.task.model);
+          if (view.task.lastActivityAt) {
+            try {
+              var d = new Date(view.task.lastActivityAt);
+              meta.push(isNaN(d.getTime()) ? view.task.lastActivityAt : d.toLocaleString());
+            } catch (eT) { meta.push(view.task.lastActivityAt); }
+          }
+          setElText('pdTaskMeta', meta.join(' · '));
+          var titleEl = document.getElementById('pdTaskTitle');
+          if (titleEl) {
+            var pill = document.createElement('span');
+            pill.className = 'rtpill ' + (view.task.runtimeState || '');
+            pill.textContent = view.task.runtimeState || '';
+            // Replace previous pill if any by resetting text then appending.
+            titleEl.textContent = (view.task.title || view.task.taskId) + ' ';
+            titleEl.appendChild(pill);
+          }
+        } else {
+          setElText('pdTaskTitle', '');
+          setElText('pdTaskMeta', '');
+          setElHide('pdTaskEmpty', false);
+          var te = document.getElementById('pdTaskEmpty');
+          if (te) te.textContent = (view.empty && view.empty.taskText) || '지금 보고 있는 Task가 없습니다.';
+        }
+
+        var countsEl = document.getElementById('pdCounts');
+        if (countsEl) {
+          countsEl.innerHTML = '';
+          var c = view.counts || {};
+          function addCount(label, n, cls) {
+            var span = document.createElement('span');
+            span.className = 'c' + (cls ? ' ' + cls : '');
+            span.innerHTML = label + ' <b>' + (n == null ? 0 : n) + '</b>';
+            countsEl.appendChild(span);
+          }
+          addCount('실제 작업 중', c.actualActiveRuns, c.actualActiveRuns ? 'ok' : '');
+          addCount('검토 필요', c.verificationPending, c.verificationPending ? 'warn' : '');
+          addCount('대기', c.readyTasks, '');
+          addCount('ORPHAN', c.orphanRuns, c.orphanRuns ? 'err' : '');
+          addCount('저장 RUNNING', c.persistedRunning, '');
+        }
+
+        var warnEl = document.getElementById('pdWarn');
+        if (warnEl) {
+          var warnings = view.warnings || [];
+          if (!warnings.length) {
+            warnEl.className = 'pdash-warn hide';
+            warnEl.textContent = '';
+          } else {
+            var severe = warnings.some(function (w) {
+              return w && (w.code === 'WORKSPACE_CONFLICT' || w.code === 'LEGACY');
+            });
+            warnEl.className = 'pdash-warn' + (severe ? ' err' : '');
+            warnEl.textContent = warnings.map(function (w) { return w.message || w.code; }).join(' · ');
+          }
+        }
+      }
       async function poll() {
         try {
           var list = await callTool('relay_pm_list_pending_deliveries', {});
@@ -1595,15 +1766,33 @@ const WIDGET_HTML = `<!DOCTYPE html>
           // changed (or first run). No timer polling.
           var fp = deliveryFp(deliveries);
           if (fp !== lastDeliveryFp) { lastDeliveryFp = fp; checkVersion(); }
+          // P1.8C-04 — bounded selected-project dashboard (not full get_dashboard).
+          try {
+            var projView = await callTool('relay_pm_get_project', {});
+            renderProjectDash(projView);
+            setDiag('project ok · ' + diagTime() + spriteNote);
+          } catch (eProj) {
+            setDiag('project 실패: ' + String((eProj && eProj.message) || eProj).slice(0, 120) + spriteNote);
+            logLine('get_project error: ' + ((eProj && eProj.message) || eProj));
+          }
           try {
             var dash = await callTool('relay_pm_get_dashboard', {});
             lastDash = dash;
-            setDiag('dashboard ok · ' + diagTime() + spriteNote);
             try { renderAgents(dash); } catch (eAgents) { logLine('render agents error: ' + eAgents.message); }
             try {
-              var tl = await callTool('relay_pm_list_tasks', {});
-              var taskList = (tl && tl.tasks) || [];
-              var goals = (dash && dash.goals) || [];
+              // Prefer bounded recentTasks from get_project for Task tab when available.
+              var taskList = (lastProjectDash && lastProjectDash.recentTasks)
+                || (lastProjectDash && lastProjectDash.tasks)
+                || [];
+              if (!taskList.length) {
+                try {
+                  var tl = await callTool('relay_pm_list_tasks', {});
+                  taskList = (tl && tl.tasks) || [];
+                } catch (eTl) { taskList = []; }
+              }
+              var goals = (lastProjectDash && lastProjectDash.goal)
+                ? [lastProjectDash.goal]
+                : ((dash && dash.goals) || []);
               try {
                 var doneT = 0;
                 for (var ti = 0; ti < taskList.length; ti++) {

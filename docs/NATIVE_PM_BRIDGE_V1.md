@@ -135,6 +135,15 @@ Assignment = WHO SHOULD BE USED. Never spawn / dispatch / Goal·Task create.
 - Returning CONFIGURED users skip the wizard and get a bounded `Project ▾`.
 - Reuses C01 select + C02 assignment tools; `BOOTSTRAP_READY` is context only
   (zero Goal/Task/Run/worker/tmux). See `docs/P1.8C-03-FIRST-RUN-BOOTSTRAP.md`.
+
+### P1.8C-04 — Project Dashboard
+
+- `relay_pm_get_project` is the canonical bounded selected-project read model
+  (not a full `relay_pm_get_dashboard` clone). Optional `projectId` overrides
+  the view without persisting selection.
+- Returns project/path, desired assignment, Goal, current Task with
+  runtimeState, nextAction, counts, ≤5 recentTasks. Pure read.
+- See `docs/P1.8C-04-PROJECT-DASHBOARD.md`.
 - Store reuse only: RoleConfig first (C01 display owner), else WorkspaceConfigV2.
   No `agent-assignments.json`. UNCONFIGURED → `PROJECT_CONFIGURATION_REQUIRED`.
 - Dashboard additive: `assignment { pm, builders[], qa[] }`.

@@ -79,6 +79,7 @@ export const MANDATORY_SUITES = [
   'test:p1-8c01-project-profile-selection',
   'test:p1-8c02-project-agent-assignment',
   'test:p1-8c03-first-run-bootstrap',
+  'test:p1-8c04-project-dashboard',
   'test:actl-managed-bridge',
   'test:b15-fix-01-a',
   'test:b15-fix-03-a',
