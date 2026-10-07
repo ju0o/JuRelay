@@ -122,6 +122,16 @@ orphanRuns, readyTasks, verificationPending }`. `relay_pm_get_dashboard({project
   두 경로가 다르면 `workspaceConflict:true` + `PARTIAL` (조용히 고르지 않음).
 - Legacy `ws` 버킷은 canonical `agent-relay`와 병합하지 않는다.
 
+## P1.8C-02 Agent assignment (desired roles)
+
+Assignment = WHO SHOULD BE USED. Never spawn / dispatch / Goal·Task create.
+
+- MCP: `relay_pm_get_project_assignments`, `relay_pm_set_project_assignments`
+- Store reuse only: RoleConfig first (C01 display owner), else WorkspaceConfigV2.
+  No `agent-assignments.json`. UNCONFIGURED → `PROJECT_CONFIGURATION_REQUIRED`.
+- Dashboard additive: `assignment { pm, builders[], qa[] }`.
+- `availableWorkers[]` remains availability only.
+
 ## Widget lifecycle
 
 - `relay_pm_open_widget` 핸들러(`src/mcp/app-server.ts:122`)는 infallible:

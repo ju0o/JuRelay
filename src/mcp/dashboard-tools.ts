@@ -40,6 +40,7 @@ import {
   type ProjectIdentity,
 } from '../backend/project-identity.js';
 import { loadUiState } from '../backend/ui-state.js';
+import { assignmentSummaryFromProfile } from '../backend/project-assignment.js';
 import {
   listProjectProfiles,
   resolveProjectSelection,
@@ -243,6 +244,8 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
         'P1.8C-01 additive: projectProfiles[], selectedProjectProfile, ' +
         'selectedProjectId, and selectedProjectBasis also honor persisted ' +
         'selection (ARGUMENT > SELECTED > LAST_ACTIVE > SCOPE). ' +
+        'P1.8C-02 additive: assignment { pm, builders[], qa[] } summary for the ' +
+        'selected/current project (desired roles only — never spawned workers). ' +
         'Pure read — never judges, dispatches, or mutates.',
       inputSchema: objectSchema({ projectId: { type: 'string' } }),
       handler: async (args: Record<string, unknown>) => {
@@ -382,6 +385,8 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
           projectProfiles,
           selectedProjectProfile,
           selectedProjectId,
+          // P1.8C-02 additive — desired-role summary only.
+          assignment: assignmentSummaryFromProfile(selectedProjectProfile),
           summary,
         };
       },

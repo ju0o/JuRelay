@@ -70,8 +70,24 @@ export interface LaneConfigV2 {
   root: string;
   goal: string;
   pm: RoleBinding;
+  /**
+   * Primary builder binding. Always required for backward compatibility with
+   * runners that read `lane.builder` directly.
+   */
   builder: RoleBinding;
+  /**
+   * P1.8C-02 — optional ordered builder list. When present and non-empty,
+   * `builders[0]` MUST equal `builder` (same runtime/model/roleProfile).
+   * Readers that understand multi-builder use this array; older readers keep
+   * using `builder`.
+   */
+  builders?: RoleBinding[];
   qa: RoleBinding;
+  /**
+   * P1.8C-02 — optional ordered QA list. Same contract as `builders` /
+   * `builder`: when present, `qas[0]` MUST equal `qa`.
+   */
+  qas?: RoleBinding[];
   qaFallback: QaFallbackBinding;
   /**
    * Ordered QA fallback runtimes, tried in order on QA_UNAVAILABLE
@@ -148,6 +164,29 @@ export function validateWorkspaceConfigV2(raw: unknown): asserts raw is Workspac
     checkBinding(`lanes[${i}].pm`, l.pm);
     checkBinding(`lanes[${i}].builder`, l.builder);
     checkBinding(`lanes[${i}].qa`, l.qa);
+    const sameBinding = (a: RoleBinding, b: RoleBinding): boolean =>
+      a.runtime === b.runtime
+      && a.model === b.model
+      && a.roleProfile.sessionPolicy === b.roleProfile.sessionPolicy
+      && a.roleProfile.permissionProfile === b.roleProfile.permissionProfile;
+    if (l.builders !== undefined) {
+      if (!Array.isArray(l.builders) || l.builders.length === 0) {
+        fail(`lanes[${i}].builders must be a non-empty RoleBinding[] when set`);
+      }
+      (l.builders as unknown[]).forEach((b, j) => checkBinding(`lanes[${i}].builders[${j}]`, b));
+      if (!sameBinding(l.builder as RoleBinding, (l.builders as RoleBinding[])[0])) {
+        fail(`lanes[${i}].builders[0] must match lanes[${i}].builder`);
+      }
+    }
+    if (l.qas !== undefined) {
+      if (!Array.isArray(l.qas) || l.qas.length === 0) {
+        fail(`lanes[${i}].qas must be a non-empty RoleBinding[] when set`);
+      }
+      (l.qas as unknown[]).forEach((b, j) => checkBinding(`lanes[${i}].qas[${j}]`, b));
+      if (!sameBinding(l.qa as RoleBinding, (l.qas as RoleBinding[])[0])) {
+        fail(`lanes[${i}].qas[0] must match lanes[${i}].qa`);
+      }
+    }
     const fb = l.qaFallback as Record<string, unknown> | undefined;
     if (!fb || typeof fb.runtime !== 'string' || !fb.runtime.trim()) fail(`lanes[${i}].qaFallback.runtime required`);
     if (typeof fb.model !== 'string' || !fb.model.trim()) fail(`lanes[${i}].qaFallback.model required`);

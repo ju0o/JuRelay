@@ -15,8 +15,18 @@
  *   relay_pm_list_project_profiles
  *   relay_pm_get_project_profile
  *   relay_pm_select_project   (persists selectedProjectId only; zero execution)
+ *
+ * P1.8C-02 adds desired-role assignment tools (zero execution):
+ *   relay_pm_get_project_assignments
+ *   relay_pm_set_project_assignments
  */
 import * as goalTask from '../backend/goal-task.js';
+import {
+  AssignmentError,
+  getProjectAssignments,
+  setProjectAssignments,
+  type AssignmentBindingInput,
+} from '../backend/project-assignment.js';
 import {
   getProjectProfile,
   listProjectProfiles,
@@ -28,6 +38,40 @@ import { runtimeSnapshot, scopeProjectIdentity } from './dashboard-tools.js';
 import { objectSchema, rejectUnknownFields, requireString } from './schemas.js';
 import type { TaskRecord } from '../shared/types.js';
 import type { McpTool, PmServerContext } from './server.js';
+
+function mapAssignmentError(err: unknown): never {
+  if (err instanceof AssignmentError) {
+    if (err.code === 'NOT_FOUND') throw new McpError('NOT_FOUND', err.message);
+    if (err.code === 'PROJECT_CONFIGURATION_REQUIRED') {
+      throw new McpError('INVALID_STATE', err.message);
+    }
+    throw new McpError('INVALID_ARGUMENT', `${err.code}: ${err.message}`);
+  }
+  throw err;
+}
+
+function asBinding(value: unknown, where: string): AssignmentBindingInput {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new McpError('INVALID_ARGUMENT', `${where} must be an object`);
+  }
+  const rec = value as Record<string, unknown>;
+  const out: AssignmentBindingInput = {};
+  for (const key of ['runtime', 'runtimeAdapterId', 'workerId', 'provider', 'model', 'workspaceRoot'] as const) {
+    if (rec[key] === undefined) continue;
+    if (typeof rec[key] !== 'string') {
+      throw new McpError('INVALID_ARGUMENT', `${where}.${key} must be a string`);
+    }
+    out[key] = rec[key] as string;
+  }
+  return out;
+}
+
+function asBindingList(value: unknown, where: string): AssignmentBindingInput[] {
+  if (!Array.isArray(value)) {
+    throw new McpError('INVALID_ARGUMENT', `${where} must be an array`);
+  }
+  return value.map((item, i) => asBinding(item, `${where}[${i}]`));
+}
 
 function profileListInput(ctx: PmServerContext, runtimeProjects?: Parameters<typeof listProjectProfiles>[0]['runtimeProjects']) {
   return {
@@ -192,6 +236,68 @@ export function buildProjectTools(ctx: PmServerContext): McpTool[] {
             throw new McpError('INVALID_ARGUMENT', msg);
           }
           throw err;
+        }
+      },
+    },
+    {
+      name: 'relay_pm_get_project_assignments',
+      description:
+        'Read the desired agent assignments for one project (PM / builders / QA). ' +
+        'Derived from WorkspaceConfigV2 or RoleConfig — no assignment database. ' +
+        'availableWorkers is availability only, never assignment. Pure read. ' +
+        'UNCONFIGURED projects return configurationRequired=true with empty roles.',
+      inputSchema: objectSchema({ projectId: { type: 'string' } }, ['projectId']),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, ['projectId']);
+        const projectId = requireString(args, 'projectId');
+        try {
+          const assignment = getProjectAssignments(profileListInput(ctx), projectId);
+          return { project: ctx.project, assignment };
+        } catch (err) {
+          mapAssignmentError(err);
+        }
+      },
+    },
+    {
+      name: 'relay_pm_set_project_assignments',
+      description:
+        'Atomically replace desired agent assignments for one project. ' +
+        'Writes the owning store only (WorkspaceConfigV2 lane or RoleConfig). ' +
+        'Does NOT create Goal/Task/Run, spawn Worker, open tmux, change workspacePath, ' +
+        'or change selectedProjectId. Unknown workers/runtimes fail closed. ' +
+        'UNCONFIGURED projects are rejected with PROJECT_CONFIGURATION_REQUIRED.',
+      inputSchema: objectSchema(
+        {
+          projectId: { type: 'string' },
+          pm: { type: ['object', 'null'] },
+          builders: { type: 'array', items: { type: 'object' } },
+          qa: { type: 'array', items: { type: 'object' } },
+        },
+        ['projectId', 'pm', 'builders', 'qa'],
+      ),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, ['projectId', 'pm', 'builders', 'qa']);
+        const projectId = requireString(args, 'projectId');
+        const pm = args.pm === null ? null : asBinding(args.pm, 'pm');
+        const builders = asBindingList(args.builders, 'builders');
+        const qa = asBindingList(args.qa, 'qa');
+        try {
+          const result = setProjectAssignments(profileListInput(ctx), {
+            projectId,
+            pm,
+            builders,
+            qa,
+          });
+          return {
+            project: ctx.project,
+            ok: result.ok,
+            store: result.store,
+            assignment: result.assignment,
+            profile: result.profile,
+            sideEffects: result.sideEffects,
+          };
+        } catch (err) {
+          mapAssignmentError(err);
         }
       },
     },

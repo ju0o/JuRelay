@@ -306,32 +306,19 @@ function bindingsFromLane(lane: LaneConfigV2): {
   builders: ProjectRoleBindingView[];
   qa: ProjectRoleBindingView[];
 } {
+  const fromBinding = (roleId: string, b: { runtime: string; model: string }): ProjectRoleBindingView => ({
+    roleId,
+    runtime: b.runtime,
+    model: b.model,
+    workspaceRoot: lane.root,
+    source: 'WORKSPACE_CONFIG',
+  });
+  const builderList = (lane.builders && lane.builders.length > 0) ? lane.builders : [lane.builder];
+  const qaList = (lane.qas && lane.qas.length > 0) ? lane.qas : [lane.qa];
   return {
-    pm: {
-      roleId: 'pm',
-      runtime: lane.pm.runtime,
-      model: lane.pm.model,
-      workspaceRoot: lane.root,
-      source: 'WORKSPACE_CONFIG',
-    },
-    builders: [
-      {
-        roleId: 'builder',
-        runtime: lane.builder.runtime,
-        model: lane.builder.model,
-        workspaceRoot: lane.root,
-        source: 'WORKSPACE_CONFIG',
-      },
-    ],
-    qa: [
-      {
-        roleId: 'qa',
-        runtime: lane.qa.runtime,
-        model: lane.qa.model,
-        workspaceRoot: lane.root,
-        source: 'WORKSPACE_CONFIG',
-      },
-    ],
+    pm: fromBinding('pm', lane.pm),
+    builders: builderList.map((b) => fromBinding('builder', b)),
+    qa: qaList.map((b) => fromBinding('qa', b)),
   };
 }
 
