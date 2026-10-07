@@ -280,6 +280,69 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .fallback b { color:#fff; }
   .fallback .ver { color:var(--muted); font-size:11px; }
   .fallback button { margin-top:6px; }
+  /* P1.8C-03 first-run bootstrap */
+  .hide { display:none !important; }
+  .bootstrap { margin:8px 0 0; border:1px solid var(--border); border-radius:10px;
+               padding:12px; background:var(--panel); }
+  .boot-lead { font-size:13px; color:var(--muted); margin:4px 0 10px; }
+  .boot-title { font-size:16px; font-weight:700; margin:0; }
+  .boot-steps { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 10px; }
+  .boot-step { font-size:11px; border:1px solid var(--border); border-radius:12px;
+               padding:3px 9px; color:var(--muted); }
+  .boot-step.on { color:var(--text); border-color:var(--text); font-weight:700; background:var(--bg); }
+  .boot-step.done { color:var(--ok); border-color:var(--ok); }
+  .boot-list { display:flex; flex-direction:column; gap:8px; margin:8px 0; max-height:280px; overflow:auto; }
+  .boot-card { border:1px solid var(--border); border-radius:8px; padding:10px; text-align:left;
+               background:var(--bg); cursor:pointer; width:100%; color:var(--text); font:inherit; }
+  .boot-card:hover, .boot-card:focus { border-color:var(--text); outline:2px solid var(--mut); outline-offset:1px; }
+  .boot-card.sel { border-color:#4a9eff; box-shadow:0 0 0 1px #4a9eff; }
+  .boot-card.legacy { opacity:.85; border-style:dashed; }
+  .boot-card .bn { font-size:14px; font-weight:700; display:block; }
+  .boot-card .bp { font-size:11px; color:var(--muted); word-break:break-all; margin-top:2px; }
+  .boot-card .bid { font-size:10px; color:var(--muted); font-family:ui-monospace,Menlo,monospace; }
+  .spill { display:inline-block; font-size:10px; border:1px solid var(--border); border-radius:10px;
+           padding:1px 7px; margin-top:4px; color:var(--muted); }
+  .spill.ok { color:var(--ok); border-color:var(--ok); }
+  .spill.warn { color:var(--wait); border-color:var(--wait); }
+  .spill.legacy { color:#b42318; border-color:#b42318; }
+  .boot-box { border:1px solid var(--border); border-radius:8px; padding:10px; margin:8px 0; font-size:13px; }
+  .boot-box.warn { border-color:var(--wait); }
+  .boot-box.err { border-color:var(--err); }
+  .boot-box.ok { border-color:var(--ok); }
+  .boot-box .path { font-family:ui-monospace,Menlo,monospace; font-size:12px; word-break:break-all; }
+  .boot-roles { display:flex; flex-direction:column; gap:10px; margin:8px 0; }
+  .boot-role { border:1px solid var(--border); border-radius:8px; padding:8px 10px; }
+  .boot-role h3 { margin:0 0 6px; font-size:12px; }
+  .boot-assigned { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px; }
+  .boot-avail { display:flex; flex-wrap:wrap; gap:6px; }
+  .achip { font-size:11px; border:1px solid #2ea86a; color:#2ea86a; border-radius:12px;
+           padding:3px 9px; background:transparent; }
+  .vchip { font-size:11px; border:1px dashed var(--border); color:var(--muted); border-radius:12px;
+           padding:3px 9px; background:transparent; cursor:pointer; }
+  .vchip:hover, .vchip:focus { border-color:var(--text); color:var(--text); }
+  .vchip[disabled] { opacity:.45; cursor:not-allowed; }
+  .boot-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .boot-actions button { min-height:44px; min-width:88px; border:1px solid var(--border);
+                         background:var(--bg); color:var(--text); border-radius:10px;
+                         padding:8px 14px; font-size:14px; cursor:pointer; }
+  .boot-actions button.primary { background:#1b4fbf; border-color:#1b4fbf; color:#fff; font-weight:700; }
+  .boot-actions button.primary:disabled { opacity:.45; cursor:not-allowed; }
+  .boot-actions button:focus { outline:2px solid var(--mut); outline-offset:1px; }
+  .boot-err { color:var(--err); font-size:12px; margin-top:6px; }
+  .boot-note { font-size:11px; color:var(--muted); margin-top:6px; }
+  .proj-switch { position:relative; margin-left:4px; }
+  .proj-switch > summary { list-style:none; cursor:pointer; font-size:11px; border:1px solid var(--border);
+                           border-radius:12px; padding:2px 9px; color:var(--muted); user-select:none; }
+  .proj-switch > summary::-webkit-details-marker { display:none; }
+  .proj-switch[open] > summary { color:var(--text); border-color:var(--text); }
+  .proj-menu { position:absolute; right:0; top:120%; z-index:20; min-width:220px; max-width:320px;
+               background:var(--bg); border:1px solid var(--border); border-radius:8px;
+               padding:6px; box-shadow:0 8px 24px rgba(0,0,0,.18); }
+  .proj-menu button { display:block; width:100%; text-align:left; border:0; background:transparent;
+                      color:var(--text); padding:8px; border-radius:6px; cursor:pointer; font-size:12px; }
+  .proj-menu button:hover, .proj-menu button:focus { background:var(--panel); }
+  .proj-menu .cur { font-weight:700; }
+  .main-view.hide-for-boot { display:none !important; }
 </style>
 </head>
 <body>
@@ -291,11 +354,47 @@ const WIDGET_HTML = `<!DOCTYPE html>
     <div class="hdr">
       <span class="dot waiting pulse" id="dot"></span>
       <span class="app">Agent Relay</span>
+      <details class="proj-switch hide" id="projSwitch">
+        <summary id="projSwitchLabel">Project ▾</summary>
+        <div class="proj-menu" id="projSwitchMenu" role="menu"></div>
+      </details>
       <span class="hpill" id="status">PM 대기</span>
       <span class="hfrac"><b id="headDone">0</b> / <span id="headTotal">0</span></span>
       <span class="lang"><button id="langKo" class="on">한국어</button><button id="langEn">EN</button></span>
       <span id="sub" class="subhide"></span>
     </div>
+    <div id="bootstrap" class="bootstrap hide" role="dialog" aria-labelledby="bootTitle" aria-modal="true">
+      <h2 class="boot-title" id="bootTitle">프로젝트 준비</h2>
+      <p class="boot-lead" id="bootLead">어떤 프로젝트를 쓸지 고르고, 경로와 에이전트를 확인한 뒤 시작해요. 지금은 작업이 시작되지 않아요.</p>
+      <div class="boot-steps" id="bootSteps" aria-label="준비 단계">
+        <span class="boot-step on" data-bs="project">1 프로젝트</span>
+        <span class="boot-step" data-bs="workspace">2 경로</span>
+        <span class="boot-step" data-bs="agents">3 에이전트</span>
+        <span class="boot-step" data-bs="ready">4 준비 완료</span>
+      </div>
+      <div id="bootPaneProject">
+        <div class="boot-list" id="bootProjectList" role="listbox" aria-label="프로젝트 목록"></div>
+        <p class="boot-note">예전(레거시) <code>ws</code>는 추천 프로젝트가 아니며 Agent Relay와 합치지 않아요.</p>
+      </div>
+      <div id="bootPaneWorkspace" class="hide">
+        <div class="boot-box" id="bootWorkspaceBox"></div>
+      </div>
+      <div id="bootPaneAgents" class="hide">
+        <div class="boot-roles" id="bootRoles"></div>
+        <p class="boot-note">할당됨 = 이 프로젝트에서 쓸 역할 · 사용 가능 = 후보일 뿐 아직 배정되지 않음</p>
+      </div>
+      <div id="bootPaneReady" class="hide">
+        <div class="boot-box" id="bootReadyBox"></div>
+        <ul class="boot-note" id="bootBlockers"></ul>
+      </div>
+      <div class="boot-err hide" id="bootErr" role="alert"></div>
+      <div class="boot-actions">
+        <button type="button" id="bootBack">이전</button>
+        <button type="button" id="bootNext" class="primary">다음</button>
+        <button type="button" id="bootStart" class="primary hide" disabled>시작</button>
+      </div>
+    </div>
+    <div id="mainView">
     <div class="pipe" id="pipe">
       <div class="pnode"><b>PM</b><span data-i="pmYou">이 대화</span></div>
       <span class="edge">→</span>
@@ -407,6 +506,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
     </div>
     <div class="update" id="update"></div>
     <div class="cards" id="cards"></div>
+    </div><!-- #mainView -->
     <details class="dbg">
       <summary>debug · <span class="sub" id="buildTag">__WIDGET_BUILD__</span></summary>
       <div class="sub" id="selfcheck">selfcheck 대기 중…</div>
@@ -1589,6 +1689,568 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
       }
 
+      /* —— P1.8C-03 first-run bootstrap (mirrors src/mcp/app/bootstrap-gate.ts) —— */
+      var boot = {
+        active: false,
+        step: 'project', // project | workspace | agents | ready
+        profiles: [],
+        selectedId: null,
+        profile: null,
+        assignment: null,
+        completed: false
+      };
+      function needsFirstRunBootstrap(selectedProjectId, selectedProfile) {
+        if (!selectedProjectId || typeof selectedProjectId !== 'string' || !selectedProjectId.trim()) return true;
+        if (!selectedProfile || typeof selectedProfile !== 'object') return true;
+        if (selectedProfile.legacy === true || selectedProfile.profileState === 'LEGACY') return true;
+        if (selectedProfile.profileState === 'UNCONFIGURED') return true;
+        if (selectedProfile.workspaceConflict === true) return true;
+        if (selectedProfile.workspaceConfigured !== true) return true;
+        return false;
+      }
+      function canCompleteBootstrapAsTarget(profile) {
+        if (!profile) return { ok: false, reason: 'NO_PROJECT' };
+        if (profile.legacy === true || profile.profileState === 'LEGACY') {
+          return { ok: false, reason: 'LEGACY_NOT_ALLOWED' };
+        }
+        return { ok: true, reason: null };
+      }
+      function workspaceDisplayForProfile(profile) {
+        if (!profile) return { kind: 'NONE', workspacePath: null, label: '프로젝트를 먼저 골라 주세요.' };
+        if (profile.workspaceConflict === true) {
+          return { kind: 'WORKSPACE_CONFLICT', workspacePath: profile.workspacePath || null,
+            label: '워크스페이스 설정이 서로 다릅니다. 계속할 수 없어요.' };
+        }
+        if (profile.workspaceConfigured === true && profile.workspacePath) {
+          return { kind: 'PATH', workspacePath: profile.workspacePath, label: profile.workspacePath };
+        }
+        return { kind: 'WORKSPACE_CONFIGURATION_REQUIRED', workspacePath: null,
+          label: '워크스페이스 경로 설정이 필요해요.' };
+      }
+      function hasBinding(v) { return v !== null && v !== undefined && typeof v === 'object'; }
+      function bindingCount(list) {
+        if (!Array.isArray(list)) return 0;
+        var n = 0; for (var i = 0; i < list.length; i++) if (hasBinding(list[i])) n++;
+        return n;
+      }
+      function evaluateBootstrapReady(profile, assignment) {
+        var blockers = [];
+        var target = canCompleteBootstrapAsTarget(profile);
+        if (!target.ok && target.reason) blockers.push(target.reason);
+        if (profile) {
+          if (profile.workspaceConflict === true) blockers.push('WORKSPACE_CONFLICT');
+          if (profile.workspaceConfigured !== true) blockers.push('WORKSPACE_CONFIGURATION_REQUIRED');
+        }
+        var src = (assignment && typeof assignment === 'object') ? assignment : profile;
+        if (assignment && assignment.configurationRequired === true) blockers.push('CONFIGURATION_REQUIRED');
+        if (!src || !hasBinding(src.pm)) blockers.push('PM_REQUIRED');
+        if (!src || bindingCount(src.builders) < 1) blockers.push('BUILDER_REQUIRED');
+        if (!src || bindingCount(src.qa) < 1) blockers.push('QA_REQUIRED');
+        var unique = [];
+        for (var i = 0; i < blockers.length; i++) {
+          if (unique.indexOf(blockers[i]) < 0) unique.push(blockers[i]);
+        }
+        return unique.length === 0
+          ? { ready: true, state: 'BOOTSTRAP_READY', blockers: [] }
+          : { ready: false, state: 'BOOTSTRAP_BLOCKED', blockers: unique };
+      }
+      function bootstrapBlockerLabel(code) {
+        var map = {
+          NO_PROJECT: '프로젝트를 골라 주세요.',
+          LEGACY_NOT_ALLOWED: '예전(레거시) 프로젝트는 여기서 시작할 수 없어요.',
+          WORKSPACE_CONFIGURATION_REQUIRED: '워크스페이스 경로 설정이 필요해요.',
+          WORKSPACE_CONFLICT: '워크스페이스 설정이 서로 달라 계속할 수 없어요.',
+          PM_REQUIRED: 'PM을 정해 주세요.',
+          BUILDER_REQUIRED: 'Builder를 정해 주세요.',
+          QA_REQUIRED: 'QA를 정해 주세요.',
+          CONFIGURATION_REQUIRED: '프로젝트 설정이 아직 없어요.'
+        };
+        return map[code] || '아직 준비가 끝나지 않았어요.';
+      }
+      function bindingDisplayName(binding) {
+        if (!hasBinding(binding)) return '(없음)';
+        return binding.runtime || binding.runtimeAdapterId || binding.workerId || '(이름 없음)';
+      }
+      function profileStatePill(state) {
+        if (state === 'CONFIGURED') return { code: state, tone: 'ok', labelKo: '준비됨' };
+        if (state === 'PARTIAL') return { code: state, tone: 'warn', labelKo: '일부만 설정' };
+        if (state === 'UNCONFIGURED') return { code: state, tone: 'warn', labelKo: '설정 필요' };
+        if (state === 'LEGACY') return { code: state, tone: 'legacy', labelKo: '예전(레거시)' };
+        return { code: state || 'UNKNOWN', tone: 'muted', labelKo: state || '알 수 없음' };
+      }
+      function setBootErr(msg) {
+        var el = document.getElementById('bootErr');
+        if (!el) return;
+        if (!msg) { el.className = 'boot-err hide'; el.textContent = ''; return; }
+        el.className = 'boot-err'; el.textContent = msg;
+      }
+      function showBootstrap(show) {
+        boot.active = !!show;
+        var bootEl = document.getElementById('bootstrap');
+        var mainEl = document.getElementById('mainView');
+        var sw = document.getElementById('projSwitch');
+        if (bootEl) bootEl.className = show ? 'bootstrap' : 'bootstrap hide';
+        if (mainEl) {
+          if (show) mainEl.classList.add('hide-for-boot');
+          else mainEl.classList.remove('hide-for-boot');
+        }
+        if (sw) {
+          if (show) sw.classList.add('hide');
+          else sw.classList.remove('hide');
+        }
+      }
+      function setBootStep(step) {
+        boot.step = step;
+        var panes = {
+          project: document.getElementById('bootPaneProject'),
+          workspace: document.getElementById('bootPaneWorkspace'),
+          agents: document.getElementById('bootPaneAgents'),
+          ready: document.getElementById('bootPaneReady')
+        };
+        Object.keys(panes).forEach(function (k) {
+          if (panes[k]) panes[k].className = (k === step) ? '' : 'hide';
+        });
+        var steps = document.querySelectorAll('#bootSteps .boot-step');
+        var order = ['project', 'workspace', 'agents', 'ready'];
+        var idx = order.indexOf(step);
+        for (var i = 0; i < steps.length; i++) {
+          var s = steps[i];
+          var key = s.getAttribute('data-bs');
+          var ki = order.indexOf(key);
+          s.className = 'boot-step' + (ki === idx ? ' on' : (ki < idx ? ' done' : ''));
+        }
+        var nextBtn = document.getElementById('bootNext');
+        var startBtn = document.getElementById('bootStart');
+        var backBtn = document.getElementById('bootBack');
+        if (backBtn) backBtn.disabled = step === 'project';
+        if (step === 'ready') {
+          if (nextBtn) nextBtn.className = 'hide';
+          if (startBtn) startBtn.className = 'primary';
+        } else {
+          if (nextBtn) nextBtn.className = 'primary';
+          if (startBtn) startBtn.className = 'primary hide';
+        }
+        renderBootStep();
+      }
+      function renderBootProjectList() {
+        var list = document.getElementById('bootProjectList');
+        if (!list) return;
+        list.innerHTML = '';
+        if (!boot.profiles.length) {
+          var empty = document.createElement('div');
+          empty.className = 'boot-box warn';
+          empty.textContent = '보여줄 프로젝트가 없어요. 설정을 확인해 주세요.';
+          list.appendChild(empty);
+          return;
+        }
+        boot.profiles.forEach(function (p) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'boot-card' + (p.projectId === boot.selectedId ? ' sel' : '')
+            + ((p.legacy || p.profileState === 'LEGACY') ? ' legacy' : '');
+          btn.setAttribute('role', 'option');
+          btn.setAttribute('aria-selected', p.projectId === boot.selectedId ? 'true' : 'false');
+          var pill = profileStatePill(p.profileState);
+          var name = document.createElement('span'); name.className = 'bn'; name.textContent = p.projectName || p.projectId;
+          var id = document.createElement('span'); id.className = 'bid'; id.textContent = p.projectId;
+          var path = document.createElement('span'); path.className = 'bp';
+          path.textContent = (p.workspaceConfigured && p.workspacePath)
+            ? p.workspacePath
+            : (p.profileState === 'UNCONFIGURED' ? 'Workspace not configured' : (p.workspacePath || '경로 없음'));
+          var sp = document.createElement('span');
+          sp.className = 'spill ' + pill.tone;
+          sp.textContent = pill.code + ' · ' + pill.labelKo;
+          btn.appendChild(name); btn.appendChild(id); btn.appendChild(path); btn.appendChild(sp);
+          if (p.legacy || p.profileState === 'LEGACY') {
+            var note = document.createElement('span');
+            note.className = 'bp';
+            note.textContent = '레거시 — 일반 시작 대상으로 쓸 수 없어요';
+            btn.appendChild(note);
+          }
+          btn.onclick = function () {
+            boot.selectedId = p.projectId;
+            boot.profile = p;
+            boot.assignment = null;
+            setBootErr('');
+            renderBootProjectList();
+          };
+          list.appendChild(btn);
+        });
+      }
+      function renderBootWorkspace() {
+        var box = document.getElementById('bootWorkspaceBox');
+        if (!box) return;
+        var d = workspaceDisplayForProfile(boot.profile);
+        box.className = 'boot-box' + (d.kind === 'PATH' ? ' ok' : (d.kind === 'WORKSPACE_CONFLICT' ? ' err' : ' warn'));
+        box.innerHTML = '';
+        var title = document.createElement('div');
+        title.style.fontWeight = '700';
+        title.textContent = d.kind === 'PATH' ? '워크스페이스 경로'
+          : (d.kind === 'WORKSPACE_CONFLICT' ? '설정 충돌' : '워크스페이스 설정 필요');
+        box.appendChild(title);
+        if (d.kind === 'PATH') {
+          var path = document.createElement('div');
+          path.className = 'path';
+          path.textContent = d.workspacePath;
+          box.appendChild(path);
+          var note = document.createElement('div');
+          note.className = 'boot-note';
+          note.textContent = '기존 경로를 그대로 씁니다. 여기서 바꾸지 않아요.';
+          box.appendChild(note);
+        } else {
+          var msg = document.createElement('div');
+          msg.textContent = d.label;
+          box.appendChild(msg);
+          if (d.kind === 'WORKSPACE_CONFIGURATION_REQUIRED') {
+            var code = document.createElement('div');
+            code.className = 'boot-note';
+            code.textContent = '상태: WORKSPACE_CONFIGURATION_REQUIRED — 경로를 지어내지 않아요.';
+            box.appendChild(code);
+          }
+        }
+      }
+      function renderBootAgents() {
+        var root = document.getElementById('bootRoles');
+        if (!root) return;
+        root.innerHTML = '';
+        var a = boot.assignment || {};
+        var assignedPm = a.pm || (boot.profile && boot.profile.pm) || null;
+        var assignedBuilders = (a.builders && a.builders.length)
+          ? a.builders
+          : ((boot.profile && boot.profile.builders) || []);
+        var assignedQa = (a.qa && a.qa.length)
+          ? a.qa
+          : ((boot.profile && boot.profile.qa) || []);
+        var available = (a.availableWorkers || (boot.profile && boot.profile.availableWorkers) || []).slice();
+        function section(title, assignedList, roleKey) {
+          var wrap = document.createElement('div');
+          wrap.className = 'boot-role';
+          var h = document.createElement('h3');
+          h.textContent = title;
+          wrap.appendChild(h);
+          var as = document.createElement('div');
+          as.className = 'boot-assigned';
+          var lab = document.createElement('span');
+          lab.className = 'boot-note';
+          lab.textContent = '할당됨: ';
+          as.appendChild(lab);
+          if (!assignedList.length) {
+            var none = document.createElement('span');
+            none.className = 'achip';
+            none.textContent = '(없음)';
+            as.appendChild(none);
+          } else {
+            assignedList.forEach(function (b) {
+              var c = document.createElement('span');
+              c.className = 'achip';
+              c.textContent = bindingDisplayName(b);
+              as.appendChild(c);
+            });
+          }
+          wrap.appendChild(as);
+          var av = document.createElement('div');
+          av.className = 'boot-avail';
+          var alab = document.createElement('span');
+          alab.className = 'boot-note';
+          alab.textContent = '사용 가능(후보): ';
+          av.appendChild(alab);
+          if (!available.length) {
+            var none2 = document.createElement('span');
+            none2.className = 'vchip';
+            none2.textContent = '(후보 없음)';
+            none2.disabled = true;
+            av.appendChild(none2);
+          } else {
+            available.forEach(function (wid) {
+              var c = document.createElement('button');
+              c.type = 'button';
+              c.className = 'vchip';
+              c.textContent = wid;
+              c.title = '후보만 표시 — 누르면 이 역할에 배정 요청';
+              c.onclick = function () { assignWorkerToRole(roleKey, wid); };
+              av.appendChild(c);
+            });
+          }
+          wrap.appendChild(av);
+          root.appendChild(wrap);
+        }
+        section('PM', assignedPm ? [assignedPm] : [], 'pm');
+        section('Builder', assignedBuilders, 'builder');
+        section('QA', assignedQa, 'qa');
+      }
+      function renderBootReady() {
+        var box = document.getElementById('bootReadyBox');
+        var ul = document.getElementById('bootBlockers');
+        var startBtn = document.getElementById('bootStart');
+        if (!box) return;
+        var gate = evaluateBootstrapReady(boot.profile, boot.assignment);
+        box.className = 'boot-box ' + (gate.ready ? 'ok' : 'warn');
+        box.innerHTML = '';
+        var t1 = document.createElement('div');
+        t1.style.fontWeight = '700';
+        t1.textContent = gate.ready ? '준비 완료 (BOOTSTRAP_READY)' : '아직 준비가 안 됐어요';
+        box.appendChild(t1);
+        var t2 = document.createElement('div');
+        t2.className = 'boot-note';
+        t2.textContent = gate.ready
+          ? '설정만 끝났어요. Goal / Task / Worker는 만들지 않아요.'
+          : '아래를 해결해야 시작할 수 있어요.';
+        box.appendChild(t2);
+        if (boot.profile) {
+          var sum = document.createElement('div');
+          sum.style.marginTop = '6px';
+          sum.innerHTML = '';
+          var lines = [
+            '프로젝트: ' + (boot.profile.projectName || boot.profile.projectId),
+            '경로: ' + (boot.profile.workspacePath || '(없음)'),
+            'PM: ' + bindingDisplayName((boot.assignment && boot.assignment.pm) || boot.profile.pm),
+            'Builder: ' + (((boot.assignment && boot.assignment.builders) || boot.profile.builders || []).map(bindingDisplayName).join(', ') || '(없음)'),
+            'QA: ' + (((boot.assignment && boot.assignment.qa) || boot.profile.qa || []).map(bindingDisplayName).join(', ') || '(없음)')
+          ];
+          lines.forEach(function (line) {
+            var d = document.createElement('div');
+            d.textContent = line;
+            sum.appendChild(d);
+          });
+          box.appendChild(sum);
+        }
+        if (ul) {
+          ul.innerHTML = '';
+          gate.blockers.forEach(function (code) {
+            var li = document.createElement('li');
+            li.textContent = bootstrapBlockerLabel(code);
+            ul.appendChild(li);
+          });
+        }
+        if (startBtn) startBtn.disabled = !gate.ready;
+      }
+      function renderBootStep() {
+        if (boot.step === 'project') renderBootProjectList();
+        else if (boot.step === 'workspace') renderBootWorkspace();
+        else if (boot.step === 'agents') renderBootAgents();
+        else if (boot.step === 'ready') renderBootReady();
+      }
+      async function loadBootProfiles() {
+        var listed = await callTool('relay_pm_list_project_profiles', {});
+        boot.profiles = (listed && listed.profiles) || [];
+        return listed;
+      }
+      async function loadBootAssignment(projectId) {
+        if (!projectId) { boot.assignment = null; return null; }
+        try {
+          var res = await callTool('relay_pm_get_project_assignments', { projectId: projectId });
+          boot.assignment = (res && res.assignment) || null;
+          return boot.assignment;
+        } catch (e) {
+          boot.assignment = null;
+          setBootErr('역할 정보를 읽지 못했어요: ' + String((e && e.message) || e).slice(0, 160));
+          return null;
+        }
+      }
+      function toBindingInput(b) {
+        if (!hasBinding(b)) return null;
+        return {
+          runtime: b.runtime,
+          runtimeAdapterId: b.runtimeAdapterId,
+          workerId: b.workerId,
+          provider: b.provider,
+          model: b.model
+        };
+      }
+      async function assignWorkerToRole(roleKey, workerId) {
+        if (!boot.selectedId) return;
+        setBootErr('');
+        try {
+          var cur = boot.assignment || await loadBootAssignment(boot.selectedId) || {
+            pm: null, builders: [], qa: [], availableWorkers: []
+          };
+          var pm = toBindingInput(cur.pm);
+          var builders = (cur.builders || []).map(toBindingInput).filter(Boolean);
+          var qa = (cur.qa || []).map(toBindingInput).filter(Boolean);
+          var next = { workerId: workerId, runtimeAdapterId: workerId };
+          if (roleKey === 'pm') pm = next;
+          else if (roleKey === 'builder') builders = [next];
+          else if (roleKey === 'qa') qa = [next];
+          // Keep a local draft so the UI reflects the pick even before a full C02 write.
+          boot.assignment = {
+            projectId: boot.selectedId,
+            pm: pm,
+            builders: builders,
+            qa: qa,
+            availableWorkers: cur.availableWorkers || [],
+            configurationRequired: cur.configurationRequired,
+            workspacePath: cur.workspacePath || (boot.profile && boot.profile.workspacePath) || null
+          };
+          renderBootAgents();
+          if (!pm || !builders.length || !qa.length) {
+            setBootErr('PM · Builder · QA를 모두 고르면 저장돼요. (지금은 화면에만 반영)');
+            return;
+          }
+          var result = await callTool('relay_pm_set_project_assignments', {
+            projectId: boot.selectedId,
+            pm: pm,
+            builders: builders,
+            qa: qa
+          });
+          boot.assignment = (result && result.assignment) || boot.assignment;
+          if (result && result.profile) boot.profile = result.profile;
+          setBootErr('');
+          logLine('assignment set via C02 for ' + boot.selectedId);
+          renderBootAgents();
+        } catch (e) {
+          setBootErr('역할 저장 실패: ' + String((e && e.message) || e).slice(0, 200));
+        }
+      }
+      async function bootGoNext() {
+        setBootErr('');
+        if (boot.step === 'project') {
+          if (!boot.selectedId || !boot.profile) {
+            setBootErr('프로젝트를 골라 주세요.');
+            return;
+          }
+          var gate = canCompleteBootstrapAsTarget(boot.profile);
+          if (!gate.ok) {
+            setBootErr(bootstrapBlockerLabel(gate.reason));
+            return;
+          }
+          await loadBootAssignment(boot.selectedId);
+          setBootStep('workspace');
+          return;
+        }
+        if (boot.step === 'workspace') {
+          var wd = workspaceDisplayForProfile(boot.profile);
+          if (wd.kind === 'WORKSPACE_CONFLICT') {
+            setBootErr(bootstrapBlockerLabel('WORKSPACE_CONFLICT'));
+            return;
+          }
+          if (wd.kind === 'WORKSPACE_CONFIGURATION_REQUIRED') {
+            setBootErr(bootstrapBlockerLabel('WORKSPACE_CONFIGURATION_REQUIRED'));
+            return;
+          }
+          if (!boot.assignment) await loadBootAssignment(boot.selectedId);
+          setBootStep('agents');
+          return;
+        }
+        if (boot.step === 'agents') {
+          if (!boot.assignment) await loadBootAssignment(boot.selectedId);
+          setBootStep('ready');
+        }
+      }
+      function bootGoBack() {
+        setBootErr('');
+        if (boot.step === 'workspace') setBootStep('project');
+        else if (boot.step === 'agents') setBootStep('workspace');
+        else if (boot.step === 'ready') setBootStep('agents');
+      }
+      async function bootComplete() {
+        setBootErr('');
+        var gate = evaluateBootstrapReady(boot.profile, boot.assignment);
+        if (!gate.ready) {
+          setBootErr(gate.blockers.map(bootstrapBlockerLabel).join(' · '));
+          return;
+        }
+        try {
+          var result = await callTool('relay_pm_select_project', { projectId: boot.selectedId });
+          logLine('bootstrap select_project → ' + (result && result.selectedProjectId));
+          boot.completed = true;
+          showBootstrap(false);
+          renderProjectSwitch(boot.profiles, boot.selectedId);
+          setStatus('waiting', t('connected'), (boot.profile && boot.profile.projectName) || boot.selectedId);
+          // Resume normal poll/dashboard view (zero Goal/Task/Run by contract of select_project).
+          poll();
+        } catch (e) {
+          setBootErr('프로젝트 저장 실패: ' + String((e && e.message) || e).slice(0, 200));
+        }
+      }
+      function renderProjectSwitch(profiles, selectedId) {
+        var sw = document.getElementById('projSwitch');
+        var menu = document.getElementById('projSwitchMenu');
+        var label = document.getElementById('projSwitchLabel');
+        if (!sw || !menu || !label) return;
+        var cur = (profiles || []).find(function (p) { return p.projectId === selectedId; });
+        label.textContent = (cur && cur.projectName ? cur.projectName : (selectedId || 'Project')) + ' ▾';
+        menu.innerHTML = '';
+        (profiles || []).forEach(function (p) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = p.projectId === selectedId ? 'cur' : '';
+          b.textContent = (p.projectName || p.projectId)
+            + (p.profileState === 'LEGACY' || p.legacy ? ' · LEGACY' : '')
+            + (p.profileState === 'UNCONFIGURED' ? ' · 설정 필요' : '');
+          b.onclick = async function () {
+            try { sw.open = false; } catch (e) {}
+            if (p.legacy || p.profileState === 'LEGACY' || p.profileState === 'UNCONFIGURED'
+                || p.workspaceConflict || !p.workspaceConfigured) {
+              boot.selectedId = p.projectId;
+              boot.profile = p;
+              boot.assignment = null;
+              showBootstrap(true);
+              setBootStep('project');
+              renderBootProjectList();
+              return;
+            }
+            try {
+              await callTool('relay_pm_select_project', { projectId: p.projectId });
+              renderProjectSwitch(profiles, p.projectId);
+              poll();
+            } catch (e) {
+              logLine('project switch failed: ' + e.message);
+            }
+          };
+          menu.appendChild(b);
+        });
+        var reopen = document.createElement('button');
+        reopen.type = 'button';
+        reopen.textContent = '프로젝트 다시 준비…';
+        reopen.onclick = function () {
+          try { sw.open = false; } catch (e) {}
+          showBootstrap(true);
+          setBootStep('project');
+          loadBootProfiles().then(function () { renderBootProjectList(); });
+        };
+        menu.appendChild(reopen);
+        sw.classList.remove('hide');
+      }
+      async function maybeStartBootstrap() {
+        try {
+          var listed = await loadBootProfiles();
+          var selectedId = listed && listed.selectedProjectId;
+          var selectedProfile = null;
+          if (selectedId) {
+            for (var i = 0; i < boot.profiles.length; i++) {
+              if (boot.profiles[i].projectId === selectedId) { selectedProfile = boot.profiles[i]; break; }
+            }
+          }
+          if (needsFirstRunBootstrap(selectedId, selectedProfile)) {
+            boot.selectedId = selectedId || null;
+            boot.profile = selectedProfile;
+            showBootstrap(true);
+            setBootStep('project');
+            renderBootProjectList();
+            setStatus('waiting', '프로젝트 준비', '첫 실행');
+            logLine('bootstrap shown (first-run)');
+            return true;
+          }
+          showBootstrap(false);
+          renderProjectSwitch(boot.profiles, selectedId);
+          logLine('bootstrap skipped (returning user: ' + selectedId + ')');
+          return false;
+        } catch (e) {
+          logLine('bootstrap check failed: ' + e.message);
+          // Fail open to normal view; operator can still use Project ▾ later.
+          showBootstrap(false);
+          return false;
+        }
+      }
+      try {
+        var bootBack = document.getElementById('bootBack');
+        var bootNext = document.getElementById('bootNext');
+        var bootStart = document.getElementById('bootStart');
+        if (bootBack) bootBack.onclick = function () { bootGoBack(); };
+        if (bootNext) bootNext.onclick = function () { bootGoNext(); };
+        if (bootStart) bootStart.onclick = function () { bootComplete(); };
+      } catch (eBind) { /* bootstrap controls best-effort */ }
+
       async function init() {
         try {
           setInitMark('init-start');
@@ -1618,19 +2280,22 @@ const WIDGET_HTML = `<!DOCTYPE html>
             });
           } catch (ePre) { /* sprites best-effort; missing boxes cover failures */ }
           checkVersion();
+          var bootShown = false;
+          try { bootShown = await maybeStartBootstrap(); } catch (eBoot) { logLine('bootstrap init: ' + eBoot.message); }
           // Pause while the tab is hidden, and catch up once on return. A background chat window should
           // cost nothing: the numbers cannot change what the Founder is looking at if nobody is looking.
           var pollTimer = setInterval(function () {
             if (document.visibilityState === 'hidden') return;
+            if (boot.active) return; // zero-execution: do not poll deliveries during wizard
             poll();
           }, POLL_MS);
           try {
             document.addEventListener('visibilitychange', function () {
-              if (document.visibilityState === 'visible') poll();
+              if (document.visibilityState === 'visible' && !boot.active) poll();
             });
           } catch (eVis) { /* polling simply keeps its fixed interval */ }
           setInitMark('poll-start');
-          poll();
+          if (!bootShown) poll();
         } catch (e) {
           setStatus('fail', t('initFail'), e.message);
           logLine('initialize FAILED: ' + e.message);

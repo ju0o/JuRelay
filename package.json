@@ -129,7 +129,8 @@
     "test:p1-8a-project-identity-runtime-truth": "node --test test/p1-8a-project-identity-runtime-truth.test.mjs",
     "test:p1-8b-widget-mount-contract": "node --test test/p1-8b-widget-mount-contract.test.mjs",
     "test:p1-8c01-project-profile-selection": "node --test test/p1-8c01-project-profile-selection.test.mjs",
-    "test:p1-8c02-project-agent-assignment": "node --test test/p1-8c02-project-agent-assignment.test.mjs"
+    "test:p1-8c02-project-agent-assignment": "node --test test/p1-8c02-project-agent-assignment.test.mjs",
+    "test:p1-8c03-first-run-bootstrap": "node --test test/p1-8c03-first-run-bootstrap.test.mjs"
   },
   "main": "dist/server/backend/main.js",
   "bin": {

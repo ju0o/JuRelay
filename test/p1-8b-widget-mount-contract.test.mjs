@@ -26,7 +26,8 @@ const dist = (p) => path.join(repo, 'dist/server', p);
 const { buildAppTools, startMcpAppServer } = await import(dist('mcp/app-server.js'));
 const widget = await import(dist('mcp/app/pm-widget-resource.js'));
 
-const PRODUCTION_URI = 'ui://agent-relay/pm-widget-8b6a452e';
+// Content-hashed: any widget HTML change mints a new fingerprint. Pin to the live module.
+const PRODUCTION_URI = widget.PM_WIDGET_RESOURCE_URI;
 
 /** Boot the real server on an ephemeral port and speak Streamable HTTP to it. */
 async function withLiveServer(fn) {

@@ -127,6 +127,14 @@ orphanRuns, readyTasks, verificationPending }`. `relay_pm_get_dashboard({project
 Assignment = WHO SHOULD BE USED. Never spawn / dispatch / Goal·Task create.
 
 - MCP: `relay_pm_get_project_assignments`, `relay_pm_set_project_assignments`
+
+### P1.8C-03 — First-run Bootstrap UX
+
+- Production widget shows a first-run wizard when no suitable selected project
+  exists (missing / LEGACY / UNCONFIGURED / workspace conflict).
+- Returning CONFIGURED users skip the wizard and get a bounded `Project ▾`.
+- Reuses C01 select + C02 assignment tools; `BOOTSTRAP_READY` is context only
+  (zero Goal/Task/Run/worker/tmux). See `docs/P1.8C-03-FIRST-RUN-BOOTSTRAP.md`.
 - Store reuse only: RoleConfig first (C01 display owner), else WorkspaceConfigV2.
   No `agent-assignments.json`. UNCONFIGURED → `PROJECT_CONFIGURATION_REQUIRED`.
 - Dashboard additive: `assignment { pm, builders[], qa[] }`.
