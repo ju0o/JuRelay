@@ -702,15 +702,18 @@ export function buildProjectRuntimeViews(input: {
   };
 }
 
-export type SelectedProjectBasis = 'ARGUMENT' | 'LAST_ACTIVE' | 'SCOPE';
+export type SelectedProjectBasis = 'ARGUMENT' | 'SELECTED' | 'LAST_ACTIVE' | 'SCOPE';
 
 /**
  * "Which project am I looking at?" must have one deterministic answer.
  *
  * selectedProject and activeProjects are deliberately separate (option C):
- *   - `selectedProject` is the ONE project the view is about. Explicit argument
- *     wins; otherwise the project with the most recent real runtime activity;
- *     otherwise the storage scope itself. It is never silently "the last row".
+ *   - `selectedProject` is the ONE project the view is about. Precedence:
+ *       1. explicit request argument
+ *       2. persisted selectedProjectId (P1.8C-01), when it still matches
+ *       3. the project with the most recent real runtime activity
+ *       4. the storage scope itself
+ *     It is never silently "the last row". Invalid persisted ids fall through.
  *   - `activeProjects[]` is every project where something may still be running.
  * A widget can therefore show "you are looking at JuIntake" while Agent Relay
  * runs beside it, without the two being confused.
@@ -718,11 +721,19 @@ export type SelectedProjectBasis = 'ARGUMENT' | 'LAST_ACTIVE' | 'SCOPE';
 export function selectProjectView(
   snapshot: ProjectRuntimeSnapshot,
   requestedProjectId?: unknown,
+  persistedSelectedProjectId?: unknown,
 ): { project: ProjectRuntimeView | null; basis: SelectedProjectBasis } {
   const requested = typeof requestedProjectId === 'string' ? requestedProjectId.trim() : '';
   if (requested) {
     const match = snapshot.projects.find((p) => p.projectId === requested);
     if (match) return { project: match, basis: 'ARGUMENT' };
+  }
+  const persisted = typeof persistedSelectedProjectId === 'string'
+    ? persistedSelectedProjectId.trim()
+    : '';
+  if (persisted) {
+    const match = snapshot.projects.find((p) => p.projectId === persisted);
+    if (match) return { project: match, basis: 'SELECTED' };
   }
   const lastActive = [...snapshot.activeProjects]
     .filter((p) => p.lastActivityAt)

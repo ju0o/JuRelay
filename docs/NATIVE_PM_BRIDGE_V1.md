@@ -104,7 +104,23 @@ Dashboard는 additive 확장이다(`project`/`agents`/`tasks`/`goals`/`pendingDe
 `selectedProjectBasis`, `summary{ persistedRunning, actualActiveRuns, staleRuns,
 orphanRuns, readyTasks, verificationPending }`. `relay_pm_get_dashboard({projectId})`로
 "지금 어떤 프로젝트를 보고 있는가"를 명시적으로 고를 수 있고, 어떤 기준이 쓰였는지는
-`selectedProjectBasis`(ARGUMENT / LAST_ACTIVE / SCOPE)로 항상 함께 나온다.
+`selectedProjectBasis`(ARGUMENT / SELECTED / LAST_ACTIVE / SCOPE)로 항상 함께 나온다.
+
+## P1.8C-01 ProjectProfile (derived view)
+
+`ProjectProfile`는 durable DB가 아니다. `ProjectIdentity` + `WorkspaceConfigV2` +
+`RoleConfig` + `WorkerRegistry`(availability only) + runtime truth를 합친 파생 뷰다.
+
+- MCP: `relay_pm_list_project_profiles`, `relay_pm_get_project_profile`,
+  `relay_pm_select_project`
+- 선택 저장: `<dataRoot>/_relay/ui-state.json` 의 `selectedProjectId`만
+  (atomic). Goal/Task/dispatch/worker/workspace/Git 부작용 없음.
+- Dashboard additive: `projectProfiles`, `selectedProjectProfile`,
+  `selectedProjectId` (기존 P1.8A 키 유지).
+- 선택 우선순위: explicit `projectId` → persisted selection → LAST_ACTIVE → SCOPE.
+- Workspace path: WORKSPACE_CONFIG(lane.root) > ROLE_CONFIG(workspaceRoot).
+  두 경로가 다르면 `workspaceConflict:true` + `PARTIAL` (조용히 고르지 않음).
+- Legacy `ws` 버킷은 canonical `agent-relay`와 병합하지 않는다.
 
 ## Widget lifecycle
 

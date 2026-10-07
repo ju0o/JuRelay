@@ -10,12 +10,34 @@
  * P1.8A adds `relay_pm_list_projects`: the direct answer to "which projects are
  * registered, and which of them is actually running?". It reads the same runtime
  * truth the dashboard uses, so the two can never disagree.
+ *
+ * P1.8C-01 adds derived ProjectProfile tools:
+ *   relay_pm_list_project_profiles
+ *   relay_pm_get_project_profile
+ *   relay_pm_select_project   (persists selectedProjectId only; zero execution)
  */
 import * as goalTask from '../backend/goal-task.js';
+import {
+  getProjectProfile,
+  listProjectProfiles,
+  selectProject,
+} from '../backend/project-profile.js';
+import { loadUiState } from '../backend/ui-state.js';
+import { McpError } from './errors.js';
 import { runtimeSnapshot, scopeProjectIdentity } from './dashboard-tools.js';
-import { objectSchema, rejectUnknownFields } from './schemas.js';
+import { objectSchema, rejectUnknownFields, requireString } from './schemas.js';
 import type { TaskRecord } from '../shared/types.js';
 import type { McpTool, PmServerContext } from './server.js';
+
+function profileListInput(ctx: PmServerContext, runtimeProjects?: Parameters<typeof listProjectProfiles>[0]['runtimeProjects']) {
+  return {
+    dataRoot: ctx.dataRoot,
+    scope: ctx.project,
+    selectedProjectId: loadUiState(ctx.dataRoot).selectedProjectId,
+    runtimeProjects,
+    hostRoots: ctx.goalLoop?.workspaceRoot ? [ctx.goalLoop.workspaceRoot] : undefined,
+  };
+}
 
 export function buildProjectTools(ctx: PmServerContext): McpTool[] {
   return [
@@ -56,6 +78,121 @@ export function buildProjectTools(ctx: PmServerContext): McpTool[] {
           summary: snapshot.summary,
           generatedAt: snapshot.generatedAt,
         };
+      },
+    },
+    {
+      name: 'relay_pm_list_project_profiles',
+      description:
+        'Bounded derived ProjectProfile views for this storage scope. Aggregates ' +
+        'ProjectIdentity + WorkspaceConfigV2 + RoleConfig + WorkerRegistry availability ' +
+        '+ runtime truth. Does NOT create a profile database. Legacy buckets such as ' +
+        '`ws` appear as LEGACY and are never merged into canonical agent-relay. ' +
+        'availableWorkers is availability only — not assignment. Pure read.',
+      inputSchema: objectSchema({}),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, []);
+        const { dataRoot, project } = ctx;
+        let tasks: TaskRecord[] = [];
+        try {
+          tasks = goalTask.listTasks(dataRoot, project, undefined);
+        } catch {
+          tasks = [];
+        }
+        let runtimeProjects: ReturnType<typeof runtimeSnapshot>['projects'] = [];
+        try {
+          runtimeProjects = runtimeSnapshot(dataRoot, project, tasks).projects;
+        } catch {
+          runtimeProjects = [];
+        }
+        const listed = listProjectProfiles(profileListInput(ctx, runtimeProjects));
+        return {
+          project,
+          projectIdentity: {
+            projectId: listed.scopeIdentity.projectId,
+            projectName: listed.scopeIdentity.projectName,
+            legacy: listed.scopeIdentity.legacy,
+            genericBucket: listed.scopeIdentity.genericBucket,
+            source: listed.scopeIdentity.source,
+          },
+          selectedProjectId: listed.selectedProjectId,
+          profiles: listed.profiles,
+          generatedAt: listed.generatedAt,
+        };
+      },
+    },
+    {
+      name: 'relay_pm_get_project_profile',
+      description:
+        'One derived ProjectProfile view by projectId. Same aggregation rules as ' +
+        'relay_pm_list_project_profiles. Pure read — never mutates.',
+      inputSchema: objectSchema({ projectId: { type: 'string' } }, ['projectId']),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, ['projectId']);
+        const projectId = requireString(args, 'projectId');
+        const { dataRoot, project } = ctx;
+        let tasks: TaskRecord[] = [];
+        try {
+          tasks = goalTask.listTasks(dataRoot, project, undefined);
+        } catch {
+          tasks = [];
+        }
+        let runtimeProjects: ReturnType<typeof runtimeSnapshot>['projects'] = [];
+        try {
+          runtimeProjects = runtimeSnapshot(dataRoot, project, tasks).projects;
+        } catch {
+          runtimeProjects = [];
+        }
+        const profile = getProjectProfile(profileListInput(ctx, runtimeProjects), projectId);
+        if (!profile) {
+          throw new McpError('NOT_FOUND', `project profile not found: ${projectId}`);
+        }
+        return { project, profile };
+      },
+    },
+    {
+      name: 'relay_pm_select_project',
+      description:
+        'Persist the PM selectedProjectId only (CURRENT USER CONTEXT CHANGED). ' +
+        'Does NOT create Goal/Task, dispatch, spawn Worker, open terminal/tmux, ' +
+        'mutate workspace files, modify role assignments, or touch Git. ' +
+        'Unknown projectId is rejected.',
+      inputSchema: objectSchema({ projectId: { type: 'string' } }, ['projectId']),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, ['projectId']);
+        const projectId = requireString(args, 'projectId');
+        const { dataRoot, project } = ctx;
+        let tasks: TaskRecord[] = [];
+        try {
+          tasks = goalTask.listTasks(dataRoot, project, undefined);
+        } catch {
+          tasks = [];
+        }
+        let runtimeProjects: ReturnType<typeof runtimeSnapshot>['projects'] = [];
+        try {
+          runtimeProjects = runtimeSnapshot(dataRoot, project, tasks).projects;
+        } catch {
+          runtimeProjects = [];
+        }
+        try {
+          const result = selectProject(profileListInput(ctx, runtimeProjects), projectId);
+          return {
+            project,
+            ok: result.ok,
+            selectedProjectId: result.selectedProjectId,
+            profile: result.profile,
+            updatedAt: result.uiState.updatedAt,
+            sideEffects: result.sideEffects,
+          };
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          if (/unknown projectId/i.test(msg)) {
+            throw new McpError('NOT_FOUND', msg);
+          }
+          if (/projectId/i.test(msg)) {
+            throw new McpError('INVALID_ARGUMENT', msg);
+          }
+          throw err;
+        }
       },
     },
     {

@@ -39,6 +39,11 @@ import {
   resolveProjectIdentity,
   type ProjectIdentity,
 } from '../backend/project-identity.js';
+import { loadUiState } from '../backend/ui-state.js';
+import {
+  listProjectProfiles,
+  resolveProjectSelection,
+} from '../backend/project-profile.js';
 import { PM_WIDGET_RESOURCE_URI, PM_WIDGET_RESOURCE_VERSION } from './app/pm-widget-resource.js';
 import { objectSchema, rejectUnknownFields } from './schemas.js';
 import type { GoalRecord, TaskRecord } from '../shared/types.js';
@@ -235,6 +240,9 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
         'readyTasks / verificationPending vs persistedRunning), selectedProject ' +
         'and activeProjects[]. Pass projectId to choose which project the view is ' +
         'about. ' +
+        'P1.8C-01 additive: projectProfiles[], selectedProjectProfile, ' +
+        'selectedProjectId, and selectedProjectBasis also honor persisted ' +
+        'selection (ARGUMENT > SELECTED > LAST_ACTIVE > SCOPE). ' +
         'Pure read — never judges, dispatches, or mutates.',
       inputSchema: objectSchema({ projectId: { type: 'string' } }),
       handler: async (args: Record<string, unknown>) => {
@@ -288,10 +296,46 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
         } catch {
           runtime = null;
         }
-        const selected = runtime
-          ? selectProjectView(runtime, args.projectId)
-          : { project: null, basis: 'SCOPE' as const };
+        const persistedSelectedId = loadUiState(dataRoot).selectedProjectId;
         const identity = scopeProjectIdentity(dataRoot, project);
+
+        // P1.8C-01 — derived ProjectProfile views (additive; never replace P1.8A).
+        let projectProfiles: ReturnType<typeof listProjectProfiles>['profiles'] = [];
+        let selectedProjectProfile = null as ReturnType<typeof resolveProjectSelection>['selectedProjectProfile'];
+        let selectedProjectId: string | null = null;
+        let selectedProjectBasis: ReturnType<typeof selectProjectView>['basis'] = 'SCOPE';
+        let selectedProject: ProjectRuntimeSnapshot['projects'][number] | null = null;
+        try {
+          const listed = listProjectProfiles({
+            dataRoot,
+            scope: project,
+            selectedProjectId: persistedSelectedId,
+            runtimeProjects: runtime ? runtime.projects : [],
+            hostRoots: ctx.goalLoop?.workspaceRoot ? [ctx.goalLoop.workspaceRoot] : undefined,
+          });
+          projectProfiles = listed.profiles;
+          const resolved = resolveProjectSelection({
+            profiles: listed.profiles,
+            runtimeProjects: runtime ? runtime.projects : [],
+            requestedProjectId: args.projectId,
+            persistedSelectedProjectId: persistedSelectedId,
+            scopeIdentity: identity,
+          });
+          selectedProjectProfile = resolved.selectedProjectProfile;
+          selectedProjectId = resolved.selectedProjectId;
+          selectedProjectBasis = resolved.basis;
+          selectedProject = resolved.selectedRuntimeProject;
+        } catch {
+          // Profile aggregation must never break the dashboard read path.
+          const fallback = runtime
+            ? selectProjectView(runtime, args.projectId, persistedSelectedId)
+            : { project: null, basis: 'SCOPE' as const };
+          selectedProject = fallback.project;
+          selectedProjectBasis = fallback.basis;
+          selectedProjectId = fallback.project?.projectId ?? null;
+          projectProfiles = [];
+        }
+
         const summary = runtime
           ? {
             projects: runtime.summary.projects,
@@ -332,8 +376,12 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
           },
           projects: runtime ? runtime.projects : [],
           activeProjects: runtime ? runtime.activeProjects : [],
-          selectedProject: selected.project,
-          selectedProjectBasis: selected.basis,
+          selectedProject,
+          selectedProjectBasis,
+          // P1.8C-01 additive keys — existing widget ignores unknown fields.
+          projectProfiles,
+          selectedProjectProfile,
+          selectedProjectId,
           summary,
         };
       },
