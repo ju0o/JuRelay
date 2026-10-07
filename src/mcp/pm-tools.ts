@@ -31,6 +31,7 @@ import * as completedRunRecovery from '../backend/completed-run-recovery.js';
 import * as taskActions from '../backend/task-actions.js';
 import { createUserGoal, UserGoalError } from '../backend/user-goal.js';
 import { resolveOwnerDispatch } from '../backend/dispatch-resolve.js';
+import { cancelReadyTask, DraftCleanupError } from '../backend/draft-cleanup.js';
 import { startGoalLoop } from '../backend/goal-loop.js';
 import { authorizeEffect, PermissionDeniedError } from '../backend/permission-gate.js';
 import type { GoalStatus, EventDeliveryStatus } from '../shared/types.js';
@@ -55,6 +56,16 @@ function mapUserGoalError(err: unknown): never {
     if (err.code === 'GOAL_PROJECT_MISMATCH' || err.code === 'GOAL_STATE_NOT_ALLOWED') {
       throw new McpError('INVALID_STATE', err.message);
     }
+    throw new McpError('INVALID_ARGUMENT', err.message);
+  }
+  throw mapCoreError(err);
+}
+
+function mapDraftCleanupError(err: unknown): never {
+  if (err instanceof DraftCleanupError) {
+    if (err.code === 'NOT_FOUND') throw new McpError('NOT_FOUND', err.message);
+    if (err.code === 'CONFLICT') throw new McpError('CONFLICT', err.message);
+    if (err.code === 'INVALID_STATE') throw new McpError('INVALID_STATE', err.message);
     throw new McpError('INVALID_ARGUMENT', err.message);
   }
   throw mapCoreError(err);
@@ -513,7 +524,7 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
       handler: async (args) => {
         rejectUnknownFields(args, ['goalId', 'taskId', 'runId', 'reason', 'expectedPmState', 'expectedExecutionState']);
         try {
-          return await taskActions.acceptTaskResult({
+          const after = await taskActions.acceptTaskResult({
             dataRoot, project,
             goalId: requireString(args, 'goalId'),
             taskId: requireString(args, 'taskId'),
@@ -523,8 +534,50 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
             expectedExecutionState: requireEnum(args, 'expectedExecutionState', ACCEPT_EXEC_ONLY),
             callerSurface: 'PM_MCP',
           });
+          // P1.8D: OWNER accept must settle Deliveries so ACKNOWLEDGED/IGNORED
+          // never remain wakeable (same as judgment ACCEPT reconcile).
+          try {
+            await pmDelivery.reconcileFinalizedPmDeliveries(dataRoot, project);
+          } catch {
+            /* best-effort; Task accept stands */
+          }
+          return after;
         } catch (err) {
           mapPermissionError(err);
+        }
+      },
+    },
+    {
+      name: 'relay_pm_cancel_ready_task',
+      description:
+        'P1.8D: cancel a draft READY Task that never ran (작업 준비 취소). ' +
+        'Requires expectedExecutionState=READY and linkedRuns=[]. ' +
+        'Transitions READY→CANCELLED via the canonical execution state machine. ' +
+        'Does NOT kill Workers, delete files, or cancel RUNNING/RESULT_RECEIVED Tasks. ' +
+        'When every Task under the Goal is CANCELLED, the user Goal becomes ABANDONED ' +
+        '(technical v1-internal Inbox Goals are never abandoned).',
+      inputSchema: objectSchema(
+        {
+          taskId: { type: 'string' },
+          expectedExecutionState: { type: 'string', enum: ['READY'] },
+          reason: { type: 'string' },
+          abandonEmptyGoal: { type: 'boolean' },
+        },
+        ['taskId', 'expectedExecutionState'],
+      ),
+      handler: async (args) => {
+        rejectUnknownFields(args, ['taskId', 'expectedExecutionState', 'reason', 'abandonEmptyGoal']);
+        try {
+          return await cancelReadyTask(dataRoot, project, {
+            taskId: requireString(args, 'taskId'),
+            expectedExecutionState: 'READY',
+            ...(typeof args.reason === 'string' ? { reason: args.reason } : {}),
+            ...(typeof args.abandonEmptyGoal === 'boolean'
+              ? { abandonEmptyGoal: args.abandonEmptyGoal }
+              : {}),
+          });
+        } catch (err) {
+          mapDraftCleanupError(err);
         }
       },
     },

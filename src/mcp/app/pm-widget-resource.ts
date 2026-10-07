@@ -515,6 +515,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
         <div class="line"><b>Builder</b><span id="tpBuilder"></span></div>
         <div class="line"><b>작업 폴더</b><span id="tpWorkspace"></span></div>
         <div class="row">
+          <button type="button" id="tpCancelPrep">작업 준비 취소</button>
           <button type="button" id="tpCancel">닫기</button>
           <button type="button" class="primary" id="tpRun" disabled>작업 시작</button>
         </div>
@@ -2076,11 +2077,42 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
       }
 
+      async function cancelReadyPrep() {
+        if (!pendingPreview || !pendingPreview.taskId) return;
+        var errEl = document.getElementById('tpErr');
+        var status = document.getElementById('tpStatus');
+        if (errEl) { errEl.classList.add('hide'); errEl.textContent = ''; }
+        try {
+          var res = await callTool('relay_pm_cancel_ready_task', {
+            taskId: pendingPreview.taskId,
+            expectedExecutionState: 'READY',
+            reason: 'widget:작업 준비 취소'
+          });
+          pendingPreview = null;
+          setTaskPrevVisible(false);
+          if (status) {
+            status.textContent = res && res.goalAbandoned
+              ? '준비를 취소했고 Goal도 끝냈어요.'
+              : '작업 준비를 취소했어요.';
+          }
+          try {
+            var refreshed = await callTool('relay_pm_get_project', {});
+            renderProjectDash(refreshed);
+          } catch (eRef) { /* ok */ }
+        } catch (eCancel) {
+          if (errEl) {
+            errEl.classList.remove('hide');
+            errEl.textContent = String((eCancel && eCancel.message) || eCancel).slice(0, 240);
+          }
+        }
+      }
+
       function wireGoalRunUi() {
         var newBtn = document.getElementById('pdNewGoalBtn');
         var cancel = document.getElementById('pdGoalCancel');
         var cont = document.getElementById('pdGoalContinue');
         var tpCancel = document.getElementById('tpCancel');
+        var tpCancelPrep = document.getElementById('tpCancelPrep');
         var tpRun = document.getElementById('tpRun');
         if (newBtn) newBtn.addEventListener('click', function () {
           setGoalFlowVisible(true);
@@ -2093,6 +2125,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
           setTaskPrevVisible(false);
           pendingPreview = null;
         });
+        if (tpCancelPrep) tpCancelPrep.addEventListener('click', function () { cancelReadyPrep(); });
         if (tpRun) tpRun.addEventListener('click', function () { explicitOwnerRun(); });
       }
       wireGoalRunUi();
@@ -2184,6 +2217,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
         sessionHandled[delivery.deliveryId] = true;
         setStatus('ready', t('reviewReady'), delivery.taskId ? 'TASK-' + delivery.taskId.replace(/^TASK-/, '') : delivery.deliveryId);
         logLine('delivery actionable: ' + delivery.deliveryId + ' task=' + delivery.taskId);
+        // P1.8D — refuse re-wake when durable wake is already SENT, even after remount.
+        try {
+          var wakeSt = await callTool('relay_pm_get_wake_status', { deliveryId: delivery.deliveryId });
+          if (wakeSt && wakeSt.status === 'SENT') {
+            logLine('wake already SENT — skip re-wake: ' + delivery.deliveryId);
+            return;
+          }
+        } catch (eWs) { /* claim still gates */ }
         var claim;
         try {
           claim = await callTool('relay_pm_claim_wake', { deliveryId: delivery.deliveryId });

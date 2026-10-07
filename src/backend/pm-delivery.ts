@@ -279,7 +279,16 @@ export function listPendingPmDeliveries(dataRoot: string, project: string): PmDe
   );
 }
 
-/** Reconcile Delivery consumption from already-final Task truth. */
+/**
+ * Reconcile Delivery consumption from already-final Task truth.
+ *
+ * P1.8D: once a Task is ACCEPTED, EVERY pending delivery for that Task must
+ * settle — ACK the accepted run, IGNORE all others. Never leave a later/stale
+ * "current attempt" delivery PENDING after ACCEPT (that re-wakes the widget).
+ *
+ * While VERIFYING, only non-current-attempt deliveries are ignored; the current
+ * attempt stays pending for PM judgment.
+ */
 export async function reconcileFinalizedPmDeliveries(
   dataRoot: string,
   project: string,
@@ -293,15 +302,22 @@ export async function reconcileFinalizedPmDeliveries(
     } catch {
       continue;
     }
-    const finalized = task.pmState === 'ACCEPTED' && task.acceptedRunId === delivery.runId;
+    const acceptedMatch = task.pmState === 'ACCEPTED' && task.acceptedRunId === delivery.runId;
+    const taskAccepted = task.pmState === 'ACCEPTED';
     const currentRunId = resolveCurrentAttemptRunId(task);
-    if (!finalized && currentRunId === delivery.runId) continue;
-    const target = finalized ? 'ACKNOWLEDGED' : 'IGNORED';
+
+    // ACCEPTED task: settle all pending deliveries for this Task.
+    // VERIFYING: leave only the current-attempt delivery pending.
+    if (!taskAccepted) {
+      if (currentRunId === delivery.runId) continue;
+    }
+
+    const target = acceptedMatch ? 'ACKNOWLEDGED' : 'IGNORED';
     try {
       if (delivery.status === 'PENDING') {
         await markPmDeliveryDelivered(dataRoot, project, delivery.deliveryId, 'PENDING');
       }
-      if (finalized) {
+      if (acceptedMatch) {
         await acknowledgePmDelivery(dataRoot, project, delivery.deliveryId, 'DELIVERED');
         acknowledged.push(delivery.deliveryId);
       } else {
@@ -311,7 +327,7 @@ export async function reconcileFinalizedPmDeliveries(
     } catch (err) {
       if (!(err instanceof PmDeliveryError) || err.code !== 'CONFLICT') throw err;
       const latest = readDeliveryRecord(dataRoot, project, delivery.deliveryId);
-      if (latest.status === target) (finalized ? acknowledged : ignored).push(delivery.deliveryId);
+      if (latest.status === target) (acceptedMatch ? acknowledged : ignored).push(delivery.deliveryId);
     }
   }
   return { acknowledged, ignored };

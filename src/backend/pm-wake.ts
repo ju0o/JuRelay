@@ -32,8 +32,11 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { relayDir, writeJsonAtomic } from './goal-task.js';
-import { getPmDelivery } from './pm-delivery.js';
+import { getTask, relayDir, writeJsonAtomic } from './goal-task.js';
+import {
+  getPmDelivery,
+  reconcileFinalizedPmDeliveries,
+} from './pm-delivery.js';
 import type { PmDeliveryRecord } from './pm-delivery.js';
 
 /** PM Wake record schema version. */
@@ -204,33 +207,79 @@ export function buildWakeInstruction(delivery: Pick<PmDeliveryRecord, 'deliveryI
  * be retried after the widget reports ui/message failure; attemptCount is
  * bounded by MAX_WAKE_ATTEMPTS.
  */
+function emptyWakeStub(
+  did: string,
+  project: string,
+  taskId: string,
+): PmWakeRecord {
+  const ts = nowIso();
+  return {
+    schemaVersion: PM_WAKE_SCHEMA_VERSION,
+    deliveryId: did,
+    project,
+    taskId,
+    status: 'PENDING',
+    attemptCount: 0,
+    createdAt: ts,
+    updatedAt: ts,
+  };
+}
+
+/**
+ * P1.8D — refuse wake when Delivery is terminal OR Task already ACCEPTED.
+ * Best-effort reconcile so a lagging PENDING delivery for an ACCEPTED Task
+ * settles before the widget can see it again.
+ */
+async function assertDeliveryStillActionable(
+  dataRoot: string,
+  project: string,
+  did: string,
+): Promise<{ ok: true; delivery: PmDeliveryRecord } | { ok: false; delivery: PmDeliveryRecord }> {
+  let delivery = getPmDelivery(dataRoot, project, did);
+  if (delivery.status === 'ACKNOWLEDGED' || delivery.status === 'IGNORED') {
+    return { ok: false, delivery };
+  }
+  try {
+    const task = getTask(dataRoot, project, delivery.taskId);
+    if (task.pmState === 'ACCEPTED') {
+      try {
+        await reconcileFinalizedPmDeliveries(dataRoot, project);
+      } catch {
+        /* best-effort; claim still refuses */
+      }
+      delivery = getPmDelivery(dataRoot, project, did);
+      return { ok: false, delivery };
+    }
+  } catch {
+    /* Task missing → fall through to delivery-status gate */
+  }
+  if (delivery.status !== 'PENDING' && delivery.status !== 'DELIVERED') {
+    return { ok: false, delivery };
+  }
+  return { ok: true, delivery };
+}
+
 export function claimPmWake(
   dataRoot: string,
   project: string,
   deliveryId: string,
 ): Promise<ClaimPmWakeResult> {
   const did = requireDeliveryId(deliveryId);
-  return withWakeLock(dataRoot, project, did, (): ClaimPmWakeResult => {
+  return withWakeLock(dataRoot, project, did, async (): Promise<ClaimPmWakeResult> => {
     let delivery: PmDeliveryRecord;
     try {
       delivery = getPmDelivery(dataRoot, project, did);
     } catch {
       throw new PmWakeError('NOT_FOUND', `PM Delivery를 찾을 수 없습니다: ${did}`);
     }
-    if (delivery.status !== 'PENDING' && delivery.status !== 'DELIVERED') {
+
+    const gate = await assertDeliveryStillActionable(dataRoot, project, did);
+    delivery = gate.delivery;
+    if (!gate.ok) {
       return {
         claimable: false,
         reason: 'NOT_ACTIONABLE',
-        record: readWakeRecord(dataRoot, project, did) ?? {
-          schemaVersion: PM_WAKE_SCHEMA_VERSION,
-          deliveryId: did,
-          project,
-          taskId: delivery.taskId,
-          status: 'PENDING',
-          attemptCount: 0,
-          createdAt: nowIso(),
-          updatedAt: nowIso(),
-        },
+        record: readWakeRecord(dataRoot, project, did) ?? emptyWakeStub(did, project, delivery.taskId),
       };
     }
 
@@ -261,6 +310,16 @@ export function claimPmWake(
       return { claimable: false, reason: 'MAX_ATTEMPTS', record };
     }
     // FAILED → explicit recovery: reset to PENDING and re-claim below.
+    // Re-check delivery terminal/ACCEPTED right before mutating wake (reload race).
+    const gate2 = await assertDeliveryStillActionable(dataRoot, project, did);
+    if (!gate2.ok) {
+      return {
+        claimable: false,
+        reason: 'NOT_ACTIONABLE',
+        record,
+      };
+    }
+    delivery = gate2.delivery;
     const ts = nowIso();
     const next: PmWakeRecord = {
       ...record,

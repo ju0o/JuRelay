@@ -1,11 +1,17 @@
 /**
- * P1.8C-04 — Bounded single-project dashboard read model.
+ * P1.8C-04 / P1.8D — Bounded single-project dashboard read model.
  *
  * Canonical backing for `relay_pm_get_project`. Pure read. Never mutates
  * selection, assignments, workspace, Goals, Tasks, Runs, or workers.
  *
  * deliberately NOT a full `relay_pm_get_dashboard` clone: no portfolio dump,
  * no all-project profiles list, no unbounded task arrays, no evidence blobs.
+ *
+ * Count semantics (do NOT compare 1:1 in QA):
+ *   - `relay_pm_get_dashboard.summary` = storage/scope aggregate across the
+ *     process bucket (often `ws`), including every projectId in that scope.
+ *   - `relay_pm_get_project(projectId).counts` = bounded counts for the
+ *     selected logical project only (e.g. agent-relay).
  */
 import * as goalTask from './goal-task.js';
 import {
