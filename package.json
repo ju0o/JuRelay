@@ -4,6 +4,9 @@
   "private": true,
   "description": "Local portable tool that saves Prompt/Result between GPT and coding agents as Markdown.",
   "author": "Agent Relay Log",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build:client": "vite build",
     "build:server": "tsc -p tsconfig.server.json",
@@ -133,7 +136,8 @@
     "test:p1-8c03-first-run-bootstrap": "node --test test/p1-8c03-first-run-bootstrap.test.mjs",
     "test:p1-8c04-project-dashboard": "node --test test/p1-8c04-project-dashboard.test.mjs",
     "test:p1-8c05-goal-task-dispatch": "node --test test/p1-8c05-goal-task-dispatch.test.mjs",
-    "test:p1-8d-state-integrity": "node --test test/p1-8d-state-integrity.test.mjs"
+    "test:p1-8d-state-integrity": "node --test test/p1-8d-state-integrity.test.mjs",
+    "test:p2-clean-install": "node --test test/p2-clean-install.test.mjs"
   },
   "main": "dist/server/backend/main.js",
   "bin": {

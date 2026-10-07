@@ -1,0 +1,16 @@
+[Unit]
+Description=Agent Relay MCP App (@INSTANCE@)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=@REPO_ROOT@
+ExecStart=@NODE@ @REPO_ROOT@/dist/server/mcp/app-server-main.js --dataRoot @DATA_ROOT@ --project @PROJECT@ --port @MCP_PORT@ --host 127.0.0.1 --auth-token-file @TOKEN_FILE@
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

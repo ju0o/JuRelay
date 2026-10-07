@@ -1,0 +1,305 @@
+#!/usr/bin/env bash
+# Agent Relay local service lifecycle: start|stop|restart|status|doctor
+# Hides systemd unit names / pidfiles from normal operation.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=lib/runtime-env.sh
+source "$ROOT/scripts/lib/runtime-env.sh"
+
+ar_resolve_paths
+export AR_INSTALL_JSON
+if [[ -f "$AR_INSTALL_JSON" ]]; then
+  # Prefer saved install marker for ports/runtime when present.
+  ar_load_install_json || true
+  # Re-derive token/proxy paths if empty
+  [[ -n "${AR_TOKEN_FILE:-}" ]] || AR_TOKEN_FILE="${AR_CONFIG_DIR}/mcp-token"
+  [[ -n "${AR_PROXY_ENV:-}" ]] || AR_PROXY_ENV="${AR_CONFIG_DIR}/mcp-proxy.env"
+  [[ -n "${AR_REPO_ROOT:-}" ]] || AR_REPO_ROOT="$ROOT"
+  AR_RUNTIME_DIR="${AR_CONFIG_DIR}/runtime"
+fi
+AR_REPO_ROOT="${AR_REPO_ROOT:-$ROOT}"
+AR_NODE="${AGENT_RELAY_NODE:-$(command -v node)}"
+
+usage() {
+  cat <<EOF
+Usage: ./scripts/agent-relay-svc <start|stop|restart|status|doctor>
+
+Manages the local Agent Relay MCP App + auth proxy for this install.
+EOF
+}
+
+require_install() {
+  if [[ ! -f "$AR_INSTALL_JSON" ]]; then
+    echo "ERROR: install marker missing at $AR_INSTALL_JSON" >&2
+    echo "Run ./setup.sh first." >&2
+    exit 1
+  fi
+  if [[ ! -f "$AR_TOKEN_FILE" ]]; then
+    echo "ERROR: mcp-token missing at $AR_TOKEN_FILE" >&2
+    exit 1
+  fi
+  if [[ ! -f "$AR_REPO_ROOT/dist/server/mcp/app-server-main.js" ]]; then
+    echo "ERROR: build missing — run npm run build (or ./setup.sh)" >&2
+    exit 1
+  fi
+}
+
+pid_alive() {
+  local pid="$1"
+  [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null
+}
+
+read_pid() {
+  local f="$1"
+  if [[ -f "$f" ]]; then
+    tr -d ' \n\r' <"$f"
+  fi
+}
+
+start_pidfile() {
+  mkdir -p "$AR_RUNTIME_DIR"
+  local mcp_pid_file="$AR_RUNTIME_DIR/mcp-app.pid"
+  local proxy_pid_file="$AR_RUNTIME_DIR/auth-proxy.pid"
+  local mcp_log="$AR_RUNTIME_DIR/mcp-app.log"
+  local proxy_log="$AR_RUNTIME_DIR/auth-proxy.log"
+
+  local existing
+  existing="$(read_pid "$mcp_pid_file" || true)"
+  if pid_alive "$existing"; then
+    echo "already configured: mcp-app running (pid $existing)"
+  else
+    if ar_port_in_use "$AR_MCP_PORT"; then
+      echo "ERROR: port $AR_MCP_PORT already in use (MCP App). Free the port or set AGENT_RELAY_MCP_PORT." >&2
+      exit 1
+    fi
+    nohup "$AR_NODE" "$AR_REPO_ROOT/dist/server/mcp/app-server-main.js" \
+      --dataRoot "$AR_DATA_ROOT" \
+      --project "$AR_PROJECT" \
+      --port "$AR_MCP_PORT" \
+      --host "$AR_HOST" \
+      --auth-token-file "$AR_TOKEN_FILE" \
+      >"$mcp_log" 2>&1 &
+    echo $! >"$mcp_pid_file"
+    echo "started: mcp-app (pid $(cat "$mcp_pid_file")) on ${AR_HOST}:${AR_MCP_PORT}"
+  fi
+
+  existing="$(read_pid "$proxy_pid_file" || true)"
+  if pid_alive "$existing"; then
+    echo "already configured: auth-proxy running (pid $existing)"
+  else
+    if ar_port_in_use "$AR_PROXY_PORT"; then
+      echo "ERROR: port $AR_PROXY_PORT already in use (auth proxy). Free the port or set AGENT_RELAY_PROXY_PORT." >&2
+      # leave mcp running; fail closed on proxy
+      exit 1
+    fi
+    set -a
+    # shellcheck disable=SC1090
+    source "$AR_PROXY_ENV"
+    set +a
+    nohup "$AR_NODE" "$AR_REPO_ROOT/scripts/mcp-auth-proxy.mjs" \
+      >"$proxy_log" 2>&1 &
+    echo $! >"$proxy_pid_file"
+    echo "started: auth-proxy (pid $(cat "$proxy_pid_file")) on ${AR_HOST}:${AR_PROXY_PORT}"
+  fi
+}
+
+stop_pidfile() {
+  local mcp_pid_file="$AR_RUNTIME_DIR/mcp-app.pid"
+  local proxy_pid_file="$AR_RUNTIME_DIR/auth-proxy.pid"
+  for f in "$proxy_pid_file" "$mcp_pid_file"; do
+    local pid
+    pid="$(read_pid "$f" || true)"
+    if pid_alive "$pid"; then
+      kill "$pid" 2>/dev/null || true
+      for _ in 1 2 3 4 5; do
+        pid_alive "$pid" || break
+        sleep 0.2
+      done
+      if pid_alive "$pid"; then
+        kill -9 "$pid" 2>/dev/null || true
+      fi
+      echo "stopped: pid $pid"
+    fi
+    rm -f "$f"
+  done
+}
+
+status_pidfile() {
+  local mcp_pid_file="$AR_RUNTIME_DIR/mcp-app.pid"
+  local proxy_pid_file="$AR_RUNTIME_DIR/auth-proxy.pid"
+  local mcp_pid proxy_pid
+  mcp_pid="$(read_pid "$mcp_pid_file" || true)"
+  proxy_pid="$(read_pid "$proxy_pid_file" || true)"
+  if pid_alive "$mcp_pid"; then echo "mcp-app: active (pid $mcp_pid) ${AR_HOST}:${AR_MCP_PORT}"; else echo "mcp-app: inactive"; fi
+  if pid_alive "$proxy_pid"; then echo "auth-proxy: active (pid $proxy_pid) ${AR_HOST}:${AR_PROXY_PORT}"; else echo "auth-proxy: inactive"; fi
+  echo "local MCP URI: http://${AR_HOST}:${AR_PROXY_PORT}/mcp"
+  echo "tunnel: HUMAN_GATE_REQUIRED (create your own tunnel-client profile)"
+}
+
+start_systemd() {
+  systemctl --user daemon-reload
+  systemctl --user enable --now "${AR_MCP_UNIT}.service"
+  systemctl --user enable --now "${AR_PROXY_UNIT}.service"
+  echo "started: ${AR_MCP_UNIT}, ${AR_PROXY_UNIT}"
+}
+
+stop_systemd() {
+  systemctl --user stop "${AR_PROXY_UNIT}.service" 2>/dev/null || true
+  systemctl --user stop "${AR_MCP_UNIT}.service" 2>/dev/null || true
+  echo "stopped: ${AR_MCP_UNIT}, ${AR_PROXY_UNIT}"
+}
+
+status_systemd() {
+  systemctl --user is-active "${AR_MCP_UNIT}.service" 2>/dev/null | awk -v u="$AR_MCP_UNIT" '{print u": "$0}'
+  systemctl --user is-active "${AR_PROXY_UNIT}.service" 2>/dev/null | awk -v u="$AR_PROXY_UNIT" '{print u": "$0}'
+  echo "local MCP URI: http://${AR_HOST}:${AR_PROXY_PORT}/mcp"
+  echo "tunnel: HUMAN_GATE_REQUIRED (create your own tunnel-client profile)"
+}
+
+_probe_once() {
+  local port="$1"
+  # Env assignment must precede the command so Node sees process.env.P.
+  P="$port" "$AR_NODE" -e "
+const http=require('http');
+const port=Number(process.env.P);
+if (!Number.isFinite(port) || port <= 0) process.exit(1);
+const req=http.request({host:'127.0.0.1',port,path:'/mcp',method:'POST',headers:{'content-type':'application/json','accept':'application/json, text/event-stream'},timeout:2000},res=>{process.exit(res.statusCode&&res.statusCode<500?0:1)});
+req.on('error',()=>process.exit(1));
+req.on('timeout',()=>{req.destroy();process.exit(1)});
+req.end(JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2024-11-05',capabilities:{},clientInfo:{name:'agent-relay-svc',version:'0'}}}));
+"
+}
+
+health_probe() {
+  local ok=0
+  if _probe_once "$AR_MCP_PORT"; then
+    echo "health: mcp-app OK (${AR_HOST}:${AR_MCP_PORT})"
+  else
+    echo "health: mcp-app FAIL (${AR_HOST}:${AR_MCP_PORT})" >&2
+    ok=1
+  fi
+  if _probe_once "$AR_PROXY_PORT"; then
+    echo "health: auth-proxy OK (${AR_HOST}:${AR_PROXY_PORT})"
+  else
+    echo "health: auth-proxy FAIL (${AR_HOST}:${AR_PROXY_PORT})" >&2
+    ok=1
+  fi
+  return $ok
+}
+
+wait_healthy() {
+  local attempts="${1:-20}"
+  local i
+  for i in $(seq 1 "$attempts"); do
+    if _probe_once "$AR_MCP_PORT" && _probe_once "$AR_PROXY_PORT"; then
+      echo "health: mcp-app OK (${AR_HOST}:${AR_MCP_PORT})"
+      echo "health: auth-proxy OK (${AR_HOST}:${AR_PROXY_PORT})"
+      return 0
+    fi
+    sleep 0.25
+  done
+  health_probe
+  return 1
+}
+
+cmd_start() {
+  require_install
+  ar_write_proxy_env
+  if [[ "$AR_RUNTIME_MODE" == "systemd" ]]; then
+    start_systemd
+  else
+    start_pidfile
+  fi
+  wait_healthy 30
+}
+
+cmd_stop() {
+  require_install
+  if [[ "$AR_RUNTIME_MODE" == "systemd" ]]; then
+    stop_systemd
+  else
+    stop_pidfile
+  fi
+}
+
+cmd_restart() {
+  cmd_stop || true
+  sleep 0.3
+  cmd_start
+}
+
+cmd_status() {
+  if [[ ! -f "$AR_INSTALL_JSON" ]]; then
+    echo "status: not installed (missing $AR_INSTALL_JSON)"
+    exit 1
+  fi
+  echo "instance: $AR_INSTANCE"
+  echo "runtime: $AR_RUNTIME_MODE"
+  echo "dataRoot: $AR_DATA_ROOT"
+  echo "configDir: $AR_CONFIG_DIR"
+  if [[ "$AR_RUNTIME_MODE" == "systemd" ]]; then
+    status_systemd
+  else
+    status_pidfile
+  fi
+  health_probe || true
+}
+
+cmd_doctor() {
+  local cli="$AR_REPO_ROOT/dist/server/cli/index.js"
+  if [[ -f "$cli" ]]; then
+    # Prefer CLI doctor (includes local-runtime checks when built).
+    AGENT_RELAY_CONFIG_DIR="$AR_CONFIG_DIR" \
+    AGENT_RELAY_DATA_ROOT="$AR_DATA_ROOT" \
+    AGENT_RELAY_MCP_PORT="$AR_MCP_PORT" \
+    AGENT_RELAY_PROXY_PORT="$AR_PROXY_PORT" \
+    AGENT_RELAY_INSTANCE="$AR_INSTANCE" \
+    AGENT_RELAY_RUNTIME="$AR_RUNTIME_MODE" \
+      "$AR_NODE" "$cli" doctor || true
+  fi
+  echo ""
+  echo "Service layer"
+  cmd_status || true
+  local fail=0
+  [[ -f "$AR_TOKEN_FILE" ]] || { echo "✗ secrets: mcp-token missing"; fail=1; }
+  if [[ -f "$AR_TOKEN_FILE" ]]; then
+    local mode
+    mode="$(stat -c '%a' "$AR_TOKEN_FILE" 2>/dev/null || echo '?')"
+    if [[ "$mode" == "600" ]]; then echo "✓ secrets: mcp-token mode 600"; else echo "! secrets: mcp-token mode $mode (expected 600)"; fi
+  fi
+  if command -v tunnel-client >/dev/null 2>&1; then
+    echo "! tunnel: tunnel-client present — HUMAN_GATE_REQUIRED (create your own profile; do not reuse another host)"
+  else
+    echo "! tunnel: tunnel-client not on PATH — install then create your own tunnel (Human Gate)"
+  fi
+  if health_probe; then
+    if [[ $fail -eq 0 ]]; then
+      echo ""
+      echo "SUMMARY: PASS (tunnel Human Gate may still be pending → WARN)"
+    else
+      echo ""
+      echo "SUMMARY: FAIL"
+      exit 1
+    fi
+  else
+    echo ""
+    echo "SUMMARY: FAIL"
+    exit 1
+  fi
+}
+
+main() {
+  local cmd="${1:-}"
+  case "$cmd" in
+    start) cmd_start ;;
+    stop) cmd_stop ;;
+    restart) cmd_restart ;;
+    status) cmd_status ;;
+    doctor) cmd_doctor ;;
+    -h|--help|help|"") usage; [[ -n "$cmd" ]] || exit 1; exit 0 ;;
+    *) echo "Unknown command: $cmd" >&2; usage; exit 1 ;;
+  esac
+}
+
+main "$@"

@@ -9,6 +9,7 @@ import { discoverConfig } from './config.js';
 import * as workerRegistry from '../backend/worker-registry.js';
 import * as goalTask from '../backend/goal-task.js';
 import { getAdapter } from '../integrations/core/registry.js';
+import { collectLocalRuntimeChecks } from './local-runtime.js';
 
 export const DOCTOR_SCHEMA_VERSION = 'cli.doctor.v1';
 
@@ -24,6 +25,7 @@ export interface DoctorCheck {
 export interface DoctorResult {
   schemaVersion: typeof DOCTOR_SCHEMA_VERSION;
   ok: boolean;
+  summary: CheckStatus;
   checks: DoctorCheck[];
 }
 
@@ -192,8 +194,18 @@ export function runDoctor(cwd: string): DoctorResult {
     }
   }
 
+  // 12. Local install / MCP App / auth proxy / tunnel (P2 clean-install)
+  {
+    const extras = collectLocalRuntimeChecks();
+    for (const c of extras.checks) {
+      push(c.id, c.status, c.message, c.required);
+    }
+  }
+
   const hasRequiredFail = checks.some((c) => c.status === 'FAIL' && c.required);
-  return { schemaVersion: DOCTOR_SCHEMA_VERSION, ok: !hasRequiredFail, checks };
+  const hasWarn = checks.some((c) => c.status === 'WARN');
+  const summary: CheckStatus = hasRequiredFail ? 'FAIL' : hasWarn ? 'WARN' : 'PASS';
+  return { schemaVersion: DOCTOR_SCHEMA_VERSION, ok: !hasRequiredFail, summary, checks };
 }
 
 export function renderDoctorHuman(result: DoctorResult): string {
@@ -206,6 +218,11 @@ export function renderDoctorHuman(result: DoctorResult): string {
     lines.push(`${icon} ${c.id}: ${c.message}${req}`);
   }
   lines.push('');
-  lines.push(result.ok ? 'All required checks healthy.' : 'At least one required check failed.');
+  lines.push(`SUMMARY: ${result.summary}`);
+  if (result.ok) {
+    lines.push(result.summary === 'WARN' ? 'Required checks healthy; optional warnings present.' : 'All required checks healthy.');
+  } else {
+    lines.push('At least one required check failed.');
+  }
   return lines.join('\n');
 }

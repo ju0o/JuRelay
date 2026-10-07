@@ -11,3 +11,18 @@ undefined/
 Thumbs.db
 /dist-build/
 /dist-relay031/
+
+# Local Agent Relay secrets / install state (never commit)
+.agent-relay/
+mcp-token
+mcp-proxy.env
+**/mcp-token
+**/mcp-proxy.env
+**/tunnel-runtime-key
+**/*.runtime-key
+.env
+.env.*
+!.env.example
+
+# Isolated clean-install test homes (repo-local only)
+.clean-install-home/

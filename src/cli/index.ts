@@ -21,6 +21,7 @@ Usage:
 Commands:
   status              Show project status snapshot
   doctor              Run infrastructure health checks
+  services <cmd>      Local MCP/proxy lifecycle (start|stop|restart|status|doctor)
   workspace start     Auto bootstrap multi-project lanes (REUSE FIRST, no dispatch)
   workspace status    Show workspace lanes + concurrency (AUTOMATION_STARTED view)
   workspace configure Save a workspace preset (fixtures|current, no manual prompts)
@@ -53,6 +54,8 @@ Examples:
   agent-relay status --json
   agent-relay doctor
   agent-relay doctor --json
+  agent-relay services status
+  agent-relay services start
   agent-relay workspace start
   agent-relay workspace start --json
   agent-relay workspace status
@@ -247,9 +250,9 @@ function parseArgs(argv: string[]): { command: string | null; sub: string | null
     } else if (a.startsWith('--')) {
       unknown = a;
       break;
-    } else if (!command && (a === 'status' || a === 'doctor' || a === 'history' || a === 'resume-scan' || a === 'resume' || a === 'init' || a === 'connect' || a === 'host' || a === 'workspace' || a === 'runner' || a === 'night-run' || a === 'goal-loop')) {
+    } else if (!command && (a === 'status' || a === 'doctor' || a === 'services' || a === 'history' || a === 'resume-scan' || a === 'resume' || a === 'init' || a === 'connect' || a === 'host' || a === 'workspace' || a === 'runner' || a === 'night-run' || a === 'goal-loop')) {
       command = a;
-    } else if ((command === 'connect' || command === 'host' || command === 'resume' || command === 'workspace' || command === 'runner' || command === 'night-run') && !sub) {
+    } else if ((command === 'connect' || command === 'host' || command === 'resume' || command === 'workspace' || command === 'runner' || command === 'night-run' || command === 'services') && !sub) {
       sub = a;
     } else if (command === 'history' && !taskId) {
       taskId = a;
@@ -344,6 +347,28 @@ async function main(): Promise<void> {
       console.log(renderDoctorHuman(result));
     }
     process.exit(result.ok ? 0 : 1);
+  }
+
+  if (command === 'services') {
+    const { spawnSync } = await import('node:child_process');
+    const allowed = new Set(['start', 'stop', 'restart', 'status', 'doctor']);
+    if (!sub || !allowed.has(sub)) {
+      const msg = 'Usage: agent-relay services <start|stop|restart|status|doctor>';
+      if (json) console.log(JSON.stringify({ schemaVersion: 'cli.services.v1', ok: false, error: msg }, null, 2));
+      else console.error(msg);
+      process.exit(1);
+    }
+    const script = path.resolve(path.join(__dirname, '..', '..', '..', 'scripts', 'agent-relay-svc'));
+    const alt = path.resolve(path.join(process.cwd(), 'scripts', 'agent-relay-svc'));
+    const svc = fs.existsSync(script) ? script : alt;
+    if (!fs.existsSync(svc)) {
+      const msg = `Lifecycle script missing: ${svc}`;
+      if (json) console.log(JSON.stringify({ schemaVersion: 'cli.services.v1', ok: false, error: msg }, null, 2));
+      else console.error(msg);
+      process.exit(1);
+    }
+    const res = spawnSync('bash', [svc, sub], { encoding: 'utf8', stdio: 'inherit' });
+    process.exit(res.status === 0 ? 0 : 1);
   }
 
   if (command === 'history') {

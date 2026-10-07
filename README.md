@@ -83,6 +83,33 @@ PM 리뷰도 수행됐다. 그러나 **PASS 결과 이후의 최종 PM 리뷰가
 
 ## 실행
 
+### V1 clean install (Linux)
+
+새 사용자 / 빈 데이터 루트:
+
+```bash
+git clone <repo>
+cd Agent-Relay
+./setup.sh
+./scripts/agent-relay-svc status
+./scripts/agent-relay-svc doctor
+```
+
+지원 환경·비밀·터널 Human Gate·ChatGPT 연결 다음 단계는 [`docs/V1-CLEAN-INSTALL.md`](docs/V1-CLEAN-INSTALL.md).
+
+수명 주기:
+
+```bash
+./scripts/agent-relay-svc start|stop|restart|status|doctor
+# 또는 (빌드 후)
+npx agent-relay services status
+npx agent-relay doctor
+```
+
+V1은 **Linux 전용**이다. Windows / WSL / macOS는 이후 대상이다.
+
+### 개발
+
 ```bash
 npm install
 npm run build        # tsc server + vite client

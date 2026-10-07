@@ -1,0 +1,16 @@
+[Unit]
+Description=Agent Relay MCP auth proxy (@INSTANCE@)
+After=network.target @MCP_UNIT@.service
+Wants=@MCP_UNIT@.service
+
+[Service]
+Type=simple
+EnvironmentFile=@PROXY_ENV_FILE@
+ExecStart=@NODE@ @REPO_ROOT@/scripts/mcp-auth-proxy.mjs
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target
