@@ -100,11 +100,20 @@ cd Agent-Relay
 수명 주기:
 
 ```bash
-./scripts/agent-relay-svc start|stop|restart|status|doctor
+./scripts/agent-relay-svc start|stop|restart|status|doctor|connect
 # 또는 (빌드 후)
 npx agent-relay services status
 npx agent-relay doctor
+npx agent-relay connect
 ```
+
+ChatGPT 연결(터널 Human Gate → Developer Mode → Agent Relay Local → Scan Tools):
+
+```bash
+agent-relay connect
+```
+
+자세한 상태 머신·인증·도구 새로 고침: [`docs/V1-CHATGPT-CONNECT.md`](docs/V1-CHATGPT-CONNECT.md).
 
 V1은 **Linux 전용**이다. Windows / WSL / macOS는 이후 대상이다.
 

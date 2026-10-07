@@ -10,6 +10,7 @@ import * as workerRegistry from '../backend/worker-registry.js';
 import * as goalTask from '../backend/goal-task.js';
 import { getAdapter } from '../integrations/core/registry.js';
 import { collectLocalRuntimeChecks } from './local-runtime.js';
+import { assessChatgptConnect } from './chatgpt-connect.js';
 
 export const DOCTOR_SCHEMA_VERSION = 'cli.doctor.v1';
 
@@ -199,6 +200,35 @@ export function runDoctor(cwd: string): DoctorResult {
     const extras = collectLocalRuntimeChecks();
     for (const c of extras.checks) {
       push(c.id, c.status, c.message, c.required);
+    }
+  }
+
+  // 13. ChatGPT connect layer (P2-C) — never invent ChatGPT CONNECTED from local probes
+  {
+    try {
+      const a = assessChatgptConnect({ statusOnly: true });
+      push('connect-local', a.local.status === 'PASS' ? 'PASS' : 'FAIL', `Connect local: ${a.local.status}`, false);
+      push(
+        'connect-tunnel',
+        a.tunnel.status === 'PASS' ? 'PASS' : a.tunnel.status === 'FAIL' ? 'FAIL' : 'WARN',
+        `Connect tunnel: ${a.tunnel.status} (state=${a.state})`,
+        false,
+      );
+      push(
+        'connect-chatgpt',
+        a.chatgpt.status === 'PASS' ? 'PASS' : 'WARN',
+        `Connect ChatGPT: ${a.chatgpt.status} — ${a.chatgpt.capability}`,
+        false,
+      );
+      push(
+        'connect-overall',
+        a.overall === 'PASS' ? 'PASS' : a.overall === 'FAIL' ? 'FAIL' : 'WARN',
+        `Connect overall: ${a.overall}`,
+        false,
+      );
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      push('connect-overall', 'WARN', `Connect assess unavailable: ${msg}`, false);
     }
   }
 

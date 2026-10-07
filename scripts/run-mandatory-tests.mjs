@@ -83,6 +83,7 @@ export const MANDATORY_SUITES = [
   'test:p1-8c05-goal-task-dispatch',
   'test:p1-8d-state-integrity',
   'test:p2-clean-install',
+  'test:p2-c-chatgpt-connect',
   'test:actl-managed-bridge',
   'test:b15-fix-01-a',
   'test:b15-fix-03-a',

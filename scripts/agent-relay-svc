@@ -23,9 +23,10 @@ AR_NODE="${AGENT_RELAY_NODE:-$(command -v node)}"
 
 usage() {
   cat <<EOF
-Usage: ./scripts/agent-relay-svc <start|stop|restart|status|doctor>
+Usage: ./scripts/agent-relay-svc <start|stop|restart|status|doctor|connect>
 
 Manages the local Agent Relay MCP App + auth proxy for this install.
+connect delegates to: agent-relay connect (ChatGPT Secure MCP guide)
 EOF
 }
 
@@ -273,10 +274,21 @@ cmd_doctor() {
   else
     echo "! tunnel: tunnel-client not on PATH — install then create your own tunnel (Human Gate)"
   fi
+  if [[ -f "$cli" ]]; then
+    echo ""
+    echo "Connect layer"
+    AGENT_RELAY_CONFIG_DIR="$AR_CONFIG_DIR" \
+    AGENT_RELAY_DATA_ROOT="$AR_DATA_ROOT" \
+    AGENT_RELAY_MCP_PORT="$AR_MCP_PORT" \
+    AGENT_RELAY_PROXY_PORT="$AR_PROXY_PORT" \
+    AGENT_RELAY_INSTANCE="$AR_INSTANCE" \
+    AGENT_RELAY_RUNTIME="$AR_RUNTIME_MODE" \
+      "$AR_NODE" "$cli" connect --status || true
+  fi
   if health_probe; then
     if [[ $fail -eq 0 ]]; then
       echo ""
-      echo "SUMMARY: PASS (tunnel Human Gate may still be pending → WARN)"
+      echo "SUMMARY: PASS (tunnel/ChatGPT Human Gate may still be pending → WARN)"
     else
       echo ""
       echo "SUMMARY: FAIL"
@@ -289,6 +301,22 @@ cmd_doctor() {
   fi
 }
 
+cmd_connect() {
+  require_install
+  local cli="$AR_REPO_ROOT/dist/server/cli/index.js"
+  if [[ ! -f "$cli" ]]; then
+    echo "ERROR: CLI build missing — run npm run build" >&2
+    exit 1
+  fi
+  AGENT_RELAY_CONFIG_DIR="$AR_CONFIG_DIR" \
+  AGENT_RELAY_DATA_ROOT="$AR_DATA_ROOT" \
+  AGENT_RELAY_MCP_PORT="$AR_MCP_PORT" \
+  AGENT_RELAY_PROXY_PORT="$AR_PROXY_PORT" \
+  AGENT_RELAY_INSTANCE="$AR_INSTANCE" \
+  AGENT_RELAY_RUNTIME="$AR_RUNTIME_MODE" \
+    "$AR_NODE" "$cli" connect "$@"
+}
+
 main() {
   local cmd="${1:-}"
   case "$cmd" in
@@ -297,6 +325,7 @@ main() {
     restart) cmd_restart ;;
     status) cmd_status ;;
     doctor) cmd_doctor ;;
+    connect) shift; cmd_connect "$@" ;;
     -h|--help|help|"") usage; [[ -n "$cmd" ]] || exit 1; exit 0 ;;
     *) echo "Unknown command: $cmd" >&2; usage; exit 1 ;;
   esac

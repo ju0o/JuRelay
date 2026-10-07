@@ -35,7 +35,8 @@ Commands:
   resume-scan         Scan stuck/interrupted work (V2 R1, read-only report)
   resume act          Run one guided recovery action (V2 R2, Owner confirm required)
   init                Initialize project (interactive or --yes)
-  connect <client>    Configure PM MCP (claude-code)
+  connect [chatgpt]   Guide Secure MCP Tunnel + ChatGPT App connection (default)
+  connect claude-code Configure PM MCP for Claude Code (legacy helper)
   host watch          Watch pending PM Deliveries and hand them to the PM Host
 
 Options:
@@ -75,13 +76,16 @@ Examples:
   agent-relay init
   agent-relay init --yes
   agent-relay init --yes --json
+  agent-relay connect
+  agent-relay connect --status
+  agent-relay connect --ready --tunnel-id tunnel_YOUR_ID
   agent-relay connect claude-code
   agent-relay host watch --once
   agent-relay --no-tui
 `);
 }
 
-function parseArgs(argv: string[]): { command: string | null; sub: string | null; taskId: string | null; task: string | null; pattern: string | null; run: string | null; prep: string | null; orphanAction: string | null; reason: string | null; goal: string | null; goalTitle: string | null; goalStatement: string | null; workspace: string | null; transport: string | null; actlAgent: string | null; projectName: string | null; lane: string | null; preset: string | null; script: string | null; project: string | null; cycle: string | null; store: string | null; transportFile: string | null; worker: string | null; dataRootOpt: string | null; dataRoot: string | null; goalBriefDir: string | null; testsFile: string | null; commandsFile: string | null; risksFile: string | null; base: string | null; ready: string | null; note: string | null; ttlHours: number | null; tasksMax: number | null; turnTimeoutMs: number | null; turnAttempts: number | null; noNewTasks: boolean; noTmuxSends: boolean; autoContinue: boolean; nightCycle: string | null; expectedSha: string | null; maxTurns: number | null; live: boolean; dryRun: boolean; allowTmuxSends: boolean; json: boolean; noTui: boolean; help: boolean; version: boolean; yes: boolean; force: boolean; once: boolean; pollMs: number | null; hostConfig: string | null; unknown: string | null } {
+function parseArgs(argv: string[]): { command: string | null; sub: string | null; taskId: string | null; task: string | null; pattern: string | null; run: string | null; prep: string | null; orphanAction: string | null; reason: string | null; goal: string | null; goalTitle: string | null; goalStatement: string | null; workspace: string | null; transport: string | null; actlAgent: string | null; projectName: string | null; lane: string | null; preset: string | null; script: string | null; project: string | null; cycle: string | null; store: string | null; transportFile: string | null; worker: string | null; dataRootOpt: string | null; dataRoot: string | null; goalBriefDir: string | null; testsFile: string | null; commandsFile: string | null; risksFile: string | null; base: string | null; ready: string | null; operatorReady: boolean; connectStatusOnly: boolean; tunnelId: string | null; connectProfile: string | null; markToolScanVerified: boolean; markWidgetVerified: boolean; markCancelReadyVisible: boolean; markChatgptConnected: boolean; markToolRefreshRequired: boolean; note: string | null; ttlHours: number | null; tasksMax: number | null; turnTimeoutMs: number | null; turnAttempts: number | null; noNewTasks: boolean; noTmuxSends: boolean; autoContinue: boolean; nightCycle: string | null; expectedSha: string | null; maxTurns: number | null; live: boolean; dryRun: boolean; allowTmuxSends: boolean; json: boolean; noTui: boolean; help: boolean; version: boolean; yes: boolean; force: boolean; once: boolean; pollMs: number | null; hostConfig: string | null; unknown: string | null } {
   const args = argv.slice(2);
   let command: string | null = null;
   let sub: string | null = null;
@@ -115,6 +119,15 @@ function parseArgs(argv: string[]): { command: string | null; sub: string | null
   let risksFile: string | null = null;
   let base: string | null = null;
   let ready: string | null = null;
+  let operatorReady = false;
+  let connectStatusOnly = false;
+  let tunnelId: string | null = null;
+  let connectProfile: string | null = null;
+  let markToolScanVerified = false;
+  let markWidgetVerified = false;
+  let markCancelReadyVisible = false;
+  let markChatgptConnected = false;
+  let markToolRefreshRequired = false;
   let note: string | null = null;
   let ttlHours: number | null = null;
   let tasksMax: number | null = null;
@@ -157,7 +170,32 @@ function parseArgs(argv: string[]): { command: string | null; sub: string | null
     else if (a === '--no-new-tasks') noNewTasks = true;
     else if (a === '--no-tmux-sends') noTmuxSends = true;
     else if (a === '--allow-tmux-sends') allowTmuxSends = true;
-    else if (a === '--poll-ms' || a === '--host-config' || a === '--task' || a === '--pattern' || a === '--run' || a === '--prep' || a === '--orphan-action' || a === '--reason' || a === '--goal' || a === '--goal-title' || a === '--goal-statement' || a === '--workspace' || a === '--transport' || a === '--actl-agent' || a === '--project-name' || a === '--lane' || a === '--preset' || a === '--script' || a === '--project' || a === '--cycle' || a === '--tests' || a === '--commands-file' || a === '--risks-file' || a === '--base' || a === '--ready' || a === '--store' || a === '--transport-file' || a === '--worker' || a === '--data-root' || a === '--goal-brief-dir' || a === '--note' || a === '--ttl-hours' || a === '--tasks' || a === '--turn-timeout-ms' || a === '--turn-attempts' || a === '--max-turns') {
+    else if (a === '--status') connectStatusOnly = true;
+    else if (a === '--mark-tool-scan-verified') markToolScanVerified = true;
+    else if (a === '--mark-widget-verified') markWidgetVerified = true;
+    else if (a === '--mark-cancel-ready-visible') markCancelReadyVisible = true;
+    else if (a === '--mark-chatgpt-connected') markChatgptConnected = true;
+    else if (a === '--mark-tool-refresh-required') markToolRefreshRequired = true;
+    else if (a === '--ready') {
+      // Boolean form for ChatGPT connect (operator READY). Value form YES|NO remains for workspace cert.
+      const next = args[i + 1];
+      if (next === undefined || next.startsWith('--') || next === 'chatgpt' || next === 'claude-code') {
+        operatorReady = true;
+      } else {
+        ready = next;
+        i++;
+      }
+    } else if (a === '--tunnel-id') {
+      const next = args[i + 1];
+      if (next === undefined || next.startsWith('--')) { unknown = a; break; }
+      tunnelId = next;
+      i++;
+    } else if (a === '--profile' && (command === 'connect' || args.includes('connect'))) {
+      const next = args[i + 1];
+      if (next === undefined || next.startsWith('--')) { unknown = a; break; }
+      connectProfile = next;
+      i++;
+    } else if (a === '--poll-ms' || a === '--host-config' || a === '--task' || a === '--pattern' || a === '--run' || a === '--prep' || a === '--orphan-action' || a === '--reason' || a === '--goal' || a === '--goal-title' || a === '--goal-statement' || a === '--workspace' || a === '--transport' || a === '--actl-agent' || a === '--project-name' || a === '--lane' || a === '--preset' || a === '--script' || a === '--project' || a === '--cycle' || a === '--tests' || a === '--commands-file' || a === '--risks-file' || a === '--base' || a === '--store' || a === '--transport-file' || a === '--worker' || a === '--data-root' || a === '--goal-brief-dir' || a === '--note' || a === '--ttl-hours' || a === '--tasks' || a === '--turn-timeout-ms' || a === '--turn-attempts' || a === '--max-turns') {
       const next = args[i + 1];
       if (next === undefined || next.startsWith('--')) { unknown = a; break; }
       if (a === '--poll-ms') {
@@ -188,8 +226,6 @@ function parseArgs(argv: string[]): { command: string | null; sub: string | null
         risksFile = next;
       } else if (a === '--base') {
         base = next;
-      } else if (a === '--ready') {
-        ready = next;
       } else if (a === '--note') {
         note = next;
       } else if (a === '--ttl-hours') {
@@ -262,7 +298,7 @@ function parseArgs(argv: string[]): { command: string | null; sub: string | null
     }
   }
 
-  return { command, sub, taskId, task, pattern, run, prep, orphanAction, reason, goal, goalTitle, goalStatement, workspace, transport, actlAgent, projectName, lane, preset, script, project, cycle, store, transportFile, worker, dataRootOpt, dataRoot, goalBriefDir, testsFile, commandsFile, risksFile, base, ready, note, ttlHours, tasksMax, noNewTasks, noTmuxSends, autoContinue, nightCycle, expectedSha, turnTimeoutMs, turnAttempts, maxTurns, live, dryRun, allowTmuxSends, json, noTui, help, version, yes, force, once, pollMs, hostConfig, unknown };
+  return { command, sub, taskId, task, pattern, run, prep, orphanAction, reason, goal, goalTitle, goalStatement, workspace, transport, actlAgent, projectName, lane, preset, script, project, cycle, store, transportFile, worker, dataRootOpt, dataRoot, goalBriefDir, testsFile, commandsFile, risksFile, base, ready, operatorReady, connectStatusOnly, tunnelId, connectProfile, markToolScanVerified, markWidgetVerified, markCancelReadyVisible, markChatgptConnected, markToolRefreshRequired, note, ttlHours, tasksMax, noNewTasks, noTmuxSends, autoContinue, nightCycle, expectedSha, turnTimeoutMs, turnAttempts, maxTurns, live, dryRun, allowTmuxSends, json, noTui, help, version, yes, force, once, pollMs, hostConfig, unknown };
 }
 
 async function promptOwnerConfirm(question: string): Promise<boolean> {
@@ -277,7 +313,7 @@ async function promptOwnerConfirm(question: string): Promise<boolean> {
 }
 
 async function main(): Promise<void> {
-  const { command, sub, taskId, task, pattern, run, prep, orphanAction, reason, goal, goalTitle, goalStatement, workspace, transport, actlAgent, projectName, lane, preset, script, project, cycle, store, transportFile, worker, dataRootOpt, dataRoot, goalBriefDir, testsFile, commandsFile, risksFile, base, ready, note, ttlHours, tasksMax, noNewTasks, noTmuxSends, autoContinue, nightCycle, expectedSha, turnTimeoutMs, turnAttempts, maxTurns, live, dryRun, allowTmuxSends, json, noTui, help, version, yes, force, once, pollMs, hostConfig, unknown } = parseArgs(process.argv);
+  const { command, sub, taskId, task, pattern, run, prep, orphanAction, reason, goal, goalTitle, goalStatement, workspace, transport, actlAgent, projectName, lane, preset, script, project, cycle, store, transportFile, worker, dataRootOpt, dataRoot, goalBriefDir, testsFile, commandsFile, risksFile, base, ready, operatorReady, connectStatusOnly, tunnelId, connectProfile, markToolScanVerified, markWidgetVerified, markCancelReadyVisible, markChatgptConnected, markToolRefreshRequired, note, ttlHours, tasksMax, noNewTasks, noTmuxSends, autoContinue, nightCycle, expectedSha, turnTimeoutMs, turnAttempts, maxTurns, live, dryRun, allowTmuxSends, json, noTui, help, version, yes, force, once, pollMs, hostConfig, unknown } = parseArgs(process.argv);
   const cwd = process.cwd();
 
   if (help) {
@@ -479,28 +515,50 @@ async function main(): Promise<void> {
   }
 
   if (command === 'connect') {
-    const { runConnect } = await import('./connect.js');
-    const client = sub ?? '';
-    if (!client) {
-      const msg = 'Usage: agent-relay connect <client>  (supported: claude-code)';
-      if (json) console.log(JSON.stringify({ schemaVersion: 'cli.connect.v1', ok: false, client: '', configured: false, method: 'manual', message: msg }, null, 2));
+    const client = sub ?? 'chatgpt';
+    if (client === 'claude-code') {
+      const { runConnect } = await import('./connect.js');
+      const res = runConnect(cwd, client, { force });
+      if (json) console.log(JSON.stringify(res, null, 2));
+      else {
+        console.log(res.message);
+        if (res.mcpCommand) console.log(`\nMCP: ${res.mcpCommand}`);
+        if (res.configPath) console.log(`Config: ${res.configPath}`);
+        if (res.scope) console.log(`Scope: ${res.scope}`);
+        if (res.warnings && res.warnings.length) {
+          console.log('\nWarnings:');
+          for (const w of res.warnings) console.log(`  ! ${w}`);
+        }
+        if (res.diagnostic) console.log(`\nDiagnostic: ${res.diagnostic.slice(0, 400)}`);
+      }
+      process.exit(res.ok ? 0 : 1);
+    }
+    if (client !== 'chatgpt' && client !== '') {
+      const msg = `Unknown connect target '${client}'. Use: agent-relay connect | agent-relay connect chatgpt | agent-relay connect claude-code`;
+      if (json) console.log(JSON.stringify({ schemaVersion: 'cli.chatgpt-connect.v1', ok: false, error: msg }, null, 2));
       else console.error(msg);
       process.exit(1);
     }
-    const res = runConnect(cwd, client, { force });
+    const { runChatgptConnect, renderChatgptConnectHuman } = await import('./chatgpt-connect.js');
+    const res = runChatgptConnect({
+      cwd,
+      ready: operatorReady,
+      statusOnly: connectStatusOnly,
+      force,
+      json,
+      ...(tunnelId ? { tunnelId } : {}),
+      ...(connectProfile ? { profile: connectProfile } : {}),
+      markToolScanVerified,
+      markWidgetVerified,
+      markCancelReadyVisible,
+      markChatgptConnected,
+      markToolRefreshRequired,
+    });
     if (json) console.log(JSON.stringify(res, null, 2));
-    else {
-      console.log(res.message);
-      if (res.mcpCommand) console.log(`\nMCP: ${res.mcpCommand}`);
-      if (res.configPath) console.log(`Config: ${res.configPath}`);
-      if (res.scope) console.log(`Scope: ${res.scope}`);
-      if (res.warnings && res.warnings.length) {
-        console.log('\nWarnings:');
-        for (const w of res.warnings) console.log(`  ! ${w}`);
-      }
-      if (res.diagnostic) console.log(`\nDiagnostic: ${res.diagnostic.slice(0, 400)}`);
-    }
-    process.exit(res.ok ? 0 : 1);
+    else console.log(renderChatgptConnectHuman(res));
+    // Exit 0 for HUMAN_GATE_REQUIRED guidance when local is healthy; fail only on local/tunnel-client hard failures
+    const hardFail = res.state === 'LOCAL_NOT_READY' || res.state === 'TUNNEL_CLIENT_MISSING' || !!res.error;
+    process.exit(hardFail && !res.ok ? 1 : 0);
   }
 
   if (command === 'host') {

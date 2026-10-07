@@ -279,7 +279,14 @@ console.log('\n── CLI-18 no embedded LLM dependency added ──────
   const hasLLM = Object.keys(deps).some((k) => k.includes('openai') || k.includes('anthropic') || k.includes('gpt') || k.includes('claude-sdk'));
   check(!hasLLM, `CLI-18 no LLM deps in package.json`);
   const cliIdx = fs.readFileSync('src/cli/index.ts', 'utf8');
-  check(!cliIdx.toLowerCase().includes('openai') && !cliIdx.toLowerCase().includes('anthropic') && !cliIdx.toLowerCase().includes('gpt'), `CLI-18 cli/index.ts no LLM imports`);
+  // Product name "ChatGPT" may appear in connect UX help; ban LLM SDK/client imports only.
+  const cliLower = cliIdx.toLowerCase();
+  const hasLlmImport =
+    /\bfrom\s+['\"][^'\"]*(openai|anthropic|@anthropic)[^'\"]*['\"]/.test(cliLower) ||
+    /\brequire\(\s*['\"][^'\"]*(openai|anthropic)[^'\"]*['\"]\s*\)/.test(cliLower) ||
+    cliLower.includes('openai.chat') ||
+    cliLower.includes('anthropic(');
+  check(!hasLlmImport, `CLI-18 cli/index.ts no LLM imports`);
   const statusSrc = fs.readFileSync('src/cli/status.ts', 'utf8');
   check(!statusSrc.toLowerCase().includes('openai'), `CLI-18 status.ts no LLM`);
 }

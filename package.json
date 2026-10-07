@@ -137,7 +137,8 @@
     "test:p1-8c04-project-dashboard": "node --test test/p1-8c04-project-dashboard.test.mjs",
     "test:p1-8c05-goal-task-dispatch": "node --test test/p1-8c05-goal-task-dispatch.test.mjs",
     "test:p1-8d-state-integrity": "node --test test/p1-8d-state-integrity.test.mjs",
-    "test:p2-clean-install": "node --test test/p2-clean-install.test.mjs"
+    "test:p2-clean-install": "node --test test/p2-clean-install.test.mjs",
+    "test:p2-c-chatgpt-connect": "node --test test/p2-c-chatgpt-connect.test.mjs"
   },
   "main": "dist/server/backend/main.js",
   "bin": {
