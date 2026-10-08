@@ -51,6 +51,12 @@ export interface RoleBinding {
   runtime: string;
   /** Model/profile label, e.g. "luna". Free-form; "default" when unset. */
   model: string;
+  /**
+   * Optional explicit WorkerRegistry id (e.g. "builder-claude-pro").
+   * When set, dispatch resolve prefers this over runtime/model scoring.
+   * Omitted bindings keep legacy runtime-only resolution.
+   */
+  workerId?: string;
   roleProfile: RoleProfile;
 }
 
@@ -131,6 +137,12 @@ function checkBinding(where: string, b: unknown): asserts b is RoleBinding {
   if (!noPaneNumber(r.runtime)) fail(`${where}.runtime must not be a pane number`);
   if (typeof r.model !== 'string' || !r.model.trim()) fail(`${where}.model required`);
   if (!noPaneNumber(r.model as string)) fail(`${where}.model must not be a pane number`);
+  if (r.workerId !== undefined) {
+    if (typeof r.workerId !== 'string' || !r.workerId.trim()) {
+      fail(`${where}.workerId must be a non-empty string when set`);
+    }
+    if (!noPaneNumber(r.workerId)) fail(`${where}.workerId must not be a pane number`);
+  }
   const p = r.roleProfile as Record<string, unknown> | undefined;
   if (!p || (p.sessionPolicy !== 'persistent' && p.sessionPolicy !== 'per-task')) {
     fail(`${where}.roleProfile.sessionPolicy must be persistent|per-task`);
@@ -167,6 +179,7 @@ export function validateWorkspaceConfigV2(raw: unknown): asserts raw is Workspac
     const sameBinding = (a: RoleBinding, b: RoleBinding): boolean =>
       a.runtime === b.runtime
       && a.model === b.model
+      && (a.workerId ?? undefined) === (b.workerId ?? undefined)
       && a.roleProfile.sessionPolicy === b.roleProfile.sessionPolicy
       && a.roleProfile.permissionProfile === b.roleProfile.permissionProfile;
     if (l.builders !== undefined) {

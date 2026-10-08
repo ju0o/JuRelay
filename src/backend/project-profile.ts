@@ -63,6 +63,8 @@ export interface ProjectRoleBindingView {
   runtime?: string;
   model?: string;
   provider?: string;
+  /** Explicit WorkerRegistry id when persisted on the owning store. */
+  workerId?: string;
   workspaceRoot?: string;
   source: 'ROLE_CONFIG' | 'WORKSPACE_CONFIG';
 }
@@ -306,10 +308,14 @@ function bindingsFromLane(lane: LaneConfigV2): {
   builders: ProjectRoleBindingView[];
   qa: ProjectRoleBindingView[];
 } {
-  const fromBinding = (roleId: string, b: { runtime: string; model: string }): ProjectRoleBindingView => ({
+  const fromBinding = (
+    roleId: string,
+    b: { runtime: string; model: string; workerId?: string },
+  ): ProjectRoleBindingView => ({
     roleId,
     runtime: b.runtime,
     model: b.model,
+    ...(b.workerId ? { workerId: b.workerId } : {}),
     workspaceRoot: lane.root,
     source: 'WORKSPACE_CONFIG',
   });

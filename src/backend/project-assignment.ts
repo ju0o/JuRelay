@@ -392,6 +392,7 @@ function toWorkspaceBinding(resolved: ResolvedBinding): RoleBinding {
     runtime: resolved.runtime,
     model: resolved.model,
     roleProfile: { ...resolved.roleProfile },
+    ...(resolved.workerId ? { workerId: resolved.workerId } : {}),
   };
 }
 
@@ -732,8 +733,10 @@ export function assignmentSummaryFromProfile(profile: ProjectProfileView | null 
   if (!profile) return null;
   const label = (b: ProjectRoleBindingView | null | undefined): string | null => {
     if (!b) return null;
+    // Keep dashboard runtime labels stable; workerId is available on the binding view.
     if (b.runtime) return b.runtime;
     if (b.runtimeAdapterId) return b.runtimeAdapterId;
+    if (b.workerId) return b.workerId;
     return null;
   };
   return {

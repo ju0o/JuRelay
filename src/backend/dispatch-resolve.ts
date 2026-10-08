@@ -59,22 +59,28 @@ function labelOfBinding(b: { runtime?: string | null; runtimeAdapterId?: string 
   return null;
 }
 
+export type ResolveBuilderMapResult =
+  | { ok: true; workerId: string; worker: WorkerRegistryRecord }
+  | { ok: false; reason: 'unknown' }
+  | { ok: false; reason: 'ambiguous'; candidates: string[] };
+
 /**
  * Map a desired Builder label (runtime / adapter / workerId) to a registry worker.
  * Prefer exact workerId match, then observationAdapterId, then capability tag,
  * then workerId containing the runtime (builder-opencode).
+ * Equal top scores fail closed as ambiguous — never pick arbitrarily.
  */
-export function resolveBuilderToWorkerId(
+export function mapBuilderToWorker(
   dataRoot: string,
   desired: string,
-): { workerId: string; worker: WorkerRegistryRecord } | null {
+): ResolveBuilderMapResult {
   const key = desired.trim().toLowerCase();
-  if (!key) return null;
+  if (!key) return { ok: false, reason: 'unknown' };
 
   // Exact workerId.
   try {
     const exact = loadWorkerRegistryRecord(dataRoot, desired.trim());
-    if (exact) return { workerId: exact.workerId, worker: exact };
+    if (exact) return { ok: true, workerId: exact.workerId, worker: exact };
   } catch {
     /* fall through */
   }
@@ -99,10 +105,27 @@ export function resolveBuilderToWorkerId(
     if (score > 0) scored.push({ worker: w, score });
   }
   scored.sort((a, b) => b.score - a.score || a.worker.workerId.localeCompare(b.worker.workerId));
-  if (scored.length === 0) return null;
+  if (scored.length === 0) return { ok: false, reason: 'unknown' };
   // Ambiguous equal top scores → refuse (fail closed).
-  if (scored.length > 1 && scored[0]!.score === scored[1]!.score) return null;
-  return { workerId: scored[0]!.worker.workerId, worker: scored[0]!.worker };
+  if (scored.length > 1 && scored[0]!.score === scored[1]!.score) {
+    const top = scored[0]!.score;
+    return {
+      ok: false,
+      reason: 'ambiguous',
+      candidates: scored.filter((s) => s.score === top).map((s) => s.worker.workerId),
+    };
+  }
+  return { ok: true, workerId: scored[0]!.worker.workerId, worker: scored[0]!.worker };
+}
+
+/** @deprecated Prefer mapBuilderToWorker; kept for callers expecting null on failure. */
+export function resolveBuilderToWorkerId(
+  dataRoot: string,
+  desired: string,
+): { workerId: string; worker: WorkerRegistryRecord } | null {
+  const mapped = mapBuilderToWorker(dataRoot, desired);
+  if (!mapped.ok) return null;
+  return { workerId: mapped.workerId, worker: mapped.worker };
 }
 
 export function resolveOwnerDispatch(input: ResolveDispatchInput): ResolveDispatchResult {
@@ -183,9 +206,14 @@ export function resolveOwnerDispatch(input: ResolveDispatchInput): ResolveDispat
     }
 
     if (desiredBuilder) {
-      const resolved = resolveBuilderToWorkerId(dataRoot, desiredBuilder);
-      if (!resolved) blockers.push('UNKNOWN_BUILDER');
-      else workerId = resolved.workerId;
+      const mapped = mapBuilderToWorker(dataRoot, desiredBuilder);
+      if (mapped.ok) {
+        workerId = mapped.workerId;
+      } else if (mapped.reason === 'ambiguous') {
+        blockers.push('BUILDER_AMBIGUOUS');
+      } else {
+        blockers.push('UNKNOWN_BUILDER');
+      }
     }
   } catch {
     blockers.push('BUILDER_ASSIGNMENT_REQUIRED');
