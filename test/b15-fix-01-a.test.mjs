@@ -57,8 +57,20 @@ const retryPreparation = await import('../dist/server/backend/retry-preparation.
 const retryDispatch = await import('../dist/server/backend/retry-dispatch.js');
 const capture = await import('../dist/server/backend/capture-service.js');
 const watch = await import('../dist/server/integrations/actl-managed/watch.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 
 const project = 'B15FixA';
+
+/** P2-OWNER-R01: actl-managed has no explicit model catalog — select worker with modelId null. */
+function approveSelection(taskId, workerId = 'w-b15') {
+  taskExec.setTaskExecutionConfig(root, project, {
+    projectId: project,
+    taskId,
+    workerId,
+    modelId: null,
+  });
+  return taskExec.approveTaskExecution(root, project, taskId, 'OWNER_MCP');
+}
 let passed = 0;
 let failed = 0;
 const check = (ok, msg) => { console.log(`${ok ? 'PASS' : 'FAIL'} ${msg}`); if (ok) passed++; else failed++; };
@@ -93,6 +105,7 @@ async function dispatchOne(title, stateDir, permitFactory, decision = 'ACCEPT', 
   let result;
   try {
     const input = { taskId: t.taskId, workerId: 'w-b15', expectedExecutionState: 'READY', workspaceRoot: workspace };
+    if (ownerApproved) approveSelection(t.taskId);
     result = ownerApproved
       ? await v1Dispatch.dispatchV1OwnerApproved(root, project, { ...input, ownerInputPermitFactory: permitFactory })
       : await disp.dispatchTask(root, project, input);

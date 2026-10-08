@@ -29,6 +29,7 @@ const judgments = await import('../dist/server/backend/pm-judgment.js');
 const dispatcher = await import('../dist/server/backend/dispatcher.js');
 const observation = await import('../dist/server/backend/observation-lock.js');
 const workers = await import('../dist/server/backend/worker-registry.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const fixtures = await import('../dist/server/integrations/test-fixture/watch.js');
 fixtures.ensureTestFixtureAdapterRegistered();
 
@@ -41,6 +42,30 @@ workers.writeWorkerRegistryRecord(TEST_ROOT, {
   schemaVersion: 'G.2', workerId: 'v15-s3-worker', displayName: 'V1.5 Slice 3 fixture worker',
   launchCommand: process.execPath, launchArgsPrefix: [aliveFixture], capabilities: ['fixture'], observationAdapterId: 'test-fixture',
 });
+
+/** P2-OWNER-R01: select + approve Agent/model before owner dispatch. */
+function approveSelection(taskId, workerId = 'v15-s3-worker') {
+  taskExec.setTaskExecutionConfig(TEST_ROOT, project, {
+    projectId: project,
+    taskId,
+    workerId,
+    modelId: 'test-model',
+  });
+  return taskExec.approveTaskExecution(TEST_ROOT, project, taskId, 'OWNER_MCP');
+}
+
+function approvePlanTasks(plan) {
+  for (const binding of plan.taskBindings) {
+    // Successor negative fixtures intentionally bind missing workers/workspaces;
+    // only approve when the worker exists so GO/continuation can reach the intended gate.
+    try {
+      workers.loadWorkerRegistryRecord(TEST_ROOT, binding.workerId);
+      approveSelection(binding.taskId, binding.workerId);
+    } catch {
+      // Skip missing/forbidden workers used by failure-boundary fixtures.
+    }
+  }
+}
 
 const contract = (title) => ({
   title, goal: `Complete ${title}`, reason: 'V1.5 Slice 3 deterministic fixture',
@@ -71,6 +96,7 @@ async function createStartedPlan(prefix, bindingOverride = {}) {
   const plan = await plans.createExecutionPlan(TEST_ROOT, project, {
     title: prefix, orderedTaskIds: created.map(({ task }) => task.taskId), taskBindings: bindings,
   });
+  approvePlanTasks(plan);
   const start = await planDispatch.dispatchExecutionPlanOwnerApproved(TEST_ROOT, project, {
     planId: plan.planId, expectedPlanState: 'PLANNED', ownerAuthorization: authorizationFor(plan),
   });
@@ -132,6 +158,7 @@ await actions.requestTaskRetry({
   dataRoot: TEST_ROOT, project, goalId: retryBTask.goalId, taskId: retryB,
   expectedExecutionState: 'RESULT_RECEIVED', expectedPmState: 'CHANGES_REQUESTED', callerSurface: 'OWNER_IPC', reason: 'fixture retry',
 });
+// Same-Task retry: prior approved/frozen selection still satisfies requireApprovedExecutionConfig.
 await v1Dispatch.dispatchV1OwnerApproved(TEST_ROOT, project, {
   taskId: retryB, workerId: 'v15-s3-worker', workspaceRoot: retryFlow.workspace, expectedExecutionState: 'READY',
 });
@@ -145,6 +172,7 @@ const staleOutcome = await continuation.continueExecutionPlanAfterTaskAccepted(T
 check(staleOutcome === 'NOT_ACTIVE' && gt.getTask(TEST_ROOT, project, retryC).linkedRuns.length === 1, '6 stale Task A ACCEPT cannot advance active Task B/C Plan');
 const standalone = await intake.createV1TaskFromContract(TEST_ROOT, project, contract('out-of-plan'));
 const standaloneWorkspace = path.join(TEST_ROOT, '_workspace-out-of-plan'); fs.mkdirSync(standaloneWorkspace, { recursive: true });
+approveSelection(standalone.task.taskId);
 const standaloneRun = await v1Dispatch.dispatchV1OwnerApproved(TEST_ROOT, project, {
   taskId: standalone.task.taskId, workerId: 'v15-s3-worker', workspaceRoot: standaloneWorkspace, expectedExecutionState: 'READY',
 });
@@ -215,6 +243,7 @@ await plans.advanceExecutionPlanActiveTask(TEST_ROOT, project, interruption.plan
   expectedState: 'RUNNING', expectedActiveTaskId: interruptionA, nextActiveTaskId: interruptionB,
 });
 const interruptionBinding = interruption.plan.taskBindings[1];
+// createStartedPlan already approved successor Task B selection.
 await v1Dispatch.dispatchV1OwnerApproved(TEST_ROOT, project, {
   taskId: interruptionB, workerId: interruptionBinding.workerId, workspaceRoot: interruptionBinding.workspaceRoot, expectedExecutionState: 'READY',
 });

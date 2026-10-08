@@ -4,6 +4,9 @@
  * Desired Builder (C02) → trusted workerId (WorkerRegistry).
  * Never invents workspace paths. Never silently picks among multiple Builders
  * unless a single assignment exists (or builders[0] is the documented singular).
+ *
+ * P2-OWNER-R01: when taskId is present, approved Task execution-config is
+ * required for ok — project Assignment alone is not enough to dispatch.
  */
 import * as path from 'node:path';
 import { getProjectProfile, listProjectProfiles } from './project-profile.js';
@@ -16,6 +19,8 @@ import {
 } from './worker-registry.js';
 import { getTask } from './goal-task.js';
 import type { TaskRecord } from '../shared/types.js';
+import { getTaskExecutionConfig } from './task-execution-config.js';
+import { isModelAllowedForWorker } from './agent-model-catalog.js';
 
 export type DispatchResolveBlocker =
   | 'PROJECT_CONFIGURATION_REQUIRED'
@@ -28,7 +33,11 @@ export type DispatchResolveBlocker =
   | 'UNKNOWN_BUILDER'
   | 'TASK_NOT_READY'
   | 'TASK_NOT_FOUND'
-  | 'NO_TASK';
+  | 'NO_TASK'
+  | 'TASK_EXECUTION_SELECTION_REQUIRED'
+  | 'OWNER_APPROVAL_REQUIRED'
+  | 'UNSUPPORTED_MODEL'
+  | 'FORBIDDEN_WORKER';
 
 export interface ResolveDispatchInput {
   dataRoot: string;
@@ -44,8 +53,14 @@ export interface ResolveDispatchResult {
   blockers: DispatchResolveBlocker[];
   projectId: string | null;
   workspaceRoot: string | null;
+  /** Effective Builder label (execution selection worker when approved). */
   desiredBuilder: string | null;
+  /** Project Assignment Builder label (hint only; never sufficient for ok). */
+  projectDesiredBuilder: string | null;
   workerId: string | null;
+  modelId?: string | null;
+  executionProfile?: string;
+  selectionApproved?: boolean;
   taskId: string | null;
   expectedExecutionState: 'READY';
   task: Pick<TaskRecord, 'taskId' | 'title' | 'executionState' | 'pmState' | 'goalId'> | null;
@@ -128,6 +143,14 @@ export function resolveBuilderToWorkerId(
   return { workerId: mapped.workerId, worker: mapped.worker };
 }
 
+function isForbiddenWorkerId(workerId: string, worker: WorkerRegistryRecord | null): boolean {
+  if (workerId === 'claude-code') return true;
+  const cfg = worker?.driverOptions?.claude?.configDir;
+  if (typeof cfg === 'string' && cfg.replace(/\\/g, '/').includes('.claude-team')) return true;
+  if (worker?.role === 'qa' || workerId.toLowerCase().startsWith('qa-')) return true;
+  return false;
+}
+
 export function resolveOwnerDispatch(input: ResolveDispatchInput): ResolveDispatchResult {
   const dataRoot = input.dataRoot;
   const scope = (input.scope || '').trim() || 'ws';
@@ -164,6 +187,7 @@ export function resolveOwnerDispatch(input: ResolveDispatchInput): ResolveDispat
       projectId,
       workspaceRoot: null,
       desiredBuilder: null,
+      projectDesiredBuilder: null,
       workerId: null,
       taskId: null,
       expectedExecutionState: 'READY',
@@ -179,8 +203,8 @@ export function resolveOwnerDispatch(input: ResolveDispatchInput): ResolveDispat
     blockers.push('WORKSPACE_CONFIGURATION_REQUIRED');
   }
 
-  let desiredBuilder: string | null = null;
-  let workerId: string | null = null;
+  let projectDesiredBuilder: string | null = null;
+  let assignmentWorkerId: string | null = null;
   try {
     const assignment = getProjectAssignments({
       dataRoot,
@@ -199,16 +223,16 @@ export function resolveOwnerDispatch(input: ResolveDispatchInput): ResolveDispat
     } else if (builders.length > 1) {
       // C02 contract: builders[0] matches singular builder when multi-binding.
       // Use [0] only when it equals the documented singular primary.
-      desiredBuilder = builders[0]!;
+      projectDesiredBuilder = builders[0]!;
       // Still allow [0] as canonical primary (WorkspaceConfigV2 builders[0]===builder).
     } else {
-      desiredBuilder = builders[0]!;
+      projectDesiredBuilder = builders[0]!;
     }
 
-    if (desiredBuilder) {
-      const mapped = mapBuilderToWorker(dataRoot, desiredBuilder);
+    if (projectDesiredBuilder) {
+      const mapped = mapBuilderToWorker(dataRoot, projectDesiredBuilder);
       if (mapped.ok) {
-        workerId = mapped.workerId;
+        assignmentWorkerId = mapped.workerId;
       } else if (mapped.reason === 'ambiguous') {
         blockers.push('BUILDER_AMBIGUOUS');
       } else {
@@ -218,6 +242,12 @@ export function resolveOwnerDispatch(input: ResolveDispatchInput): ResolveDispat
   } catch {
     blockers.push('BUILDER_ASSIGNMENT_REQUIRED');
   }
+
+  let desiredBuilder: string | null = projectDesiredBuilder;
+  let workerId: string | null = assignmentWorkerId;
+  let modelId: string | null | undefined;
+  let executionProfile: string | undefined;
+  let selectionApproved: boolean | undefined;
 
   let task: ResolveDispatchResult['task'] = null;
   let taskId: string | null = typeof input.taskId === 'string' && input.taskId.trim()
@@ -239,6 +269,49 @@ export function resolveOwnerDispatch(input: ResolveDispatchInput): ResolveDispat
       blockers.push('TASK_NOT_FOUND');
       taskId = null;
     }
+
+    // P2-OWNER-R01: approved per-Task execution selection required for ok.
+    if (taskId) {
+      const cfg = getTaskExecutionConfig(dataRoot, scope, taskId);
+      if (!cfg) {
+        blockers.push('TASK_EXECUTION_SELECTION_REQUIRED');
+        workerId = null;
+        selectionApproved = false;
+      } else {
+        modelId = cfg.modelId;
+        if (cfg.executionProfile) executionProfile = cfg.executionProfile;
+        selectionApproved = cfg.ownerApproval.approved === true;
+        desiredBuilder = cfg.workerId;
+
+        const worker = (() => {
+          try {
+            return loadWorkerRegistryRecord(dataRoot, cfg.workerId);
+          } catch {
+            return null;
+          }
+        })();
+
+        if (!worker) {
+          blockers.push('UNKNOWN_BUILDER');
+          workerId = null;
+        } else if (isForbiddenWorkerId(cfg.workerId, worker)) {
+          blockers.push('FORBIDDEN_WORKER');
+          workerId = null;
+        } else if (
+          cfg.modelId !== null
+          && cfg.modelId !== undefined
+          && !isModelAllowedForWorker(dataRoot, worker, cfg.modelId)
+        ) {
+          blockers.push('UNSUPPORTED_MODEL');
+          workerId = cfg.workerId;
+        } else if (!cfg.ownerApproval.approved) {
+          blockers.push('OWNER_APPROVAL_REQUIRED');
+          workerId = cfg.workerId;
+        } else {
+          workerId = cfg.workerId;
+        }
+      }
+    }
   } else {
     blockers.push('NO_TASK');
   }
@@ -248,13 +321,25 @@ export function resolveOwnerDispatch(input: ResolveDispatchInput): ResolveDispat
     : null;
 
   const unique = [...new Set(blockers)];
+  // ok requires approved selection + workspace + READY task (project default alone is NOT enough).
+  const ok =
+    unique.length === 0
+    && !!workerId
+    && !!workspaceRoot
+    && !!taskId
+    && selectionApproved === true;
+
   return {
-    ok: unique.length === 0 && !!workerId && !!workspaceRoot && !!taskId,
+    ok,
     blockers: unique,
     projectId,
     workspaceRoot,
     desiredBuilder,
+    projectDesiredBuilder,
     workerId,
+    ...(modelId !== undefined ? { modelId } : {}),
+    ...(executionProfile ? { executionProfile } : {}),
+    ...(selectionApproved !== undefined ? { selectionApproved } : {}),
     taskId,
     expectedExecutionState: 'READY',
     task,

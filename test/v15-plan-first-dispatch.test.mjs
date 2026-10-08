@@ -35,6 +35,7 @@ const gt = await import('../dist/server/backend/goal-task.js');
 const rt = await import('../dist/server/backend/goal-task-runtime.js');
 const dispatcher = await import('../dist/server/backend/dispatcher.js');
 const workers = await import('../dist/server/backend/worker-registry.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const fixtures = await import('../dist/server/integrations/test-fixture/watch.js');
 fixtures.ensureTestFixtureAdapterRegistered();
 
@@ -54,6 +55,23 @@ workers.writeWorkerRegistryRecord(TEST_ROOT, {
   capabilities: ['fixture'],
   observationAdapterId: 'test-fixture',
 });
+
+/** P2-OWNER-R01: select + approve Agent/model before owner dispatch. */
+function approveSelection(taskId, workerId = 'v15-s2-worker') {
+  taskExec.setTaskExecutionConfig(TEST_ROOT, project, {
+    projectId: project,
+    taskId,
+    workerId,
+    modelId: 'test-model',
+  });
+  return taskExec.approveTaskExecution(TEST_ROOT, project, taskId, 'OWNER_MCP');
+}
+
+function approvePlanTasks(plan) {
+  for (const binding of plan.taskBindings) {
+    approveSelection(binding.taskId, binding.workerId);
+  }
+}
 
 const contract = (title) => ({
   title,
@@ -95,6 +113,13 @@ async function createPlan(prefix, options = {}) {
     orderedTaskIds: created.map(({ task }) => task.taskId),
     taskBindings,
   });
+  // Approve only when the frozen worker is registered (negative cases skip).
+  try {
+    workers.loadWorkerRegistryRecord(TEST_ROOT, options.workerId ?? 'v15-s2-worker');
+    approvePlanTasks(plan);
+  } catch {
+    // Intentionally unregistered worker fixtures exercise binding validation.
+  }
   return { plan, created };
 }
 
@@ -230,6 +255,7 @@ await plans.startExecutionPlan(TEST_ROOT, project, interrupted.plan.planId, {
   expectedState: 'PLANNED', activeTaskId: interrupted.plan.orderedTaskIds[0], ownerAuthorization: authorizationFor(interrupted.plan),
 });
 const interruptedBinding = interrupted.plan.taskBindings[0];
+// createPlan already approved; re-approve is a no-op only if not frozen — still READY here.
 const interruptedRun = await v1Dispatch.dispatchV1OwnerApproved(TEST_ROOT, project, {
   taskId: interruptedBinding.taskId,
   workerId: interruptedBinding.workerId,
@@ -245,6 +271,7 @@ check(gt.getTask(TEST_ROOT, project, interrupted.plan.orderedTaskIds[0]).linkedR
 console.log('\n-- V1 regression boundary --');
 check(gt.getTask(TEST_ROOT, project, valid.plan.orderedTaskIds[1]).linkedRuns.length === 0, '15 Slice 2 first-dispatch path never starts Task 2');
 const standalone = (await intake.createV1TaskFromContract(TEST_ROOT, project, contract('standalone-v1'))).task;
+approveSelection(standalone.taskId);
 const standaloneDispatch = await v1Dispatch.dispatchV1OwnerApproved(TEST_ROOT, project, {
   taskId: standalone.taskId, workerId: 'v15-s2-worker', workspaceRoot: workspace, expectedExecutionState: 'READY',
 });

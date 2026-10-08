@@ -69,7 +69,11 @@ const RELAY_ARGS = new Set([
   '--claudeConfigDir',
   '--permissionMode',
   '--allowedTool',
+  '--model',
 ]);
+
+/** Optional --model charset (mirrors codex wrapper). Never invents ids. */
+const MODEL_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,80}$/;
 
 /**
  * Allowed Claude permission mode values (narrow enum).
@@ -139,7 +143,7 @@ function isValidAllowedToolPattern(pattern) {
  *     anything else is a fatal ArgError.
  *
  * @param {string[]} argv  Slice of process.argv (caller provides slice(2)).
- * @returns {{ dataRoot: string; project: string; taskId: string; runId: string; workspaceRoot: string; claudeConfigDir?: string; permissionMode?: string; allowedTools?: string[] }}
+ * @returns {{ dataRoot: string; project: string; taskId: string; runId: string; workspaceRoot: string; claudeConfigDir?: string; permissionMode?: string; allowedTools?: string[]; model?: string }}
  */
 function parseRelayArgs(argv) {
   const result = {};
@@ -224,7 +228,12 @@ function parseRelayArgs(argv) {
     }
   }
 
-  return /** @type {{ dataRoot: string; project: string; taskId: string; runId: string; workspaceRoot: string; claudeConfigDir?: string; permissionMode?: string; allowedTools?: string[] }} */ (result);
+  // P2-OWNER-R01: optional --model (strict charset; never --fallback-model).
+  if (result.model !== undefined && !MODEL_PATTERN.test(result.model)) {
+    throw new ArgError(`Invalid --model '${result.model}'.`);
+  }
+
+  return /** @type {{ dataRoot: string; project: string; taskId: string; runId: string; workspaceRoot: string; claudeConfigDir?: string; permissionMode?: string; allowedTools?: string[]; model?: string }} */ (result);
 }
 
 class ArgError extends Error {
@@ -983,6 +992,7 @@ async function main() {
       // Safe normalized field — not an env dump or raw token
       permissionMode: permissionMode ?? 'default',
       claudeConfigProfile: claudeConfig.profile,
+      ...(args.model ? { model: args.model } : {}),
       phase: 'spawning',
     });
 
@@ -1002,6 +1012,9 @@ async function main() {
     //   'acceptEdits' → --permission-mode acceptEdits
     //   'default' / undefined → no --permission-mode flag (least privilege)
     //
+    // P2-OWNER-R01: optional `--model <id>` AFTER prompt, with other fixed-arity
+    // flags. Never `--fallback-model`.
+    //
     // Round 35/37: the validated Builder verification allowlist is forwarded to
     // Claude as a single `--allowedTools Read,Glob` argv (exact Claude CLI
     // spelling per `claude --help`). Only patterns that passed the strict
@@ -1014,13 +1027,14 @@ async function main() {
     // swallowed the prompt and exited 1 with "Input must be provided either
     // through stdin or as a prompt argument when using --print". The positional
     // prompt is therefore emitted immediately after --print, THEN the
-    // fixed-arity --permission-mode, and the variadic --allowedTools LAST with
-    // one comma-joined value. PM-verified working shape:
-    //   claude --print "<prompt>" --allowedTools "Read,Glob"
+    // fixed-arity --permission-mode / --model, and the variadic --allowedTools
+    // LAST with one comma-joined value. PM-verified working shape:
+    //   claude --print "<prompt>" --model sonnet --allowedTools "Read,Glob"
     const claudeArgs = [
       '--add-dir', workspaceRoot,
       '--print',
       prompt,
+      ...(args.model ? ['--model', args.model] : []),
       ...(permissionMode === 'acceptEdits' ? ['--permission-mode', 'acceptEdits'] : []),
       ...(args.allowedTools && args.allowedTools.length > 0
         ? ['--allowedTools', args.allowedTools.join(',')]
@@ -1095,6 +1109,7 @@ async function main() {
       // Safe normalized field — records what was used, not a raw arg
       permissionMode: permissionMode ?? 'default',
       claudeConfigProfile: claudeConfig.profile,
+      ...(args.model ? { model: args.model } : {}),
       argvShape: redactedArgvShape(claudeExe, claudeArgs),
       phase: 'completed',
       // exitCode=0 does NOT mean RESULT_RECEIVED.

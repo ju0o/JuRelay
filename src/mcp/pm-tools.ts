@@ -34,6 +34,15 @@ import { resolveOwnerDispatch } from '../backend/dispatch-resolve.js';
 import { cancelReadyTask, DraftCleanupError } from '../backend/draft-cleanup.js';
 import { startGoalLoop } from '../backend/goal-loop.js';
 import { authorizeEffect, PermissionDeniedError } from '../backend/permission-gate.js';
+import {
+  approveTaskExecution,
+  getTaskExecutionConfig,
+  listExecutableAgents,
+  setTaskExecutionConfig,
+  TaskExecutionConfigError,
+} from '../backend/task-execution-config.js';
+import { listModelsForWorker } from '../backend/agent-model-catalog.js';
+import { loadWorkerRegistryRecord } from '../backend/worker-registry.js';
 import type { GoalStatus, EventDeliveryStatus } from '../shared/types.js';
 import {
   objectSchema,
@@ -97,6 +106,13 @@ function mapPermissionError(err: unknown): never {
   throw mapCoreError(err);
 }
 
+function mapTaskExecutionConfigError(err: unknown): never {
+  if (err instanceof TaskExecutionConfigError) {
+    throw mapCoreError(err);
+  }
+  throw mapCoreError(err);
+}
+
 // ── PM read tools ────────────────────────────────────────────────────────────
 
 /** PM read tools — no state mutation. */
@@ -133,6 +149,52 @@ export function buildPmReadTools(ctx: PmServerContext): McpTool[] {
           projectId: typeof args.projectId === 'string' ? args.projectId : undefined,
           hostRoots: ctx.goalLoop?.workspaceRoot ? [ctx.goalLoop.workspaceRoot] : undefined,
         });
+      },
+    },
+    {
+      name: 'relay_pm_list_executable_agents',
+      description:
+        'P2-OWNER-R01: list Builder workers eligible for per-Task Agent/model selection. ' +
+        'Team/QA/actl-managed workers are excluded or marked unavailable. Does not dispatch.',
+      inputSchema: objectSchema({}),
+      handler: async (args) => {
+        rejectUnknownFields(args, []);
+        return { agents: listExecutableAgents(dataRoot) };
+      },
+    },
+    {
+      name: 'relay_pm_list_agent_models',
+      description:
+        'P2-OWNER-R01: list trusted models for one WorkerRegistry workerId. ' +
+        'Never invents model ids. Does not dispatch.',
+      inputSchema: objectSchema({ workerId: { type: 'string' } }, ['workerId']),
+      handler: async (args) => {
+        rejectUnknownFields(args, ['workerId']);
+        const workerId = requireString(args, 'workerId');
+        const worker = loadWorkerRegistryRecord(dataRoot, workerId);
+        if (!worker) {
+          throw new McpError('NOT_FOUND', `Worker '${workerId}'가 Registry에 없습니다.`);
+        }
+        return listModelsForWorker(dataRoot, worker);
+      },
+    },
+    {
+      name: 'relay_pm_get_task_execution_config',
+      description:
+        'P2-OWNER-R01: read per-Task Agent/model execution selection (if any). ' +
+        'Does not dispatch. projectId is accepted for host context only.',
+      inputSchema: objectSchema({
+        taskId: { type: 'string' },
+        projectId: { type: 'string' },
+      }, ['taskId']),
+      handler: async (args) => {
+        rejectUnknownFields(args, ['taskId', 'projectId']);
+        const taskId = requireString(args, 'taskId');
+        return {
+          taskId,
+          projectId: optionalString(args, 'projectId') ?? null,
+          config: getTaskExecutionConfig(dataRoot, project, taskId),
+        };
       },
     },
     {
@@ -749,10 +811,67 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
       },
     },
     {
+      name: 'relay_pm_set_task_execution_config',
+      description:
+        'P2-OWNER-R01: persist Agent/model selection for a READY Task. Clears ownerApproval. ' +
+        'Does not dispatch and does not mutate project Assignment / workspace-config. ' +
+        'modelId must be a non-empty string supported by the worker catalog.',
+      inputSchema: objectSchema(
+        {
+          taskId: { type: 'string' },
+          projectId: { type: 'string' },
+          workerId: { type: 'string' },
+          modelId: { type: 'string' },
+        },
+        ['taskId', 'projectId', 'workerId', 'modelId'],
+      ),
+      handler: async (args) => {
+        rejectUnknownFields(args, ['taskId', 'projectId', 'workerId', 'modelId']);
+        try {
+          return setTaskExecutionConfig(dataRoot, project, {
+            taskId: requireString(args, 'taskId'),
+            projectId: requireString(args, 'projectId'),
+            workerId: requireString(args, 'workerId'),
+            modelId: requireString(args, 'modelId'),
+            source: 'OWNER_MCP',
+          });
+        } catch (err) {
+          mapTaskExecutionConfigError(err);
+        }
+      },
+    },
+    {
+      name: 'relay_pm_approve_task_execution',
+      description:
+        'P2-OWNER-R01: approve the persisted Agent/model selection for a READY Task (GO gate). ' +
+        'Does not dispatch. Call relay_pm_dispatch_owner_approved after resolve is ok.',
+      inputSchema: objectSchema(
+        {
+          taskId: { type: 'string' },
+          projectId: { type: 'string' },
+        },
+        ['taskId'],
+      ),
+      handler: async (args) => {
+        rejectUnknownFields(args, ['taskId', 'projectId']);
+        try {
+          return approveTaskExecution(
+            dataRoot,
+            project,
+            requireString(args, 'taskId'),
+            'OWNER_MCP',
+          );
+        } catch (err) {
+          mapTaskExecutionConfigError(err);
+        }
+      },
+    },
+    {
       name: 'relay_pm_dispatch_owner_approved',
       description:
         'V1-G2 owner-approved single dispatch: dispatch ONE READY Task to ONE trusted workerId ' +
         'with workspaceRoot. Represents the owner\'s explicit one-time "GO" for THIS Task dispatch only. ' +
+        'Requires approved P2-OWNER-R01 Task execution-config matching workerId; freezes selection after spawn. ' +
         'The owning Goal permissionPolicy is NOT mutated and remains PLAN; authorization is enforced ' +
         'through the central permission gate with OWNER_IPC-equivalent semantics for this one DISPATCH ' +
         'effect only (no token, no persisted elevation, no other effect). ' +

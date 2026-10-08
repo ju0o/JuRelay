@@ -31,6 +31,18 @@ const pmTools = await import(dist('mcp/pm-tools.js'));
 const widget = await import(dist('mcp/app/pm-widget-resource.js'));
 const testFix = await import(dist('integrations/test-fixture/watch.js'));
 const completedRecovery = await import(dist('backend/completed-run-recovery.js'));
+const taskExec = await import(dist('backend/task-execution-config.js'));
+
+/** P2-OWNER-R01: select + approve Agent/model before owner dispatch. */
+function approveSelection(root, project, taskId, workerId) {
+  taskExec.setTaskExecutionConfig(root, project, {
+    projectId: project,
+    taskId,
+    workerId,
+    modelId: 'test-model',
+  });
+  return taskExec.approveTaskExecution(root, project, taskId, 'OWNER_MCP');
+}
 
 function tmp(prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), `arl-p18d-${prefix}-`));
@@ -98,6 +110,7 @@ async function dispatchAndComplete(root, project, taskId, workerId = 'p18d-w') {
   const workspace = path.join(root, 'ws');
   fs.mkdirSync(workspace, { recursive: true });
   writeWorker(root, workerId, FIX_EXIT0);
+  approveSelection(root, project, taskId, workerId);
   const dispRes = await get('relay_pm_dispatch_owner_approved').handler({
     taskId,
     workerId,
@@ -261,6 +274,7 @@ test('CASE E duplicate Run creates exactly one Run', async () => {
   const workspace = path.join(root, 'ws');
   fs.mkdirSync(workspace, { recursive: true });
   writeWorker(root, 'p18d-e', FIX_ALIVE);
+  approveSelection(root, project, task.taskId, 'p18d-e');
 
   const first = await get('relay_pm_dispatch_owner_approved').handler({
     taskId: task.taskId,
@@ -331,6 +345,7 @@ test('CASE G actual Worker → ACTIVE', async () => {
   const workspace = path.join(root, 'ws');
   fs.mkdirSync(workspace, { recursive: true });
   writeWorker(root, 'p18d-g', FIX_ALIVE);
+  approveSelection(root, project, task.taskId, 'p18d-g');
   await get('relay_pm_dispatch_owner_approved').handler({
     taskId: task.taskId, workerId: 'p18d-g', workspaceRoot: workspace, expectedExecutionState: 'READY',
   });
@@ -409,6 +424,7 @@ test('CASE K restart/reconcile does not create second Run', async () => {
   const workspace = path.join(root, 'ws');
   fs.mkdirSync(workspace, { recursive: true });
   writeWorker(root, 'p18d-k', FIX_ALIVE);
+  approveSelection(root, project, task.taskId, 'p18d-k');
   await get('relay_pm_dispatch_owner_approved').handler({
     taskId: task.taskId, workerId: 'p18d-k', workspaceRoot: workspace, expectedExecutionState: 'READY',
   });
@@ -478,6 +494,7 @@ test('CASE N cancellation cannot affect RUNNING/RESULT_RECEIVED', async () => {
   const workspace = path.join(root, 'ws');
   fs.mkdirSync(workspace, { recursive: true });
   writeWorker(root, 'p18d-n', FIX_ALIVE);
+  approveSelection(root, project, task.taskId, 'p18d-n');
   await get('relay_pm_dispatch_owner_approved').handler({
     taskId: task.taskId, workerId: 'p18d-n', workspaceRoot: workspace, expectedExecutionState: 'READY',
   });

@@ -38,6 +38,18 @@ const cap = await import(dist('backend/capture-service.js'));
 const bridge = await import(dist('backend/result-bridge.js'));
 const pmDelivery = await import(dist('backend/pm-delivery.js'));
 const testFix = await import(dist('integrations/test-fixture/watch.js'));
+const taskExec = await import(dist('backend/task-execution-config.js'));
+
+/** P2-OWNER-R01: select + approve Agent/model before ok resolve / owner dispatch. */
+function approveSelection(dataRoot, taskId, workerId, projectId = 'agent-relay', modelId = 'test-model') {
+  taskExec.setTaskExecutionConfig(dataRoot, 'ws', {
+    projectId,
+    taskId,
+    workerId,
+    modelId,
+  });
+  return taskExec.approveTaskExecution(dataRoot, 'ws', taskId, 'OWNER_MCP');
+}
 
 function tmp(prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), `arl-p18c05-${prefix}-`));
@@ -461,6 +473,19 @@ test('CASE J/K/L explicit Run → one Run; duplicate does not double-spawn', asy
   // Before Run: 0 linked runs
   assert.equal(goalTask.getTask(dataRoot, 'ws', t.task.taskId).linkedRuns.length, 0);
 
+  const blocked = dispatchResolve.resolveOwnerDispatch({
+    dataRoot,
+    scope: 'ws',
+    taskId: t.task.taskId,
+    projectId: 'agent-relay',
+    hostRoots: [hostRoot],
+    includeCwdHostRoot: false,
+  });
+  assert.equal(blocked.ok, false);
+  assert.ok(blocked.blockers.includes('TASK_EXECUTION_SELECTION_REQUIRED'));
+
+  approveSelection(dataRoot, t.task.taskId, 'builder-opencode');
+
   const resolved = await get('relay_pm_resolve_run').handler({
     taskId: t.task.taskId,
     projectId: 'agent-relay',
@@ -477,6 +502,8 @@ test('CASE J/K/L explicit Run → one Run; duplicate does not double-spawn', asy
   });
   assert.equal(resolved2.ok, true, `blockers: ${resolved2.blockers.join(',')}`);
   assert.equal(resolved2.workerId, 'builder-opencode');
+  assert.equal(resolved2.modelId, 'test-model');
+  assert.equal(resolved2.selectionApproved, true);
 
   const first = await get('relay_pm_dispatch_owner_approved').handler({
     taskId: t.task.taskId,
@@ -533,13 +560,15 @@ test('CASE M/N runtime ACTIVE uses actual Worker; desired Builder distinct', asy
   await get('relay_pm_activate_goal').handler({
     goalId: g.goal.goalId, expectedGoalStatus: 'PLANNING', reason: 'mn',
   });
+  approveSelection(dataRoot, t.task.taskId, 'builder-opencode');
   const resolved = dispatchResolve.resolveOwnerDispatch({
     dataRoot, scope: 'ws', taskId: t.task.taskId, projectId: 'agent-relay',
     hostRoots: [hostRoot], includeCwdHostRoot: false,
   });
-  assert.equal(resolved.desiredBuilder, 'opencode');
+  assert.equal(resolved.projectDesiredBuilder, 'opencode');
+  assert.equal(resolved.desiredBuilder, 'builder-opencode');
   assert.equal(resolved.workerId, 'builder-opencode');
-  assert.notEqual(resolved.desiredBuilder, resolved.workerId);
+  assert.notEqual(resolved.projectDesiredBuilder, resolved.workerId);
 
   await get('relay_pm_dispatch_owner_approved').handler({
     taskId: t.task.taskId,
@@ -597,6 +626,7 @@ test('CASE O/P/Q result reaches RESULT_RECEIVED + Delivery; no auto-ACCEPT', asy
   await get('relay_pm_activate_goal').handler({
     goalId: g.goal.goalId, expectedGoalStatus: 'PLANNING', reason: 'opq',
   });
+  approveSelection(dataRoot, t.task.taskId, 'builder-opencode');
   const resolved = dispatchResolve.resolveOwnerDispatch({
     dataRoot, scope: 'ws', taskId: t.task.taskId, projectId: 'agent-relay',
     hostRoots: [hostRoot], includeCwdHostRoot: false,
@@ -660,6 +690,7 @@ test('CASE R fixture dispatch does not mutate workspace package.json', async () 
   await get('relay_pm_activate_goal').handler({
     goalId: g.goal.goalId, expectedGoalStatus: 'PLANNING', reason: 'r',
   });
+  approveSelection(dataRoot, t.task.taskId, 'builder-opencode');
   const resolved = dispatchResolve.resolveOwnerDispatch({
     dataRoot, scope: 'ws', taskId: t.task.taskId, projectId: 'agent-relay',
     hostRoots: [hostRoot], includeCwdHostRoot: false,

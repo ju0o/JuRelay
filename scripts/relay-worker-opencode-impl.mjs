@@ -7,6 +7,7 @@
  *
  * Accepts (and consumes) Relay internal args:
  *   --dataRoot, --project, --taskId, --runId, --workspaceRoot
+ *   --model <id> (optional; when present overrides resolveWorkerModel(); still free-tier only)
  * Anything else fails closed.
  *
  * Shape:
@@ -33,8 +34,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const PROMPT_SIZE_LIMIT_BYTES = 16 * 1024;
 const DEFAULT_MODEL = 'opencode/big-pickle';
 const RELAY_ARGS = new Set([
-  '--dataRoot', '--project', '--taskId', '--runId', '--workspaceRoot',
+  '--dataRoot', '--project', '--taskId', '--runId', '--workspaceRoot', '--model',
 ]);
+const MODEL_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,80}$/;
 
 export function isFreeTierModel(model) {
   if (!model || typeof model !== 'string') return false;
@@ -64,7 +66,7 @@ export function parseRelayArgs(argv) {
       throw new Error(`Unknown argument '${tok}'. Only relay args are accepted.`);
     }
     const val = argv[i + 1];
-    if (val === undefined || val.startsWith('--')) {
+    if (val === undefined || (tok !== '--model' && val.startsWith('--'))) {
       throw new Error(`Missing value for '${tok}'.`);
     }
     out[tok.slice(2)] = val;
@@ -72,6 +74,17 @@ export function parseRelayArgs(argv) {
   }
   for (const key of ['dataRoot', 'project', 'taskId', 'runId', 'workspaceRoot']) {
     if (!out[key]) throw new Error(`Missing required relay arg --${key}.`);
+  }
+  if (out.model !== undefined) {
+    if (!MODEL_PATTERN.test(out.model)) {
+      throw new Error(`Invalid --model '${out.model}'.`);
+    }
+    if (!isFreeTierModel(out.model)) {
+      throw new Error(
+        `--model '${out.model}' refused: implementation worker is FREE TIER ONLY ` +
+        `(-free suffix or big-pickle).`,
+      );
+    }
   }
   return out;
 }
@@ -227,7 +240,14 @@ export async function main(argv = process.argv.slice(2), deps = {}) {
   if (!path.isAbsolute(workspaceRoot) || !fs.existsSync(workspaceRoot)) {
     throw new Error('workspaceRoot must be an existing absolute directory.');
   }
-  const model = resolveWorkerModel();
+  // P2-OWNER-R01: explicit --model wins over env/default; still free-tier fail-closed.
+  const model = parsed.model || resolveWorkerModel();
+  if (!isFreeTierModel(model)) {
+    throw new Error(
+      `model '${model}' refused: implementation worker is FREE TIER ONLY ` +
+      `(-free suffix or big-pickle).`,
+    );
+  }
   const task = await (deps.loadTask || loadTask)(dataRoot, project, taskId);
   const runFolder = (deps.runFolderFor || runFolderFor)(task, runId);
   const prompt = await resolvePrompt(dataRoot, project, task, runId, runFolder, deps);

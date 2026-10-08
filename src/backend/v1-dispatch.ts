@@ -21,6 +21,9 @@
  * Accepted inputs (exactly these four — no goalId, permission mode, runId,
  * launch command, adapter id, CLI args, env, or shell flags):
  *   - taskId, workerId, workspaceRoot, expectedExecutionState ('READY' only)
+ *
+ * P2-OWNER-R01: also requires approved Task execution-config matching workerId;
+ * freezes selection after successful dispatch and forwards model to Dispatcher.
  */
 
 import { getGoal, getTask } from './goal-task.js';
@@ -29,6 +32,11 @@ import { DispatcherError, dispatchTask, type DispatchResult } from './dispatcher
 import type { ActlInputPermitFactory } from './actl-bridge.js';
 import { computeTaskScopeFingerprint, mintRetryAuthorization } from './retry-authorization.js';
 import { recordRuntimeWarning } from './event.js';
+import {
+  freezeTaskExecutionConfig,
+  requireApprovedExecutionConfig,
+  TaskExecutionConfigError,
+} from './task-execution-config.js';
 
 export interface V1OwnerApprovedDispatchInput {
   taskId: string;
@@ -46,6 +54,38 @@ function requireNonEmptyString(value: unknown, field: string): string {
   return value.trim();
 }
 
+function mapTaskExecutionConfigError(err: unknown): never {
+  if (err instanceof TaskExecutionConfigError) {
+    const code = err.code;
+    switch (code) {
+      case 'NOT_FOUND':
+        throw new DispatcherError(
+          'TASK_EXECUTION_SELECTION_REQUIRED',
+          err.message,
+        );
+      case 'OWNER_APPROVAL_REQUIRED':
+        throw new DispatcherError('OWNER_APPROVAL_REQUIRED', err.message);
+      case 'UNSUPPORTED_MODEL':
+        throw new DispatcherError('UNSUPPORTED_MODEL', err.message);
+      case 'FORBIDDEN_WORKER':
+        throw new DispatcherError('FORBIDDEN_WORKER', err.message);
+      case 'WORKER_MISMATCH':
+        throw new DispatcherError('WORKER_MISMATCH', err.message);
+      case 'SELECTION_FROZEN':
+        throw new DispatcherError('SELECTION_FROZEN', err.message);
+      case 'TASK_NOT_READY':
+        throw new DispatcherError('TASK_NOT_READY', err.message);
+      case 'UNKNOWN_WORKER':
+        throw new DispatcherError('NOT_FOUND', err.message);
+      case 'INVALID_ARGUMENT':
+        throw new DispatcherError('INVALID_ARGUMENT', err.message);
+      default:
+        throw new DispatcherError('INVALID_ARGUMENT', err.message);
+    }
+  }
+  throw err;
+}
+
 /**
  * Perform ONE owner-authorized dispatch of ONE READY Task to ONE worker.
  *
@@ -53,6 +93,7 @@ function requireNonEmptyString(value: unknown, field: string): string {
  *   - Task must exist (else NOT_FOUND)
  *   - expectedExecutionState must be READY (else INVALID_ARGUMENT)
  *   - Task must currently be READY / match expected state (else stale → CONFLICT/INVALID_STATE)
+ *   - Approved Task execution-config must match workerId (P2-OWNER-R01)
  *   - worker / workspaceRoot / active-conflict / orphan-suspected failures
  *     surface from the canonical dispatcher unchanged.
  */
@@ -90,6 +131,14 @@ export async function dispatchV1OwnerApproved(
     );
   }
 
+  // P2-OWNER-R01: approved per-Task Agent/model selection required.
+  let cfg;
+  try {
+    cfg = requireApprovedExecutionConfig(dataRoot, project, taskId, workerId);
+  } catch (err) {
+    mapTaskExecutionConfigError(err);
+  }
+
   // V1-G5-C correction: compute the ORIGINAL owner-approved scope fingerprint
   // from the canonical Task BEFORE dispatch, and carry it as trusted internal
   // owner-approval context into the Dispatcher so it is persisted on the
@@ -122,8 +171,26 @@ export async function dispatchV1OwnerApproved(
     workspaceRoot,
     expectedExecutionState: 'READY',
     ownerApprovalContext: { scopeFingerprint: ownerApprovedScopeFingerprint },
+    ...(cfg.modelId ? { model: cfg.modelId } : {}),
     ...(input.ownerInputPermitFactory ? { ownerInputPermitFactory: input.ownerInputPermitFactory } : {}),
   });
+
+  // Freeze Task execution selection to this Run (model/worker immutable after GO).
+  try {
+    freezeTaskExecutionConfig(dataRoot, project, taskId, result.runId, cfg.modelId);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    try {
+      await recordRuntimeWarning(dataRoot, project, {
+        summary: `TASK_EXECUTION_FREEZE_FAILED: initial dispatch of Task ${taskId} succeeded but execution-config freeze failed.`,
+        taskId,
+        runId: result.runId,
+        goalId,
+        source: { kind: 'v1-dispatch', subsystem: 'task-execution-config' },
+        details: { workerId, error: msg },
+      });
+    } catch { /* warning best-effort; dispatch result stands */ }
+  }
 
   // V1-G5-C: mint the narrow retry authorization ONLY after the canonical
   // initial dispatch has succeeded (the Task/Run binding is real). The mint

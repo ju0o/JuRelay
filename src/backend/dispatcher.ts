@@ -9,6 +9,7 @@
  */
 import { spawn, type ChildProcess } from 'node:child_process';
 import * as fs from 'node:fs';
+import * as os from 'node:os';
 import * as path from 'node:path';
 import {
   deleteRun,
@@ -121,6 +122,11 @@ export interface DispatchRequest {
   /** Coding repository / Adapter observation scope — NOT Relay Run folder. */
   workspaceRoot: string;
   /**
+   * P2-OWNER-R01: explicit model id from approved Task execution-config.
+   * Forwarded to relay wrappers as --model; never invented by Dispatcher.
+   */
+  model?: string;
+  /**
    * V1-G5-C trusted internal retry correlation. ONLY the retry-dispatch
    * backend may set this; it is never accepted from MCP/host/owner surfaces.
    * When present the Dispatcher persists the correlation on the new Run meta
@@ -229,7 +235,15 @@ export class DispatcherError extends Error {
     | 'ORPHAN_SUSPECTED'
     | 'INTERNAL_ERROR'
     /** Post-attempt send delivery unknown — Task stays DISPATCHED; never alias to LAUNCH_FAILED. */
-    | 'DELIVERY_AMBIGUOUS';
+    | 'DELIVERY_AMBIGUOUS'
+    /** P2-OWNER-R01 — Task execution selection / approval failures. */
+    | 'TASK_EXECUTION_SELECTION_REQUIRED'
+    | 'OWNER_APPROVAL_REQUIRED'
+    | 'UNSUPPORTED_MODEL'
+    | 'FORBIDDEN_WORKER'
+    | 'WORKER_MISMATCH'
+    | 'SELECTION_FROZEN'
+    | 'TASK_NOT_READY';
 
   constructor(code: DispatcherError['code'], message: string) {
     super(message);
@@ -463,6 +477,8 @@ export function buildDispatchArgv(
     permissionMode?: ClaudePermissionMode;
     /** Trusted worker registry Builder verification allowlist — never from narrative. */
     allowedTools?: string[];
+    /** P2-OWNER-R01: explicit model from approved Task execution-config. */
+    model?: string;
   },
 ): string[] {
   const argv = [
@@ -490,7 +506,46 @@ export function buildDispatchArgv(
       argv.push('--allowedTool', pattern);
     }
   }
+  if (typeof binding.model === 'string' && binding.model.trim()) {
+    argv.push('--model', binding.model.trim());
+  }
   return argv;
+}
+
+/**
+ * Prefer worker.driverOptions.claude.configDir when it is an absolute existing
+ * directory. Never select or create `.claude-team`.
+ */
+function resolveDispatchClaudeConfigDir(
+  workspaceRoot: string,
+  worker: WorkerRegistryRecord,
+): string | undefined {
+  const fromWorker = worker.driverOptions?.claude?.configDir;
+  if (typeof fromWorker === 'string' && fromWorker.trim()) {
+    const resolved = path.resolve(fromWorker.trim());
+    const norm = resolved.replace(/\\/g, '/');
+    if (
+      path.isAbsolute(resolved)
+      && !norm.includes('.claude-team')
+      && fs.existsSync(resolved)
+      && fs.statSync(resolved).isDirectory()
+    ) {
+      return resolved;
+    }
+  }
+  try {
+    const ctx = resolveClaudeConfigContext(workspaceRoot);
+    const norm = ctx.configDir.replace(/\\/g, '/');
+    if (norm.includes('.claude-team')) {
+      const home = os.homedir();
+      const pro = path.join(home, '.claude-pro');
+      if (fs.existsSync(pro) && fs.statSync(pro).isDirectory()) return path.resolve(pro);
+      return path.resolve(path.join(home, '.claude'));
+    }
+    return ctx.configDir;
+  } catch {
+    return undefined;
+  }
 }
 
 // ── Recovery ─────────────────────────────────────────────────────────────────
@@ -1172,6 +1227,12 @@ export async function dispatchTask(
   // Phase H: workspaceRoot required + validated
   const workspaceRoot = validateWorkspaceRoot(request?.workspaceRoot);
 
+  // P2-OWNER-R01: optional explicit model from approved Task execution-config.
+  const model =
+    typeof request?.model === 'string' && request.model.trim()
+      ? request.model.trim()
+      : undefined;
+
   // V1-G5-C: trusted internal retry correlation (never from external callers).
   // V1.6 Slice 4: trusted internal QA-remediation correlation (same posture).
   const retryContext = request?.retryContext;
@@ -1368,8 +1429,9 @@ export async function dispatchTask(
 
     // Resolve once, before Run persistence and capture arm. This is the
     // Worker launch context that must be shared with Claude observation.
+    // Prefer worker.driverOptions.claude.configDir; never use/create .claude-team.
     if (observationAdapterId === 'claude-code') {
-      claudeConfigDir = resolveClaudeConfigContext(workspaceRoot).configDir;
+      claudeConfigDir = resolveDispatchClaudeConfigDir(workspaceRoot, worker);
     }
 
     // 4. workspaceRoot already validated above
@@ -1417,6 +1479,9 @@ export async function dispatchTask(
       workspaceRoot,
       workerId,
       ...(claudeConfigDir ? { claudeConfigDir } : {}),
+      ...(model
+        ? { model, selectionSource: 'TASK_EXECUTION_CONFIG' as const }
+        : {}),
       ...(retryContext
         ? { retryPreparationId: retryContext.preparationId, sourceRunId: retryContext.sourceRunId }
         : {}),
@@ -1623,6 +1688,7 @@ export async function dispatchTask(
       ...(claudeConfigDir ? { claudeConfigDir } : {}),
       ...(permissionMode ? { permissionMode } : {}),
       ...(allowedTools && allowedTools.length > 0 ? { allowedTools } : {}),
+      ...(model ? { model } : {}),
     });
 
     const spawnOpts: Parameters<typeof spawn>[2] = {

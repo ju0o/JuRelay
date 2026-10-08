@@ -98,6 +98,7 @@ test('claude twin candidates without workerId → BUILDER_AMBIGUOUS (no arbitrar
   assert.ok(resolved.blockers.includes('BUILDER_AMBIGUOUS'), `blockers=${resolved.blockers}`);
   assert.equal(resolved.workerId, null);
   assert.equal(resolved.desiredBuilder, 'claude');
+  assert.equal(resolved.projectDesiredBuilder, 'claude');
   const mapped = dispatchResolve.mapBuilderToWorker(dataRoot, 'claude');
   assert.equal(mapped.ok, false);
   assert.equal(mapped.reason, 'ambiguous');
@@ -159,10 +160,12 @@ test('explicit workerId persists, reloads, and resolves uniquely', () => {
   });
   // No Task in this fixture on purpose (zero Goal/Task/Run). Builder map must still uniquify.
   assert.equal(resolved.desiredBuilder, 'builder-claude-pro');
+  assert.equal(resolved.projectDesiredBuilder, 'builder-claude-pro');
   assert.equal(resolved.workerId, 'builder-claude-pro');
   assert.ok(!resolved.blockers.includes('BUILDER_AMBIGUOUS'), `blockers=${resolved.blockers}`);
   assert.ok(!resolved.blockers.includes('UNKNOWN_BUILDER'), `blockers=${resolved.blockers}`);
   assert.ok(resolved.blockers.includes('NO_TASK'));
+  assert.ok(!resolved.blockers.includes('TASK_EXECUTION_SELECTION_REQUIRED'));
 
   const otherAfter = profileMod.getProjectProfile(
     { dataRoot, scope: 'ws', hostRoots: [hostRoot], includeCwdHostRoot: false },

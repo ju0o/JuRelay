@@ -946,8 +946,8 @@ const wrFull = await import(pathToFileURL(path.join(DIST_BACKEND, 'worker-regist
     const contents = relayArgsMatch[1];
     // Known safe relay args only:
     const allowed = new Set([
-      "'--dataRoot'", "'--project'", "'--taskId'", "'--runId'", "'--workspaceRoot'", "'--claudeConfigDir'", "'--permissionMode'", "'--allowedTool'",
-      '"--dataRoot"', '"--project"', '"--taskId"', '"--runId"', '"--workspaceRoot"', '"--claudeConfigDir"', '"--permissionMode"', '"--allowedTool"',
+      "'--dataRoot'", "'--project'", "'--taskId'", "'--runId'", "'--workspaceRoot'", "'--claudeConfigDir'", "'--permissionMode'", "'--allowedTool'", "'--model'",
+      '"--dataRoot"', '"--project"', '"--taskId"', '"--runId"', '"--workspaceRoot"', '"--claudeConfigDir"', '"--permissionMode"', '"--allowedTool"', '"--model"',
     ]);
     // Split on commas and trim, check each non-empty token
     const tokens = contents.split(',').map((s) => s.trim()).filter(Boolean);

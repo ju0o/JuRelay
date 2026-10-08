@@ -31,6 +31,7 @@ const deliveries = await import('../dist/server/backend/pm-delivery.js');
 const dispatcher = await import('../dist/server/backend/dispatcher.js');
 const observation = await import('../dist/server/backend/observation-lock.js');
 const workers = await import('../dist/server/backend/worker-registry.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const fixtures = await import('../dist/server/integrations/test-fixture/watch.js');
 fixtures.ensureTestFixtureAdapterRegistered();
 
@@ -49,6 +50,28 @@ workers.writeWorkerRegistryRecord(ROOT, {
   schemaVersion: 'G.2', workerId: 'v15-s5-worker', displayName: 'V1.5 Slice 5 fixture worker',
   launchCommand: process.execPath, launchArgsPrefix: [alive], capabilities: ['fixture'], observationAdapterId: 'test-fixture',
 });
+
+/** P2-OWNER-R01: select + approve Agent/model before owner dispatch. */
+function approveSelection(taskId, workerId = 'v15-s5-worker') {
+  taskExec.setTaskExecutionConfig(ROOT, project, {
+    projectId: project,
+    taskId,
+    workerId,
+    modelId: 'test-model',
+  });
+  return taskExec.approveTaskExecution(ROOT, project, taskId, 'OWNER_MCP');
+}
+
+function approvePlanTasks(planOrCreated) {
+  const bindings = planOrCreated.taskBindings
+    || (planOrCreated.planId
+      ? plans.getExecutionPlan(ROOT, project, planOrCreated.planId).taskBindings
+      : null);
+  if (!bindings) return;
+  for (const binding of bindings) {
+    approveSelection(binding.taskId, binding.workerId);
+  }
+}
 
 const PLAN_TOOL_NAMES = [
   'relay_pm_create_execution_plan',
@@ -104,6 +127,7 @@ async function createPlanViaMcp(prefix) {
     orderedTaskIds: tasks.map((task) => task.taskId),
     taskBindings: bindingsFor(tasks, workspace),
   });
+  approvePlanTasks(created);
   return { created, tasks, workspace };
 }
 
@@ -324,6 +348,7 @@ console.log('\n-- V1 single-Task MCP path + fail-closed bounds --');
     reason: 'prove V1 path untouched',
     scope: 'v1 only',
   });
+  approveSelection(created.task.taskId);
   const dispatched = await get('relay_pm_dispatch_owner_approved').handler({
     taskId: created.task.taskId,
     workerId: 'v15-s5-worker',

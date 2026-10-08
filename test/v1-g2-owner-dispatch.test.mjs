@@ -46,6 +46,7 @@ const gt = await import('../dist/server/backend/goal-task.js');
 const disp = await import('../dist/server/backend/dispatcher.js');
 const wr = await import('../dist/server/backend/worker-registry.js');
 const pmTools = await import('../dist/server/mcp/pm-tools.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const testFix = await import('../dist/server/integrations/test-fixture/watch.js');
 testFix.ensureTestFixtureAdapterRegistered();
 
@@ -68,6 +69,16 @@ const CONTRACT = {
   scope: 'Narrow V1 scope',
   completionCriteria: ['done when worker result received'],
 };
+
+function approveSelection(taskId, workerId = 'v1-g2-worker') {
+  taskExec.setTaskExecutionConfig(TEST_ROOT, project, {
+    projectId: project,
+    taskId,
+    workerId,
+    modelId: 'test-model',
+  });
+  return taskExec.approveTaskExecution(TEST_ROOT, project, taskId, 'OWNER_MCP');
+}
 
 // Keep fixture child alive across assertions; reset kills it.
 process.env.WORKER_STAY_MS = '30000';
@@ -129,6 +140,15 @@ console.log('\n-- contract: owner-approved tool shape --');
 console.log('\n-- C/D/E: owner-approved dispatch --');
 let dispatchRes;
 {
+  // Without selection → blocked
+  await shouldThrow(
+    () => get('relay_pm_dispatch_owner_approved').handler({
+      taskId, workerId: 'v1-g2-worker', workspaceRoot: WORKSPACE, expectedExecutionState: 'READY',
+    }),
+    'C0 dispatch without execution selection rejected',
+    'TASK_EXECUTION_SELECTION_REQUIRED',
+  );
+  approveSelection(taskId);
   dispatchRes = await get('relay_pm_dispatch_owner_approved').handler({
     taskId, workerId: 'v1-g2-worker', workspaceRoot: WORKSPACE, expectedExecutionState: 'READY',
   });
@@ -143,6 +163,8 @@ let dispatchRes;
   );
   const json = JSON.stringify(dispatchRes);
   check(!json.includes('folder') && !json.includes('launchCommand'), 'E response exposes no folder/launchCommand');
+  const frozen = taskExec.getTaskExecutionConfig(TEST_ROOT, project, taskId);
+  check(!!frozen?.selectionFrozenAt && frozen?.runId === dispatchRes.runId, 'E execution selection frozen to runId');
 }
 
 // ── F: Goal remains PLAN ──
@@ -188,12 +210,13 @@ console.log('\n-- H: stale + invalid preconditions --');
   );
   // Worker/workspace preconditions need a fresh READY task (primary task is RUNNING now).
   const probe = await get('relay_pm_create_task').handler({ ...CONTRACT, title: 'V1 G2 probe' });
+  approveSelection(probe.task.taskId);
   await shouldThrow(
     () => get('relay_pm_dispatch_owner_approved').handler({
       taskId: probe.task.taskId, workerId: 'no-such-worker', workspaceRoot: WORKSPACE, expectedExecutionState: 'READY',
     }),
-    'H unknown worker rejected',
-    'NOT_FOUND',
+    'H unknown worker rejected (selection mismatch)',
+    'no-such-worker',
   );
   await shouldThrow(
     () => get('relay_pm_dispatch_owner_approved').handler({

@@ -512,7 +512,17 @@ const WIDGET_HTML = `<!DOCTYPE html>
         <div class="line"><b>범위</b><span id="tpScope"></span></div>
         <div class="line"><b>완료 기준</b></div>
         <ul class="crit" id="tpCrit"></ul>
-        <div class="line"><b>Builder</b><span id="tpBuilder"></span></div>
+        <div class="line"><b>프로젝트 기본 Builder</b><span id="tpBuilder"></span></div>
+        <div class="line"><b>이번 Task Agent</b>
+          <select id="tpAgentSel" aria-label="Agent 선택"><option value="">선택…</option></select>
+        </div>
+        <div class="line"><b>모델</b>
+          <select id="tpModelSel" aria-label="모델 선택" disabled><option value="">Agent 먼저</option></select>
+        </div>
+        <div class="line"><b>실행 프로필</b><span id="tpProfile">—</span></div>
+        <div class="line"><b>가능 여부</b><span id="tpAvail">—</span></div>
+        <div class="hint" id="tpConstraint"></div>
+        <div class="line"><label><input type="checkbox" id="tpApproveChk" disabled> 이 선택으로 실행을 승인합니다 (이번 Task만)</label></div>
         <div class="line"><b>작업 폴더</b><span id="tpWorkspace"></span></div>
         <div class="row">
           <button type="button" id="tpCancelPrep">작업 준비 취소</button>
@@ -1858,9 +1868,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
           else if (view.task && view.task.executionState === 'READY') hint.textContent = '준비된 Task가 있어요. 아래에서 확인하고 시작하세요.';
           else hint.textContent = '';
         }
-        // If dashboard already has READY task + eligibility, keep preview available.
+        // READY Task → show preview so user can pick Agent/model (elig.ok may be false until selection).
         var elig = view && view.runEligibility;
-        if (view && view.task && view.task.executionState === 'READY' && elig && elig.ok && !pendingPreview) {
+        if (view && view.task && view.task.executionState === 'READY' && !pendingPreview) {
           pendingPreview = {
             goalId: view.goal && view.goal.goalId,
             goalTitle: view.goal && view.goal.title,
@@ -1868,9 +1878,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
             taskTitle: view.task.title,
             scope: (p && p.workspacePath) || '',
             criteria: [],
-            builder: elig.desiredBuilder || ((view.assignment && view.assignment.builders) || [])[0] || '',
-            workerId: elig.workerId,
-            workspaceRoot: elig.workspaceRoot || (p && p.workspacePath) || '',
+            builder: (elig && elig.desiredBuilder) || ((view.assignment && view.assignment.builders) || [])[0] || '',
+            projectWorkerHint: (elig && (elig.projectDesiredBuilder || elig.desiredBuilder)) || '',
+            workerId: (elig && elig.workerId) || '',
+            workspaceRoot: (elig && elig.workspaceRoot) || (p && p.workspacePath) || '',
             projectId: p && p.projectId
           };
         }
@@ -1880,11 +1891,138 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
       }
 
+      var tpAgentsCache = [];
+      var tpModelsCache = [];
+      var tpSelectionBusy = false;
+
+      function fillSelect(sel, items, valueKey, labelFn, placeholder) {
+        if (!sel) return;
+        var prev = sel.value;
+        sel.innerHTML = '';
+        var opt0 = document.createElement('option');
+        opt0.value = '';
+        opt0.textContent = placeholder || '선택…';
+        sel.appendChild(opt0);
+        for (var i = 0; i < (items || []).length; i++) {
+          var it = items[i];
+          var opt = document.createElement('option');
+          opt.value = String(it[valueKey] || '');
+          opt.textContent = labelFn(it);
+          if (it.available === false) opt.disabled = true;
+          sel.appendChild(opt);
+        }
+        if (prev) {
+          try { sel.value = prev; } catch (ePrev) {}
+        }
+      }
+
+      async function loadTpAgents(preview) {
+        var sel = document.getElementById('tpAgentSel');
+        try {
+          var res = await callTool('relay_pm_list_executable_agents', {});
+          tpAgentsCache = (res && (res.agents || res.items)) || [];
+          if (!Array.isArray(tpAgentsCache)) tpAgentsCache = [];
+          fillSelect(sel, tpAgentsCache.filter(function (a) { return a && a.workerId; }), 'workerId', function (a) {
+            var mark = a.available === false ? ' (불가)' : '';
+            return (a.displayName || a.workerId) + mark;
+          }, 'Agent 선택…');
+          if (preview && preview.workerId && sel) sel.value = preview.workerId;
+        } catch (eAgents) {
+          tpAgentsCache = [];
+          fillSelect(sel, [], 'workerId', function () { return ''; }, 'Agent 목록 실패');
+        }
+      }
+
+      async function loadTpModels(workerId) {
+        var sel = document.getElementById('tpModelSel');
+        var noteEl = document.getElementById('tpConstraint');
+        if (!workerId) {
+          fillSelect(sel, [], 'modelId', function () { return ''; }, 'Agent 먼저');
+          if (sel) sel.disabled = true;
+          setElText('tpProfile', '—');
+          setElText('tpAvail', '—');
+          if (noteEl) noteEl.textContent = '';
+          tpModelsCache = [];
+          return;
+        }
+        try {
+          var res = await callTool('relay_pm_list_agent_models', { workerId: workerId });
+          var catalog = res && (res.catalog || res);
+          tpModelsCache = (catalog && catalog.models) || [];
+          fillSelect(sel, tpModelsCache, 'modelId', function (m) {
+            return (m.displayName ? (m.displayName + ' · ') : '') + m.modelId;
+          }, '모델 선택…');
+          if (sel) {
+            sel.disabled = false;
+            if (catalog && catalog.defaultModelId) sel.value = catalog.defaultModelId;
+          }
+          var agent = null;
+          for (var i = 0; i < tpAgentsCache.length; i++) {
+            if (tpAgentsCache[i].workerId === workerId) { agent = tpAgentsCache[i]; break; }
+          }
+          setElText('tpProfile', (agent && agent.executionProfile) || (catalog && catalog.runtime) || '—');
+          setElText('tpAvail', (agent && agent.available === false)
+            ? ('불가' + (agent.blockedReason ? (': ' + agent.blockedReason) : ''))
+            : ((catalog && catalog.authOk === false) ? '로그인/인증 필요' : '사용 가능'));
+          if (noteEl) noteEl.textContent = (catalog && catalog.constraintNote) || (agent && agent.blockedReason) || '';
+        } catch (eModels) {
+          tpModelsCache = [];
+          fillSelect(sel, [], 'modelId', function () { return ''; }, '모델 목록 실패');
+          if (sel) sel.disabled = true;
+          if (noteEl) noteEl.textContent = String((eModels && eModels.message) || eModels).slice(0, 200);
+        }
+      }
+
+      async function persistTpSelection(preview) {
+        if (!preview || !preview.taskId || !preview.projectId) return null;
+        var agentSel = document.getElementById('tpAgentSel');
+        var modelSel = document.getElementById('tpModelSel');
+        var workerId = agentSel && agentSel.value;
+        var modelId = modelSel && modelSel.value;
+        if (!workerId || !modelId) return null;
+        var cfg = await callTool('relay_pm_set_task_execution_config', {
+          projectId: preview.projectId,
+          taskId: preview.taskId,
+          workerId: workerId,
+          modelId: modelId
+        });
+        preview.workerId = workerId;
+        preview.modelId = modelId;
+        preview.selectionApproved = false;
+        var chk = document.getElementById('tpApproveChk');
+        if (chk) { chk.disabled = false; chk.checked = false; }
+        return cfg;
+      }
+
+      function updateTpRunEnabled(preview, elig) {
+        var runBtn = document.getElementById('tpRun');
+        var status = document.getElementById('tpStatus');
+        var chk = document.getElementById('tpApproveChk');
+        var agentSel = document.getElementById('tpAgentSel');
+        var modelSel = document.getElementById('tpModelSel');
+        var approved = !!(chk && chk.checked);
+        var selected = !!(agentSel && agentSel.value && modelSel && modelSel.value);
+        var ok = !!(preview && preview.taskId && preview.workspaceRoot && selected && approved && elig && elig.ok && elig.workerId);
+        if (runBtn) {
+          runBtn.disabled = !ok || runInFlight || tpSelectionBusy;
+          runBtn.textContent = selected
+            ? ('작업 시작 · ' + agentSel.value + (modelSel.value ? (' / ' + modelSel.value) : ''))
+            : '작업 시작';
+        }
+        if (status) {
+          if (ok) status.textContent = '승인된 선택으로 Worker가 한 번만 실행됩니다. 프로젝트 기본 Assignment는 바꾸지 않습니다.';
+          else if (!selected) status.textContent = 'Agent와 모델을 고른 뒤 실행을 승인하세요.';
+          else if (!approved) status.textContent = '선택 후 실행 승인 체크를 켜면 시작할 수 있어요.';
+          else if (elig && elig.blockers && elig.blockers.length) status.textContent = '시작 불가: ' + elig.blockers.join(', ');
+          else status.textContent = '시작 조건을 확인하는 중…';
+        }
+      }
+
       function renderTaskPreview(preview, elig) {
         setElText('tpGoal', preview.goalTitle || preview.goalId || '');
         setElText('tpTask', preview.taskTitle || preview.taskId || '');
         setElText('tpScope', preview.scope || '');
-        setElText('tpBuilder', (preview.builder || '') + (preview.workerId ? ' → ' + preview.workerId : ''));
+        setElText('tpBuilder', (preview.builder || '') + (preview.projectWorkerHint ? (' → ' + preview.projectWorkerHint) : ''));
         setElText('tpWorkspace', preview.workspaceRoot || '');
         var ul = document.getElementById('tpCrit');
         if (ul) {
@@ -1902,22 +2040,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
             }
           }
         }
-        var runBtn = document.getElementById('tpRun');
-        var status = document.getElementById('tpStatus');
-        var ok = !!(elig && elig.ok && elig.workerId && elig.workspaceRoot && preview.taskId);
-        if (runBtn) {
-          runBtn.disabled = !ok || runInFlight;
-          var label = '작업 시작';
-          if (preview.builder) label = '작업 시작 · ' + preview.builder;
-          runBtn.textContent = label;
-        }
-        if (status) {
-          if (ok) status.textContent = '확인 후 시작을 누르면 Worker가 한 번만 실행됩니다.';
-          else if (elig && elig.blockers && elig.blockers.length) {
-            status.textContent = '시작 불가: ' + elig.blockers.join(', ');
-          } else {
-            status.textContent = '시작 조건을 확인하는 중…';
-          }
+        updateTpRunEnabled(preview, elig);
+        if (!preview._agentsLoaded) {
+          preview._agentsLoaded = true;
+          loadTpAgents(preview).then(function () {
+            var agentSel = document.getElementById('tpAgentSel');
+            return loadTpModels(agentSel && agentSel.value);
+          }).then(function () {
+            updateTpRunEnabled(preview, elig);
+          }).catch(function () {});
         }
       }
 
@@ -1997,7 +2128,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
             scope: task.scope || workspace || '',
             criteria: task.completionCriteria || criteria,
             builder: (elig && elig.desiredBuilder) || '',
-            workerId: elig && elig.workerId,
+            projectWorkerHint: (elig && (elig.projectDesiredBuilder || elig.desiredBuilder)) || '',
+            workerId: (elig && elig.workerId) || '',
             workspaceRoot: (elig && elig.workspaceRoot) || workspace || '',
             projectId: projectId
           };
@@ -2023,15 +2155,32 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
 
       async function explicitOwnerRun() {
-        if (runInFlight) return;
+        if (runInFlight || tpSelectionBusy) return;
         if (!pendingPreview || !pendingPreview.taskId) return;
         var errEl = document.getElementById('tpErr');
         var status = document.getElementById('tpStatus');
         var runBtn = document.getElementById('tpRun');
+        var chk = document.getElementById('tpApproveChk');
+        var agentSel = document.getElementById('tpAgentSel');
+        var modelSel = document.getElementById('tpModelSel');
         if (errEl) { errEl.classList.add('hide'); errEl.textContent = ''; }
+        if (!(agentSel && agentSel.value && modelSel && modelSel.value)) {
+          if (errEl) { errEl.classList.remove('hide'); errEl.textContent = 'Agent와 모델을 선택해 주세요.'; }
+          return;
+        }
+        if (!(chk && chk.checked)) {
+          if (errEl) { errEl.classList.remove('hide'); errEl.textContent = '실행 승인 체크가 필요해요.'; }
+          return;
+        }
         runInFlight = true;
+        tpSelectionBusy = true;
         if (runBtn) runBtn.disabled = true;
         try {
+          await persistTpSelection(pendingPreview);
+          await callTool('relay_pm_approve_task_execution', {
+            taskId: pendingPreview.taskId,
+            projectId: pendingPreview.projectId
+          });
           var resolved = await callTool('relay_pm_resolve_run', {
             taskId: pendingPreview.taskId,
             projectId: pendingPreview.projectId
@@ -2049,7 +2198,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (status) {
             status.textContent = '시작했어요'
               + (disp && disp.runId ? (' · 실행 ' + disp.runId) : '')
-              + (resolved.workerId ? (' · ' + resolved.workerId) : '');
+              + (resolved.workerId ? (' · ' + resolved.workerId) : '')
+              + (resolved.modelId ? (' · ' + resolved.modelId) : '');
           }
           var projectIdAfter = pendingPreview.projectId;
           pendingPreview = null;
@@ -2064,16 +2214,17 @@ const WIDGET_HTML = `<!DOCTYPE html>
             errEl.textContent = String((eRun && eRun.message) || eRun).slice(0, 240);
           }
           if (status) status.textContent = '시작에 실패했어요. 다시 시도할 수 있어요.';
-          // Re-enable only if still READY (duplicate protection may have moved state)
           try {
             var again = await callTool('relay_pm_resolve_run', {
-              taskId: pendingPreview.taskId,
-              projectId: pendingPreview.projectId
+              taskId: pendingPreview && pendingPreview.taskId,
+              projectId: pendingPreview && pendingPreview.projectId
             });
-            renderTaskPreview(pendingPreview, again);
-          } catch (eAgain) { /* leave disabled */ }
+            updateTpRunEnabled(pendingPreview, again);
+          } catch (eAgain) {}
         } finally {
           runInFlight = false;
+          tpSelectionBusy = false;
+          if (runBtn) runBtn.disabled = false;
         }
       }
 
@@ -2114,6 +2265,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
         var tpCancel = document.getElementById('tpCancel');
         var tpCancelPrep = document.getElementById('tpCancelPrep');
         var tpRun = document.getElementById('tpRun');
+        var tpAgentSel = document.getElementById('tpAgentSel');
+        var tpModelSel = document.getElementById('tpModelSel');
+        var tpApproveChk = document.getElementById('tpApproveChk');
         if (newBtn) newBtn.addEventListener('click', function () {
           setGoalFlowVisible(true);
           var t = document.getElementById('pdGoalTitleIn');
@@ -2127,7 +2281,67 @@ const WIDGET_HTML = `<!DOCTYPE html>
         });
         if (tpCancelPrep) tpCancelPrep.addEventListener('click', function () { cancelReadyPrep(); });
         if (tpRun) tpRun.addEventListener('click', function () { explicitOwnerRun(); });
+        if (tpAgentSel) tpAgentSel.addEventListener('change', function () {
+          if (!pendingPreview) return;
+          tpSelectionBusy = true;
+          loadTpModels(tpAgentSel.value).then(function () {
+            return persistTpSelection(pendingPreview);
+          }).then(function () {
+            return callTool('relay_pm_resolve_run', {
+              taskId: pendingPreview.taskId,
+              projectId: pendingPreview.projectId
+            });
+          }).then(function (elig) {
+            updateTpRunEnabled(pendingPreview, elig);
+          }).catch(function (e) {
+            var errEl = document.getElementById('tpErr');
+            if (errEl) { errEl.classList.remove('hide'); errEl.textContent = String((e && e.message) || e).slice(0, 240); }
+          }).finally(function () { tpSelectionBusy = false; });
+        });
+        if (tpModelSel) tpModelSel.addEventListener('change', function () {
+          if (!pendingPreview) return;
+          tpSelectionBusy = true;
+          persistTpSelection(pendingPreview).then(function () {
+            return callTool('relay_pm_resolve_run', {
+              taskId: pendingPreview.taskId,
+              projectId: pendingPreview.projectId
+            });
+          }).then(function (elig) {
+            updateTpRunEnabled(pendingPreview, elig);
+          }).catch(function (e) {
+            var errEl = document.getElementById('tpErr');
+            if (errEl) { errEl.classList.remove('hide'); errEl.textContent = String((e && e.message) || e).slice(0, 240); }
+          }).finally(function () { tpSelectionBusy = false; });
+        });
+        if (tpApproveChk) tpApproveChk.addEventListener('change', function () {
+          if (!pendingPreview) return;
+          if (!tpApproveChk.checked) {
+            updateTpRunEnabled(pendingPreview, null);
+            return;
+          }
+          tpSelectionBusy = true;
+          persistTpSelection(pendingPreview).then(function () {
+            return callTool('relay_pm_approve_task_execution', {
+              taskId: pendingPreview.taskId,
+              projectId: pendingPreview.projectId
+            });
+          }).then(function () {
+            return callTool('relay_pm_resolve_run', {
+              taskId: pendingPreview.taskId,
+              projectId: pendingPreview.projectId
+            });
+          }).then(function (elig) {
+            pendingPreview.selectionApproved = true;
+            updateTpRunEnabled(pendingPreview, elig);
+          }).catch(function (e) {
+            tpApproveChk.checked = false;
+            var errEl = document.getElementById('tpErr');
+            if (errEl) { errEl.classList.remove('hide'); errEl.textContent = String((e && e.message) || e).slice(0, 240); }
+            updateTpRunEnabled(pendingPreview, null);
+          }).finally(function () { tpSelectionBusy = false; });
+        });
       }
+
       wireGoalRunUi();
 
       async function poll() {

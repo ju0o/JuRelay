@@ -304,6 +304,16 @@ export interface RunMeta {
     fromWorkerId: string;
     at: string;
   };
+  /**
+   * P2-OWNER-R01 additive: explicit model id selected for this Run
+   * (from Task execution-config). Old records may omit it.
+   */
+  model?: string;
+  /**
+   * P2-OWNER-R01 additive: provenance of the model/worker selection.
+   * Only TASK_EXECUTION_CONFIG is written today.
+   */
+  selectionSource?: 'TASK_EXECUTION_CONFIG';
 }
 
 /** Allocate a new collision-resistant runId (UUID). */
@@ -348,6 +358,12 @@ export function readRunMeta(folder: string): RunMeta {
     if (rawAa && (rawAa.decision === 'retry' || rawAa.decision === 'fallback')
       && typeof rawAa.fromWorkerId === 'string' && typeof rawAa.at === 'string') {
       meta.autoAdvance = { decision: rawAa.decision, fromWorkerId: rawAa.fromWorkerId, at: rawAa.at };
+    }
+    if (typeof raw.model === 'string' && raw.model.trim()) {
+      meta.model = raw.model.trim();
+    }
+    if (raw.selectionSource === 'TASK_EXECUTION_CONFIG') {
+      meta.selectionSource = 'TASK_EXECUTION_CONFIG';
     }
     return meta;
   } catch {
@@ -403,6 +419,12 @@ export function writeRunMeta(folder: string, meta: RunMeta): void {
       fromWorkerId: meta.autoAdvance.fromWorkerId,
       at: meta.autoAdvance.at,
     };
+  }
+  if (typeof meta.model === 'string' && meta.model.trim()) {
+    out.model = meta.model.trim();
+  }
+  if (meta.selectionSource === 'TASK_EXECUTION_CONFIG') {
+    out.selectionSource = 'TASK_EXECUTION_CONFIG';
   }
   const filePath = path.join(folder, 'meta.json');
   const tmp = `${filePath}.${process.pid}.${Date.now()}.tmp`;

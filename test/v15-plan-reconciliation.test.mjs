@@ -22,6 +22,7 @@ const rt = await import('../dist/server/backend/goal-task-runtime.js');
 const dispatcher = await import('../dist/server/backend/dispatcher.js');
 const observation = await import('../dist/server/backend/observation-lock.js');
 const workers = await import('../dist/server/backend/worker-registry.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const fixtures = await import('../dist/server/integrations/test-fixture/watch.js');
 fixtures.ensureTestFixtureAdapterRegistered();
 
@@ -34,6 +35,23 @@ workers.writeWorkerRegistryRecord(ROOT, {
   schemaVersion: 'G.2', workerId: 'v15-s4-worker', displayName: 'V1.5 Slice 4 fixture worker',
   launchCommand: process.execPath, launchArgsPrefix: [alive], capabilities: ['fixture'], observationAdapterId: 'test-fixture',
 });
+
+/** P2-OWNER-R01: select + approve Agent/model before owner dispatch / reconcile auto-dispatch. */
+function approveSelection(taskId, workerId = 'v15-s4-worker') {
+  taskExec.setTaskExecutionConfig(ROOT, project, {
+    projectId: project,
+    taskId,
+    workerId,
+    modelId: 'test-model',
+  });
+  return taskExec.approveTaskExecution(ROOT, project, taskId, 'OWNER_MCP');
+}
+
+function approvePlanTasks(plan) {
+  for (const binding of plan.taskBindings) {
+    approveSelection(binding.taskId, binding.workerId);
+  }
+}
 
 const contract = (title) => ({ title, goal: `Complete ${title}`, reason: 'Slice 4 fixture', scope: 'Test-only scope', completionCriteria: ['fixture complete'] });
 function auth(plan) {
@@ -51,6 +69,7 @@ async function makePlan(prefix, count = 3) {
     orderedTaskIds: created.map(({ task }) => task.taskId),
     taskBindings: created.map(({ task }) => ({ taskId: task.taskId, workerId: 'v15-s4-worker', workspaceRoot: workspace, scopeFingerprint: retry.computeTaskScopeFingerprint(task) })),
   });
+  approvePlanTasks(plan);
   return { plan, workspace };
 }
 async function startOnly(fixture) {
@@ -59,6 +78,7 @@ async function startOnly(fixture) {
   });
 }
 async function dispatchTask(taskId, workspace) {
+  // makePlan already approved; retry of same Task reuses frozen approved selection.
   return v1.dispatchV1OwnerApproved(ROOT, project, { taskId, workerId: 'v15-s4-worker', workspaceRoot: workspace, expectedExecutionState: 'READY' });
 }
 async function acceptWithoutHook(taskId, runId, workspace) {

@@ -83,6 +83,40 @@ export function mapCoreError(err: unknown): McpError {
         return new McpError('NOT_FOUND', msg);
       case 'LAUNCH_FAILED':
         return new McpError('INTERNAL_ERROR', msg);
+      case 'TASK_EXECUTION_SELECTION_REQUIRED':
+      case 'OWNER_APPROVAL_REQUIRED':
+      case 'FORBIDDEN_WORKER':
+        return new McpError('FORBIDDEN', msg);
+      case 'UNSUPPORTED_MODEL':
+      case 'WORKER_MISMATCH':
+        return new McpError('INVALID_ARGUMENT', msg);
+      case 'SELECTION_FROZEN':
+        return new McpError('CONFLICT', msg);
+      case 'TASK_NOT_READY':
+        return new McpError('INVALID_STATE', msg);
+      default:
+        return new McpError('INTERNAL_ERROR', msg);
+    }
+  }
+
+  // P2-OWNER-R01 Task execution selection
+  if (name === 'TaskExecutionConfigError') {
+    switch (code) {
+      case 'NOT_FOUND':
+        return new McpError('NOT_FOUND', msg);
+      case 'INVALID_ARGUMENT':
+      case 'UNSUPPORTED_MODEL':
+      case 'WORKER_MISMATCH':
+        return new McpError('INVALID_ARGUMENT', msg);
+      case 'TASK_NOT_READY':
+        return new McpError('INVALID_STATE', msg);
+      case 'UNKNOWN_WORKER':
+        return new McpError('NOT_FOUND', msg);
+      case 'FORBIDDEN_WORKER':
+      case 'OWNER_APPROVAL_REQUIRED':
+        return new McpError('FORBIDDEN', msg);
+      case 'SELECTION_FROZEN':
+        return new McpError('CONFLICT', msg);
       default:
         return new McpError('INTERNAL_ERROR', msg);
     }

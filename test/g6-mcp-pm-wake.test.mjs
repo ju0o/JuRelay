@@ -57,8 +57,20 @@ const retryPrep = await import('../dist/server/backend/retry-preparation.js');
 const captureSvc = await import('../dist/server/backend/capture-service.js');
 const pmTools = await import('../dist/server/mcp/pm-tools.js');
 const appServer = await import('../dist/server/mcp/app-server.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const testFix = await import('../dist/server/integrations/test-fixture/watch.js');
 testFix.ensureTestFixtureAdapterRegistered();
+
+/** P2-OWNER-R01: select + approve Agent/model before owner dispatch. */
+function approveSelection(taskId, workerId = 'g6-mcp-worker') {
+  taskExec.setTaskExecutionConfig(TEST_ROOT, project, {
+    projectId: project,
+    taskId,
+    workerId,
+    modelId: 'test-model',
+  });
+  return taskExec.approveTaskExecution(TEST_ROOT, project, taskId, 'OWNER_MCP');
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FIX_ALIVE = path.resolve(__dirname, 'fixtures/workers/stay-alive.mjs');
@@ -109,6 +121,7 @@ function responseComplete(sessionId, text) {
 
 async function driveToResultReceived(title, sessionId, text) {
   const inc = await get('relay_pm_create_task').handler({ ...CONTRACT, title });
+  approveSelection(inc.task.taskId);
   const res = await get('relay_pm_dispatch_owner_approved').handler({
     taskId: inc.task.taskId, workerId: 'g6-mcp-worker', workspaceRoot: WORKSPACE, expectedExecutionState: 'READY',
   });
