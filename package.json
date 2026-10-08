@@ -139,6 +139,7 @@
     "test:p1-8c04-project-dashboard": "node --test test/p1-8c04-project-dashboard.test.mjs",
     "test:owner02a-explicit-worker-binding": "node --test test/owner02a-explicit-worker-binding.test.mjs",
     "test:owner-r01-task-agent-model": "node --test test/owner-r01-task-agent-model.test.mjs",
+    "test:r01-host-widget-fix": "node --test test/r01-host-widget-fix.test.mjs",
     "test:p1-8c05-goal-task-dispatch": "node --test test/p1-8c05-goal-task-dispatch.test.mjs",
     "test:p1-8d-state-integrity": "node --test test/p1-8d-state-integrity.test.mjs",
     "test:p2-clean-install": "node --test test/p2-clean-install.test.mjs",

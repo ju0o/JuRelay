@@ -181,7 +181,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .taskcounts b { font-size:13px; }
   .tc-done b { color:#2ea86a; } .tc-review b { color:#f0b429; }
   .taskrows { display:flex; flex-direction:column; gap:6px; margin-top:6px; }
-  .trow { display:flex; align-items:center; gap:8px; border:1px solid var(--border); border-radius:8px; padding:6px 8px; font-size:12px; }
+  .trow { display:flex; align-items:center; gap:8px; border:1px solid var(--border); border-radius:8px; padding:6px 8px; font-size:12px; background:transparent; color:inherit; width:100%; text-align:left; font:inherit; cursor:pointer; }
+  .trow:focus-visible { outline:2px solid var(--accent, #4a9eff); outline-offset:1px; }
+  .trow.sel { border-color:var(--accent, #4a9eff); box-shadow:0 0 0 1px var(--accent, #4a9eff); }
+  .trow.ro { cursor:default; opacity:.92; }
   .trow .tid { font-size:10px; font-family:ui-monospace,Menlo,monospace; color:var(--muted); flex:none; }
   .trow .tti { flex:1; min-width:0; white-space:nowrap; overflow:hidden; }
   .trow .tst { font-size:10px; padding:1px 7px; border-radius:9px; flex:none; border:1px solid var(--border); color:var(--muted); }
@@ -574,7 +577,6 @@ const WIDGET_HTML = `<!DOCTYPE html>
         <div class="now-pm">PM = <span data-i="pmYou">이 대화</span>에서 진행 중</div>
         <div class="now-arr" id="nowArr">대기 중</div>
       </div>
-      <div class="pipe" id="pipe">
       <div class="lanes" id="lanes">
         <div class="lane lane-a">
           <div class="lane-head"><span class="lane-title">검토 중</span><span class="lane-desc">사람이 봐야 함</span><span class="lane-n" id="laneNa">0</span></div>
@@ -1049,8 +1051,21 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (st === 'working') return t('working');
         return t('wait');
       }
+      var selectedTaskId = null;
+      var lastTaskListCache = [];
+
+      function isRunnableReadyTask(task) {
+        if (!task || !task.taskId) return false;
+        if (task.executionState !== 'READY') return false;
+        var pm = task.pmState;
+        if (pm && pm !== 'PENDING' && pm !== 'READY') return false;
+        var runs = task.linkedRuns || [];
+        return !runs.length;
+      }
+
       function renderTaskTab(taskList) {
         var tasks = (taskList || []).slice(0, 30);
+        lastTaskListCache = tasks;
         var rows = document.getElementById('taskRows');
         var done = 0, review = 0;
         var cur = -1;
@@ -1080,11 +1095,22 @@ const WIDGET_HTML = `<!DOCTYPE html>
         } catch (e) {}
         var html = '';
         for (var j = 0; j < tasks.length; j++) {
-          var s2 = taskStatus(tasks[j]);
-          html += '<div class="trow st-' + s2 + (j === cur ? ' cur' : '') + '">'
-            + '<span class="tid">' + esc((tasks[j] && tasks[j].taskId) || ('T' + j)) + '</span>'
-            + '<span class="tti" title="' + taskTitleOf(tasks[j], j) + '">' + taskTitleOf(tasks[j], j) + '</span>'
-            + '<span class="tst">' + esc(taskStatusLabel(s2)) + '</span></div>';
+          var task = tasks[j] || {};
+          var s2 = taskStatus(task);
+          var tid = String(task.taskId || ('T' + j));
+          var runnable = isRunnableReadyTask(task);
+          var selected = selectedTaskId === tid || (!selectedTaskId && j === cur);
+          var title = taskTitleOf(task, j);
+          html += '<button type="button" class="trow st-' + s2
+            + (selected ? ' cur sel' : '')
+            + (runnable ? '' : ' ro')
+            + '" data-task-id="' + esc(tid) + '"'
+            + ' data-runnable="' + (runnable ? '1' : '0') + '"'
+            + ' aria-selected="' + (selected ? 'true' : 'false') + '"'
+            + ' title="' + esc(title) + '">'
+            + '<span class="tid">' + esc(tid) + '</span>'
+            + '<span class="tti">' + esc(title) + '</span>'
+            + '<span class="tst">' + esc(taskStatusLabel(s2)) + '</span></button>';
         }
         try { if (rows) rows.innerHTML = html; } catch (e) {}
         return { done: done, review: review, left: left, total: tasks.length };
@@ -1933,12 +1959,12 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
       }
 
-      async function loadTpModels(workerId) {
+      async function loadTpModels(workerId, restoreModelId) {
         var sel = document.getElementById('tpModelSel');
         var noteEl = document.getElementById('tpConstraint');
         if (!workerId) {
           fillSelect(sel, [], 'modelId', function () { return ''; }, 'Agent 먼저');
-          if (sel) sel.disabled = true;
+          if (sel) { sel.disabled = true; sel.value = ''; }
           setElText('tpProfile', '—');
           setElText('tpAvail', '—');
           if (noteEl) noteEl.textContent = '';
@@ -1949,12 +1975,22 @@ const WIDGET_HTML = `<!DOCTYPE html>
           var res = await callTool('relay_pm_list_agent_models', { workerId: workerId });
           var catalog = res && (res.catalog || res);
           tpModelsCache = (catalog && catalog.models) || [];
+          // R01-HOST-FIX C: never auto-select catalog.defaultModelId.
+          // Keep placeholder empty unless restoring a previously saved valid modelId.
           fillSelect(sel, tpModelsCache, 'modelId', function (m) {
             return (m.displayName ? (m.displayName + ' · ') : '') + m.modelId;
           }, '모델 선택…');
           if (sel) {
             sel.disabled = false;
-            if (catalog && catalog.defaultModelId) sel.value = catalog.defaultModelId;
+            sel.value = '';
+            var restore = restoreModelId || (pendingPreview && pendingPreview.modelId) || '';
+            if (restore) {
+              var allowed = false;
+              for (var mi = 0; mi < tpModelsCache.length; mi++) {
+                if (tpModelsCache[mi].modelId === restore) { allowed = true; break; }
+              }
+              if (allowed) sel.value = restore;
+            }
           }
           var agent = null;
           for (var i = 0; i < tpAgentsCache.length; i++) {
@@ -1964,11 +2000,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
           setElText('tpAvail', (agent && agent.available === false)
             ? ('불가' + (agent.blockedReason ? (': ' + agent.blockedReason) : ''))
             : ((catalog && catalog.authOk === false) ? '로그인/인증 필요' : '사용 가능'));
-          if (noteEl) noteEl.textContent = (catalog && catalog.constraintNote) || (agent && agent.blockedReason) || '';
+          var notes = [];
+          if (catalog && catalog.constraintNote) notes.push(catalog.constraintNote);
+          if (agent && agent.blockedReason) notes.push(agent.blockedReason);
+          if (catalog && catalog.defaultModelId) notes.push('참고 기본값(자동 선택 안 함): ' + catalog.defaultModelId);
+          if (noteEl) noteEl.textContent = notes.join(' · ');
         } catch (eModels) {
           tpModelsCache = [];
           fillSelect(sel, [], 'modelId', function () { return ''; }, '모델 목록 실패');
-          if (sel) sel.disabled = true;
+          if (sel) { sel.disabled = true; sel.value = ''; }
           if (noteEl) noteEl.textContent = String((eModels && eModels.message) || eModels).slice(0, 200);
         }
       }
@@ -2045,10 +2085,99 @@ const WIDGET_HTML = `<!DOCTYPE html>
           preview._agentsLoaded = true;
           loadTpAgents(preview).then(function () {
             var agentSel = document.getElementById('tpAgentSel');
-            return loadTpModels(agentSel && agentSel.value);
+            return loadTpModels(agentSel && agentSel.value, preview.modelId || '');
           }).then(function () {
             updateTpRunEnabled(preview, elig);
           }).catch(function () {});
+        }
+      }
+
+      async function openExistingTask(taskId) {
+        var errEl = document.getElementById('tpErr');
+        var status = document.getElementById('tpStatus');
+        if (errEl) { errEl.classList.add('hide'); errEl.textContent = ''; }
+        var projectId = lastProjectDash && lastProjectDash.project && lastProjectDash.project.projectId;
+        if (!projectId) {
+          if (errEl) { errEl.classList.remove('hide'); errEl.textContent = '프로젝트가 선택되지 않았어요.'; }
+          return;
+        }
+        if (!taskId) return;
+        selectedTaskId = taskId;
+        try {
+          var task = await callTool('relay_pm_get_task', { taskId: taskId });
+          if (!task || !task.taskId) throw new Error('Task를 찾지 못했어요.');
+          if (task.projectId && task.projectId !== projectId) {
+            throw new Error('이 Task는 다른 프로젝트(' + task.projectId + ')에 속해요.');
+          }
+          if (!task.projectId) {
+            throw new Error('Task에 projectId가 없어요. 프로젝트 귀속을 먼저 고쳐 주세요.');
+          }
+          var goal = null;
+          if (task.goalId) {
+            try { goal = await callTool('relay_pm_get_goal', { goalId: task.goalId }); } catch (eG) { goal = null; }
+          }
+          if (goal && goal.projectId && goal.projectId !== projectId) {
+            throw new Error('Goal 프로젝트와 선택 프로젝트가 달라요.');
+          }
+          var runnable = isRunnableReadyTask(task);
+          var cfgRes = null;
+          try {
+            cfgRes = await callTool('relay_pm_get_task_execution_config', {
+              taskId: task.taskId,
+              projectId: projectId
+            });
+          } catch (eCfg) { cfgRes = null; }
+          var cfg = cfgRes && cfgRes.config;
+          if (!runnable) {
+            pendingPreview = null;
+            setTaskPrevVisible(false);
+            if (status) {
+              status.textContent = '읽기 전용 · '
+                + task.taskId
+                + ' · '
+                + (task.executionState || '')
+                + (task.pmState ? ('/' + task.pmState) : '')
+                + ' · Run '
+                + ((task.linkedRuns || []).length);
+            }
+            renderTaskTab(lastTaskListCache);
+            return;
+          }
+          var elig = await callTool('relay_pm_resolve_run', {
+            taskId: task.taskId,
+            projectId: projectId
+          });
+          var workspace = (lastProjectDash.project && lastProjectDash.project.workspacePath) || '';
+          pendingPreview = {
+            goalId: task.goalId || (goal && goal.goalId) || '',
+            goalTitle: (goal && goal.title) || task.goal || '',
+            taskId: task.taskId,
+            taskTitle: task.title || task.taskId,
+            scope: task.scope || workspace || '',
+            criteria: task.completionCriteria || [],
+            builder: (elig && elig.desiredBuilder) || '',
+            projectWorkerHint: (elig && (elig.projectDesiredBuilder || elig.desiredBuilder)) || '',
+            workerId: (cfg && cfg.workerId) || '',
+            modelId: (cfg && cfg.modelId) || '',
+            selectionApproved: !!(cfg && cfg.ownerApproval),
+            workspaceRoot: (elig && elig.workspaceRoot) || workspace || '',
+            projectId: projectId,
+            _agentsLoaded: false
+          };
+          setGoalFlowVisible(false);
+          renderTaskPreview(pendingPreview, elig);
+          setTaskPrevVisible(true);
+          if (status) {
+            status.textContent = cfg && cfg.modelId
+              ? '저장된 선택을 불러왔어요. 모델을 확인한 뒤 실행 승인하세요.'
+              : '기존 READY Task예요. Agent와 모델을 직접 선택한 뒤 실행 승인하세요.';
+          }
+          renderTaskTab(lastTaskListCache);
+        } catch (eOpen) {
+          if (errEl) {
+            errEl.classList.remove('hide');
+            errEl.textContent = String((eOpen && eOpen.message) || eOpen).slice(0, 240);
+          }
         }
       }
 
@@ -2283,16 +2412,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (tpRun) tpRun.addEventListener('click', function () { explicitOwnerRun(); });
         if (tpAgentSel) tpAgentSel.addEventListener('change', function () {
           if (!pendingPreview) return;
+          // Agent change invalidates prior model + approval. Do not auto-pick a model.
+          pendingPreview.workerId = tpAgentSel.value || '';
+          pendingPreview.modelId = '';
+          pendingPreview.selectionApproved = false;
+          if (tpModelSel) tpModelSel.value = '';
+          if (tpApproveChk) { tpApproveChk.checked = false; tpApproveChk.disabled = true; }
           tpSelectionBusy = true;
-          loadTpModels(tpAgentSel.value).then(function () {
-            return persistTpSelection(pendingPreview);
-          }).then(function () {
-            return callTool('relay_pm_resolve_run', {
-              taskId: pendingPreview.taskId,
-              projectId: pendingPreview.projectId
-            });
-          }).then(function (elig) {
-            updateTpRunEnabled(pendingPreview, elig);
+          loadTpModels(tpAgentSel.value, '').then(function () {
+            updateTpRunEnabled(pendingPreview, null);
           }).catch(function (e) {
             var errEl = document.getElementById('tpErr');
             if (errEl) { errEl.classList.remove('hide'); errEl.textContent = String((e && e.message) || e).slice(0, 240); }
@@ -2300,6 +2428,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
         });
         if (tpModelSel) tpModelSel.addEventListener('change', function () {
           if (!pendingPreview) return;
+          // Model pick alone must not dispatch; persist selection and clear GO until re-approved.
+          pendingPreview.modelId = tpModelSel.value || '';
+          pendingPreview.selectionApproved = false;
+          if (tpApproveChk) { tpApproveChk.checked = false; }
+          if (!tpModelSel.value) {
+            if (tpApproveChk) tpApproveChk.disabled = true;
+            updateTpRunEnabled(pendingPreview, null);
+            return;
+          }
           tpSelectionBusy = true;
           persistTpSelection(pendingPreview).then(function () {
             return callTool('relay_pm_resolve_run', {
@@ -2343,6 +2480,29 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
 
       wireGoalRunUi();
+
+      function wireTaskRows() {
+        var rows = document.getElementById('taskRows');
+        if (!rows || rows._r01Wired) return;
+        rows._r01Wired = true;
+        rows.addEventListener('click', function (ev) {
+          var btn = ev.target && ev.target.closest ? ev.target.closest('button.trow[data-task-id]') : null;
+          if (!btn) return;
+          var tid = btn.getAttribute('data-task-id');
+          if (!tid) return;
+          openExistingTask(tid);
+        });
+        rows.addEventListener('keydown', function (ev) {
+          var btn = ev.target && ev.target.closest ? ev.target.closest('button.trow[data-task-id]') : null;
+          if (!btn) return;
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            var tid = btn.getAttribute('data-task-id');
+            if (tid) openExistingTask(tid);
+          }
+        });
+      }
+      wireTaskRows();
 
       async function poll() {
         try {
