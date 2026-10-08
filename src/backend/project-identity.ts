@@ -253,6 +253,44 @@ export function loadProjectRegistry(dataRoot: string): ProjectRegistry {
   return out;
 }
 
+/**
+ * Upsert a display name into dataRoot/_relay/projects.json (auxiliary identity).
+ * Creates the file when missing. Never deletes other entries. Atomic write.
+ */
+export function upsertProjectRegistryName(
+  dataRoot: string,
+  projectIdRaw: string,
+  projectNameRaw: string,
+): ProjectRegistry {
+  const projectId = normalizeProjectId(projectIdRaw);
+  const projectName = normalizeProjectName(projectNameRaw);
+  const file = projectRegistryPath(dataRoot);
+  let raw: Record<string, unknown> = {};
+  try {
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      raw = parsed as Record<string, unknown>;
+    }
+  } catch {
+    raw = {};
+  }
+  const projects =
+    raw.projects && typeof raw.projects === 'object' && !Array.isArray(raw.projects)
+      ? { ...(raw.projects as Record<string, unknown>) }
+      : {};
+  projects[projectId] = { projectId, projectName };
+  const next = {
+    ...raw,
+    schemaVersion: typeof raw.schemaVersion === 'string' ? raw.schemaVersion : 'projects.v1',
+    projects,
+  };
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  const tmp = `${file}.${process.pid}.tmp`;
+  fs.writeFileSync(tmp, JSON.stringify(next, null, 2) + '\n', 'utf8');
+  fs.renameSync(tmp, file);
+  return loadProjectRegistry(dataRoot);
+}
+
 // ── Resolution ──────────────────────────────────────────────────────────────
 
 /**

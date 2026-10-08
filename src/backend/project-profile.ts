@@ -580,10 +580,24 @@ function buildProfile(
   const hasRoleOrLane = !!(roleHit || laneHit);
   const workspaceConfigured = workspacePath !== null && !workspaceConflict;
 
+  // P2-OWNER-R00: stub registrations (builder runtime unconfigured / no workerId)
+  // stay PARTIAL until Owner assigns a real Builder. Existing lanes with workerId
+  // or a real runtime/runtimeAdapterId remain CONFIGURED.
+  const STUB_RUNTIMES = new Set(['unconfigured', 'unset', 'none']);
+  const hasUsableBuilder = builders.some((b) => {
+    if (!b) return false;
+    if (typeof b.workerId === 'string' && b.workerId.trim()) return true;
+    const runtimeHint = (typeof b.runtime === 'string' && b.runtime.trim())
+      ? b.runtime.trim()
+      : (typeof b.runtimeAdapterId === 'string' && b.runtimeAdapterId.trim() ? b.runtimeAdapterId.trim() : '');
+    if (runtimeHint && !STUB_RUNTIMES.has(runtimeHint.toLowerCase())) return true;
+    return false;
+  });
+
   let profileState: ProfileState;
   if (workspaceConflict) {
     profileState = 'PARTIAL';
-  } else if (workspaceConfigured && hasRoleOrLane) {
+  } else if (workspaceConfigured && hasRoleOrLane && hasUsableBuilder) {
     profileState = 'CONFIGURED';
   } else if (workspaceConfigured || hasRoleOrLane) {
     profileState = 'PARTIAL';

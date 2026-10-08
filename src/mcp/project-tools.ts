@@ -38,12 +38,67 @@ import {
   listProjectProfiles,
   selectProject,
 } from '../backend/project-profile.js';
+import {
+  ProjectRegistrationError,
+  previewRegisterProject,
+  registerProject,
+  setProjectWorkspacePath,
+} from '../backend/project-registration.js';
+import {
+  WorkspaceBrowseError,
+  browseDirectories,
+  listBrowseRoots,
+} from '../backend/workspace-browse.js';
 import { loadUiState } from '../backend/ui-state.js';
 import { McpError } from './errors.js';
 import { runtimeSnapshot, scopeProjectIdentity } from './dashboard-tools.js';
-import { objectSchema, rejectUnknownFields, requireString } from './schemas.js';
+import { objectSchema, optionalString, rejectUnknownFields, requireString } from './schemas.js';
 import type { TaskRecord } from '../shared/types.js';
 import type { McpTool, PmServerContext } from './server.js';
+
+function requireHostRoot(ctx: PmServerContext): string {
+  const root = ctx.goalLoop?.workspaceRoot;
+  if (typeof root !== 'string' || !root.trim()) {
+    throw new McpError(
+      'INVALID_STATE',
+      'HOST_ROOT_REQUIRED: MCP goalLoop.workspaceRoot(Agent-Relay host)가 없습니다.',
+    );
+  }
+  return root.trim();
+}
+
+function mapBrowseError(err: unknown): never {
+  if (err instanceof WorkspaceBrowseError) {
+    if (err.code === 'NOT_FOUND') throw new McpError('NOT_FOUND', err.message);
+    if (err.code === 'OUTSIDE_ALLOWLIST' || err.code === 'TOO_MANY_ENTRIES') {
+      throw new McpError('FORBIDDEN', `${err.code}: ${err.message}`);
+    }
+    throw new McpError('INVALID_ARGUMENT', `${err.code}: ${err.message}`);
+  }
+  throw err;
+}
+
+function mapRegistrationError(err: unknown): never {
+  if (err instanceof ProjectRegistrationError) {
+    switch (err.code) {
+      case 'NOT_FOUND':
+        throw new McpError('NOT_FOUND', err.message);
+      case 'DUPLICATE_PROJECT_ID':
+      case 'DUPLICATE_WORKSPACE':
+      case 'CONFIRM_REQUIRED':
+      case 'PATH_CHANGE_BLOCKED':
+      case 'WORKSPACE_PATH_CONFLICT':
+        throw new McpError('CONFLICT', `${err.code}: ${err.message}`);
+      case 'HOST_ROOT_REQUIRED':
+        throw new McpError('INVALID_STATE', err.message);
+      case 'OUTSIDE_ALLOWLIST':
+        throw new McpError('FORBIDDEN', err.message);
+      default:
+        throw new McpError('INVALID_ARGUMENT', `${err.code}: ${err.message}`);
+    }
+  }
+  throw err;
+}
 
 function mapAssignmentError(err: unknown): never {
   if (err instanceof AssignmentError) {
@@ -242,6 +297,140 @@ export function buildProjectTools(ctx: PmServerContext): McpTool[] {
             throw new McpError('INVALID_ARGUMENT', msg);
           }
           throw err;
+        }
+      },
+    },
+    {
+      name: 'relay_pm_list_workspace_browse_roots',
+      description:
+        'P2-OWNER-R00: list allowlisted ASUS browse roots (Core / Team). ' +
+        'Existence-checked. Pure read — no Goal/Task/Run/Worker.',
+      inputSchema: objectSchema({}),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, []);
+        return {
+          computer: 'ASUS',
+          roots: listBrowseRoots(),
+        };
+      },
+    },
+    {
+      name: 'relay_pm_browse_workspace_directories',
+      description:
+        'P2-OWNER-R00: one-level directory listing under allowlisted ASUS roots. ' +
+        'Directories only. Rejects path traversal and symlink escape. ' +
+        'Pure read — never reads file contents, never mutates.',
+      inputSchema: objectSchema({
+        absolutePath: { type: 'string' },
+        rootId: { type: 'string' },
+        relativeSegments: { type: 'array', items: { type: 'string' } },
+      }),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, ['absolutePath', 'rootId', 'relativeSegments']);
+        try {
+          const relativeSegments = Array.isArray(args.relativeSegments)
+            ? args.relativeSegments.map((s) => String(s))
+            : undefined;
+          return browseDirectories({
+            absolutePath: optionalString(args, 'absolutePath'),
+            rootId: optionalString(args, 'rootId'),
+            relativeSegments,
+          });
+        } catch (err) {
+          mapBrowseError(err);
+        }
+      },
+    },
+    {
+      name: 'relay_pm_preview_register_project',
+      description:
+        'P2-OWNER-R00: preview registering a folder as a project (duplicate/git checks). ' +
+        'Does NOT write. Use relay_pm_register_project with confirm=true after Owner approval.',
+      inputSchema: objectSchema(
+        {
+          projectName: { type: 'string' },
+          workspacePath: { type: 'string' },
+          projectId: { type: 'string' },
+        },
+        ['projectName', 'workspacePath'],
+      ),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, ['projectName', 'workspacePath', 'projectId']);
+        try {
+          return previewRegisterProject({
+            dataRoot: ctx.dataRoot,
+            scope: ctx.project,
+            hostRoot: requireHostRoot(ctx),
+            projectName: requireString(args, 'projectName'),
+            workspacePath: requireString(args, 'workspacePath'),
+            projectId: optionalString(args, 'projectId'),
+            hostRoots: ctx.goalLoop?.workspaceRoot ? [ctx.goalLoop.workspaceRoot] : undefined,
+          });
+        } catch (err) {
+          mapRegistrationError(err);
+        }
+      },
+    },
+    {
+      name: 'relay_pm_register_project',
+      description:
+        'P2-OWNER-R00: register a folder into WorkspaceConfigV2 as a new lane (stub roles, PARTIAL). ' +
+        'Requires confirm=true. Does NOT create Goal/Task/Run, spawn Worker, or auto-select Agent/Model.',
+      inputSchema: objectSchema(
+        {
+          projectName: { type: 'string' },
+          workspacePath: { type: 'string' },
+          projectId: { type: 'string' },
+          confirm: { type: 'boolean' },
+        },
+        ['projectName', 'workspacePath', 'confirm'],
+      ),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, ['projectName', 'workspacePath', 'projectId', 'confirm']);
+        try {
+          return registerProject({
+            dataRoot: ctx.dataRoot,
+            scope: ctx.project,
+            hostRoot: requireHostRoot(ctx),
+            projectName: requireString(args, 'projectName'),
+            workspacePath: requireString(args, 'workspacePath'),
+            projectId: optionalString(args, 'projectId'),
+            confirm: args.confirm === true,
+            hostRoots: ctx.goalLoop?.workspaceRoot ? [ctx.goalLoop.workspaceRoot] : undefined,
+          });
+        } catch (err) {
+          mapRegistrationError(err);
+        }
+      },
+    },
+    {
+      name: 'relay_pm_set_project_workspace_path',
+      description:
+        'P2-OWNER-R00: change a registered project workspace path. ' +
+        'Hard-blocks ACTIVE workers, READY/RUNNING/VERIFYING tasks, linked runs, and path collisions. ' +
+        'Does NOT rewrite historical Task.scope / Run.workspaceRoot / Evidence. Zero workers spawned.',
+      inputSchema: objectSchema(
+        {
+          projectId: { type: 'string' },
+          workspacePath: { type: 'string' },
+          syncRoleConfig: { type: 'boolean' },
+        },
+        ['projectId', 'workspacePath'],
+      ),
+      handler: async (args: Record<string, unknown>) => {
+        rejectUnknownFields(args, ['projectId', 'workspacePath', 'syncRoleConfig']);
+        try {
+          return setProjectWorkspacePath({
+            dataRoot: ctx.dataRoot,
+            scope: ctx.project,
+            projectId: requireString(args, 'projectId'),
+            workspacePath: requireString(args, 'workspacePath'),
+            hostRoot: requireHostRoot(ctx),
+            hostRoots: ctx.goalLoop?.workspaceRoot ? [ctx.goalLoop.workspaceRoot] : undefined,
+            syncRoleConfig: args.syncRoleConfig === true,
+          });
+        } catch (err) {
+          mapRegistrationError(err);
         }
       },
     },

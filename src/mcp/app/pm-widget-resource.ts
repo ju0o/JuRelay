@@ -443,10 +443,41 @@ const WIDGET_HTML = `<!DOCTYPE html>
       </div>
       <div id="bootPaneProject">
         <div class="boot-list" id="bootProjectList" role="listbox" aria-label="프로젝트 목록"></div>
-        <p class="boot-note">예전(레거시) <code>ws</code>는 추천 프로젝트가 아니며 Agent Relay와 합치지 않아요.</p>
+        <p class="boot-note">실행 컴퓨터는 ASUS입니다. 선택만으로 Goal/Task/Run은 만들지 않아요. 예전(레거시) <code>ws</code>는 Agent Relay와 합치지 않아요.</p>
+        <div class="boot-actions" style="margin-top:8px">
+          <button type="button" id="bootNewProjectBtn">새 폴더로 프로젝트 등록…</button>
+        </div>
       </div>
       <div id="bootPaneWorkspace" class="hide">
         <div class="boot-box" id="bootWorkspaceBox"></div>
+        <div class="boot-box" id="bootBrowseBox" style="margin-top:8px">
+          <div style="font-weight:700">ASUS 폴더 찾아보기</div>
+          <div class="boot-note" id="bootBrowsePath">루트를 고르세요</div>
+          <div class="row" style="flex-wrap:wrap;gap:6px;margin:6px 0" id="bootBrowseRoots"></div>
+          <div class="row" style="flex-wrap:wrap;gap:6px;margin:6px 0" id="bootBrowseEntries"></div>
+          <div class="row" style="gap:6px;margin:6px 0">
+            <button type="button" id="bootBrowseUp" disabled>상위</button>
+            <button type="button" id="bootBrowseUse" disabled>이 폴더 사용</button>
+            <button type="button" id="bootBrowseChangePath" class="hide">작업 폴더 변경</button>
+          </div>
+          <label for="bootPathInput">경로 직접 입력 (선택)</label>
+          <input id="bootPathInput" type="text" maxlength="512" placeholder="/home/skkse12/Desktop/Projects/Core/…" />
+          <div class="row" style="gap:6px;margin-top:6px">
+            <button type="button" id="bootPathCheck">경로 확인</button>
+          </div>
+          <div id="bootRegisterPanel" class="hide" style="margin-top:10px">
+            <div style="font-weight:700">새 프로젝트 등록</div>
+            <label for="bootRegName">프로젝트 이름</label>
+            <input id="bootRegName" type="text" maxlength="120" placeholder="예: JuDemo" />
+            <label for="bootRegId">projectId (비우면 폴더명)</label>
+            <input id="bootRegId" type="text" maxlength="64" placeholder="예: judemo" />
+            <div class="boot-note" id="bootRegPreview">미리보기 전</div>
+            <div class="row" style="gap:6px;margin-top:6px">
+              <button type="button" id="bootRegPreviewBtn">등록 미리보기</button>
+              <button type="button" class="primary" id="bootRegConfirmBtn" disabled>등록 승인</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div id="bootPaneAgents" class="hide">
         <div class="boot-roles" id="bootRoles"></div>
@@ -510,6 +541,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
       </div>
       <div class="taskprev hide" id="pdTaskPrev" aria-label="Task 미리보기">
         <h3>시작 전 확인</h3>
+        <div class="line"><b>프로젝트</b><span id="tpProject"></span></div>
+        <div class="line"><b>컴퓨터</b><span id="tpComputer">ASUS</span></div>
+        <div class="line"><b>작업 폴더</b><span id="tpWorkspace"></span></div>
         <div class="line"><b>Goal</b><span id="tpGoal"></span></div>
         <div class="line"><b>Task</b><span id="tpTask"></span></div>
         <div class="line"><b>범위</b><span id="tpScope"></span></div>
@@ -531,7 +565,6 @@ const WIDGET_HTML = `<!DOCTYPE html>
           <button type="button" id="tpClearSel" disabled>선택 초기화</button>
         </div>
         <div class="line"><label><input type="checkbox" id="tpApproveChk" disabled> 저장된 선택으로 실행을 승인합니다 (이번 Task만)</label></div>
-        <div class="line"><b>작업 폴더</b><span id="tpWorkspace"></span></div>
         <div class="row">
           <button type="button" id="tpCancelPrep">작업 준비 취소</button>
           <button type="button" id="tpCancel">닫기</button>
@@ -2136,11 +2169,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
 
       function renderTaskPreview(preview, elig) {
+        setElText('tpProject', (preview.projectName || preview.projectId || '') + (preview.projectId ? (' · ' + preview.projectId) : ''));
+        setElText('tpComputer', 'ASUS');
+        setElText('tpWorkspace', preview.workspaceRoot || '');
         setElText('tpGoal', preview.goalTitle || preview.goalId || '');
         setElText('tpTask', preview.taskTitle || preview.taskId || '');
         setElText('tpScope', preview.scope || '');
         setElText('tpBuilder', (preview.builder || '') + (preview.projectWorkerHint ? (' → ' + preview.projectWorkerHint) : ''));
-        setElText('tpWorkspace', preview.workspaceRoot || '');
         var ul = document.getElementById('tpCrit');
         if (ul) {
           ul.innerHTML = '';
@@ -2242,6 +2277,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
             selectionApproved: !!(cfg && cfg.ownerApproval && cfg.ownerApproval.approved),
             workspaceRoot: (elig && elig.workspaceRoot) || workspace || '',
             projectId: projectId,
+            projectName: (lastProjectDash.project && lastProjectDash.project.projectName) || projectId,
             _agentsLoaded: false
           };
           setGoalFlowVisible(false);
@@ -2348,6 +2384,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
             selectionApproved: false,
             workspaceRoot: (elig && elig.workspaceRoot) || workspace || '',
             projectId: projectId,
+            projectName: (lastProjectDash && lastProjectDash.project && lastProjectDash.project.projectName) || projectId,
             _agentsLoaded: false
           };
           if (okEl) {
@@ -2906,6 +2943,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
         renderBootStep();
       }
+      function projectRunnableLabel(p) {
+        if (!p) return '불가';
+        if (p.legacy || p.profileState === 'LEGACY') return '불가(레거시)';
+        if (p.workspaceConflict) return '불가(경로 충돌)';
+        if (!p.workspaceConfigured || !p.workspacePath) return '불가(경로 없음)';
+        if (p.profileState === 'PARTIAL') return '부분 준비(역할 필요)';
+        if (p.profileState === 'CONFIGURED') return '작업 가능';
+        return '설정 필요';
+      }
       function renderBootProjectList() {
         var list = document.getElementById('bootProjectList');
         if (!list) return;
@@ -2913,7 +2959,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (!boot.profiles.length) {
           var empty = document.createElement('div');
           empty.className = 'boot-box warn';
-          empty.textContent = '보여줄 프로젝트가 없어요. 설정을 확인해 주세요.';
+          empty.textContent = '보여줄 프로젝트가 없어요. 아래 「새 폴더로 프로젝트 등록」으로 추가하세요.';
           list.appendChild(empty);
           return;
         }
@@ -2926,14 +2972,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
           btn.setAttribute('aria-selected', p.projectId === boot.selectedId ? 'true' : 'false');
           var pill = profileStatePill(p.profileState);
           var name = document.createElement('span'); name.className = 'bn'; name.textContent = p.projectName || p.projectId;
-          var id = document.createElement('span'); id.className = 'bid'; id.textContent = p.projectId;
+          var id = document.createElement('span'); id.className = 'bid'; id.textContent = p.projectId + ' · ASUS';
           var path = document.createElement('span'); path.className = 'bp';
           path.textContent = (p.workspaceConfigured && p.workspacePath)
             ? p.workspacePath
-            : (p.profileState === 'UNCONFIGURED' ? 'Workspace not configured' : (p.workspacePath || '경로 없음'));
+            : (p.profileState === 'UNCONFIGURED' ? '경로 미설정' : (p.workspacePath || '경로 없음'));
           var sp = document.createElement('span');
           sp.className = 'spill ' + pill.tone;
-          sp.textContent = pill.code + ' · ' + pill.labelKo;
+          sp.textContent = pill.code + ' · ' + pill.labelKo + ' · ' + projectRunnableLabel(p);
           btn.appendChild(name); btn.appendChild(id); btn.appendChild(path); btn.appendChild(sp);
           if (p.legacy || p.profileState === 'LEGACY') {
             var note = document.createElement('span');
@@ -2951,6 +2997,61 @@ const WIDGET_HTML = `<!DOCTYPE html>
           list.appendChild(btn);
         });
       }
+      var browseState = { path: null, parentPath: null, roots: [], mode: 'register' };
+      function setBrowsePathLabel(text) {
+        var el = document.getElementById('bootBrowsePath');
+        if (el) el.textContent = text || '';
+      }
+      async function loadBrowseRoots() {
+        var res = await callTool('relay_pm_list_workspace_browse_roots', {});
+        browseState.roots = (res && res.roots) || [];
+        var box = document.getElementById('bootBrowseRoots');
+        if (!box) return;
+        box.innerHTML = '';
+        browseState.roots.forEach(function (r) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.disabled = !r.exists;
+          b.textContent = r.label + (r.exists ? '' : ' (없음)');
+          b.onclick = function () { openBrowsePath(r.path); };
+          box.appendChild(b);
+        });
+      }
+      async function openBrowsePath(absPath) {
+        setBootErr('');
+        try {
+          var res = await callTool('relay_pm_browse_workspace_directories', { absolutePath: absPath });
+          browseState.path = res.path;
+          browseState.parentPath = res.parentPath || null;
+          setBrowsePathLabel(res.path);
+          var up = document.getElementById('bootBrowseUp');
+          if (up) up.disabled = !browseState.parentPath;
+          var use = document.getElementById('bootBrowseUse');
+          if (use) use.disabled = !browseState.path;
+          var entries = document.getElementById('bootBrowseEntries');
+          if (!entries) return;
+          entries.innerHTML = '';
+          (res.entries || []).forEach(function (e) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.textContent = e.name + (e.hasWorkspaceConfig ? ' · 설정있음' : '');
+            b.onclick = function () { openBrowsePath(e.path); };
+            entries.appendChild(b);
+          });
+          if (res.truncated) {
+            var more = document.createElement('div');
+            more.className = 'boot-note';
+            more.textContent = '목록이 잘렸습니다. 하위 폴더로 이동해 주세요.';
+            entries.appendChild(more);
+          }
+        } catch (e) {
+          setBootErr('폴더 탐색 실패: ' + String((e && e.message) || e).slice(0, 200));
+        }
+      }
+      function showRegisterPanel(show) {
+        var panel = document.getElementById('bootRegisterPanel');
+        if (panel) panel.className = show ? '' : 'hide';
+      }
       function renderBootWorkspace() {
         var box = document.getElementById('bootWorkspaceBox');
         if (!box) return;
@@ -2959,9 +3060,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
         box.innerHTML = '';
         var title = document.createElement('div');
         title.style.fontWeight = '700';
-        title.textContent = d.kind === 'PATH' ? '워크스페이스 경로'
+        title.textContent = d.kind === 'PATH' ? '등록된 작업 폴더 (ASUS)'
           : (d.kind === 'WORKSPACE_CONFLICT' ? '설정 충돌' : '워크스페이스 설정 필요');
         box.appendChild(title);
+        var host = document.createElement('div');
+        host.className = 'boot-note';
+        host.textContent = '실행 컴퓨터: ASUS';
+        box.appendChild(host);
+        var changeBtn = document.getElementById('bootBrowseChangePath');
         if (d.kind === 'PATH') {
           var path = document.createElement('div');
           path.className = 'path';
@@ -2969,8 +3075,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
           box.appendChild(path);
           var note = document.createElement('div');
           note.className = 'boot-note';
-          note.textContent = '기존 경로를 그대로 씁니다. 여기서 바꾸지 않아요.';
+          note.textContent = '이 경로를 실행 기본 폴더로 씁니다. 바꾸려면 아래에서 「작업 폴더 변경」을 누르세요.';
           box.appendChild(note);
+          if (changeBtn) {
+            changeBtn.className = '';
+            changeBtn.disabled = false;
+          }
+          showRegisterPanel(false);
         } else {
           var msg = document.createElement('div');
           msg.textContent = d.label;
@@ -2978,10 +3089,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (d.kind === 'WORKSPACE_CONFIGURATION_REQUIRED') {
             var code = document.createElement('div');
             code.className = 'boot-note';
-            code.textContent = '상태: WORKSPACE_CONFIGURATION_REQUIRED — 경로를 지어내지 않아요.';
+            code.textContent = '아래 찾아보기로 폴더를 고른 뒤 새 프로젝트로 등록하세요. 경로는 지어내지 않아요.';
             box.appendChild(code);
+            showRegisterPanel(true);
           }
+          if (changeBtn) changeBtn.className = 'hide';
         }
+        loadBrowseRoots().catch(function (e) {
+          setBootErr('탐색 루트 실패: ' + String((e && e.message) || e).slice(0, 160));
+        });
       }
       function renderBootAgents() {
         var root = document.getElementById('bootRoles');
@@ -3254,6 +3370,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
           b.onclick = async function () {
             try { sw.open = false; } catch (e) {}
             if (p.legacy || p.profileState === 'LEGACY' || p.profileState === 'UNCONFIGURED'
+                || p.profileState === 'PARTIAL'
                 || p.workspaceConflict || !p.workspaceConfigured) {
               boot.selectedId = p.projectId;
               boot.profile = p;
@@ -3323,6 +3440,118 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (bootBack) bootBack.onclick = function () { bootGoBack(); };
         if (bootNext) bootNext.onclick = function () { bootGoNext(); };
         if (bootStart) bootStart.onclick = function () { bootComplete(); };
+        var bootNew = document.getElementById('bootNewProjectBtn');
+        if (bootNew) bootNew.onclick = function () {
+          browseState.mode = 'register';
+          setBootStep('workspace');
+          showRegisterPanel(true);
+          loadBrowseRoots().catch(function () {});
+        };
+        var bootUp = document.getElementById('bootBrowseUp');
+        if (bootUp) bootUp.onclick = function () {
+          if (browseState.parentPath) openBrowsePath(browseState.parentPath);
+        };
+        var bootUse = document.getElementById('bootBrowseUse');
+        if (bootUse) bootUse.onclick = function () {
+          if (!browseState.path) return;
+          var input = document.getElementById('bootPathInput');
+          if (input) input.value = browseState.path;
+          if (browseState.mode === 'change' && boot.selectedId) {
+            setBootErr('');
+            callTool('relay_pm_set_project_workspace_path', {
+              projectId: boot.selectedId,
+              workspacePath: browseState.path,
+              syncRoleConfig: true
+            }).then(function () {
+              return loadBootProfiles();
+            }).then(function () {
+              for (var i = 0; i < boot.profiles.length; i++) {
+                if (boot.profiles[i].projectId === boot.selectedId) {
+                  boot.profile = boot.profiles[i];
+                  break;
+                }
+              }
+              setBootErr('');
+              renderBootWorkspace();
+            }).catch(function (e) {
+              setBootErr('경로 변경 실패: ' + String((e && e.message) || e).slice(0, 220));
+            });
+            return;
+          }
+          browseState.mode = 'register';
+          showRegisterPanel(true);
+          var nameEl = document.getElementById('bootRegName');
+          if (nameEl && !nameEl.value) {
+            var parts = browseState.path.split('/');
+            nameEl.value = parts[parts.length - 1] || '';
+          }
+        };
+        var bootChange = document.getElementById('bootBrowseChangePath');
+        if (bootChange) bootChange.onclick = function () {
+          browseState.mode = 'change';
+          showRegisterPanel(false);
+          setBrowsePathLabel('변경할 폴더를 고르세요');
+          loadBrowseRoots().catch(function () {});
+        };
+        var bootPathCheck = document.getElementById('bootPathCheck');
+        if (bootPathCheck) bootPathCheck.onclick = function () {
+          var input = document.getElementById('bootPathInput');
+          var v = (input && input.value || '').trim();
+          if (!v) { setBootErr('경로를 입력해 주세요.'); return; }
+          openBrowsePath(v);
+        };
+        var bootRegPrev = document.getElementById('bootRegPreviewBtn');
+        if (bootRegPrev) bootRegPrev.onclick = function () {
+          var pathV = (document.getElementById('bootPathInput') && document.getElementById('bootPathInput').value || browseState.path || '').trim();
+          var nameV = (document.getElementById('bootRegName') && document.getElementById('bootRegName').value || '').trim();
+          var idV = (document.getElementById('bootRegId') && document.getElementById('bootRegId').value || '').trim();
+          if (!pathV || !nameV) { setBootErr('폴더와 프로젝트 이름이 필요해요.'); return; }
+          setBootErr('');
+          var args = { projectName: nameV, workspacePath: pathV };
+          if (idV) args.projectId = idV;
+          callTool('relay_pm_preview_register_project', args).then(function (prev) {
+            var el = document.getElementById('bootRegPreview');
+            if (el) {
+              el.textContent = '등록 예정 · ' + prev.projectId + ' · ' + prev.workspacePath
+                + (prev.git && prev.git.isRepo ? (' · git ' + (prev.git.headSha || 'repo')) : ' · git 아님')
+                + ' · 상태 PARTIAL · Worker 0';
+            }
+            var conf = document.getElementById('bootRegConfirmBtn');
+            if (conf) conf.disabled = false;
+            boot._regPreview = prev;
+          }).catch(function (e) {
+            setBootErr('미리보기 실패: ' + String((e && e.message) || e).slice(0, 220));
+            var conf = document.getElementById('bootRegConfirmBtn');
+            if (conf) conf.disabled = true;
+          });
+        };
+        var bootRegConf = document.getElementById('bootRegConfirmBtn');
+        if (bootRegConf) bootRegConf.onclick = function () {
+          var pathV = (document.getElementById('bootPathInput') && document.getElementById('bootPathInput').value || browseState.path || '').trim();
+          var nameV = (document.getElementById('bootRegName') && document.getElementById('bootRegName').value || '').trim();
+          var idV = (document.getElementById('bootRegId') && document.getElementById('bootRegId').value || '').trim();
+          if (!pathV || !nameV) { setBootErr('폴더와 프로젝트 이름이 필요해요.'); return; }
+          var args = { projectName: nameV, workspacePath: pathV, confirm: true };
+          if (idV) args.projectId = idV;
+          setBootErr('');
+          callTool('relay_pm_register_project', args).then(function (reg) {
+            return loadBootProfiles().then(function () {
+              boot.selectedId = reg.projectId;
+              for (var i = 0; i < boot.profiles.length; i++) {
+                if (boot.profiles[i].projectId === reg.projectId) {
+                  boot.profile = boot.profiles[i];
+                  break;
+                }
+              }
+              var conf = document.getElementById('bootRegConfirmBtn');
+              if (conf) conf.disabled = true;
+              setBootStep('agents');
+              loadBootAssignment(boot.selectedId).then(function () { renderBootAgents(); });
+            });
+          }).catch(function (e) {
+            setBootErr('등록 실패: ' + String((e && e.message) || e).slice(0, 220));
+          });
+        };
       } catch (eBind) { /* bootstrap controls best-effort */ }
 
       async function init() {
