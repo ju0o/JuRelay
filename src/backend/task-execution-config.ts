@@ -335,6 +335,100 @@ export function approveTaskExecution(
   return next;
 }
 
+export interface ClearTaskExecutionConfigResult {
+  cleared: boolean;
+  taskId: string;
+  projectId: string;
+  previous: TaskExecutionConfigV1 | null;
+}
+
+/**
+ * Clear unapproved, unfrozen execution-config for a READY Task with no runs.
+ * Used to undo accidental draft persists (R01 selection safety). Never deletes
+ * frozen/approved/run-bound configs. Does not dispatch.
+ */
+export function clearTaskExecutionConfig(
+  dataRoot: string,
+  scope: string,
+  taskIdRaw: string,
+  projectIdRaw?: string,
+): ClearTaskExecutionConfigResult {
+  const taskId = requireNonEmpty(taskIdRaw, 'taskId');
+  let task;
+  try {
+    task = getTask(dataRoot, scope, taskId);
+  } catch {
+    throw new TaskExecutionConfigError('NOT_FOUND', `Task '${taskId}' 찾을 수 없습니다.`);
+  }
+  if (task.executionState !== 'READY') {
+    throw new TaskExecutionConfigError(
+      'TASK_NOT_READY',
+      `READY Task만 실행 설정을 지울 수 있습니다 (found ${task.executionState}).`,
+    );
+  }
+  if ((task.linkedRuns || []).length > 0) {
+    throw new TaskExecutionConfigError(
+      'INVALID_ARGUMENT',
+      `Run이 있는 Task의 실행 설정은 지울 수 없습니다 (linkedRuns=${task.linkedRuns.length}).`,
+    );
+  }
+  if (projectIdRaw !== undefined && projectIdRaw !== null && String(projectIdRaw).trim()) {
+    const expected = requireNonEmpty(projectIdRaw, 'projectId');
+    const actual = typeof task.projectId === 'string' ? task.projectId.trim() : '';
+    if (!actual || actual !== expected) {
+      throw new TaskExecutionConfigError(
+        'INVALID_ARGUMENT',
+        `projectId mismatch: expected '${expected}', task has '${actual || '(none)'}'.`,
+      );
+    }
+  }
+
+  const existing = getTaskExecutionConfig(dataRoot, scope, taskId);
+  if (!existing) {
+    return {
+      cleared: false,
+      taskId,
+      projectId: typeof task.projectId === 'string' ? task.projectId : (projectIdRaw || ''),
+      previous: null,
+    };
+  }
+  if (existing.selectionFrozenAt || existing.runId) {
+    throw new TaskExecutionConfigError(
+      'SELECTION_FROZEN',
+      `Task '${taskId}' 실행 설정은 이미 고정되어 지울 수 없습니다.`,
+    );
+  }
+  if (existing.ownerApproval?.approved) {
+    throw new TaskExecutionConfigError(
+      'INVALID_ARGUMENT',
+      `승인된 실행 설정은 이 경로로 지울 수 없습니다. Agent/모델을 다시 저장하면 승인이 해제됩니다.`,
+    );
+  }
+  if (projectIdRaw !== undefined && projectIdRaw !== null && String(projectIdRaw).trim()) {
+    const expected = requireNonEmpty(projectIdRaw, 'projectId');
+    if (existing.projectId !== expected) {
+      throw new TaskExecutionConfigError(
+        'INVALID_ARGUMENT',
+        `execution-config projectId '${existing.projectId}' != '${expected}'.`,
+      );
+    }
+  }
+
+  const fp = taskExecutionConfigPath(dataRoot, scope, taskId);
+  try {
+    fs.unlinkSync(fp);
+  } catch (err) {
+    const code = err && typeof err === 'object' && 'code' in err ? String((err as NodeJS.ErrnoException).code) : '';
+    if (code !== 'ENOENT') throw err;
+  }
+  return {
+    cleared: true,
+    taskId,
+    projectId: existing.projectId,
+    previous: existing,
+  };
+}
+
 /** Freeze selection after successful dispatch (runId bound). */
 export function freezeTaskExecutionConfig(
   dataRoot: string,

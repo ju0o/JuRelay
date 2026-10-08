@@ -36,6 +36,7 @@ import { startGoalLoop } from '../backend/goal-loop.js';
 import { authorizeEffect, PermissionDeniedError } from '../backend/permission-gate.js';
 import {
   approveTaskExecution,
+  clearTaskExecutionConfig,
   getTaskExecutionConfig,
   listExecutableAgents,
   setTaskExecutionConfig,
@@ -860,6 +861,33 @@ export function buildPmWriteTools(ctx: PmServerContext): McpTool[] {
             project,
             requireString(args, 'taskId'),
             'OWNER_MCP',
+          );
+        } catch (err) {
+          mapTaskExecutionConfigError(err);
+        }
+      },
+    },
+    {
+      name: 'relay_pm_clear_task_execution_config',
+      description:
+        'P2-OWNER-R01 selection safety: clear unapproved, unfrozen execution-config for a READY ' +
+        'Task with linkedRuns=[]. Does not dispatch. Refuses approved/frozen/run-bound configs. ' +
+        'projectId must match the Task when provided.',
+      inputSchema: objectSchema(
+        {
+          taskId: { type: 'string' },
+          projectId: { type: 'string' },
+        },
+        ['taskId'],
+      ),
+      handler: async (args) => {
+        rejectUnknownFields(args, ['taskId', 'projectId']);
+        try {
+          return clearTaskExecutionConfig(
+            dataRoot,
+            project,
+            requireString(args, 'taskId'),
+            optionalString(args, 'projectId'),
           );
         } catch (err) {
           mapTaskExecutionConfigError(err);

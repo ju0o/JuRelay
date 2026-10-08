@@ -525,7 +525,12 @@ const WIDGET_HTML = `<!DOCTYPE html>
         <div class="line"><b>실행 프로필</b><span id="tpProfile">—</span></div>
         <div class="line"><b>가능 여부</b><span id="tpAvail">—</span></div>
         <div class="hint" id="tpConstraint"></div>
-        <div class="line"><label><input type="checkbox" id="tpApproveChk" disabled> 이 선택으로 실행을 승인합니다 (이번 Task만)</label></div>
+        <div class="line"><b>저장된 선택</b><span id="tpSaved">없음</span></div>
+        <div class="row">
+          <button type="button" id="tpSaveSel" disabled>선택 저장</button>
+          <button type="button" id="tpClearSel" disabled>선택 초기화</button>
+        </div>
+        <div class="line"><label><input type="checkbox" id="tpApproveChk" disabled> 저장된 선택으로 실행을 승인합니다 (이번 Task만)</label></div>
         <div class="line"><b>작업 폴더</b><span id="tpWorkspace"></span></div>
         <div class="row">
           <button type="button" id="tpCancelPrep">작업 준비 취소</button>
@@ -2013,46 +2018,118 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
       }
 
-      async function persistTpSelection(preview) {
-        if (!preview || !preview.taskId || !preview.projectId) return null;
+      function draftSelection(preview) {
         var agentSel = document.getElementById('tpAgentSel');
         var modelSel = document.getElementById('tpModelSel');
-        var workerId = agentSel && agentSel.value;
-        var modelId = modelSel && modelSel.value;
-        if (!workerId || !modelId) return null;
+        return {
+          workerId: (agentSel && agentSel.value) || '',
+          modelId: (modelSel && modelSel.value) || ''
+        };
+      }
+
+      function selectionMatchesSaved(preview) {
+        if (!preview) return false;
+        var d = draftSelection(preview);
+        return !!(preview.savedWorkerId && preview.savedModelId
+          && d.workerId === preview.savedWorkerId
+          && d.modelId === preview.savedModelId
+          && !preview.draftDirty);
+      }
+
+      function updateSavedLabel(preview) {
+        var el = document.getElementById('tpSaved');
+        if (!el) return;
+        if (preview && preview.savedWorkerId && preview.savedModelId) {
+          el.textContent = preview.savedWorkerId + ' / ' + preview.savedModelId
+            + (preview.selectionApproved ? ' · 승인됨' : ' · 미승인');
+        } else {
+          el.textContent = '없음';
+        }
+      }
+
+      function updateDraftControls(preview) {
+        var saveBtn = document.getElementById('tpSaveSel');
+        var clearBtn = document.getElementById('tpClearSel');
+        var chk = document.getElementById('tpApproveChk');
+        var d = draftSelection(preview);
+        var canSave = !!(preview && preview.taskId && d.workerId && d.modelId && !tpSelectionBusy && !runInFlight);
+        var dirtyOrNew = !!(preview && (preview.draftDirty
+          || !preview.savedWorkerId
+          || !preview.savedModelId
+          || d.workerId !== preview.savedWorkerId
+          || d.modelId !== preview.savedModelId));
+        if (saveBtn) saveBtn.disabled = !canSave || !dirtyOrNew;
+        if (clearBtn) {
+          clearBtn.disabled = !(preview && preview.savedWorkerId && preview.savedModelId
+            && !preview.selectionApproved && !tpSelectionBusy && !runInFlight);
+        }
+        var savedMatch = selectionMatchesSaved(preview);
+        if (chk) {
+          chk.disabled = !(savedMatch && !tpSelectionBusy && !runInFlight);
+          if (!savedMatch) chk.checked = false;
+        }
+        updateSavedLabel(preview);
+      }
+
+      async function persistTpSelection(preview) {
+        if (!preview || !preview.taskId || !preview.projectId) return null;
+        var d = draftSelection(preview);
+        if (!d.workerId || !d.modelId) return null;
         var cfg = await callTool('relay_pm_set_task_execution_config', {
           projectId: preview.projectId,
           taskId: preview.taskId,
-          workerId: workerId,
-          modelId: modelId
+          workerId: d.workerId,
+          modelId: d.modelId
         });
-        preview.workerId = workerId;
-        preview.modelId = modelId;
+        preview.workerId = d.workerId;
+        preview.modelId = d.modelId;
+        preview.savedWorkerId = d.workerId;
+        preview.savedModelId = d.modelId;
+        preview.draftDirty = false;
         preview.selectionApproved = false;
         var chk = document.getElementById('tpApproveChk');
         if (chk) { chk.disabled = false; chk.checked = false; }
+        updateDraftControls(preview);
         return cfg;
+      }
+
+      async function clearTpSelection(preview) {
+        if (!preview || !preview.taskId || !preview.projectId) return null;
+        var res = await callTool('relay_pm_clear_task_execution_config', {
+          taskId: preview.taskId,
+          projectId: preview.projectId
+        });
+        preview.savedWorkerId = '';
+        preview.savedModelId = '';
+        preview.selectionApproved = false;
+        preview.draftDirty = true;
+        var chk = document.getElementById('tpApproveChk');
+        if (chk) { chk.checked = false; chk.disabled = true; }
+        updateDraftControls(preview);
+        return res;
       }
 
       function updateTpRunEnabled(preview, elig) {
         var runBtn = document.getElementById('tpRun');
         var status = document.getElementById('tpStatus');
         var chk = document.getElementById('tpApproveChk');
-        var agentSel = document.getElementById('tpAgentSel');
-        var modelSel = document.getElementById('tpModelSel');
-        var approved = !!(chk && chk.checked);
-        var selected = !!(agentSel && agentSel.value && modelSel && modelSel.value);
-        var ok = !!(preview && preview.taskId && preview.workspaceRoot && selected && approved && elig && elig.ok && elig.workerId);
+        var d = draftSelection(preview);
+        var selected = !!(d.workerId && d.modelId);
+        var savedMatch = selectionMatchesSaved(preview);
+        var approved = !!(chk && chk.checked && preview && preview.selectionApproved && savedMatch);
+        var ok = !!(preview && preview.taskId && preview.workspaceRoot && selected && savedMatch && approved && elig && elig.ok && elig.workerId);
+        updateDraftControls(preview);
         if (runBtn) {
           runBtn.disabled = !ok || runInFlight || tpSelectionBusy;
-          runBtn.textContent = selected
-            ? ('작업 시작 · ' + agentSel.value + (modelSel.value ? (' / ' + modelSel.value) : ''))
+          runBtn.textContent = (savedMatch && d.workerId)
+            ? ('작업 시작 · ' + d.workerId + (d.modelId ? (' / ' + d.modelId) : ''))
             : '작업 시작';
         }
         if (status) {
-          if (ok) status.textContent = '승인된 선택으로 Worker가 한 번만 실행됩니다. 프로젝트 기본 Assignment는 바꾸지 않습니다.';
-          else if (!selected) status.textContent = 'Agent와 모델을 고른 뒤 실행을 승인하세요.';
-          else if (!approved) status.textContent = '선택 후 실행 승인 체크를 켜면 시작할 수 있어요.';
+          if (ok) status.textContent = '승인된 저장 선택으로 Worker가 한 번만 실행됩니다. 프로젝트 기본 Assignment는 바꾸지 않습니다.';
+          else if (!selected) status.textContent = 'Agent와 모델을 고른 뒤 「선택 저장」을 누르세요.';
+          else if (!savedMatch) status.textContent = '선택이 저장되지 않았어요. 「선택 저장」 후에만 승인할 수 있어요.';
+          else if (!approved) status.textContent = '저장된 선택을 확인한 뒤 실행 승인 체크를 켜세요. 승인만으로 Worker는 시작되지 않아요.';
           else if (elig && elig.blockers && elig.blockers.length) status.textContent = '시작 불가: ' + elig.blockers.join(', ');
           else status.textContent = '시작 조건을 확인하는 중…';
         }
@@ -2159,7 +2236,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
             projectWorkerHint: (elig && (elig.projectDesiredBuilder || elig.desiredBuilder)) || '',
             workerId: (cfg && cfg.workerId) || '',
             modelId: (cfg && cfg.modelId) || '',
-            selectionApproved: !!(cfg && cfg.ownerApproval),
+            savedWorkerId: (cfg && cfg.workerId) || '',
+            savedModelId: (cfg && cfg.modelId) || '',
+            draftDirty: false,
+            selectionApproved: !!(cfg && cfg.ownerApproval && cfg.ownerApproval.approved),
             workspaceRoot: (elig && elig.workspaceRoot) || workspace || '',
             projectId: projectId,
             _agentsLoaded: false
@@ -2169,8 +2249,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
           setTaskPrevVisible(true);
           if (status) {
             status.textContent = cfg && cfg.modelId
-              ? '저장된 선택을 불러왔어요. 모델을 확인한 뒤 실행 승인하세요.'
-              : '기존 READY Task예요. Agent와 모델을 직접 선택한 뒤 실행 승인하세요.';
+              ? '디스크에 저장된 선택이 있어요. 바꾸려면 다시 고른 뒤 「선택 저장」하세요.'
+              : '기존 READY Task예요. Agent와 모델을 고른 뒤 「선택 저장」하세요.';
           }
           renderTaskTab(lastTaskListCache);
         } catch (eOpen) {
@@ -2249,6 +2329,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
             taskId: task.taskId,
             projectId: projectId
           });
+          // Fresh Task: no saved execution-config yet. Keep draft empty until
+          // the user picks Agent/Model and presses 「선택 저장」.
           pendingPreview = {
             goalId: goal.goalId,
             goalTitle: goal.title || title,
@@ -2258,9 +2340,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
             criteria: task.completionCriteria || criteria,
             builder: (elig && elig.desiredBuilder) || '',
             projectWorkerHint: (elig && (elig.projectDesiredBuilder || elig.desiredBuilder)) || '',
-            workerId: (elig && elig.workerId) || '',
+            workerId: '',
+            modelId: '',
+            savedWorkerId: '',
+            savedModelId: '',
+            draftDirty: true,
+            selectionApproved: false,
             workspaceRoot: (elig && elig.workspaceRoot) || workspace || '',
-            projectId: projectId
+            projectId: projectId,
+            _agentsLoaded: false
           };
           if (okEl) {
             okEl.classList.remove('hide');
@@ -2290,26 +2378,20 @@ const WIDGET_HTML = `<!DOCTYPE html>
         var status = document.getElementById('tpStatus');
         var runBtn = document.getElementById('tpRun');
         var chk = document.getElementById('tpApproveChk');
-        var agentSel = document.getElementById('tpAgentSel');
-        var modelSel = document.getElementById('tpModelSel');
         if (errEl) { errEl.classList.add('hide'); errEl.textContent = ''; }
-        if (!(agentSel && agentSel.value && modelSel && modelSel.value)) {
-          if (errEl) { errEl.classList.remove('hide'); errEl.textContent = 'Agent와 모델을 선택해 주세요.'; }
+        if (!selectionMatchesSaved(pendingPreview)) {
+          if (errEl) { errEl.classList.remove('hide'); errEl.textContent = '먼저 「선택 저장」으로 선택을 저장해 주세요.'; }
           return;
         }
-        if (!(chk && chk.checked)) {
-          if (errEl) { errEl.classList.remove('hide'); errEl.textContent = '실행 승인 체크가 필요해요.'; }
+        if (!(chk && chk.checked && pendingPreview.selectionApproved)) {
+          if (errEl) { errEl.classList.remove('hide'); errEl.textContent = '저장된 선택에 대한 실행 승인이 필요해요.'; }
           return;
         }
         runInFlight = true;
         tpSelectionBusy = true;
         if (runBtn) runBtn.disabled = true;
         try {
-          await persistTpSelection(pendingPreview);
-          await callTool('relay_pm_approve_task_execution', {
-            taskId: pendingPreview.taskId,
-            projectId: pendingPreview.projectId
-          });
+          // Dispatch only — save/approve already happened as separate owner steps.
           var resolved = await callTool('relay_pm_resolve_run', {
             taskId: pendingPreview.taskId,
             projectId: pendingPreview.projectId
@@ -2394,6 +2476,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
         var tpCancel = document.getElementById('tpCancel');
         var tpCancelPrep = document.getElementById('tpCancelPrep');
         var tpRun = document.getElementById('tpRun');
+        var tpSaveSel = document.getElementById('tpSaveSel');
+        var tpClearSel = document.getElementById('tpClearSel');
         var tpAgentSel = document.getElementById('tpAgentSel');
         var tpModelSel = document.getElementById('tpModelSel');
         var tpApproveChk = document.getElementById('tpApproveChk');
@@ -2410,11 +2494,62 @@ const WIDGET_HTML = `<!DOCTYPE html>
         });
         if (tpCancelPrep) tpCancelPrep.addEventListener('click', function () { cancelReadyPrep(); });
         if (tpRun) tpRun.addEventListener('click', function () { explicitOwnerRun(); });
+        if (tpSaveSel) tpSaveSel.addEventListener('click', function () {
+          if (!pendingPreview || tpSelectionBusy || runInFlight) return;
+          var errEl = document.getElementById('tpErr');
+          var status = document.getElementById('tpStatus');
+          if (errEl) { errEl.classList.add('hide'); errEl.textContent = ''; }
+          var d = draftSelection(pendingPreview);
+          if (!d.workerId || !d.modelId) {
+            if (errEl) { errEl.classList.remove('hide'); errEl.textContent = 'Agent와 모델을 선택한 뒤 저장하세요.'; }
+            return;
+          }
+          tpSelectionBusy = true;
+          persistTpSelection(pendingPreview).then(function (cfg) {
+            return callTool('relay_pm_get_task_execution_config', {
+              taskId: pendingPreview.taskId,
+              projectId: pendingPreview.projectId
+            }).then(function (again) {
+              var saved = again && again.config;
+              if (!saved || saved.workerId !== d.workerId || saved.modelId !== d.modelId) {
+                throw new Error('저장 후 재조회 값이 일치하지 않아요.');
+              }
+              pendingPreview.savedWorkerId = saved.workerId;
+              pendingPreview.savedModelId = saved.modelId;
+              pendingPreview.selectionApproved = !!(saved.ownerApproval && saved.ownerApproval.approved);
+              pendingPreview.draftDirty = false;
+              if (status) status.textContent = '선택을 저장했어요. 아직 Worker는 시작하지 않았어요.';
+              return callTool('relay_pm_resolve_run', {
+                taskId: pendingPreview.taskId,
+                projectId: pendingPreview.projectId
+              });
+            });
+          }).then(function (elig) {
+            updateTpRunEnabled(pendingPreview, elig);
+          }).catch(function (e) {
+            if (errEl) { errEl.classList.remove('hide'); errEl.textContent = String((e && e.message) || e).slice(0, 240); }
+          }).finally(function () { tpSelectionBusy = false; updateDraftControls(pendingPreview); });
+        });
+        if (tpClearSel) tpClearSel.addEventListener('click', function () {
+          if (!pendingPreview || tpSelectionBusy || runInFlight) return;
+          var errEl = document.getElementById('tpErr');
+          var status = document.getElementById('tpStatus');
+          if (errEl) { errEl.classList.add('hide'); errEl.textContent = ''; }
+          tpSelectionBusy = true;
+          clearTpSelection(pendingPreview).then(function () {
+            if (status) status.textContent = '저장된 선택을 초기화했어요. Worker는 실행되지 않았어요.';
+            updateTpRunEnabled(pendingPreview, null);
+          }).catch(function (e) {
+            if (errEl) { errEl.classList.remove('hide'); errEl.textContent = String((e && e.message) || e).slice(0, 240); }
+          }).finally(function () { tpSelectionBusy = false; updateDraftControls(pendingPreview); });
+        });
         if (tpAgentSel) tpAgentSel.addEventListener('change', function () {
           if (!pendingPreview) return;
-          // Agent change invalidates prior model + approval. Do not auto-pick a model.
+          // Draft only — never write execution-config on Agent browse/change.
+          // Agent change invalidates prior model + approval (R01-HOST-FIX C / selection safety).
           pendingPreview.workerId = tpAgentSel.value || '';
           pendingPreview.modelId = '';
+          pendingPreview.draftDirty = true;
           pendingPreview.selectionApproved = false;
           if (tpModelSel) tpModelSel.value = '';
           if (tpApproveChk) { tpApproveChk.checked = false; tpApproveChk.disabled = true; }
@@ -2428,40 +2563,31 @@ const WIDGET_HTML = `<!DOCTYPE html>
         });
         if (tpModelSel) tpModelSel.addEventListener('change', function () {
           if (!pendingPreview) return;
-          // Model pick alone must not dispatch; persist selection and clear GO until re-approved.
+          // Draft only — exploring/changing the model must not call set_task_execution_config.
           pendingPreview.modelId = tpModelSel.value || '';
+          pendingPreview.draftDirty = true;
           pendingPreview.selectionApproved = false;
           if (tpApproveChk) { tpApproveChk.checked = false; }
-          if (!tpModelSel.value) {
-            if (tpApproveChk) tpApproveChk.disabled = true;
-            updateTpRunEnabled(pendingPreview, null);
-            return;
-          }
-          tpSelectionBusy = true;
-          persistTpSelection(pendingPreview).then(function () {
-            return callTool('relay_pm_resolve_run', {
-              taskId: pendingPreview.taskId,
-              projectId: pendingPreview.projectId
-            });
-          }).then(function (elig) {
-            updateTpRunEnabled(pendingPreview, elig);
-          }).catch(function (e) {
-            var errEl = document.getElementById('tpErr');
-            if (errEl) { errEl.classList.remove('hide'); errEl.textContent = String((e && e.message) || e).slice(0, 240); }
-          }).finally(function () { tpSelectionBusy = false; });
+          updateTpRunEnabled(pendingPreview, null);
         });
         if (tpApproveChk) tpApproveChk.addEventListener('change', function () {
           if (!pendingPreview) return;
           if (!tpApproveChk.checked) {
+            pendingPreview.selectionApproved = false;
             updateTpRunEnabled(pendingPreview, null);
             return;
           }
+          if (!selectionMatchesSaved(pendingPreview)) {
+            tpApproveChk.checked = false;
+            var errEarly = document.getElementById('tpErr');
+            if (errEarly) { errEarly.classList.remove('hide'); errEarly.textContent = '저장된 선택과 같아야 승인할 수 있어요. 먼저 「선택 저장」하세요.'; }
+            return;
+          }
           tpSelectionBusy = true;
-          persistTpSelection(pendingPreview).then(function () {
-            return callTool('relay_pm_approve_task_execution', {
-              taskId: pendingPreview.taskId,
-              projectId: pendingPreview.projectId
-            });
+          // Approve only — do not re-persist and do not dispatch.
+          callTool('relay_pm_approve_task_execution', {
+            taskId: pendingPreview.taskId,
+            projectId: pendingPreview.projectId
           }).then(function () {
             return callTool('relay_pm_resolve_run', {
               taskId: pendingPreview.taskId,
@@ -2470,8 +2596,11 @@ const WIDGET_HTML = `<!DOCTYPE html>
           }).then(function (elig) {
             pendingPreview.selectionApproved = true;
             updateTpRunEnabled(pendingPreview, elig);
+            var status = document.getElementById('tpStatus');
+            if (status) status.textContent = '실행을 승인했어요. 「작업 시작」을 누르기 전까지 Worker는 0이에요.';
           }).catch(function (e) {
             tpApproveChk.checked = false;
+            pendingPreview.selectionApproved = false;
             var errEl = document.getElementById('tpErr');
             if (errEl) { errEl.classList.remove('hide'); errEl.textContent = String((e && e.message) || e).slice(0, 240); }
             updateTpRunEnabled(pendingPreview, null);
