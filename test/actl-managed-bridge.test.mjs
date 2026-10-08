@@ -754,7 +754,9 @@ console.log('\n── Delivery ambiguity (no FAILED, no second send) ──');
 {
   const stateDir = await prepareManagedDispatch('hang');
   process.env.FAKE_ACTL_MODE = 'hang-send';
-  disp._setActlSendTimeoutMsForTests(250);
+  // Under mandatory suite load, 250ms can SIGKILL before fake-actl records send.
+  // Keep timeout short vs production, but long enough for spawn+sendCount persist.
+  disp._setActlSendTimeoutMsForTests(2000);
   registerActlWorkerAbs('w-actl-hang');
   const task = await makeReadyTask('Hang send');
   let thrownCode;
@@ -773,7 +775,12 @@ console.log('\n── Delivery ambiguity (no FAILED, no second send) ──');
   }
   const after = gt.getTask(TEST_ROOT, project, task.taskId);
   check(after.executionState === 'DISPATCHED', 'hang-send keeps Task DISPATCHED (not FAILED)');
-  const fakeState = JSON.parse(fs.readFileSync(path.join(stateDir, 'state.json'), 'utf8'));
+  // Brief settle: state.json may flush just as the invoke timeout fires.
+  let fakeState = JSON.parse(fs.readFileSync(path.join(stateDir, 'state.json'), 'utf8'));
+  for (let i = 0; i < 10 && (fakeState.sendCount || 0) < 1; i++) {
+    await sleep(50);
+    fakeState = JSON.parse(fs.readFileSync(path.join(stateDir, 'state.json'), 'utf8'));
+  }
   check(fakeState.sendCount === 1, 'hang-send sendCount===1');
   disp._setActlSendTimeoutMsForTests(null);
 }

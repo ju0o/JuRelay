@@ -523,13 +523,16 @@ test('CASE O associated Goal ends coherently (ABANDONED)', async () => {
   assert.equal(goalTask.getGoal(root, project, goal.goalId).status, 'ABANDONED');
 });
 
-test('CASE O2 TASK-0084 cleanup eligibility (read-only)', () => {
-  if (!fs.existsSync(LIVE_DATA)) return;
-  const t = goalTask.getTask(LIVE_DATA, 'ws', 'TASK-0084');
+test('CASE O2 READY/no-run Task is cancel-eligible (isolated fixture)', async () => {
+  // Do not read live TASK-0084 — production dogfood may have already CANCELLED it.
+  const root = tmp('o2');
+  const project = 'P18DO2';
+  const { task, goal } = await makeReadyTask(root, project, 'ready-no-run-fixture');
+  const t = goalTask.getTask(root, project, task.taskId);
   assert.equal(t.executionState, 'READY');
   assert.equal(t.pmState, 'PENDING');
   assert.equal(t.linkedRuns.length, 0);
-  assert.equal(t.goalId, 'GOAL-0021');
+  assert.equal(t.goalId, goal.goalId);
   // Eligible for cancel — do NOT mutate here.
   assert.equal(t.executionState === 'READY' && t.linkedRuns.length === 0, true);
 });
