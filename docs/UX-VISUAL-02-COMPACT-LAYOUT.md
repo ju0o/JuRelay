@@ -1,11 +1,12 @@
 # UX-VISUAL-02 — Compact Layout / Readability / Asset Placement
 
-**Status:** `UX_VISUAL_02_READY_FOR_HOST_QA`  
+**Status:** `UX_VISUAL_02_CHANGES_REQUESTED` → see **UX-VISUAL-02A** (`docs/UX-VISUAL-02A-HOTFIX.md`)  
 **Branch:** `ar/chatgpt-goal-relay`  
 **Baseline widget:** `ui://agent-relay/pm-widget-c7f1fa3f`  
-**New widget:** `ui://agent-relay/pm-widget-519c1794`  
+**02 ship widget:** `ui://agent-relay/pm-widget-519c1794`  
+**02A hotfix widget:** `ui://agent-relay/pm-widget-70c18571`  
 **Primary file:** `src/mcp/app/pm-widget-resource.ts`  
-**Evidence:** `.agent-relay/cert/ux-visual-02/`
+**Evidence:** `.agent-relay/cert/ux-visual-02/` · `.agent-relay/cert/ux-visual-02a/`
 
 ## A. Screen investigation (local fixture)
 

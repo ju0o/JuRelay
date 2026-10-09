@@ -43,44 +43,54 @@ const WIDGET_HTML = `<!DOCTYPE html>
     --lane-a-bg:#fff8e8; --lane-a-border:#e0c56a; --lane-b-bg:#eef5ff; --lane-b-border:#9bb7d8;
     --lane-c-bg:#f4f2fb; --lane-c-border:#b7aed8; --pipe-bg:#f3f5f8; --pipe-border:#d0d5de;
     --live-lt:#1a1a1a; --bar-track:#dde2ea;
+    --accent-panel-bg:#e8effc; --accent-panel-fg:#1a1a1a; --accent-panel-muted:#555555; --accent-panel-border:#4a7fd4;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#121212; --panel:#1e1e1e; --text:#e8e8e8; --muted:#9a9a9a; --border:#3a3a3a;
       --lane-bg:#161a21; --lane-border:#262c37; --lane-card:#12161c; --lane-card-border:#232a34;
       --lane-a-bg:#1e1a12; --lane-a-border:#5a4a1e; --lane-b-bg:#141d29; --lane-b-border:#2c4a6e;
       --lane-c-bg:#161a21; --lane-c-border:#3d3466; --pipe-bg:#161a21; --pipe-border:#262c37;
-      --live-lt:#e8ecf2; --bar-track:#262c37; }
+      --live-lt:#e8ecf2; --bar-track:#262c37;
+      --accent-panel-bg:#121a2a; --accent-panel-fg:#e8ecf2; --accent-panel-muted:#9aa3b2; --accent-panel-border:#1b4fbf; }
   }
   body[data-theme="dark"] { --bg:#121212; --panel:#1e1e1e; --text:#e8e8e8; --muted:#9a9a9a; --border:#3a3a3a;
     --lane-bg:#161a21; --lane-border:#262c37; --lane-card:#12161c; --lane-card-border:#232a34;
     --lane-a-bg:#1e1a12; --lane-a-border:#5a4a1e; --lane-b-bg:#141d29; --lane-b-border:#2c4a6e;
     --lane-c-bg:#161a21; --lane-c-border:#3d3466; --pipe-bg:#161a21; --pipe-border:#262c37;
-    --live-lt:#e8ecf2; --bar-track:#262c37; }
+    --live-lt:#e8ecf2; --bar-track:#262c37;
+    --accent-panel-bg:#121a2a; --accent-panel-fg:#e8ecf2; --accent-panel-muted:#9aa3b2; --accent-panel-border:#1b4fbf; }
   body[data-theme="light"] { --bg:#ffffff; --panel:#f5f5f5; --text:#1a1a1a; --muted:#555555; --border:#d0d0d0;
     --lane-bg:#f3f5f8; --lane-border:#d0d5de; --lane-card:#ffffff; --lane-card-border:#d8dde6;
     --lane-a-bg:#fff8e8; --lane-a-border:#e0c56a; --lane-b-bg:#eef5ff; --lane-b-border:#9bb7d8;
     --lane-c-bg:#f4f2fb; --lane-c-border:#b7aed8; --pipe-bg:#f3f5f8; --pipe-border:#d0d5de;
-    --live-lt:#1a1a1a; --bar-track:#dde2ea; }
+    --live-lt:#1a1a1a; --bar-track:#dde2ea;
+    --accent-panel-bg:#e8effc; --accent-panel-fg:#1a1a1a; --accent-panel-muted:#555555; --accent-panel-border:#4a7fd4; }
   * { box-sizing: border-box; }
   body { font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans KR", sans-serif; margin:0; padding:10px; font-size:14px;
-         background: var(--bg); color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
-  .card { border:1px solid var(--border); border-radius:10px; padding:8px 10px; }
-  /* A안 헤더 1줄 */
-  .hdr { display:flex; align-items:center; gap:8px; margin:0 0 2px; }
+         background: var(--bg); color: var(--text); word-break: keep-all; overflow-wrap: normal; overflow-x: hidden; }
+  .card { border:1px solid var(--border); border-radius:10px; padding:8px 10px; max-width:100%; overflow-x:hidden; }
+  /* A안 헤더 — 좁은 폭에서 분절·두 줄 깨짐 방지 */
+  .hdr { display:flex; align-items:center; flex-wrap:wrap; gap:6px 8px; margin:0 0 2px; min-width:0; }
   .dot { width:9px; height:9px; border-radius:50%; flex:none; }
   .pulse { animation:pulse 1.6s ease-in-out infinite; }
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.35; } }
   .dot.connected{background:var(--ok);} .dot.waiting{background:var(--wait);} .dot.ready{background:var(--ok);}
   .dot.fail{background:var(--err);} .dot.sent{background:var(--mut);}
-  .app { font-size:15px; font-weight:700; }
-  .hpill { font-size:11px; border:1px solid var(--border); border-radius:12px; padding:1px 9px; color:var(--muted); white-space:nowrap; }
-  .hfrac { margin-left:auto; font-size:12px; color:var(--muted); white-space:nowrap; }
+  .app { font-size:15px; font-weight:700; white-space:nowrap; flex:none; }
+  .hpill { font-size:11px; border:1px solid var(--border); border-radius:12px; padding:1px 9px; color:var(--muted); white-space:nowrap; flex:none; }
+  .hfrac { margin-left:auto; font-size:12px; color:var(--muted); white-space:nowrap; flex:none; }
   .hfrac b { color:var(--text); font-size:14px; }
   .subhide { display:none; }
-  .lang { display:flex; gap:4px; }
+  .lang { display:flex; gap:4px; flex:none; }
   .lang button { font-size:11px; border:1px solid var(--border); background:transparent; color:var(--muted);
-                 border-radius:12px; padding:1px 8px; cursor:pointer; }
+                 border-radius:12px; padding:4px 8px; min-height:32px; cursor:pointer; white-space:nowrap; flex:none; }
   .lang button.on { color:var(--text); border-color:var(--text); font-weight:700; }
+  @media (max-width:380px) {
+    .hdr { row-gap:4px; }
+    .hfrac { margin-left:0; }
+    .proj-switch { max-width:100%; }
+    .proj-switch > summary { max-width:100%; overflow:hidden; text-overflow:ellipsis; }
+  }
   .sub { color: var(--muted); font-size:12px; }
   /* A안 "지금 이 환경" 스트립 */
   .env { border:1px solid var(--border); border-radius:10px; padding:6px 8px; margin:4px 0 0; }
@@ -153,17 +163,26 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .step.doing i { background: var(--wait); }
   .step.off { opacity:.55; }
   .step-sep { flex:1; height:1px; background: var(--border); min-width:8px; }
-  .cards { display:flex; flex-direction:column; gap:8px; margin-top:8px; }
-  .dcard { border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12px; }
-  .dcard .row { display:flex; align-items:center; gap:8px; }
-  .dcard .id { font-weight:700; }
-  .dcard .task { color: var(--muted); overflow:hidden; white-space:nowrap; }
+  .inbox { margin-top:8px; border:1px solid var(--border); border-radius:10px; padding:8px 10px; background:var(--panel); }
+  .inbox-head { margin-bottom:6px; }
+  .inbox-title { font-size:14px; font-weight:700; }
+  .inbox-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+  .inbox-count { font-size:12px; color:var(--muted); margin-top:4px; }
+  .inbox-count b { color:var(--text); font-size:14px; }
+  .cards { display:flex; flex-direction:column; gap:8px; margin-top:6px; }
+  .dcard { border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12px; background:var(--bg); color:var(--text); }
+  .dcard .row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; min-width:0; }
+  .dcard .id { font-weight:700; flex:none; }
+  .dcard .task { color: var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; flex:1; }
+  .dcard .proj { font-size:11px; border:1px solid var(--border); border-radius:10px; padding:1px 7px; color:var(--muted); flex:none; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .dcard .proj.unknown { border-style:dashed; }
+  .dcard .proj.legacy { color:var(--wait); border-color:var(--wait); }
   .pill { margin-left:auto; font-size:11px; border:1px solid var(--border); border-radius:20px; padding:1px 8px; flex:none; }
   .pill.wait { color: var(--wait); border-color: var(--wait); }
   .pill.doing { color: var(--mut); border-color: var(--mut); }
   .pill.done { color: var(--ok); border-color: var(--ok); }
   .dcard summary { cursor:pointer; }
-  .dcard .meta { color: var(--muted); font-size:11px; margin-top:4px; }
+  .dcard .meta { color: var(--muted); font-size:11px; margin-top:4px; word-break:break-all; }
   .remain { margin-top:6px; font-size:12px; color: var(--muted); }
   .remain b { color: var(--text); }
   .update { display:none; margin-top:8px; border:1px solid var(--wait); border-radius:8px;
@@ -214,7 +233,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .trow.sel { border-color:var(--accent, #4a9eff); box-shadow:0 0 0 1px var(--accent, #4a9eff); }
   .trow.ro { cursor:default; opacity:.92; }
   .trow .tid { font-size:10px; font-family:ui-monospace,Menlo,monospace; color:var(--muted); flex:none; }
-  .trow .tti { flex:1; min-width:0; white-space:nowrap; overflow:hidden; }
+  .trow .tti { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  @media (max-width:380px) {
+    .trow .tti { white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  }
   .trow .tst { font-size:10px; padding:1px 7px; border-radius:9px; flex:none; border:1px solid var(--border); color:var(--muted); }
   .trow.st-done .tst { color:#2ea86a; border-color:#2ea86a; }
   .trow.st-review .tst { color:#f0b429; border-color:#f0b429; }
@@ -377,16 +399,20 @@ const WIDGET_HTML = `<!DOCTYPE html>
   /* P1.8C-04 project dashboard — UX-VISUAL-02 compact first screen */
   .pdash { border:1px solid var(--border); border-radius:10px; padding:6px 8px; margin:2px 0;
            background:var(--panel); }
-  .pdash-head .pn { font-size:16px; font-weight:700; }
+  .pdash-head .pn { font-size:16px; font-weight:700; min-width:0; overflow-wrap:normal; word-break:keep-all; }
   .pdash-head .pp { font-size:12px; color:var(--muted); margin-top:2px;
                     font-family:ui-monospace,Menlo,monospace; white-space:nowrap; overflow:hidden;
-                    text-overflow:ellipsis; max-width:100%; cursor:help; }
+                    text-overflow:ellipsis; max-width:100%; min-width:0; cursor:help;
+                    overflow-wrap:anywhere; word-break:break-all; }
+  @media (max-width:380px) {
+    .pdash-head .pp { white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  }
   .pdash-head .pa { font-size:13px; margin-top:4px; }
-  .pdash-next { margin:4px 0; padding:6px 10px; border-radius:9px; border:1px solid #1b4fbf;
-                background:#0f1a33; color:#e8ecf2; }
-  body[data-theme="light"] .pdash-next { background:#e8effc; color:var(--text); border-color:#4a7fd4; }
-  .pdash-next .nl { font-size:12px; color:var(--muted); }
-  .pdash-next .nt { font-size:14px; font-weight:700; margin-top:2px; }
+  .pdash-next { margin:4px 0; padding:6px 10px; border-radius:9px;
+                border:1px solid var(--accent-panel-border);
+                background:var(--accent-panel-bg); color:var(--accent-panel-fg); }
+  .pdash-next .nl { font-size:12px; color:var(--accent-panel-muted); }
+  .pdash-next .nt { font-size:14px; font-weight:700; margin-top:2px; color:var(--accent-panel-fg); }
   .pdash-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px; }
   @media (max-width:520px) { .pdash-grid { grid-template-columns:1fr; } }
   .pdash-card { border:1px solid var(--border); border-radius:8px; padding:8px; background:var(--bg); }
@@ -432,17 +458,25 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .goalflow .row button:disabled { opacity:.45; cursor:not-allowed; }
   .goalflow .err { margin-top:8px; font-size:12px; color:var(--err); }
   .goalflow .ok { margin-top:8px; font-size:12px; color:var(--ok); }
-  .taskprev { margin-top:10px; border:1px solid #1b4fbf; border-radius:10px; padding:12px; background:#121a2a; }
-  .taskprev h3 { margin:0 0 8px; font-size:14px; }
-  .taskprev .line { font-size:13px; margin:4px 0; }
-  .taskprev .line b { color:var(--muted); font-weight:600; margin-right:6px; }
-  .taskprev .crit { margin:4px 0 0 16px; font-size:12px; color:var(--muted); }
+  /* UX-VISUAL-02A: theme tokens for accent panels (fixes light contrast on #121a2a) */
+  .taskprev { margin-top:10px; border:1px solid var(--accent-panel-border); border-radius:10px; padding:12px;
+              background:var(--accent-panel-bg); color:var(--accent-panel-fg); }
+  .taskprev h3 { margin:0 0 8px; font-size:14px; color:var(--accent-panel-fg); }
+  .taskprev .line { font-size:13px; margin:4px 0; color:var(--accent-panel-fg); }
+  .taskprev .line b { color:var(--accent-panel-muted); font-weight:600; margin-right:6px; }
+  .taskprev .line span, .taskprev .hint { color:var(--accent-panel-fg); }
+  .taskprev .crit { margin:4px 0 0 16px; font-size:12px; color:var(--accent-panel-muted); }
+  .taskprev select, .taskprev input[type="text"], .taskprev textarea {
+    color:var(--text); background:var(--bg); border:1px solid var(--border); border-radius:8px;
+    font-size:14px; padding:8px 10px; min-height:40px; max-width:100%; }
   .taskprev .row { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; align-items:center; }
   .taskprev .row button { min-height:44px; padding:8px 16px; border-radius:10px; border:1px solid var(--border);
     background:var(--panel); color:var(--text); font-size:14px; font-weight:650; cursor:pointer; }
   .taskprev .row button.primary { background:#0a7d33; border-color:#0a7d33; color:#fff; }
-  .taskprev .row button:disabled { opacity:.45; cursor:not-allowed; }
-  .taskprev .status { font-size:12px; color:var(--muted); margin-top:8px; }
+  .taskprev .row button:disabled { opacity:.55; cursor:not-allowed; color:var(--muted); }
+  .taskprev .status { font-size:12px; color:var(--accent-panel-muted); margin-top:8px; }
+  .taskprev .err { color:var(--err); }
+  .taskprev label { color:var(--accent-panel-fg); }
 </style>
 </head>
 <body>
@@ -717,7 +751,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
       </div>
     </div>
     <div class="update" id="update"></div>
-    <div class="cards" id="cards"></div>
+    <section class="inbox" id="inbox" aria-label="전체 프로젝트 PM 수신함">
+      <div class="inbox-head">
+        <div class="inbox-title">전체 프로젝트 · PM 수신함</div>
+        <div class="inbox-sub">선택한 프로젝트 목록과 별개입니다. 아래는 공유 수신함 대기 건입니다.</div>
+        <div class="inbox-count"><b id="inboxN">0</b>건 대기</div>
+      </div>
+      <div class="cards" id="cards"></div>
+    </section>
     </div><!-- #mainView -->
     <details class="dbg">
       <summary>debug · <span class="sub" id="buildTag">__WIDGET_BUILD__</span></summary>
@@ -888,7 +929,20 @@ const WIDGET_HTML = `<!DOCTYPE html>
         return dash >= 0 ? s.slice(dash + 1, dash + 7) : s.slice(0, 8);
       }
       // Visual board only: counts, stepper, per-delivery cards.
-      // No judgment here — identity (deliveryId/taskId/kind) only.
+      // Shared inbox across projects — show taskProjectId; never invent jucontroller ownership.
+      function deliveryProjectLabel(d) {
+        var id = (d && (d.taskProjectId || d.projectId)) ? String(d.taskProjectId || d.projectId) : '';
+        var name = (d && (d.taskProjectName || d.projectName)) ? String(d.taskProjectName || d.projectName) : '';
+        if (id) {
+          return {
+            text: name && name !== id ? (name + ' · ' + id) : id,
+            cls: id === 'ws' ? 'proj legacy' : 'proj',
+            tip: name ? (name + ' (' + id + ')') : id,
+          };
+        }
+        // Storage scope alone is not logical product identity.
+        return { text: '소속 미확인', cls: 'proj unknown', tip: 'Task.projectId 없음' };
+      }
       function renderBoard(deliveries) {
         var list = Array.isArray(deliveries) ? deliveries : [];
         var doing = 0;
@@ -900,15 +954,22 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (claimed) doing++;
           var pill = claimed ? 'doing' : 'wait';
           var label = claimed ? '검토 중' : '대기 중';
+          var proj = deliveryProjectLabel(d);
           html += '<details class="dcard"><summary><span class="row">'
             + '<span class="id">…' + esc(shortId(d.deliveryId)) + '</span>'
-            + '<span class="task">' + esc(d.taskId || d.kind || 'delivery') + '</span>'
+            + '<span class="task" title="' + esc(d.taskId || d.kind || 'delivery') + '">' + esc(d.taskId || d.kind || 'delivery') + '</span>'
+            + '<span class="' + proj.cls + '" title="' + esc(proj.tip) + '">' + esc(proj.text) + '</span>'
             + '<span class="pill ' + pill + '">' + label + '</span>'
             + '</span></summary>'
             + '<div class="meta">delivery ' + esc(d.deliveryId)
+            + '<br>프로젝트 ' + esc(proj.text)
             + (d.createdAt ? '<br>생성 ' + esc(d.createdAt) : '') + '</div></details>';
         }
         cardsEl.innerHTML = html;
+        try {
+          var inboxN = document.getElementById('inboxN');
+          if (inboxN) inboxN.textContent = String(list.length);
+        } catch (eInbox) {}
         var nWait = list.length - doing;
         pipeNWait = nWait;
         pipeDoing = doing;
@@ -918,7 +979,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
         setSeg('sgReview', doing, 'eseg amber');
         setSeg('sgDone', doneCount, 'eseg green');
         setNum(headDoneEl, doneCount);
-        if (headTotalEl) headTotalEl.textContent = String(list.length);   // list.length is always a number
+        if (headTotalEl) {
+          headTotalEl.textContent = String(list.length);
+          try { headTotalEl.setAttribute('title', '전체 프로젝트 · PM 수신함 ' + list.length + '건'); } catch (eH) {}
+        }
         // "무엇을 하고 있나": arrivals first, then review, else waiting.
         try {
           var noteText = nWait > 0

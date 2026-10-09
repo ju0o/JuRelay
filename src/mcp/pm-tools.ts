@@ -308,13 +308,34 @@ export function buildPmReadTools(ctx: PmServerContext): McpTool[] {
       description:
         'V1-G4-A: list durable PM Delivery records awaiting host consumption ' +
         '(status PENDING or DELIVERED-awaiting-ACK). Terminal ACKNOWLEDGED/IGNORED never resurface. ' +
-        'Identity/state only — no result text. Pure read.',
+        'Identity/state only — no result text. Pure read. ' +
+        'Additive taskProjectId/taskProjectName come from the Task record when present ' +
+        '(shared inbox may span products; missing identity stays null — never invented).',
       inputSchema: objectSchema({}),
       handler: async (args) => {
         rejectUnknownFields(args, []);
         try {
           await pmDelivery.reconcileFinalizedPmDeliveries(dataRoot, project);
-          return { project, deliveries: pmDelivery.listPendingPmDeliveries(dataRoot, project) };
+          const deliveries = pmDelivery.listPendingPmDeliveries(dataRoot, project).map((d) => {
+            let taskProjectId: string | null = null;
+            let taskProjectName: string | null = null;
+            try {
+              const task = goalTask.getTask(dataRoot, project, d.taskId) as {
+                projectId?: string;
+                projectName?: string;
+              };
+              if (typeof task.projectId === 'string' && task.projectId.trim()) {
+                taskProjectId = task.projectId.trim();
+              }
+              if (typeof task.projectName === 'string' && task.projectName.trim()) {
+                taskProjectName = task.projectName.trim();
+              }
+            } catch {
+              // Task missing/corrupt → leave null; widget shows 소속 미확인.
+            }
+            return { ...d, taskProjectId, taskProjectName };
+          });
+          return { project, deliveries, inboxLabel: '전체 프로젝트 · PM 수신함' };
         } catch (err) {
           throw mapCoreError(err);
         }
