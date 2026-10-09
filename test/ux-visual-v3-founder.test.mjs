@@ -127,7 +127,19 @@ test('FINAL FIX 1/2: Goal card keeps canonical id; preview must not write pdGoal
   const previewFn = src.slice(src.indexOf('function renderTaskPreview'), src.indexOf('function currentDashProjectId'));
   // Preview may mention pdGoalTitle in a guard comment; it must not call setElText on it.
   assert.doesNotMatch(previewFn, /setElText\(\s*['"]pdGoalTitle['"]/);
-  assert.match(src, /Prefer full dashboard goal list/);
+});
+
+test('GOAL SCOPE: filterGoalsForSelectedProject + stale project switch guard', () => {
+  assert.match(src, /function filterGoalsForSelectedProject/);
+  assert.match(src, /goal\.projectId === selectedProjectId|gp\.trim\(\) !== pid/);
+  assert.match(src, /Legacy goals without projectId are never/);
+  assert.match(src, /goalScopeProjectId/);
+  assert.match(src, /goalScopeGen/);
+  assert.match(src, /scopeStillCurrent/);
+  assert.match(src, /filterGoalsForSelectedProject\(\(dash && dash\.goals\)/);
+  assert.doesNotMatch(src, /goals = \(\(dash && dash\.goals\) \|\| \[\]\)\.slice\(\)/);
+  // Project switch clears goal cards so prior project rows cannot linger.
+  assert.match(src, /프로젝트 Goal 불러오는 중/);
 });
 
 test('02A-R2 fixes retained (accent-panel, container 380, path-reveal)', () => {

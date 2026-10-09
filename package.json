@@ -144,6 +144,7 @@
     "test:ux-visual-02a-hotfix": "node --test test/ux-visual-02a-hotfix.test.mjs",
     "test:ux-visual-02a-r2-narrow-hotfix": "node --test test/ux-visual-02a-r2-narrow-hotfix.test.mjs",
     "test:ux-visual-v3-founder": "node --test test/ux-visual-v3-founder.test.mjs",
+    "test:ux-v3-goal-scope": "node --test test/ux-v3-goal-scope.test.mjs",
     "test:p1-8c05-goal-task-dispatch": "node --test test/p1-8c05-goal-task-dispatch.test.mjs",
     "test:p1-8d-state-integrity": "node --test test/p1-8d-state-integrity.test.mjs",
     "test:p2-clean-install": "node --test test/p2-clean-install.test.mjs",

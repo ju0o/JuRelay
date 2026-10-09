@@ -87,6 +87,7 @@ export const MANDATORY_SUITES = [
   'test:ux-visual-02a-hotfix',
   'test:ux-visual-02a-r2-narrow-hotfix',
   'test:ux-visual-v3-founder',
+  'test:ux-v3-goal-scope',
   'test:p1-8c05-goal-task-dispatch',
   'test:p1-8d-state-integrity',
   'test:p2-clean-install',

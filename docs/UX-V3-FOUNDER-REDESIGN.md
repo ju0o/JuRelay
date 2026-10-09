@@ -1,9 +1,13 @@
 # UX-V3 Founder-first redesign
 
-**Status:** `UX_V3_FINAL_CORRECTNESS_READY_FOR_HOST_QA`  
-**Commit:** (see git) · **URI:** `ui://agent-relay/pm-widget-fa975ba3`  
-**Host QA gate:** retry failed items of `HG-20261010-21fe6f` only  
+**Status:** `UX_V3_GOAL_SCOPE_READY_FOR_HOST_QA`  
+**Commit:** (see git) · **URI:** `ui://agent-relay/pm-widget-b2c4befa`  
+**Host QA gate:** Goal list scope + project switch only (retry of `HG-20261010-f99773`)  
 **Not complete until ChatGPT Host QA evidence.**
+
+## Goal List Scope Hotfix (Host QA HG-20261010-f99773)
+
+`더보기 → Goal` used unfiltered `dash.goals` (first 8), so jucontroller showed GOAL-0001~0008 from other projects. Fix: `relay_pm_get_dashboard` goals now include additive `projectId`; widget `filterGoalsForSelectedProject` keeps exact `projectId` matches only (never null/legacy guess); project-switch clears cards and ignores stale async responses. Expected jucontroller list: GOAL-0022 ACTIVE, GOAL-0024 ABANDONED, GOAL-0025 PLANNING, GOAL-0026 PLANNING (exactly 4).
 
 ## Final Correctness Hotfix (Host QA HG-20261010-21fe6f)
 

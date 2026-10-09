@@ -276,10 +276,22 @@ export function buildDashboardTools(ctx: PmServerContext): McpTool[] {
             model: latestLaunchModel(runFoldersFor(dataRoot, project, w.workerId)),
           };
         });
-        let goals: Array<{ goalId: string; title: string; status: string }> = [];
+        let goals: Array<{
+          goalId: string;
+          title: string;
+          status: string;
+          projectId: string | null;
+        }> = [];
         try {
+          // Additive projectId so the widget can scope 더보기→Goal to the
+          // selected project. Null/missing never implies the selected project.
           goals = goalTask.listGoals(dataRoot, project).map((g) => ({
-            goalId: g.goalId, title: g.title, status: g.status,
+            goalId: g.goalId,
+            title: g.title,
+            status: g.status,
+            projectId: typeof g.projectId === 'string' && g.projectId.trim()
+              ? g.projectId.trim()
+              : null,
           }));
         } catch {
           goals = [];

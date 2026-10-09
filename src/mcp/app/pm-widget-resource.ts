@@ -1514,9 +1514,34 @@ const WIDGET_HTML = `<!DOCTYPE html>
         try { if (rows) rows.innerHTML = html; } catch (e) {}
         return { done: done, review: review, left: left, total: tasks.length };
       }
+      /**
+       * UX-V3 Goal scope: 더보기→Goal shows only goals whose projectId exactly
+       * matches the selected project. Legacy goals without projectId are never
+       * guessed into the current project. Empty filter stays empty.
+       */
+      function filterGoalsForSelectedProject(goals, selectedProjectId) {
+        var pid = selectedProjectId ? String(selectedProjectId) : '';
+        if (!pid) return [];
+        var out = [];
+        var list = goals || [];
+        for (var i = 0; i < list.length; i++) {
+          var g = list[i];
+          if (!g) continue;
+          var gp = g.projectId;
+          if (typeof gp !== 'string' || !gp.trim()) continue;
+          if (gp.trim() !== pid) continue;
+          out.push(g);
+        }
+        out.sort(function (a, b) {
+          var ai = String(a.goalId || '');
+          var bi = String(b.goalId || '');
+          return ai.localeCompare(bi);
+        });
+        return out;
+      }
       function renderGoalTab(goals, taskCounts) {
         var box = document.getElementById('goalCards');
-        var list = (goals || []).slice(0, 8);
+        var list = goals || [];
         var html = '';
         for (var i = 0; i < list.length; i++) {
           var g = list[i] || {};
@@ -2232,7 +2257,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
         var p = view.project;
         var nextProjectId = p && p.projectId;
         if (prevProjectId && nextProjectId && prevProjectId !== nextProjectId) {
-          /* Project switch: invalidate in-flight preview loads (FIX A race) and clear Goal title. */
+          /* Project switch: invalidate in-flight preview/goal-tab loads and clear stale Goal UI. */
           previewLoadGen++;
           pendingPreview = null;
           selectedTaskId = null;
@@ -2240,6 +2265,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
           setElText('pdGoalTitle', '');
           setElText('pdGoalMeta', '');
           setElText('pdNextText', '확인 중…');
+          try {
+            var gBox = document.getElementById('goalCards');
+            if (gBox) gBox.innerHTML = '<div class="emptybox">프로젝트 Goal 불러오는 중…</div>';
+          } catch (eGoalClear) { /* best-effort */ }
         }
         setElText('pdName', p ? (p.projectName || p.projectId) : '프로젝트 없음');
         var pathFull = (p && p.workspacePath)
@@ -3198,6 +3227,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
             logLine('get_project error: ' + ((eProj && eProj.message) || eProj));
           }
           try {
+            /* Capture selected project before await so a mid-flight switch cannot
+               paint another project's Goal list onto this screen. */
+            var goalScopeProjectId = currentDashProjectId();
+            var goalScopeGen = previewLoadGen;
             var dash = await callTool('relay_pm_get_dashboard', {});
             lastDash = dash;
             try { renderAgents(dash); } catch (eAgents) { logLine('render agents error: ' + eAgents.message); }
@@ -3212,11 +3245,19 @@ const WIDGET_HTML = `<!DOCTYPE html>
                   taskList = (tl && tl.tasks) || [];
                 } catch (eTl) { taskList = []; }
               }
-              /* Prefer full dashboard goal list (canonical titles + ids). Fall back to
-                 active Goal only. Never substitute READY preview title into this list. */
-              var goals = ((dash && dash.goals) || []).slice();
-              if (!goals.length && lastProjectDash && lastProjectDash.goal) {
-                goals = [lastProjectDash.goal];
+              /* UX-V3 Goal scope: only goals with exact projectId match.
+                 Never fill with other projects or legacy (null projectId) rows. */
+              var goals = [];
+              var scopeStillCurrent = (goalScopeGen === previewLoadGen)
+                && (!!goalScopeProjectId)
+                && (currentDashProjectId() === goalScopeProjectId);
+              if (scopeStillCurrent) {
+                goals = filterGoalsForSelectedProject((dash && dash.goals) || [], goalScopeProjectId);
+              } else {
+                logLine('goal-tab skip stale scope gen=' + goalScopeGen
+                  + ' live=' + previewLoadGen
+                  + ' want=' + (goalScopeProjectId || '')
+                  + ' now=' + (currentDashProjectId() || ''));
               }
               try {
                 var doneT = 0;
@@ -3230,7 +3271,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
               } catch (eBar) { /* progress best-effort */ }
               var taskCounts = null;
               try { taskCounts = renderTaskTab(taskList); } catch (eT) { logLine('render tasktab error: ' + eT.message); }
-              try { renderGoalTab(goals, taskCounts); } catch (eG) { logLine('render goaltab error: ' + eG.message); }
+              if (scopeStillCurrent) {
+                try { renderGoalTab(goals, taskCounts); } catch (eG) { logLine('render goaltab error: ' + eG.message); }
+              }
               try {
                 initDesignTabs();
                 renderDesignStatic();
