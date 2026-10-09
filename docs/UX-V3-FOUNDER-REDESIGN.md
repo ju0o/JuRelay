@@ -1,6 +1,8 @@
 # UX-V3 Founder-first redesign
 
 **Status:** `UX_V3_READY_FOR_FOUNDER_VISUAL_QA`  
+**Commit:** `1508dbe` · **URI:** `ui://agent-relay/pm-widget-002aa1c0`  
+**Host QA gate:** `HG-20261009-e693f9`  
 **Not complete until ChatGPT Host QA evidence.**
 
 ## Summary
