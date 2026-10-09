@@ -83,6 +83,7 @@ export const MANDATORY_SUITES = [
   'test:owner02a-explicit-worker-binding',
   'test:owner-r01-task-agent-model',
   'test:r01-host-widget-fix',
+  'test:ux-visual-02-compact-layout',
   'test:p1-8c05-goal-task-dispatch',
   'test:p1-8d-state-integrity',
   'test:p2-clean-install',

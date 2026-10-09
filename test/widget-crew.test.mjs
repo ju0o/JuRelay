@@ -55,7 +55,10 @@ describe('crew widget spec', () => {
   it('always renders fallback shell + dashboard diag line', () => {
     assert.ok(html.includes('id="fallback"'), 'static fallback shell');
     assert.ok(html.includes('id="diag"'), 'dashboard status line element');
-    assert.ok(html.includes('dashboard ok ·') && html.includes('dashboard 실패:'), 'diag covers ok + fail');
+    assert.ok(
+      (html.includes('dashboard ok ·') || html.includes('project ok ·')) && html.includes('dashboard 실패:'),
+      'diag covers ok + fail',
+    );
     assert.ok(html.includes('render agents error') && html.includes('render tasktab error') && html.includes('render goaltab error'), 'per-view render guards');
   });
 });

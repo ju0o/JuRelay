@@ -39,15 +39,32 @@ const WIDGET_HTML = `<!DOCTYPE html>
   :root {
     --bg:#ffffff; --panel:#f5f5f5; --text:#1a1a1a; --muted:#555555; --border:#d0d0d0;
     --ok:#0a7d33; --err:#b42318; --mut:#7a5af8; --wait:#8a6d00;
+    --lane-bg:#f3f5f8; --lane-border:#d0d5de; --lane-card:#ffffff; --lane-card-border:#d8dde6;
+    --lane-a-bg:#fff8e8; --lane-a-border:#e0c56a; --lane-b-bg:#eef5ff; --lane-b-border:#9bb7d8;
+    --lane-c-bg:#f4f2fb; --lane-c-border:#b7aed8; --pipe-bg:#f3f5f8; --pipe-border:#d0d5de;
+    --live-lt:#1a1a1a; --bar-track:#dde2ea;
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg:#121212; --panel:#1e1e1e; --text:#e8e8e8; --muted:#9a9a9a; --border:#3a3a3a; }
+    :root { --bg:#121212; --panel:#1e1e1e; --text:#e8e8e8; --muted:#9a9a9a; --border:#3a3a3a;
+      --lane-bg:#161a21; --lane-border:#262c37; --lane-card:#12161c; --lane-card-border:#232a34;
+      --lane-a-bg:#1e1a12; --lane-a-border:#5a4a1e; --lane-b-bg:#141d29; --lane-b-border:#2c4a6e;
+      --lane-c-bg:#161a21; --lane-c-border:#3d3466; --pipe-bg:#161a21; --pipe-border:#262c37;
+      --live-lt:#e8ecf2; --bar-track:#262c37; }
   }
-  body[data-theme="dark"] { --bg:#121212; --panel:#1e1e1e; --text:#e8e8e8; --muted:#9a9a9a; --border:#3a3a3a; }
+  body[data-theme="dark"] { --bg:#121212; --panel:#1e1e1e; --text:#e8e8e8; --muted:#9a9a9a; --border:#3a3a3a;
+    --lane-bg:#161a21; --lane-border:#262c37; --lane-card:#12161c; --lane-card-border:#232a34;
+    --lane-a-bg:#1e1a12; --lane-a-border:#5a4a1e; --lane-b-bg:#141d29; --lane-b-border:#2c4a6e;
+    --lane-c-bg:#161a21; --lane-c-border:#3d3466; --pipe-bg:#161a21; --pipe-border:#262c37;
+    --live-lt:#e8ecf2; --bar-track:#262c37; }
+  body[data-theme="light"] { --bg:#ffffff; --panel:#f5f5f5; --text:#1a1a1a; --muted:#555555; --border:#d0d0d0;
+    --lane-bg:#f3f5f8; --lane-border:#d0d5de; --lane-card:#ffffff; --lane-card-border:#d8dde6;
+    --lane-a-bg:#fff8e8; --lane-a-border:#e0c56a; --lane-b-bg:#eef5ff; --lane-b-border:#9bb7d8;
+    --lane-c-bg:#f4f2fb; --lane-c-border:#b7aed8; --pipe-bg:#f3f5f8; --pipe-border:#d0d5de;
+    --live-lt:#1a1a1a; --bar-track:#dde2ea; }
   * { box-sizing: border-box; }
-  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin:0; padding:14px; font-size:14px;
-         background: var(--bg); color: var(--text); }
-  .card { border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans KR", sans-serif; margin:0; padding:10px; font-size:14px;
+         background: var(--bg); color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
+  .card { border:1px solid var(--border); border-radius:10px; padding:8px 10px; }
   /* A안 헤더 1줄 */
   .hdr { display:flex; align-items:center; gap:8px; margin:0 0 2px; }
   .dot { width:9px; height:9px; border-radius:50%; flex:none; }
@@ -66,32 +83,35 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .lang button.on { color:var(--text); border-color:var(--text); font-weight:700; }
   .sub { color: var(--muted); font-size:12px; }
   /* A안 "지금 이 환경" 스트립 */
-  .env { border:1px solid var(--border); border-radius:10px; padding:8px 10px; margin:6px 0 2px; }
+  .env { border:1px solid var(--border); border-radius:10px; padding:6px 8px; margin:4px 0 0; }
   .env-title { font-size:12px; font-weight:700; margin-bottom:4px; }
   .env-row { display:flex; align-items:center; gap:10px; }
   .env-nums { display:flex; flex:1; gap:12px; min-width:0; }
-  .eseg b { display:block; font-size:21px; font-weight:650; line-height:1.1; }
-  .eseg span { font-size:10px; color:var(--muted); white-space:nowrap; }
+  .eseg b { display:block; font-size:18px; font-weight:650; line-height:1.1; }
+  .eseg span { font-size:11px; color:var(--muted); white-space:nowrap; }
   .eseg.blue b { color:#4a9eff; } .eseg.amber b { color:#f0b429; }
   .eseg.green b { color:#2ea86a; } .eseg.muted b { color:#5c6470; }
   .eseg.dim { opacity:.38; }
-  .env-note { font-size:11px; color:var(--muted); white-space:nowrap; margin-left:auto;
+  .env-note { font-size:12px; color:var(--muted); white-space:nowrap; margin-left:auto;
               border:1px solid var(--border); border-radius:8px; padding:4px 8px; }
   @media (max-width:480px) { .env-row { flex-wrap:wrap; } .env-note { margin-left:0; } }
-  /* A안 레인 3개 */
-  .lanes { display:flex; flex-direction:column; gap:8px; margin:6px 0 2px; }
-  .lane { background:#161a21; border:1px solid #262c37; border-radius:10px; padding:9px 11px; }
+  /* A안 레인 3개 — theme tokens (light/dark) */
+  .lanes { display:flex; flex-direction:column; gap:5px; margin:2px 0 0; }
+  .lane { background:var(--lane-bg); border:1px solid var(--lane-border); border-radius:10px; padding:6px 8px; }
   .lane-head { display:flex; align-items:baseline; gap:8px; }
-  .lane-title { font-size:12px; font-weight:700; }
-  .lane-a .lane-title { color:#f0b429; } .lane-b .lane-title { color:#4a9eff; } .lane-c .lane-title { color:#8b7bd8; }
-  .lane-a { background:#1e1a12; border-color:#5a4a1e; }
-  .lane-b { background:#141d29; border-color:#2c4a6e; }
-  .lane-c { background:#161a21; border-color:#3d3466; }
+  .lane-title { font-size:13px; font-weight:700; }
+  .lane-a .lane-title { color:#c48a00; } .lane-b .lane-title { color:#2b7de0; } .lane-c .lane-title { color:#6b5bb8; }
+  body[data-theme="dark"] .lane-a .lane-title { color:#f0b429; }
+  body[data-theme="dark"] .lane-b .lane-title { color:#4a9eff; }
+  body[data-theme="dark"] .lane-c .lane-title { color:#8b7bd8; }
+  .lane-a { background:var(--lane-a-bg); border-color:var(--lane-a-border); }
+  .lane-b { background:var(--lane-b-bg); border-color:var(--lane-b-border); }
+  .lane-c { background:var(--lane-c-bg); border-color:var(--lane-c-border); }
   /* F1 pipeline flow */
-  .pipe { display:flex; flex-wrap:wrap; align-items:stretch; gap:4px; margin:6px 0 2px; }
-  .pnode { flex:1; background:#161a21; border:1px solid #262c37; border-radius:8px; padding:4px 2px; text-align:center; min-width:0; }
+  .pipe { display:flex; flex-wrap:wrap; align-items:stretch; gap:4px; margin:4px 0 0; }
+  .pnode { flex:1; background:var(--pipe-bg); border:1px solid var(--pipe-border); border-radius:8px; padding:4px 2px; text-align:center; min-width:0; }
   .pnode b { display:block; font-size:12px; }
-  .pnode span { font-size:10px; color:var(--muted); white-space:nowrap; }
+  .pnode span { font-size:11px; color:var(--muted); white-space:nowrap; }
   /* QA wait is secondary information: dimmer than the review count so the eye reads "4 review" first.
      It stays hidden entirely when nothing is waiting, so a healthy pipeline looks unchanged. */
   .pnode .pwait { color:var(--muted); opacity:.62; margin-left:4px; }
@@ -100,31 +120,32 @@ const WIDGET_HTML = `<!DOCTYPE html>
      detail, never something the Founder has to read on the surface. */
   .livecards { display:flex; flex-direction:column; gap:3px; margin-top:4px; }
   .livecard { display:flex; align-items:baseline; gap:6px; padding:4px 6px; border-radius:6px;
-              background:#12161c; border:1px solid #232a34; min-width:0; }
-  .livecard .lt { font-size:11px; color:#e8ecf2; flex:1; min-width:0; }
-  .livecard .lr { font-size:9px; color:var(--muted); opacity:.7; flex:none; }
+              background:var(--lane-card); border:1px solid var(--lane-card-border); min-width:0; }
+  .livecard .lt { font-size:13px; color:var(--live-lt); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .livecard .lr { font-size:11px; color:var(--muted); opacity:.85; flex:none; }
   .livecard .lr:empty { display:none; }
-  .livecard .ldead { color:#f0b429; font-size:9px; flex:none; }
-  .live-empty { font-size:11px; color:var(--muted); padding:4px 2px; }
+  .livecard .ldead { color:#c48a00; font-size:11px; flex:none; }
+  .live-empty { font-size:12px; color:var(--muted); padding:4px 2px; }
   .edge { align-self:center; color:var(--muted); font-size:12px; flex:none; }
-  .ploop { flex-basis:100%; text-align:center; font-size:10px; color:var(--muted); margin-top:2px; }
-  .ploop.hot { color:#f0b429; font-weight:700; }
-  .lane-empty { font-size:11px; color:var(--muted); padding:4px 2px; }
-  .lane-desc { font-size:10px; color:var(--muted); }
+  .ploop { flex-basis:100%; text-align:center; font-size:11px; color:var(--muted); margin-top:2px; }
+  .ploop.hot { color:#c48a00; font-weight:700; }
+  .lane-empty { font-size:12px; color:var(--muted); padding:4px 2px; }
+  .lane-desc { font-size:11px; color:var(--muted); }
   .lane-n { margin-left:auto; font-size:14px; font-weight:700; }
-  .bar { height:3px; border-radius:2px; background:#262c37; margin:6px 0; overflow:hidden; }
+  .bar { height:3px; border-radius:2px; background:var(--bar-track); margin:4px 0; overflow:hidden; }
   .bar i { display:block; height:100%; border-radius:2px; transition:width 1s ease; }
   .lane-a .bar i { background:#f0b429; } .lane-b .bar i { background:#4a9eff; }
   .chips { display:flex; flex-wrap:wrap; gap:6px; }
-  .chip { display:flex; align-items:center; gap:6px; min-height:34px; border:1px solid #262c37;
-          border-radius:6px; padding:2px 8px 2px 2px; min-width:0; max-width:100%; }
-  .cav { flex:none; width:20px; height:30px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; }
-  .cav-miss { width:20px; height:30px; display:flex; align-items:center; justify-content:center;
-             border:1px dashed var(--wait); border-radius:4px; font-size:11px; font-weight:700;
+  .chip { display:flex; align-items:center; gap:6px; min-height:40px; border:1px solid var(--lane-border);
+          border-radius:6px; padding:2px 8px 2px 2px; min-width:0; max-width:100%; background:var(--lane-card); }
+  /* Sprite cell: source frame 340×520 → display 26×40 (aspect-locked, foot baseline) */
+  .cav { flex:none; width:26px; height:40px; display:flex; align-items:flex-end; justify-content:center; overflow:hidden; }
+  .cav-miss { width:26px; height:40px; display:flex; align-items:center; justify-content:center;
+             border:1px dashed var(--wait); border-radius:4px; font-size:12px; font-weight:700;
              color:var(--text); background:var(--panel); flex:none; }
   .ctx { min-width:0; }
-  .ctx b { display:block; font-size:11px; font-weight:600; white-space:nowrap; overflow:hidden; }
-  .ctx i { display:block; font-style:normal; font-size:10px; color:var(--muted); white-space:nowrap; overflow:hidden; }
+  .ctx b { display:block; font-size:13px; font-weight:650; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ctx i { display:block; font-style:normal; font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .steps { display:flex; align-items:center; gap:6px; margin:6px 0 2px; font-size:11px; color: var(--muted); }
   .step { display:flex; align-items:center; gap:4px; }
   .step i { width:9px; height:9px; border-radius:50%; background: var(--border); flex:none; }
@@ -161,17 +182,24 @@ const WIDGET_HTML = `<!DOCTYPE html>
     .crew-sp, .climber, .runner, .pulse { animation:none !important; }
     .climber, .runner, .track-fill, .bar i { transition:none !important; }
   }
-  .tabs { display:flex; gap:6px; margin:8px 0 2px; }
+  .tabs { display:flex; gap:4px; margin:6px 0 2px; }
   .tabs button { flex:1; border:1px solid var(--border); background:transparent; color:var(--muted);
-                 border-radius:8px; padding:6px 4px; font-size:12px; cursor:pointer; white-space:nowrap; flex:none; }
+                 border-radius:8px; padding:8px 6px; min-height:40px; font-size:13px; cursor:pointer; white-space:nowrap; flex:none; }
   .tabs button.on { color:var(--text); border-color:var(--text); font-weight:700; background:var(--panel); }
-  @media (max-width:480px) { .tabs { overflow-x:auto; } }
+  @media (max-width:480px) { .tabs { overflow-x:auto; -webkit-overflow-scrolling:touch; } }
+  /* UX-VISUAL-02: secondary strips collapsed by default */
+  .more-panel { margin:4px 0 2px; border:1px solid var(--border); border-radius:10px; padding:0 8px 6px; background:var(--panel); }
+  .more-panel > summary { cursor:pointer; color:var(--muted); font-size:13px; font-weight:600; user-select:none;
+                          list-style:none; padding:8px 2px; min-height:40px; display:flex; align-items:center; }
+  .more-panel > summary::-webkit-details-marker { display:none; }
+  .more-panel[open] > summary { color:var(--text); border-bottom:1px solid var(--border); margin-bottom:4px; }
+  .more-panel .pipe, .more-panel .env, .more-panel .steps { margin-left:0; margin-right:0; }
   /* v6 control tower */
-  .nowcard { border:1px solid var(--border); border-radius:10px; padding:8px 10px; margin:6px 0 2px; }
+  .nowcard { border:1px solid var(--border); border-radius:10px; padding:6px 8px; margin:4px 0 2px; }
   .now-top { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; }
   .now-top .hpill { margin-left:auto; }
-  .now-pm { font-size:11px; color:var(--muted); margin-top:2px; }
-  .now-arr { font-size:12px; font-weight:600; margin-top:2px; }
+  .now-pm { font-size:12px; color:var(--muted); margin-top:2px; }
+  .now-arr { font-size:13px; font-weight:600; margin-top:2px; }
   .tasksum { border:1px solid var(--border); border-radius:10px; padding:8px 10px; margin:6px 0; }
   .tasksum-top { display:flex; font-size:12px; } .tasksum-top b { margin-left:auto; }
   .bar3 { display:flex; height:6px; border-radius:3px; background:#262c37; margin:6px 0; overflow:hidden; }
@@ -346,26 +374,29 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .proj-menu button:hover, .proj-menu button:focus { background:var(--panel); }
   .proj-menu .cur { font-weight:700; }
   .main-view.hide-for-boot { display:none !important; }
-  /* P1.8C-04 project dashboard */
-  .pdash { border:1px solid var(--border); border-radius:10px; padding:12px; margin:8px 0;
+  /* P1.8C-04 project dashboard — UX-VISUAL-02 compact first screen */
+  .pdash { border:1px solid var(--border); border-radius:10px; padding:6px 8px; margin:2px 0;
            background:var(--panel); }
   .pdash-head .pn { font-size:16px; font-weight:700; }
-  .pdash-head .pp { font-size:11px; color:var(--muted); word-break:break-all; margin-top:2px;
-                    font-family:ui-monospace,Menlo,monospace; }
-  .pdash-head .pa { font-size:12px; margin-top:6px; }
-  .pdash-next { margin:10px 0; padding:10px 12px; border-radius:9px; border:1px solid #1b4fbf;
-                background:#0f1a33; }
-  .pdash-next .nl { font-size:11px; color:var(--muted); }
-  .pdash-next .nt { font-size:15px; font-weight:700; margin-top:2px; }
-  .pdash-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+  .pdash-head .pp { font-size:12px; color:var(--muted); margin-top:2px;
+                    font-family:ui-monospace,Menlo,monospace; white-space:nowrap; overflow:hidden;
+                    text-overflow:ellipsis; max-width:100%; cursor:help; }
+  .pdash-head .pa { font-size:13px; margin-top:4px; }
+  .pdash-next { margin:4px 0; padding:6px 10px; border-radius:9px; border:1px solid #1b4fbf;
+                background:#0f1a33; color:#e8ecf2; }
+  body[data-theme="light"] .pdash-next { background:#e8effc; color:var(--text); border-color:#4a7fd4; }
+  .pdash-next .nl { font-size:12px; color:var(--muted); }
+  .pdash-next .nt { font-size:14px; font-weight:700; margin-top:2px; }
+  .pdash-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px; }
   @media (max-width:520px) { .pdash-grid { grid-template-columns:1fr; } }
-  .pdash-card { border:1px solid var(--border); border-radius:8px; padding:10px; background:var(--bg); }
-  .pdash-card h3 { margin:0 0 6px; font-size:12px; color:var(--muted); font-weight:600; }
-  .pdash-card .tt { font-size:14px; font-weight:650; }
-  .pdash-card .meta { font-size:11px; color:var(--muted); margin-top:4px; }
+  .pdash-card { border:1px solid var(--border); border-radius:8px; padding:8px; background:var(--bg); }
+  .pdash-card h3 { margin:0 0 4px; font-size:12px; color:var(--muted); font-weight:600; }
+  .pdash-card .tt { font-size:14px; font-weight:650; overflow:hidden; text-overflow:ellipsis; display:-webkit-box;
+                    -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .pdash-card .meta { font-size:12px; color:var(--muted); margin-top:4px; }
   .pdash-card .empty { font-size:13px; color:var(--muted); }
-  .pdash-counts { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
-  .pdash-counts .c { font-size:11px; border:1px solid var(--border); border-radius:12px;
+  .pdash-counts { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .pdash-counts .c { font-size:12px; border:1px solid var(--border); border-radius:12px;
                      padding:4px 9px; color:var(--muted); }
   .pdash-counts .c b { color:var(--text); }
   .pdash-counts .c.warn { border-color:var(--wait); color:var(--wait); }
@@ -382,7 +413,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .rtpill.IDLE { color:var(--muted); }
   .rtpill.UNKNOWN { color:var(--muted); }
   /* P1.8C-05 — Goal → Task preview → explicit Run */
-  .pdash-actions { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .pdash-actions { margin-top:6px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
   .pdash-actions button { min-height:44px; padding:8px 16px; border-radius:10px; border:1px solid var(--border);
                           background:var(--panel); color:var(--text); font-size:14px; font-weight:650; cursor:pointer; }
   .pdash-actions button.primary { background:#1b4fbf; border-color:#1b4fbf; color:#fff; }
@@ -574,33 +605,36 @@ const WIDGET_HTML = `<!DOCTYPE html>
         <div class="err hide" id="tpErr" role="alert"></div>
       </div>
     </section>
-    <div class="pipe" id="pipe">
-      <div class="pnode"><b>PM</b><span data-i="pmYou">이 대화</span></div>
-      <span class="edge">→</span>
-      <div class="pnode"><b>Agent Relay</b><span id="pipeRelay">0 delivery</span></div>
-      <span class="edge">→</span>
-      <div class="pnode"><b>Worker</b><span id="pipeWorker">0 active</span></div>
-      <span class="edge">→</span>
-      <div class="pnode"><b>QA</b><span id="pipeQa">0 review</span><span id="pipeQaWait" class="pwait"></span></div>
-      <div class="ploop" id="pipeLoop">↩ 확인 후 계속</div>
-    </div>
-    <div class="env" id="env">
-      <div class="env-title">지금 이 환경</div>
-      <div class="env-row">
-        <div class="env-nums">
-          <div class="eseg amber" id="sgReview"><b id="stReview">0</b><span>검사 중</span></div>
-          <div class="eseg blue" id="sgCoding"><b id="stCoding">0</b><span>코드 작성 중</span></div>
-          <div class="eseg green" id="sgDone"><b id="stDone">0</b><span>완료</span></div>
-          <div class="eseg muted" id="sgGoals"><b id="stGoals">0</b><span>목표</span></div>
-        </div>
-        <div class="env-note" id="stNote">대기 중</div>
+    <details class="more-panel" id="morePanel">
+      <summary>파이프라인 · 환경 · 진단</summary>
+      <div class="pipe" id="pipe">
+        <div class="pnode"><b>PM</b><span data-i="pmYou">이 대화</span></div>
+        <span class="edge">→</span>
+        <div class="pnode"><b>Agent Relay</b><span id="pipeRelay">0 delivery</span></div>
+        <span class="edge">→</span>
+        <div class="pnode"><b>Worker</b><span id="pipeWorker">0 active</span></div>
+        <span class="edge">→</span>
+        <div class="pnode"><b>QA</b><span id="pipeQa">0 review</span><span id="pipeQaWait" class="pwait"></span></div>
+        <div class="ploop" id="pipeLoop">↩ 확인 후 계속</div>
       </div>
-    </div>
-    <div class="steps" id="steps">
-      <span class="step off" data-s="wait"><i></i><span data-i="sWait">대기</span></span><span class="step-sep"></span>
-      <span class="step off" data-s="doing"><i></i><span data-i="sDoing">검토 요청</span></span><span class="step-sep"></span>
-      <span class="step off" data-s="done"><i></i><span data-i="sDone">판정 완료</span></span>
-    </div>
+      <div class="env" id="env">
+        <div class="env-title">지금 이 환경</div>
+        <div class="env-row">
+          <div class="env-nums">
+            <div class="eseg amber" id="sgReview"><b id="stReview">0</b><span>검사 중</span></div>
+            <div class="eseg blue" id="sgCoding"><b id="stCoding">0</b><span>코드 작성 중</span></div>
+            <div class="eseg green" id="sgDone"><b id="stDone">0</b><span>완료</span></div>
+            <div class="eseg muted" id="sgGoals"><b id="stGoals">0</b><span>목표</span></div>
+          </div>
+          <div class="env-note" id="stNote">대기 중</div>
+        </div>
+      </div>
+      <div class="steps" id="steps">
+        <span class="step off" data-s="wait"><i></i><span data-i="sWait">대기</span></span><span class="step-sep"></span>
+        <span class="step off" data-s="doing"><i></i><span data-i="sDoing">검토 요청</span></span><span class="step-sep"></span>
+        <span class="step off" data-s="done"><i></i><span data-i="sDone">판정 완료</span></span>
+      </div>
+    </details>
     <div class="tabs" id="tabs">
       <button data-tab="now" class="on">지금 상황</button>
       <button data-tab="task">Task<span class="bdg" id="bTask">0</span></button>
@@ -916,7 +950,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
         ko: { connecting: '연결 중…', connected: '연결됨', waiting: '결과 기다리는 중…',
               reviewReady: 'PM 검토 준비됨', waking: 'GPT 깨우는 중…', wakeSent: '전송됨 — GPT에 알림',
               wakeFail: '전송 실패', initFail: '시작 실패', wait: '대기 중', doing: '검토 중',
-              done: '완료', sWait: '대기', sDoing: '검토 요청', sDone: '판정 완료',
+              done: '완료', blocked: '막힘', sWait: '대기', sDoing: '검토 요청', sDone: '판정 완료',
               working: '코드 작성 중', qaDoing: '검사하는 중',
               noWorking: '지금 코드를 작성하는 에이전트 없음',
               autoResume: '검사가 끝나면 자동으로 코딩이 다시 시작됩니다',
@@ -935,7 +969,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
         en: { connecting: 'Connecting…', connected: 'Connected', waiting: 'Waiting for Agent result…',
               reviewReady: 'PM review ready', waking: 'Waking GPT…', wakeSent: 'Wake sent — GPT notified',
               wakeFail: 'Wake failed', initFail: 'Initialization failed', wait: 'Waiting', doing: 'Reviewing',
-              done: 'Done', sWait: 'Wait', sDoing: 'Review', sDone: 'Judged',
+              done: 'Done', blocked: 'Blocked', sWait: 'Wait', sDoing: 'Review', sDone: 'Judged',
               working: 'working', qaDoing: 'inspecting',
               noWorking: 'No agent is writing code right now',
               autoResume: 'Coding resumes automatically after review',
@@ -970,8 +1004,11 @@ const WIDGET_HTML = `<!DOCTYPE html>
       var FRAMES = { run: 6, dig: 4, climb: 4, qa: 4, done: 4, blocked: 4, sleep: 4, idle: 4 };
       var DURS = { run: 0.52, dig: 0.62, climb: 0.66, qa: 1.15, done: 0.9, blocked: 0.85, sleep: 2.4, idle: 2.6 };
             var SEP_RE = new RegExp('[ \\t\\n\\r_-]+');
-      var SHEET_W = { crew: 20, crewH: 30, climb: 48, climbH: 74 };
-      var RUN_W = 24, RUN_H = 36;
+      // Display sizes locked to source frame aspect 340×520 (no stretch).
+      // Unused sheets (run/climb/sleep) stay preloaded for CSP/selfcheck but are not
+      // painted unless agent state explicitly maps to them — never invent work/done motion.
+      var SHEET_W = { crew: 26, crewH: 40, climb: 48, climbH: 74 };
+      var RUN_W = 26, RUN_H = 40;
       // --sheetW = -(N * displayW): sheet math from DISPLAY size only, never source pixels.
       function sheetGeom(state, w, h) {
         var n = FRAMES[state] || 4;
@@ -1023,19 +1060,41 @@ const WIDGET_HTML = `<!DOCTYPE html>
         return true;
       }
       function agentRole(a) {
-        return /qa/i.test(a.workerId || '') ? 'qa' : 'worker';
+        return /qa/i.test(a.workerId || '') || /qa/i.test((a && a.role) || '') ? 'qa' : 'worker';
       }
       function isActive(a) {
+        var st = String((a && a.state) || '').toLowerCase();
+        // Surface blocked/done when the payload says so; keep idle/sleep out of the
+        // default chip list so the first screen stays compact.
+        if (st === 'blocked' || st === 'error' || st === 'failed') return true;
+        if (st === 'done' || st === 'completed' || st === 'accepted') return true;
         return a.state === 'working' || agentRole(a) === 'qa';
       }
       function activeAgents(list) {
         return (list || []).filter(isActive);
       }
+      // Map only when state evidence exists. dig/qa remain the known working animations.
+      // run/climb unused: ladder/track UI is not mounted on the v6 control tower.
+      // sleep unused unless agent.state is explicitly idle/sleep.
       function agentSheet(a) {
-        return agentRole(a) === 'qa' ? 'qa' : 'dig';
+        var st = String((a && a.state) || '').toLowerCase();
+        if (st === 'blocked' || st === 'error' || st === 'failed') return 'blocked';
+        if (st === 'done' || st === 'completed' || st === 'accepted') return 'done';
+        if (st === 'sleep' || st === 'idle') return st === 'sleep' ? 'sleep' : 'idle';
+        if (agentRole(a) === 'qa') return 'qa';
+        if (st === 'working' || st === 'running' || st === 'active') return 'dig';
+        // No usable state → idle (never invent dig/done motion).
+        return 'idle';
       }
       function agentStateLabel(a) {
-        return agentRole(a) === 'qa' ? t('qaDoing') : t('working');
+        var st = String((a && a.state) || '').toLowerCase();
+        if (st === 'blocked' || st === 'error' || st === 'failed') return t('blocked') || '막힘';
+        if (st === 'done' || st === 'completed' || st === 'accepted') return t('done');
+        if (st === 'sleep') return t('wait');
+        if (st === 'idle') return t('wait');
+        if (agentRole(a) === 'qa') return t('qaDoing');
+        if (st === 'working' || st === 'running' || st === 'active') return t('working');
+        return t('wait');
       }
       // ---- tabs (guarded: a tab failure must never kill init) ----
       try {
@@ -1615,6 +1674,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       function chipHtml(a) {
         var norm = normalizeAgent(a);
         var sheet = agentSheet(a);
+        var stateLabel = agentStateLabel(a);
         var avatar;
         if (sheetStatus[sheet] === 'fail') {
           var initial = esc(Array.from(norm.name).slice(0, 1).join('') || '?');
@@ -1623,17 +1683,19 @@ const WIDGET_HTML = `<!DOCTYPE html>
           avatar = '<span class="cav"><span class="crew-sp" data-sheet="' + sheet + '"></span></span>';
         }
         var taskTip = (a.taskTitle || a.taskId) ? ' | ' + (a.taskTitle || a.taskId) : '';
-        return '<span class="chip" title="' + esc(norm.full + taskTip) + '">' + avatar
-          + '<span class="ctx"><b>' + esc(norm.name) + '</b><i>' + esc(norm.role) + '</i></span></span>';
+        // Color + text: name / role / state stay distinct even if sprite fails.
+        return '<span class="chip" title="' + esc(norm.full + ' · ' + stateLabel + taskTip) + '">' + avatar
+          + '<span class="ctx"><b>' + esc(norm.name) + '</b><i>' + esc(norm.role) + ' · ' + esc(stateLabel) + '</i></span></span>';
       }
       function paintLaneAvatars(root) {
         try {
           var stages = (root || document).querySelectorAll('.crew-sp');
           for (var s = 0; s < stages.length; s++) {
-            var sh = stages[s].getAttribute('data-sheet');
-            if (sh === 'dig') applySheet(stages[s], 'dig', SHEET_W.crew, SHEET_W.crewH);
-            else if (sh === 'qa') applySheet(stages[s], 'qa', SHEET_W.crew, SHEET_W.crewH);
-            else applySheet(stages[s], 'idle', SHEET_W.crew, SHEET_W.crewH);
+            var sh = stages[s].getAttribute('data-sheet') || 'idle';
+            if (SHEETS.indexOf(sh) < 0) sh = 'idle';
+            if (!applySheet(stages[s], sh, SHEET_W.crew, SHEET_W.crewH)) {
+              markSheetMissing(stages[s], SHEET_W.crew, SHEET_W.crewH, sh);
+            }
           }
         } catch (e) { /* avatars best-effort; chips stay readable */ }
       }
@@ -1803,9 +1865,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (!view) return;
         var p = view.project;
         setElText('pdName', p ? (p.projectName || p.projectId) : '프로젝트 없음');
-        setElText('pdPath', p && p.workspacePath
+        var pathFull = (p && p.workspacePath)
           ? p.workspacePath
-          : (p && p.profileState === 'UNCONFIGURED' ? 'Workspace not configured' : ''));
+          : (p && p.profileState === 'UNCONFIGURED' ? 'Workspace not configured' : '');
+        setElText('pdPath', pathFull);
+        try {
+          var pathEl = document.getElementById('pdPath');
+          if (pathEl) pathEl.setAttribute('title', pathFull || '');
+        } catch (ePath) {}
         var assign = view.assignment;
         var assignLine = '';
         if (assign) {
