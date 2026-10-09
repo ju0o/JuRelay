@@ -5,8 +5,9 @@
 **Baseline widget:** `ui://agent-relay/pm-widget-c7f1fa3f`  
 **02 ship widget:** `ui://agent-relay/pm-widget-519c1794`  
 **02A hotfix widget:** `ui://agent-relay/pm-widget-70c18571`  
+**02A-R2 narrow hotfix widget:** `ui://agent-relay/pm-widget-9f4ab921`  
 **Primary file:** `src/mcp/app/pm-widget-resource.ts`  
-**Evidence:** `.agent-relay/cert/ux-visual-02/` · `.agent-relay/cert/ux-visual-02a/`
+**Evidence:** `.agent-relay/cert/ux-visual-02/` · `.agent-relay/cert/ux-visual-02a/` · `.agent-relay/cert/ux-visual-02a-r2/`
 
 ## A. Screen investigation (local fixture)
 

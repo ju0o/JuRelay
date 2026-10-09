@@ -68,7 +68,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
   * { box-sizing: border-box; }
   body { font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans KR", sans-serif; margin:0; padding:10px; font-size:14px;
          background: var(--bg); color: var(--text); word-break: keep-all; overflow-wrap: normal; overflow-x: hidden; }
-  .card { border:1px solid var(--border); border-radius:10px; padding:8px 10px; max-width:100%; overflow-x:hidden; }
+  .card { border:1px solid var(--border); border-radius:10px; padding:8px 10px; max-width:100%; overflow-x:hidden;
+          container-type:inline-size; container-name:arwidget; }
   /* A안 헤더 — 좁은 폭에서 분절·두 줄 깨짐 방지 */
   .hdr { display:flex; align-items:center; flex-wrap:wrap; gap:6px 8px; margin:0 0 2px; min-width:0; }
   .dot { width:9px; height:9px; border-radius:50%; flex:none; }
@@ -350,8 +351,24 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .boot-card:hover, .boot-card:focus { border-color:var(--text); outline:2px solid var(--mut); outline-offset:1px; }
   .boot-card.sel { border-color:#4a9eff; box-shadow:0 0 0 1px #4a9eff; }
   .boot-card.legacy { opacity:.85; border-style:dashed; }
-  .boot-card .bn { font-size:14px; font-weight:700; display:block; }
-  .boot-card .bp { font-size:11px; color:var(--muted); word-break:break-all; margin-top:2px; }
+  .boot-card .bn { font-size:14px; font-weight:700; display:block; overflow-wrap:normal; word-break:keep-all; }
+  /* UX-VISUAL-02A-R2 FIX 3: path-only; never mid-word break project/path names */
+  .boot-card .bp { font-size:11px; color:var(--muted); margin-top:2px;
+                   font-family:ui-monospace,Menlo,monospace; max-width:100%; min-width:0;
+                   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+                   word-break:normal; overflow-wrap:normal; }
+  .boot-card .path-reveal { display:block; margin-top:2px; max-width:100%; min-width:0; }
+  .boot-card .path-reveal > summary { list-style:none; cursor:pointer; display:flex; flex-wrap:wrap;
+                                      align-items:baseline; gap:4px 8px; min-height:28px; }
+  .boot-card .path-reveal > summary::-webkit-details-marker { display:none; }
+  .boot-card .path-reveal .bp { flex:1; min-width:0; }
+  .boot-card .path-reveal .path-toggle { flex:none; font-size:11px; color:var(--mut); text-decoration:underline;
+                                         background:none; border:0; padding:0; cursor:pointer; font:inherit; }
+  .boot-card .path-reveal .path-full { display:block; margin-top:4px; font-family:ui-monospace,Menlo,monospace;
+                                       font-size:11px; color:var(--text); white-space:pre-wrap;
+                                       overflow-wrap:anywhere; word-break:break-word; }
+  .boot-card .path-reveal[open] .path-toggle-open { display:none; }
+  .boot-card .path-reveal:not([open]) .path-toggle-close { display:none; }
   .boot-card .bid { font-size:10px; color:var(--muted); font-family:ui-monospace,Menlo,monospace; }
   .spill { display:inline-block; font-size:10px; border:1px solid var(--border); border-radius:10px;
            padding:1px 7px; margin-top:4px; color:var(--muted); }
@@ -474,9 +491,49 @@ const WIDGET_HTML = `<!DOCTYPE html>
     background:var(--panel); color:var(--text); font-size:14px; font-weight:650; cursor:pointer; }
   .taskprev .row button.primary { background:#0a7d33; border-color:#0a7d33; color:#fff; }
   .taskprev .row button:disabled { opacity:.55; cursor:not-allowed; color:var(--muted); }
+  /* UX-VISUAL-02A-R2 FIX 1: stack action buttons full-width on narrow; no clip-hide PASS.
+     Use @container (widget panel) + @media (iframe viewport) so ChatGPT host and local fixtures both match. */
+  @container arwidget (max-width:380px) {
+    .taskprev .row { flex-direction:column; align-items:stretch; }
+    .taskprev .row button {
+      flex:1 1 auto; width:100%; max-width:100%;
+      white-space:normal; text-align:center; overflow-wrap:normal; word-break:keep-all;
+    }
+    .taskprev .row button.primary { order:-1; }
+  }
+  @media (max-width:380px) {
+    .taskprev .row { flex-direction:column; align-items:stretch; }
+    .taskprev .row button {
+      flex:1 1 auto; width:100%; max-width:100%;
+      white-space:normal; text-align:center; overflow-wrap:normal; word-break:keep-all;
+    }
+    .taskprev .row button.primary { order:-1; }
+  }
   .taskprev .status { font-size:12px; color:var(--accent-panel-muted); margin-top:8px; }
   .taskprev .err { color:var(--err); }
   .taskprev label { color:var(--accent-panel-fg); }
+  /* UX-VISUAL-02A-R2 FIX 2: path summary + keyboard-friendly full reveal (no hover-only) */
+  .taskprev .path-reveal { display:inline-block; max-width:100%; min-width:0; vertical-align:top; }
+  .taskprev .path-reveal > summary {
+    list-style:none; cursor:pointer; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 8px;
+    min-height:28px; color:var(--accent-panel-fg);
+  }
+  .taskprev .path-reveal > summary::-webkit-details-marker { display:none; }
+  .taskprev .path-reveal .path-summary {
+    font-family:ui-monospace,Menlo,monospace; font-size:12px; min-width:0; max-width:100%;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; word-break:normal; overflow-wrap:normal;
+  }
+  .taskprev .path-reveal .path-toggle {
+    flex:none; font-size:12px; color:var(--mut); text-decoration:underline; font-weight:600;
+  }
+  .taskprev .path-reveal .path-full {
+    display:block; margin-top:4px; padding:6px 8px; border-radius:6px; border:1px solid var(--border);
+    background:var(--bg); color:var(--text); font-family:ui-monospace,Menlo,monospace; font-size:12px;
+    white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word;
+  }
+  .taskprev .path-reveal[open] .path-toggle-open { display:none; }
+  .taskprev .path-reveal:not([open]) .path-toggle-close { display:none; }
+  .taskprev .path-reveal.short .path-toggle { display:none; }
 </style>
 </head>
 <body>
@@ -608,10 +665,28 @@ const WIDGET_HTML = `<!DOCTYPE html>
         <h3>시작 전 확인</h3>
         <div class="line"><b>프로젝트</b><span id="tpProject"></span></div>
         <div class="line"><b>컴퓨터</b><span id="tpComputer">ASUS</span></div>
-        <div class="line"><b>작업 폴더</b><span id="tpWorkspace"></span></div>
+        <div class="line"><b>작업 폴더</b>
+          <details class="path-reveal short" id="tpWorkspaceReveal">
+            <summary>
+              <span class="path-summary" id="tpWorkspace"></span>
+              <span class="path-toggle path-toggle-open">전체 경로 보기</span>
+              <span class="path-toggle path-toggle-close">경로 접기</span>
+            </summary>
+            <code class="path-full" id="tpWorkspaceFull"></code>
+          </details>
+        </div>
         <div class="line"><b>Goal</b><span id="tpGoal"></span></div>
         <div class="line"><b>Task</b><span id="tpTask"></span></div>
-        <div class="line"><b>범위</b><span id="tpScope"></span></div>
+        <div class="line"><b>범위</b>
+          <details class="path-reveal short" id="tpScopeReveal">
+            <summary>
+              <span class="path-summary" id="tpScope"></span>
+              <span class="path-toggle path-toggle-open">전체 경로 보기</span>
+              <span class="path-toggle path-toggle-close">경로 접기</span>
+            </summary>
+            <code class="path-full" id="tpScopeFull"></code>
+          </details>
+        </div>
         <div class="line"><b>완료 기준</b></div>
         <ul class="crit" id="tpCrit"></ul>
         <div class="line"><b>프로젝트 기본 Builder</b><span id="tpBuilder"></span></div>
@@ -1924,6 +1999,65 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (hide) el.classList.add('hide');
         else el.classList.remove('hide');
       }
+      /* UX-VISUAL-02A-R2: display-only path summary. Never mutates workspace APIs. */
+      var PATH_SUMMARY_MAX = 42;
+      function summarizePathDisplay(full) {
+        var s = String(full == null ? '' : full);
+        if (!s) return '';
+        if (s.length <= PATH_SUMMARY_MAX) return s;
+        var parts = s.split('/').filter(function (p) { return p.length > 0; });
+        var base = parts.length ? parts[parts.length - 1] : s;
+        if (base.length > 28) base = base.slice(0, 12) + '…' + base.slice(-12);
+        if (s.charAt(0) === '/') {
+          var head = parts.length >= 2 ? ('/' + parts[0] + '/' + parts[1]) : ('/' + (parts[0] || ''));
+          return head + '/…/' + base;
+        }
+        if (parts.length >= 2) return parts[0] + '/…/' + base;
+        return s.slice(0, 18) + '…' + s.slice(-18);
+      }
+      function setPathReveal(revealId, summaryId, fullId, fullPath) {
+        var reveal = document.getElementById(revealId);
+        var summary = document.getElementById(summaryId);
+        var fullEl = document.getElementById(fullId);
+        var raw = fullPath == null ? '' : String(fullPath);
+        if (summary) summary.textContent = summarizePathDisplay(raw);
+        if (fullEl) fullEl.textContent = raw;
+        if (!reveal) return;
+        if (!raw || raw === summarizePathDisplay(raw)) {
+          reveal.classList.add('short');
+          reveal.open = false;
+        } else {
+          reveal.classList.remove('short');
+        }
+      }
+      function buildBootPathReveal(fullPath) {
+        var raw = fullPath == null ? '' : String(fullPath);
+        var details = document.createElement('details');
+        details.className = 'path-reveal';
+        var summary = document.createElement('summary');
+        var bp = document.createElement('span');
+        bp.className = 'bp';
+        bp.textContent = summarizePathDisplay(raw) || raw || '경로 없음';
+        var openLab = document.createElement('span');
+        openLab.className = 'path-toggle path-toggle-open';
+        openLab.textContent = '전체 경로 보기';
+        var closeLab = document.createElement('span');
+        closeLab.className = 'path-toggle path-toggle-close';
+        closeLab.textContent = '경로 접기';
+        summary.appendChild(bp);
+        var full = document.createElement('code');
+        full.className = 'path-full';
+        full.textContent = raw;
+        if (!raw || raw === summarizePathDisplay(raw)) {
+          details.classList.add('short');
+        } else {
+          summary.appendChild(openLab);
+          summary.appendChild(closeLab);
+        }
+        details.appendChild(summary);
+        details.appendChild(full);
+        return details;
+      }
       function renderProjectDash(view) {
         lastProjectDash = view || null;
         if (!view) return;
@@ -2302,10 +2436,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
       function renderTaskPreview(preview, elig) {
         setElText('tpProject', (preview.projectName || preview.projectId || '') + (preview.projectId ? (' · ' + preview.projectId) : ''));
         setElText('tpComputer', 'ASUS');
-        setElText('tpWorkspace', preview.workspaceRoot || '');
+        setPathReveal('tpWorkspaceReveal', 'tpWorkspace', 'tpWorkspaceFull', preview.workspaceRoot || '');
         setElText('tpGoal', preview.goalTitle || preview.goalId || '');
         setElText('tpTask', preview.taskTitle || preview.taskId || '');
-        setElText('tpScope', preview.scope || '');
+        setPathReveal('tpScopeReveal', 'tpScope', 'tpScopeFull', preview.scope || '');
         setElText('tpBuilder', (preview.builder || '') + (preview.projectWorkerHint ? (' → ' + preview.projectWorkerHint) : ''));
         var ul = document.getElementById('tpCrit');
         if (ul) {
@@ -3095,35 +3229,54 @@ const WIDGET_HTML = `<!DOCTYPE html>
           return;
         }
         boot.profiles.forEach(function (p) {
-          var btn = document.createElement('button');
-          btn.type = 'button';
+          /* div (not button): path-reveal details must nest without invalid interactive-in-button */
+          var btn = document.createElement('div');
           btn.className = 'boot-card' + (p.projectId === boot.selectedId ? ' sel' : '')
             + ((p.legacy || p.profileState === 'LEGACY') ? ' legacy' : '');
           btn.setAttribute('role', 'option');
+          btn.tabIndex = 0;
           btn.setAttribute('aria-selected', p.projectId === boot.selectedId ? 'true' : 'false');
           var pill = profileStatePill(p.profileState);
           var name = document.createElement('span'); name.className = 'bn'; name.textContent = p.projectName || p.projectId;
           var id = document.createElement('span'); id.className = 'bid'; id.textContent = p.projectId + ' · ASUS';
-          var path = document.createElement('span'); path.className = 'bp';
-          path.textContent = (p.workspaceConfigured && p.workspacePath)
+          var pathLabel = (p.workspaceConfigured && p.workspacePath)
             ? p.workspacePath
             : (p.profileState === 'UNCONFIGURED' ? '경로 미설정' : (p.workspacePath || '경로 없음'));
+          var pathNode = (p.workspaceConfigured && p.workspacePath)
+            ? buildBootPathReveal(p.workspacePath)
+            : (function () {
+                var span = document.createElement('span');
+                span.className = 'bp';
+                span.textContent = pathLabel;
+                return span;
+              })();
+          if (pathNode && pathNode.tagName === 'DETAILS') {
+            pathNode.addEventListener('click', function (ev) { ev.stopPropagation(); });
+            pathNode.addEventListener('keydown', function (ev) { ev.stopPropagation(); });
+          }
           var sp = document.createElement('span');
           sp.className = 'spill ' + pill.tone;
           sp.textContent = pill.code + ' · ' + pill.labelKo + ' · ' + projectRunnableLabel(p);
-          btn.appendChild(name); btn.appendChild(id); btn.appendChild(path); btn.appendChild(sp);
+          btn.appendChild(name); btn.appendChild(id); btn.appendChild(pathNode); btn.appendChild(sp);
           if (p.legacy || p.profileState === 'LEGACY') {
             var note = document.createElement('span');
             note.className = 'bp';
             note.textContent = '레거시 — 일반 시작 대상으로 쓸 수 없어요';
             btn.appendChild(note);
           }
-          btn.onclick = function () {
+          function selectBootCard() {
             boot.selectedId = p.projectId;
             boot.profile = p;
             boot.assignment = null;
             setBootErr('');
             renderBootProjectList();
+          }
+          btn.onclick = selectBootCard;
+          btn.onkeydown = function (ev) {
+            if (ev.key === 'Enter' || ev.key === ' ') {
+              ev.preventDefault();
+              selectBootCard();
+            }
           };
           list.appendChild(btn);
         });

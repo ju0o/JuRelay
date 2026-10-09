@@ -1,9 +1,10 @@
 # UX-VISUAL-02A Hotfix
 
-**Status:** `UX_VISUAL_02A_READY_FOR_HOST_QA`  
+**Status:** Host QA `HG-20261009-f64da3` → `CHANGES_REQUESTED` → see **UX-VISUAL-02A-R2** (`docs/UX-VISUAL-02A-R2-NARROW-HOTFIX.md`)  
 **Baseline:** `e1e1433` / `ui://agent-relay/pm-widget-519c1794`  
-**New URI:** `ui://agent-relay/pm-widget-70c18571`  
-**Prior Host QA:** `HG-20261009-597d70` → `CHANGES_REQUESTED` (archived)
+**02A URI:** `ui://agent-relay/pm-widget-70c18571`  
+**R2 URI:** `ui://agent-relay/pm-widget-9f4ab921`  
+**Prior Host QA:** `HG-20261009-597d70` → `CHANGES_REQUESTED` (archived); `HG-20261009-f64da3` narrow defects → R2
 
 ## Fixes
 
