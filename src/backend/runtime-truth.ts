@@ -490,7 +490,11 @@ const NEXT_ACTION_TEXT: Record<NextActionCode, string> = {
 };
 
 function nextActionFor(view: TaskRuntimeView): NextActionCode {
-  if (view.executionState === 'RESULT_RECEIVED') return 'PM_VERIFY_RESULT';
+  if (view.executionState === 'RESULT_RECEIVED') {
+    // PM already ACCEPTed — never re-ask for verification on a closed judgment.
+    if (view.pmState === 'ACCEPTED') return 'NONE';
+    return 'PM_VERIFY_RESULT';
+  }
   switch (view.runtimeState) {
     case 'ACTIVE': return 'WAIT_FOR_WORKER';
     case 'STALE': return 'WATCH_SILENT_WORKER';
@@ -526,6 +530,62 @@ const RUNTIME_SEVERITY: Record<TaskRuntimeState, number> = {
   UNKNOWN: 3,
   IDLE: 4,
 };
+
+/**
+ * Among IDLE headline candidates, prefer unfinished PM work over dispatching a
+ * new READY Task. ACCEPTED maps to NONE and is excluded from the headline set.
+ */
+const NEXT_ACTION_SEVERITY: Record<NextActionCode, number> = {
+  WAIT_FOR_WORKER: 0,
+  WATCH_SILENT_WORKER: 1,
+  PM_RESOLVE_ORPHAN: 2,
+  PM_VERIFY_RESULT: 3,
+  PM_DISPATCH_TASK: 4,
+  NONE: 5,
+};
+
+/** ACCEPTED Tasks are closed for next-action leadership — READY must surface. */
+function isHeadlineCandidate(t: ProjectTaskRuntime): boolean {
+  if (t.pmState === 'ACCEPTED') return false;
+  return t.executionState === 'RUNNING'
+    || t.executionState === 'DISPATCHED'
+    || t.executionState === 'RESULT_RECEIVED'
+    || t.executionState === 'READY'
+    || t.runtimeState !== 'IDLE';
+}
+
+/**
+ * Prefer a status=ACTIVE user Goal for the project card so a READY Task under a
+ * different PLANNING Goal does not overwrite the Active Goal title (FIX 1).
+ */
+function pickProjectActiveGoal(
+  goalsById: Map<string, GoalRecord>,
+  projectId: string,
+  leaderGoalId: string | null,
+): GoalRecord | undefined {
+  const candidates: GoalRecord[] = [];
+  for (const g of goalsById.values()) {
+    if (g.status !== 'ACTIVE') continue;
+    const tags = Array.isArray(g.tags) ? g.tags : [];
+    if (tags.includes('v1-internal')) continue;
+    const gid = typeof g.projectId === 'string' && g.projectId.trim()
+      ? g.projectId.trim()
+      : null;
+    if (gid && gid !== projectId) continue;
+    if (!gid && leaderGoalId && g.goalId !== leaderGoalId) continue;
+    if (!gid && !leaderGoalId) continue;
+    candidates.push(g);
+  }
+  candidates.sort((a, b) => {
+    const ta = Date.parse(a.updatedAt || a.createdAt || '') || 0;
+    const tb = Date.parse(b.updatedAt || b.createdAt || '') || 0;
+    if (tb !== ta) return tb - ta;
+    return b.goalId.localeCompare(a.goalId);
+  });
+  if (candidates[0]) return candidates[0];
+  if (leaderGoalId) return goalsById.get(leaderGoalId);
+  return undefined;
+}
 
 /**
  * Group Tasks by canonical project identity and attach runtime truth to each.
@@ -619,22 +679,25 @@ export function buildProjectRuntimeViews(input: {
       if (view.runtimeState === 'STALE') counts.staleRuns += 1;
       if (view.runtimeState === 'ORPHAN') counts.orphanRuns += 1;
       if (task.executionState === 'READY') counts.readyTasks += 1;
-      if (task.executionState === 'RESULT_RECEIVED' || task.pmState === 'VERIFYING') {
+      // ACCEPTED is closed — do not inflate verificationPending (matches dashboard).
+      if (
+        view.pmState !== 'ACCEPTED'
+        && (task.executionState === 'RESULT_RECEIVED' || view.pmState === 'VERIFYING')
+      ) {
         counts.verificationPending += 1;
       }
     }
 
     const projectTasks = views.map(({ task, view }) => toProjectTask(task, view));
     const interesting = projectTasks
-      .filter((t) => t.executionState === 'RUNNING'
-        || t.executionState === 'DISPATCHED'
-        || t.executionState === 'RESULT_RECEIVED'
-        || t.executionState === 'READY'
-        || t.runtimeState !== 'IDLE')
+      .filter(isHeadlineCandidate)
       .sort((a, b) => {
         const ra = RUNTIME_SEVERITY[a.runtimeState];
         const rb = RUNTIME_SEVERITY[b.runtimeState];
         if (ra !== rb) return ra - rb;
+        const na = NEXT_ACTION_SEVERITY[a.nextAction] ?? 9;
+        const nb = NEXT_ACTION_SEVERITY[b.nextAction] ?? 9;
+        if (na !== nb) return na - nb;
         const la = a.lastActivityAt ?? '';
         const lb = b.lastActivityAt ?? '';
         if (la !== lb) return lb.localeCompare(la);
@@ -649,10 +712,14 @@ export function buildProjectRuntimeViews(input: {
         : counts.orphanRuns > 0
           ? 'ORPHAN'
           : 'IDLE';
-    const activeGoalId = leader?.goalId
+    const leaderGoalId = leader?.goalId
       ?? projectTasks.find((t) => t.executionState === 'RUNNING')?.goalId
       ?? null;
-    const activeGoal = activeGoalId ? goalsById.get(activeGoalId) : undefined;
+    const activeGoal = pickProjectActiveGoal(
+      goalsById,
+      bucket.identity.projectId,
+      leaderGoalId,
+    );
     const nextAction = leader?.nextAction ?? 'NONE';
     const lastActivityAt = interesting
       .map((t) => t.lastActivityAt)

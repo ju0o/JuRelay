@@ -77,6 +77,8 @@ export interface ProjectDashboardGoal {
 export interface ProjectDashboardTask {
   taskId: string;
   title: string;
+  /** Owning Goal — may differ from dashboard `goal` when READY is under another Goal. */
+  goalId: string | null;
   executionState: string;
   pmState: string;
   runtimeState: TaskRuntimeState;
@@ -180,6 +182,7 @@ function mapTask(t: ProjectTaskRuntime): ProjectDashboardTask {
   return {
     taskId: t.taskId,
     title: t.title,
+    goalId: t.goalId || null,
     executionState: t.executionState,
     pmState: t.pmState,
     runtimeState: t.runtimeState,
@@ -402,9 +405,19 @@ export function getProjectDashboard(input: GetProjectDashboardInput): ProjectDas
   const nextAction = task?.nextAction
     ?? rt?.nextAction
     ?? 'NONE';
-  const nextActionText = task?.nextActionText
+  let nextActionText = task?.nextActionText
     ?? rt?.nextActionText
     ?? '진행 중인 작업 없음';
+  // Active Goal and next READY Task may belong to different Goals — say so plainly.
+  if (
+    goal
+    && task
+    && task.goalId
+    && goal.goalId !== task.goalId
+    && nextAction === 'PM_DISPATCH_TASK'
+  ) {
+    nextActionText = '준비된 Task가 있어요 · 진행 중 Goal과 목표가 다릅니다';
+  }
 
   const warnings = buildWarnings(project);
   const emptyGoal = !goal;

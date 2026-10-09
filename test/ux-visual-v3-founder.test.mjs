@@ -119,6 +119,17 @@ test('FIX B: 더보기 submenu reaches Goal/proto/design without activity detour
   assert.match(moreSlice, /id="pane-design"/);
 });
 
+test('FINAL FIX 1/2: Goal card keeps canonical id; preview must not write pdGoalTitle', () => {
+  assert.match(src, /data-goal-id/);
+  assert.match(src, /Canonical Goal card: only this goalId's title/);
+  assert.match(src, /must not write pdGoalTitle/);
+  assert.match(src, /다음 Task Goal/);
+  const previewFn = src.slice(src.indexOf('function renderTaskPreview'), src.indexOf('function currentDashProjectId'));
+  // Preview may mention pdGoalTitle in a guard comment; it must not call setElText on it.
+  assert.doesNotMatch(previewFn, /setElText\(\s*['"]pdGoalTitle['"]/);
+  assert.match(src, /Prefer full dashboard goal list/);
+});
+
 test('02A-R2 fixes retained (accent-panel, container 380, path-reveal)', () => {
   assert.match(html, /--accent-panel-bg/);
   assert.match(html, /@container arwidget \(max-width:380px\)/);

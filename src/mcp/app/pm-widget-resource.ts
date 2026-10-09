@@ -1516,12 +1516,16 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
       function renderGoalTab(goals, taskCounts) {
         var box = document.getElementById('goalCards');
-        var list = (goals || []).slice(0, 5);
+        var list = (goals || []).slice(0, 8);
         var html = '';
         for (var i = 0; i < list.length; i++) {
           var g = list[i] || {};
-          html += '<div class="goalcard"><div class="gt">' + esc(g.title || g.goalId || 'Goal') + '</div>'
-            + '<div class="gs">' + esc(g.status || '') + '</div></div>';
+          var gid = g.goalId || '';
+          var gtitle = g.title || g.goalStatement || gid || 'Goal';
+          /* Always pair canonical goalId with its own title — never orphan a title. */
+          html += '<div class="goalcard" data-goal-id="' + esc(gid) + '">'
+            + '<div class="gt">' + esc(gtitle) + '</div>'
+            + '<div class="gs">' + esc((g.status || '') + (gid ? (' · ' + gid) : '')) + '</div></div>';
         }
         if (!html) {
           html = '<div class="emptybox">아직 계획 데이터가 없습니다</div>';
@@ -2228,11 +2232,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
         var p = view.project;
         var nextProjectId = p && p.projectId;
         if (prevProjectId && nextProjectId && prevProjectId !== nextProjectId) {
-          /* Project switch: invalidate in-flight preview loads (FIX A race). */
+          /* Project switch: invalidate in-flight preview loads (FIX A race) and clear Goal title. */
           previewLoadGen++;
           pendingPreview = null;
           selectedTaskId = null;
           setTaskPrevVisible(false);
+          setElText('pdGoalTitle', '');
+          setElText('pdGoalMeta', '');
+          setElText('pdNextText', '확인 중…');
         }
         setElText('pdName', p ? (p.projectName || p.projectId) : '프로젝트 없음');
         var pathFull = (p && p.workspacePath)
@@ -2267,11 +2274,29 @@ const WIDGET_HTML = `<!DOCTYPE html>
           setElHide('pdGoalEmpty', true);
           setElHide('pdGoalTitle', false);
           setElHide('pdGoalMeta', false);
-          setElText('pdGoalTitle', view.goal.title || view.goal.goalId);
-          setElText('pdGoalMeta', (view.goal.status || '') + (view.goal.goalId ? ' · ' + view.goal.goalId : ''));
+          /* Canonical Goal card: only this goalId's title — never preview/READY Goal title. */
+          var goalTitleEl = document.getElementById('pdGoalTitle');
+          if (goalTitleEl) {
+            goalTitleEl.setAttribute('data-goal-id', view.goal.goalId || '');
+            goalTitleEl.textContent = view.goal.title || view.goal.goalId || '';
+          }
+          var goalMetaBits = [];
+          if (view.goal.status) goalMetaBits.push(view.goal.status);
+          if (view.goal.goalId) goalMetaBits.push(view.goal.goalId);
+          if (
+            view.task
+            && view.task.goalId
+            && view.goal.goalId
+            && view.task.goalId !== view.goal.goalId
+          ) {
+            goalMetaBits.push('다음 Task Goal ' + view.task.goalId);
+          }
+          setElText('pdGoalMeta', goalMetaBits.join(' · '));
         } else {
           setElText('pdGoalTitle', '');
           setElText('pdGoalMeta', '');
+          var goalTitleClear = document.getElementById('pdGoalTitle');
+          if (goalTitleClear) goalTitleClear.removeAttribute('data-goal-id');
           setElHide('pdGoalEmpty', false);
           var ge = document.getElementById('pdGoalEmpty');
           if (ge) ge.textContent = (view.empty && view.empty.goalText) || '아직 진행 중인 Goal이 없습니다.';
@@ -2619,7 +2644,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
         setElText('tpProject', (preview.projectName || preview.projectId || '') + (preview.projectId ? (' · ' + preview.projectId) : ''));
         setElText('tpComputer', 'ASUS');
         setPathReveal('tpWorkspaceReveal', 'tpWorkspace', 'tpWorkspaceFull', preview.workspaceRoot || '');
-        setElText('tpGoal', preview.goalTitle || preview.goalId || '');
+        /* Preview Goal line only — must not write pdGoalTitle (ACTIVE Goal card). */
+        setElText('tpGoal', (preview.goalTitle || '') + (preview.goalId ? (' · ' + preview.goalId) : ''));
         setElText('tpTask', preview.taskTitle || preview.taskId || '');
         setPathReveal('tpScopeReveal', 'tpScope', 'tpScopeFull', preview.scope || '');
         setElText('tpBuilder', (preview.builder || '') + (preview.projectWorkerHint ? (' → ' + preview.projectWorkerHint) : ''));
@@ -3186,9 +3212,12 @@ const WIDGET_HTML = `<!DOCTYPE html>
                   taskList = (tl && tl.tasks) || [];
                 } catch (eTl) { taskList = []; }
               }
-              var goals = (lastProjectDash && lastProjectDash.goal)
-                ? [lastProjectDash.goal]
-                : ((dash && dash.goals) || []);
+              /* Prefer full dashboard goal list (canonical titles + ids). Fall back to
+                 active Goal only. Never substitute READY preview title into this list. */
+              var goals = ((dash && dash.goals) || []).slice();
+              if (!goals.length && lastProjectDash && lastProjectDash.goal) {
+                goals = [lastProjectDash.goal];
+              }
               try {
                 var doneT = 0;
                 for (var ti = 0; ti < taskList.length; ti++) {

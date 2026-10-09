@@ -344,10 +344,69 @@ test('G RESULT_RECEIVED/ACCEPTED does not appear as actually running', () => {
   assert.equal(view.counts.actualActiveRuns, 0);
   // ACCEPTED must not inflate verificationPending.
   assert.equal(view.counts.verificationPending, 1);
-  if (view.task && view.task.taskId === 'TASK-G1') {
-    assert.notEqual(view.task.runtimeState, 'ACTIVE');
-    assert.equal(view.task.nextAction, 'PM_VERIFY_RESULT');
-  }
+  // ACCEPTED must not win the headline over VERIFYING.
+  assert.ok(view.task);
+  assert.equal(view.task.taskId, 'TASK-G1');
+  assert.notEqual(view.task.runtimeState, 'ACTIVE');
+  assert.equal(view.task.nextAction, 'PM_VERIFY_RESULT');
+  assert.equal(view.nextAction, 'PM_VERIFY_RESULT');
+});
+
+test('G2 ACCEPTED does not re-ask verify; READY under other Goal stays distinct', () => {
+  const { root } = configuredFixture('g2');
+  const view = dashMod.getProjectDashboard({
+    dataRoot: root,
+    scope: 'ws',
+    includeCwdHostRoot: false,
+    tasks: [
+      baseTask({
+        taskId: 'TASK-0085',
+        goalId: 'GOAL-0022',
+        title: 'accepted preflight',
+        executionState: 'RESULT_RECEIVED',
+        pmState: 'ACCEPTED',
+        projectId: 'agent-relay',
+      }),
+      baseTask({
+        taskId: 'TASK-0089',
+        goalId: 'GOAL-0026',
+        title: 'ready allowlist',
+        executionState: 'READY',
+        pmState: 'PENDING',
+        projectId: 'agent-relay',
+      }),
+    ],
+    goals: [
+      baseGoal({
+        goalId: 'GOAL-0022',
+        title: 'JuControler 첫 Agent Relay 실작업 안전 확인',
+        status: 'ACTIVE',
+        projectId: 'agent-relay',
+      }),
+      baseGoal({
+        goalId: 'GOAL-0026',
+        title: 'JuControler 공개 저장소의 실제 디렉터리 역할을 설명하고 README의 추적 규칙을 정리한다.',
+        status: 'PLANNING',
+        projectId: 'agent-relay',
+        updatedAt: '2026-10-08T10:26:06.183Z',
+      }),
+    ],
+    probe: false,
+  });
+  assert.equal(view.task?.taskId, 'TASK-0089');
+  assert.equal(view.task?.nextAction, 'PM_DISPATCH_TASK');
+  assert.equal(view.task?.goalId, 'GOAL-0026');
+  assert.notEqual(view.nextAction, 'PM_VERIFY_RESULT');
+  assert.match(String(view.nextActionText), /준비된 Task|대기 중 Task|목표가 다릅니다/);
+  // Active Goal card keeps GOAL-0022 title — never the READY Goal's README title.
+  assert.equal(view.goal?.goalId, 'GOAL-0022');
+  assert.equal(view.goal?.title, 'JuControler 첫 Agent Relay 실작업 안전 확인');
+  assert.notEqual(
+    view.goal?.title,
+    'JuControler 공개 저장소의 실제 디렉터리 역할을 설명하고 README의 추적 규칙을 정리한다.',
+  );
+  assert.equal(view.counts.verificationPending, 0);
+  assert.equal(view.counts.readyTasks, 1);
 });
 
 test('H assignment summary is desired assignment only', async () => {

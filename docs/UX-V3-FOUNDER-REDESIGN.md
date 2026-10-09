@@ -1,9 +1,17 @@
 # UX-V3 Founder-first redesign
 
-**Status:** `UX_V3_CORRECTNESS_FIX_READY_FOR_HOST_QA`  
-**Commit:** (see git) · **URI:** `ui://agent-relay/pm-widget-0f38789a`  
-**Host QA gate:** retry of `HG-20261009-e693f9`  
+**Status:** `UX_V3_FINAL_CORRECTNESS_READY_FOR_HOST_QA`  
+**Commit:** (see git) · **URI:** `ui://agent-relay/pm-widget-fa975ba3`  
+**Host QA gate:** retry failed items of `HG-20261010-21fe6f` only  
 **Not complete until ChatGPT Host QA evidence.**
+
+## Final Correctness Hotfix (Host QA HG-20261010-21fe6f)
+
+### FIX 1 — Goal title integrity
+Host saw GOAL-0026 README title in the GOAL-0022 work card / 더보기 Goal panel. Durable store and `relay_pm_get_goal` were already correct. Root cause: ACCEPTED RESULT_RECEIVED headline + READY under another Goal conflated Active Goal with next Task Goal. Fix: `pickProjectActiveGoal` keeps status=`ACTIVE` Goal (GOAL-0022) on the Goal card with its own title; READY preview still loads GOAL-0026 via `openExistingTask`. Widget binds `data-goal-id`, clears title on project switch, shows goalId on 더보기 cards, and never writes `pdGoalTitle` from preview.
+
+### FIX 2 — ACCEPTED next action
+`nextActionFor`: `RESULT_RECEIVED` + `pmState=ACCEPTED` → `NONE` (no `PM_VERIFY_RESULT`). ACCEPTED tasks are excluded from headline candidates so READY (`PM_DISPATCH_TASK`) surfaces. When Active Goal ≠ Task Goal, `nextActionText` is `준비된 Task가 있어요 · 진행 중 Goal과 목표가 다릅니다`. Live jucontroller probe: Goal GOAL-0022 / Task TASK-0089·GOAL-0026 / nextAction `PM_DISPATCH_TASK`.
 
 ## Pre-Host Correctness Fix
 
