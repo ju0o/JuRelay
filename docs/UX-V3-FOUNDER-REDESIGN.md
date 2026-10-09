@@ -1,9 +1,17 @@
 # UX-V3 Founder-first redesign
 
-**Status:** `UX_V3_READY_FOR_FOUNDER_VISUAL_QA`  
-**Commit:** `1508dbe` · **URI:** `ui://agent-relay/pm-widget-002aa1c0`  
-**Host QA gate:** `HG-20261009-e693f9`  
+**Status:** `UX_V3_CORRECTNESS_FIX_READY_FOR_HOST_QA`  
+**Commit:** (see git) · **URI:** `ui://agent-relay/pm-widget-0f38789a`  
+**Host QA gate:** retry of `HG-20261009-e693f9`  
 **Not complete until ChatGPT Host QA evidence.**
+
+## Pre-Host Correctness Fix
+
+### FIX A — READY preview Goal integrity
+`updateGoalRunAffordance` no longer synthesizes `pendingPreview` from dashboard `view.goal` (which can be ACCEPTED leader GOAL-0022 while READY is TASK-0089 / GOAL-0026). Auto-open calls `openExistingTask(readyTask.taskId)` which loads canonical Task + Goal + execution-config + criteria. `previewLoadGen` + project-id checks prevent stale async merges; Goal fetch failure is fail-closed (no previous Goal shown).
+
+### FIX B — 더보기 submenu
+`#v3MoreSub` inside `#panel-more`: 파이프라인·진단 / Goal / 프로토타입 / 설계. Direct access without returning to 활동. Legacy 5 `data-tab` panes retained.
 
 ## Summary
 

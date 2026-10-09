@@ -542,6 +542,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .v3-nav button.extras { margin-left:auto; border:1px solid var(--border); padding:7px 11px; font-size:12px; }
   .v3-panel { display:none; }
   .v3-panel.on { display:block; }
+  /* UX-V3 FIX B: more-panel sub-nav — Goal/proto/design reachable without returning to 활동 */
+  .v3-more-sub { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px; padding:0; }
+  .v3-more-sub button { border:1px solid var(--border); background:var(--panel); color:var(--text);
+                        padding:8px 12px; border-radius:9px; min-height:40px; font-size:13px; font-weight:650; cursor:pointer; }
+  .v3-more-sub button.on { background:var(--accent-panel-bg); color:var(--accent-panel-fg); border-color:var(--accent-panel-border); }
+  .v3-more-body { margin-top:4px; }
+  .v3-more-body > .tabpane { display:none; }
+  .v3-more-body > .tabpane.on { display:block; }
+  .v3-more-body > .more-panel.hide-more { display:none; }
   .v3-activity-head { margin:2px 0 10px; }
   .v3-section-title { font-size:15px; font-weight:750; letter-spacing:-.2px; }
   .v3-section-title .meta { font-size:12px; color:var(--muted); font-weight:600; margin-left:8px; }
@@ -811,7 +820,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
     </section>
     </section><!-- #panel-activity -->
     <section class="v3-panel" id="panel-more" aria-label="고급 정보">
-    <details class="more-panel" id="morePanel">
+    <nav class="v3-more-sub" id="v3MoreSub" aria-label="더보기 하위 메뉴">
+      <button type="button" class="on" data-more="pipe">파이프라인·진단</button>
+      <button type="button" data-more="goal">Goal</button>
+      <button type="button" data-more="proto">프로토타입</button>
+      <button type="button" data-more="design">설계</button>
+    </nav>
+    <div class="v3-more-body" id="v3MoreBody">
+    <details class="more-panel" id="morePanel" open>
       <summary>파이프라인 · 환경 · 진단</summary>
       <div class="pipe" id="pipe">
         <div class="pnode"><b>PM</b><span data-i="pmYou">이 대화</span></div>
@@ -887,6 +903,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       <div class="sub" id="diag">dashboard 상태 확인 중…</div>
       <div id="log"></div>
     </details>
+    </div><!-- #v3MoreBody -->
     </section><!-- #panel-more -->
     </div><!-- #mainView -->
   </div>
@@ -1284,7 +1301,41 @@ const WIDGET_HTML = `<!DOCTYPE html>
         return t('wait');
       }
       // ---- V3 primary nav (work / activity / more) ----
-      function showV3Panel(name) {
+      var v3MoreSection = 'pipe';
+      function showMoreSection(section) {
+        var sec = section || 'pipe';
+        v3MoreSection = sec;
+        var morePanel = document.getElementById('morePanel');
+        var panes = ['goal', 'proto', 'design'];
+        if (morePanel) {
+          if (sec === 'pipe') morePanel.classList.remove('hide-more');
+          else morePanel.classList.add('hide-more');
+        }
+        /* Only toggle more-panel panes; leave activity pane-now/pane-task alone. */
+        for (var i = 0; i < panes.length; i++) {
+          var pane = document.getElementById('pane-' + panes[i]);
+          if (pane) pane.className = 'tabpane' + (sec === panes[i] ? ' on' : '');
+        }
+        var sub = document.getElementById('v3MoreSub');
+        if (sub) {
+          var sbtns = sub.querySelectorAll('[data-more]');
+          for (var s = 0; s < sbtns.length; s++) {
+            sbtns[s].classList.toggle('on', sbtns[s].getAttribute('data-more') === sec);
+          }
+        }
+        /* Sync legacy #tabs highlight for Goal/proto/design without clearing now/task pane state. */
+        var tabs = document.getElementById('tabs');
+        if (tabs && (sec === 'goal' || sec === 'proto' || sec === 'design' || sec === 'pipe')) {
+          var tbtns = tabs.querySelectorAll('button[data-tab]');
+          for (var t = 0; t < tbtns.length; t++) {
+            var dt = tbtns[t].getAttribute('data-tab');
+            if (dt === 'goal' || dt === 'proto' || dt === 'design') {
+              tbtns[t].className = dt === sec ? 'on' : '';
+            }
+          }
+        }
+      }
+      function showV3Panel(name, moreSection) {
         var panels = ['work', 'activity', 'more'];
         for (var i = 0; i < panels.length; i++) {
           var el = document.getElementById('panel-' + panels[i]);
@@ -1300,6 +1351,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
             else nbtns[n].removeAttribute('aria-current');
           }
         }
+        if (name === 'more') showMoreSection(moreSection || v3MoreSection || 'pipe');
       }
       try {
         (function () {
@@ -1309,10 +1361,23 @@ const WIDGET_HTML = `<!DOCTYPE html>
           for (var i = 0; i < nbtns.length; i++) {
             nbtns[i].onclick = (function (btn) {
               return function () {
-                showV3Panel(btn.getAttribute('data-v3') || 'work');
+                var target = btn.getAttribute('data-v3') || 'work';
+                showV3Panel(target, target === 'more' ? (v3MoreSection || 'pipe') : undefined);
               };
             })(nbtns[i]);
           }
+          var sub = document.getElementById('v3MoreSub');
+          if (sub) {
+            var sbtns = sub.querySelectorAll('[data-more]');
+            for (var j = 0; j < sbtns.length; j++) {
+              sbtns[j].onclick = (function (btn) {
+                return function () {
+                  showV3Panel('more', btn.getAttribute('data-more') || 'pipe');
+                };
+              })(sbtns[j]);
+            }
+          }
+          showMoreSection('pipe');
         })();
       } catch (eV3) { /* v3 nav progressive */ }
       // ---- tabs (guarded: a tab failure must never kill init) ----
@@ -1333,7 +1398,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
                   'tabpane' + (tab === panes[k] ? ' on' : '');
               }
               // Goal/proto/design live under #panel-more; now/task under #panel-activity.
-              if (tab === 'goal' || tab === 'proto' || tab === 'design') showV3Panel('more');
+              if (tab === 'goal' || tab === 'proto' || tab === 'design') showV3Panel('more', tab);
               else if (tab === 'now' || tab === 'task') showV3Panel('activity');
             };
             })(btns[i]);
@@ -2157,9 +2222,18 @@ const WIDGET_HTML = `<!DOCTYPE html>
         return details;
       }
       function renderProjectDash(view) {
+        var prevProjectId = lastProjectDash && lastProjectDash.project && lastProjectDash.project.projectId;
         lastProjectDash = view || null;
         if (!view) return;
         var p = view.project;
+        var nextProjectId = p && p.projectId;
+        if (prevProjectId && nextProjectId && prevProjectId !== nextProjectId) {
+          /* Project switch: invalidate in-flight preview loads (FIX A race). */
+          previewLoadGen++;
+          pendingPreview = null;
+          selectedTaskId = null;
+          setTaskPrevVisible(false);
+        }
         setElText('pdName', p ? (p.projectName || p.projectId) : '프로젝트 없음');
         var pathFull = (p && p.workspacePath)
           ? p.workspacePath
@@ -2281,6 +2355,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
       }
 
       var pendingPreview = null;
+      var previewLoadGen = 0;
       var runInFlight = false;
 
       function setGoalFlowVisible(show) {
@@ -2308,32 +2383,21 @@ const WIDGET_HTML = `<!DOCTYPE html>
           newBtn.disabled = !canCreate || runInFlight;
           newBtn.classList.toggle('hide', !!(pendingPreview && pendingPreview.taskId));
         }
+        var readyTask = pickPrimaryReadyTask(view);
         if (hint) {
           if (legacyBlocked) hint.textContent = '이 프로젝트에서는 작업을 시작할 수 없어요.';
+          else if (readyTask) hint.textContent = '준비된 Task가 있어요. 아래에서 확인하고 시작하세요.';
           else if (!view.goal) hint.textContent = 'Goal을 만들면 여기서 작업을 준비할 수 있어요.';
-          else if (pickPrimaryReadyTask(view)) hint.textContent = '준비된 Task가 있어요. 아래에서 확인하고 시작하세요.';
           else hint.textContent = '';
         }
-        // READY Task → show preview so user can pick Agent/model (elig.ok may be false until selection).
-        var elig = view && view.runEligibility;
-        var readyTask = pickPrimaryReadyTask(view);
-        if (view && readyTask && !pendingPreview) {
-          pendingPreview = {
-            goalId: view.goal && view.goal.goalId,
-            goalTitle: view.goal && view.goal.title,
-            taskId: readyTask.taskId,
-            taskTitle: readyTask.title,
-            scope: (p && p.workspacePath) || '',
-            criteria: [],
-            builder: (elig && elig.desiredBuilder) || ((view.assignment && view.assignment.builders) || [])[0] || '',
-            projectWorkerHint: (elig && (elig.projectDesiredBuilder || elig.desiredBuilder)) || '',
-            workerId: (elig && elig.workerId) || '',
-            workspaceRoot: (elig && elig.workspaceRoot) || (p && p.workspacePath) || '',
-            projectId: p && p.projectId
-          };
+        /* UX-V3 FIX A: never synthesize preview from dashboard view.goal (may be ACCEPTED leader).
+           Load canonical Task+Goal via openExistingTask. Skip if user already focused a task or preview is open. */
+        if (view && readyTask && readyTask.taskId && !pendingPreview && !selectedTaskId && !tpSelectionBusy && !runInFlight) {
+          openExistingTask(readyTask.taskId);
+          return;
         }
         if (pendingPreview && pendingPreview.taskId) {
-          renderTaskPreview(pendingPreview, elig || (view && view.runEligibility));
+          renderTaskPreview(pendingPreview, view && view.runEligibility);
           setTaskPrevVisible(true);
         }
       }
@@ -2587,19 +2651,44 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
       }
 
+      function currentDashProjectId() {
+        return lastProjectDash && lastProjectDash.project && lastProjectDash.project.projectId;
+      }
+      function failClosedPreview(message) {
+        pendingPreview = null;
+        setTaskPrevVisible(false);
+        var errEl = document.getElementById('tpErr');
+        if (errEl) {
+          errEl.classList.remove('hide');
+          errEl.textContent = String(message || '미리보기를 열 수 없어요.').slice(0, 240);
+        }
+        var status = document.getElementById('tpStatus');
+        if (status) status.textContent = 'Task/Goal 조회에 실패했어요. 이전 Goal을 보여주지 않습니다.';
+      }
+      function previewLoadStillCurrent(gen, expectedProjectId, expectedTaskId) {
+        if (gen !== previewLoadGen) return false;
+        if (selectedTaskId && selectedTaskId !== expectedTaskId) return false;
+        var liveProject = currentDashProjectId();
+        if (expectedProjectId && liveProject && liveProject !== expectedProjectId) return false;
+        return true;
+      }
       async function openExistingTask(taskId) {
         var errEl = document.getElementById('tpErr');
         var status = document.getElementById('tpStatus');
         if (errEl) { errEl.classList.add('hide'); errEl.textContent = ''; }
-        var projectId = lastProjectDash && lastProjectDash.project && lastProjectDash.project.projectId;
+        var projectId = currentDashProjectId();
         if (!projectId) {
           if (errEl) { errEl.classList.remove('hide'); errEl.textContent = '프로젝트가 선택되지 않았어요.'; }
           return;
         }
         if (!taskId) return;
         selectedTaskId = taskId;
+        var gen = ++previewLoadGen;
+        var expectedProjectId = projectId;
+        var expectedTaskId = taskId;
         try {
           var task = await callTool('relay_pm_get_task', { taskId: taskId });
+          if (!previewLoadStillCurrent(gen, expectedProjectId, expectedTaskId)) return;
           if (!task || !task.taskId) throw new Error('Task를 찾지 못했어요.');
           if (task.projectId && task.projectId !== projectId) {
             throw new Error('이 Task는 다른 프로젝트(' + task.projectId + ')에 속해요.');
@@ -2607,12 +2696,22 @@ const WIDGET_HTML = `<!DOCTYPE html>
           if (!task.projectId) {
             throw new Error('Task에 projectId가 없어요. 프로젝트 귀속을 먼저 고쳐 주세요.');
           }
+          /* Canonical Goal for this Task — never reuse dashboard view.goal (FIX A). */
           var goal = null;
           if (task.goalId) {
-            try { goal = await callTool('relay_pm_get_goal', { goalId: task.goalId }); } catch (eG) { goal = null; }
-          }
-          if (goal && goal.projectId && goal.projectId !== projectId) {
-            throw new Error('Goal 프로젝트와 선택 프로젝트가 달라요.');
+            try {
+              goal = await callTool('relay_pm_get_goal', { goalId: task.goalId });
+            } catch (eG) {
+              throw new Error('Goal을 불러오지 못했어요: ' + task.goalId);
+            }
+            if (!previewLoadStillCurrent(gen, expectedProjectId, expectedTaskId)) return;
+            if (!goal || !goal.goalId) throw new Error('Goal을 불러오지 못했어요: ' + task.goalId);
+            if (goal.projectId && goal.projectId !== projectId) {
+              throw new Error('Goal 프로젝트와 선택 프로젝트가 달라요.');
+            }
+            if (goal.goalId !== task.goalId) {
+              throw new Error('Goal ID가 Task와 일치하지 않아요.');
+            }
           }
           var runnable = isRunnableReadyTask(task);
           var cfgRes = null;
@@ -2622,6 +2721,7 @@ const WIDGET_HTML = `<!DOCTYPE html>
               projectId: projectId
             });
           } catch (eCfg) { cfgRes = null; }
+          if (!previewLoadStillCurrent(gen, expectedProjectId, expectedTaskId)) return;
           var cfg = cfgRes && cfgRes.config;
           if (!runnable) {
             pendingPreview = null;
@@ -2642,10 +2742,11 @@ const WIDGET_HTML = `<!DOCTYPE html>
             taskId: task.taskId,
             projectId: projectId
           });
+          if (!previewLoadStillCurrent(gen, expectedProjectId, expectedTaskId)) return;
           var workspace = (lastProjectDash.project && lastProjectDash.project.workspacePath) || '';
           pendingPreview = {
-            goalId: task.goalId || (goal && goal.goalId) || '',
-            goalTitle: (goal && goal.title) || task.goal || '',
+            goalId: task.goalId || '',
+            goalTitle: (goal && (goal.title || goal.goalStatement)) || '',
             taskId: task.taskId,
             taskTitle: task.title || task.taskId,
             scope: task.scope || workspace || '',
@@ -2673,10 +2774,8 @@ const WIDGET_HTML = `<!DOCTYPE html>
           }
           renderTaskTab(lastTaskListCache);
         } catch (eOpen) {
-          if (errEl) {
-            errEl.classList.remove('hide');
-            errEl.textContent = String((eOpen && eOpen.message) || eOpen).slice(0, 240);
-          }
+          if (!previewLoadStillCurrent(gen, expectedProjectId, expectedTaskId)) return;
+          failClosedPreview(String((eOpen && eOpen.message) || eOpen));
         }
       }
 

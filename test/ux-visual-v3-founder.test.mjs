@@ -11,7 +11,8 @@ const distMod = await import(path.join(repo, 'dist/server/mcp/app/pm-widget-reso
 const src = readFileSync(path.join(repo, 'src/mcp/app/pm-widget-resource.ts'), 'utf8');
 const html = distMod.pmWidgetHtml('https://example.invalid/w');
 
-test('fingerprint reminted away from 02A-R2 9f4ab921', () => {
+test('fingerprint reminted away from prior V3/02A baselines', () => {
+  assert.notEqual(distMod.PM_WIDGET_CONTENT_FINGERPRINT, '002aa1c0');
   assert.notEqual(distMod.PM_WIDGET_CONTENT_FINGERPRINT, '9f4ab921');
   assert.notEqual(distMod.PM_WIDGET_CONTENT_FINGERPRINT, '70c18571');
   assert.notEqual(distMod.PM_WIDGET_CONTENT_FINGERPRINT, '519c1794');
@@ -87,6 +88,35 @@ test('READY prefer: pickPrimaryReadyTask + affordance/source pins', () => {
   for (const id of ['tpRun', 'tpAgentSel', 'tpModelSel', 'tpApproveChk', 'tpSaveSel', 'bootTitle']) {
     assert.match(html, new RegExp('id="' + id + '"'));
   }
+});
+
+test('FIX A: READY auto-preview loads canonical Task/Goal; no view.goal synthesis', () => {
+  assert.match(src, /openExistingTask\(readyTask\.taskId\)/);
+  assert.match(src, /previewLoadGen/);
+  assert.match(src, /previewLoadStillCurrent/);
+  assert.match(src, /failClosedPreview/);
+  assert.match(src, /relay_pm_get_task/);
+  assert.match(src, /relay_pm_get_goal/);
+  // Must not build pendingPreview from dashboard view.goal in updateGoalRunAffordance.
+  const afford = src.slice(src.indexOf('function updateGoalRunAffordance'), src.indexOf('function fillSelect') > 0 ? src.indexOf('var tpAgentsCache') : src.length);
+  assert.doesNotMatch(afford, /pendingPreview\s*=\s*\{[\s\S]*goalId:\s*view\.goal/);
+  assert.match(afford, /never synthesize preview from dashboard view\.goal|openExistingTask\(readyTask/);
+  assert.match(src, /completionCriteria/);
+  assert.match(src, /Goal을 불러오지 못했어요/);
+});
+
+test('FIX B: 더보기 submenu reaches Goal/proto/design without activity detour', () => {
+  assert.match(html, /id="v3MoreSub"/);
+  assert.match(html, /data-more="pipe"/);
+  assert.match(html, /data-more="goal"/);
+  assert.match(html, /data-more="proto"/);
+  assert.match(html, /data-more="design"/);
+  assert.match(src, /function showMoreSection/);
+  assert.match(src, /showV3Panel\('more'/);
+  const moreSlice = html.slice(html.indexOf('id="panel-more"'), html.indexOf('<!-- #panel-more -->'));
+  assert.match(moreSlice, /id="v3MoreSub"/);
+  assert.match(moreSlice, /id="pane-goal"/);
+  assert.match(moreSlice, /id="pane-design"/);
 });
 
 test('02A-R2 fixes retained (accent-panel, container 380, path-reveal)', () => {
