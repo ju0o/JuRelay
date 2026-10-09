@@ -1,8 +1,10 @@
 # UX-VISUAL-02A-R2 — Narrow Layout Final Hotfix
 
 **Status:** `UX_VISUAL_02A_R2_READY_FOR_HOST_QA`  
+**Commit:** `6e0b1c4`  
 **Baseline:** `5055cf1` / `ui://agent-relay/pm-widget-70c18571`  
 **Prior Host QA:** `HG-20261009-f64da3` → `UX_VISUAL_02A_CHANGES_REQUESTED`  
+**Host QA gate:** `HG-20261009-c4b7b4`  
 **New URI:** `ui://agent-relay/pm-widget-9f4ab921`  
 **Evidence:** `.agent-relay/cert/ux-visual-02a-r2/`
 
