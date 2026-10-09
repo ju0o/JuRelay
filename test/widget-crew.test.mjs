@@ -25,9 +25,14 @@ describe('crew widget spec', () => {
     assert.doesNotMatch(html, /hue-rotate/);
     assert.ok(!html.includes('ladder-rail') && !html.includes('ladder-rung'));
   });
-  it('has 5-tab rail (v6 control tower)', () => {
+  it('has 3-nav + 5 panes preserved (UX-V3)', () => {
     for (const t of ['now', 'task', 'goal', 'proto', 'design']) {
       assert.ok(html.includes('data-tab="' + t + '"'), t);
+      assert.ok(html.includes('id="pane-' + t + '"'), 'pane-' + t);
+    }
+    assert.ok(html.includes('id="v3Nav"'));
+    for (const v3 of ['work', 'activity', 'more']) {
+      assert.ok(html.includes('data-v3="' + v3 + '"'), v3);
     }
     assert.ok(html.includes('applySheet'));
   });

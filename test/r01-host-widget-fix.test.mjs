@@ -55,6 +55,14 @@ function parsePanes(html) {
   assert.match(html, /data-tab="goal"/);
   assert.match(html, /data-tab="proto"/);
   assert.match(html, /data-tab="design"/);
+  // UX-V3 primary nav
+  assert.match(html, /id="v3Nav"/);
+  assert.match(html, /data-v3="work"/);
+  assert.match(html, /data-v3="activity"/);
+  assert.match(html, /data-v3="more"/);
+  assert.match(html, /id="panel-work"/);
+  assert.match(html, /id="panel-activity"/);
+  assert.match(html, /id="panel-more"/);
 }
 
 test('A: tabpanes are siblings; pane-now has no nested pane-task / duplicate pipe', () => {

@@ -224,10 +224,15 @@ describe('layout contract (P1-P5, H1-H4)', () => {
     assert.ok(html.indexOf('id="diag"') > det, 'diag inside details');
     assert.ok(html.indexOf('id="buildTag"') > html.indexOf('class="strip"'), 'no hash in header');
   });
-  it('v6: 5-tab rail + task/goal/proto/design panes', () => {
+  it('v6/v3: 3-nav + 5 panes preserved (task/goal/proto/design)', () => {
     for (const t of ['now', 'task', 'goal', 'proto', 'design']) {
       assert.ok(html.includes('data-tab="' + t + '"'), t);
       assert.ok(html.includes('id="pane-' + t + '"'), 'pane-' + t);
+    }
+    assert.ok(html.includes('id="v3Nav"'));
+    for (const v3 of ['work', 'activity', 'more']) {
+      assert.ok(html.includes('data-v3="' + v3 + '"'), v3);
+      assert.ok(html.includes('id="panel-' + v3 + '"'), 'panel-' + v3);
     }
     assert.ok(!html.includes('id="pane-ladder"') && !html.includes('id="pane-wbs"'), 'old panes removed');
     assert.ok(!html.includes('renderLadder') && !html.includes('renderWbs('), 'old renderers removed');

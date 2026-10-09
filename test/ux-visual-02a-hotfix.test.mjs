@@ -54,6 +54,11 @@ test('wake / claim / 5-tab contracts preserved', () => {
   assert.ok(html.includes('ui/initialize'));
   for (const tab of ['now', 'task', 'goal', 'proto', 'design']) {
     assert.match(html, new RegExp('data-tab="' + tab + '"'));
+    assert.match(html, new RegExp('id="pane-' + tab + '"'));
+  }
+  assert.match(html, /id="v3Nav"/);
+  for (const v3 of ['work', 'activity', 'more']) {
+    assert.match(html, new RegExp('data-v3="' + v3 + '"'));
   }
   assert.match(html, /id="tpRun"/);
   assert.match(html, /id="tpAgentSel"/);

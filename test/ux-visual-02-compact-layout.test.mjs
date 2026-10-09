@@ -27,7 +27,9 @@ test('compact: pipe/env/steps live under collapsed more-panel', () => {
   const stepsIdx = html.indexOf('id="steps"');
   const tabsIdx = html.indexOf('id="tabs"');
   assert.ok(moreIdx > 0 && pipeIdx > moreIdx && envIdx > pipeIdx && stepsIdx > envIdx);
-  assert.ok(tabsIdx > stepsIdx, 'tabs remain after collapsed panel');
+  assert.ok(tabsIdx > 0, 'secondary tabs preserved');
+  // UX-V3: 3 primary nav coexists with preserved panes/morePanel
+  assert.match(html, /id="v3Nav"/);
   // Still exactly one pipe; not nested inside pane-now.
   assert.equal((html.match(/id="pipe"/g) || []).length, 1);
   const nowSlice = html.slice(html.indexOf('id="pane-now"'), html.indexOf('id="pane-task"'));
@@ -40,6 +42,9 @@ test('first screen keeps project / path / task / run controls', () => {
   }
   for (const tab of ['now', 'task', 'goal', 'proto', 'design']) {
     assert.match(html, new RegExp('data-tab="' + tab + '"'), tab);
+  }
+  for (const v3 of ['work', 'activity', 'more']) {
+    assert.match(html, new RegExp('data-v3="' + v3 + '"'), v3);
   }
 });
 

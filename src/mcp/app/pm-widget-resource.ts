@@ -534,6 +534,37 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .taskprev .path-reveal[open] .path-toggle-open { display:none; }
   .taskprev .path-reveal:not([open]) .path-toggle-close { display:none; }
   .taskprev .path-reveal.short .path-toggle { display:none; }
+  /* UX-V3 founder-first shell */
+  .v3-nav { display:flex; gap:6px; margin:4px 0 8px; padding:0; align-items:center; }
+  .v3-nav button { border:0; background:transparent; padding:9px 14px; color:var(--muted);
+                   font-weight:700; border-radius:9px; min-height:40px; cursor:pointer; font-size:13px; }
+  .v3-nav button.on { background:var(--accent-panel-bg); color:var(--accent-panel-fg); }
+  .v3-nav button.extras { margin-left:auto; border:1px solid var(--border); padding:7px 11px; font-size:12px; }
+  .v3-panel { display:none; }
+  .v3-panel.on { display:block; }
+  .v3-activity-head { margin:2px 0 10px; }
+  .v3-section-title { font-size:15px; font-weight:750; letter-spacing:-.2px; }
+  .v3-section-title .meta { font-size:12px; color:var(--muted); font-weight:600; margin-left:8px; }
+  .v3-metric-row { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:10px; }
+  .v3-metric { border:1px solid var(--border); border-radius:12px; text-align:center; padding:10px 4px; background:var(--panel); }
+  .v3-metric b { font-size:20px; display:block; color:var(--text); }
+  .v3-metric span { font-size:11px; color:var(--muted); }
+  .pdash { border-radius:14px; padding:10px 12px; }
+  .pdash-head .pn { font-size:17px; font-weight:780; }
+  .taskprev { border-radius:14px; padding:14px; }
+  .taskprev .select-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:6px 0; }
+  .taskprev .select-grid .line { margin:0; }
+  .taskprev .select-grid select { width:100%; min-width:0; min-height:40px; }
+  @media (max-width:540px) {
+    .v3-nav { gap:4px; }
+    .v3-nav button { padding:8px 10px; font-size:12px; }
+    .v3-metric-row { gap:6px; }
+    .taskprev .select-grid { grid-template-columns:1fr; }
+  }
+  @container arwidget (max-width:540px) {
+    .v3-nav button { padding:8px 10px; }
+    .taskprev .select-grid { grid-template-columns:1fr; }
+  }
 </style>
 </head>
 <body>
@@ -617,6 +648,12 @@ const WIDGET_HTML = `<!DOCTYPE html>
       </div>
     </div>
     <div id="mainView">
+    <nav class="v3-nav" id="v3Nav" aria-label="주요 화면">
+      <button type="button" class="on" data-v3="work" aria-current="page">작업</button>
+      <button type="button" data-v3="activity">활동</button>
+      <button type="button" class="extras" data-v3="more" aria-label="고급 정보">더보기 ⋯</button>
+    </nav>
+    <section class="v3-panel on" id="panel-work" aria-label="작업 실행">
     <section class="pdash" id="projectDash" aria-label="프로젝트 대시보드">
       <div class="pdash-head" id="pdHead">
         <div class="pn" id="pdName">프로젝트 불러오는 중…</div>
@@ -690,11 +727,13 @@ const WIDGET_HTML = `<!DOCTYPE html>
         <div class="line"><b>완료 기준</b></div>
         <ul class="crit" id="tpCrit"></ul>
         <div class="line"><b>프로젝트 기본 Builder</b><span id="tpBuilder"></span></div>
-        <div class="line"><b>이번 Task Agent</b>
-          <select id="tpAgentSel" aria-label="Agent 선택"><option value="">선택…</option></select>
-        </div>
-        <div class="line"><b>모델</b>
-          <select id="tpModelSel" aria-label="모델 선택" disabled><option value="">Agent 먼저</option></select>
+        <div class="select-grid">
+          <div class="line"><b>이번 Task Agent</b>
+            <select id="tpAgentSel" aria-label="Agent 선택"><option value="">선택…</option></select>
+          </div>
+          <div class="line"><b>모델</b>
+            <select id="tpModelSel" aria-label="모델 선택" disabled><option value="">Agent 먼저</option></select>
+          </div>
         </div>
         <div class="line"><b>실행 프로필</b><span id="tpProfile">—</span></div>
         <div class="line"><b>가능 여부</b><span id="tpAvail">—</span></div>
@@ -714,36 +753,12 @@ const WIDGET_HTML = `<!DOCTYPE html>
         <div class="err hide" id="tpErr" role="alert"></div>
       </div>
     </section>
-    <details class="more-panel" id="morePanel">
-      <summary>파이프라인 · 환경 · 진단</summary>
-      <div class="pipe" id="pipe">
-        <div class="pnode"><b>PM</b><span data-i="pmYou">이 대화</span></div>
-        <span class="edge">→</span>
-        <div class="pnode"><b>Agent Relay</b><span id="pipeRelay">0 delivery</span></div>
-        <span class="edge">→</span>
-        <div class="pnode"><b>Worker</b><span id="pipeWorker">0 active</span></div>
-        <span class="edge">→</span>
-        <div class="pnode"><b>QA</b><span id="pipeQa">0 review</span><span id="pipeQaWait" class="pwait"></span></div>
-        <div class="ploop" id="pipeLoop">↩ 확인 후 계속</div>
+    </section><!-- #panel-work -->
+    <section class="v3-panel" id="panel-activity" aria-label="진행 상태">
+      <div class="v3-activity-head">
+        <div class="v3-section-title">작업 현황 <span class="meta">프로젝트별</span></div>
+        <div class="v3-metric-row" id="v3Metrics" aria-label="활동 요약"></div>
       </div>
-      <div class="env" id="env">
-        <div class="env-title">지금 이 환경</div>
-        <div class="env-row">
-          <div class="env-nums">
-            <div class="eseg amber" id="sgReview"><b id="stReview">0</b><span>검사 중</span></div>
-            <div class="eseg blue" id="sgCoding"><b id="stCoding">0</b><span>코드 작성 중</span></div>
-            <div class="eseg green" id="sgDone"><b id="stDone">0</b><span>완료</span></div>
-            <div class="eseg muted" id="sgGoals"><b id="stGoals">0</b><span>목표</span></div>
-          </div>
-          <div class="env-note" id="stNote">대기 중</div>
-        </div>
-      </div>
-      <div class="steps" id="steps">
-        <span class="step off" data-s="wait"><i></i><span data-i="sWait">대기</span></span><span class="step-sep"></span>
-        <span class="step off" data-s="doing"><i></i><span data-i="sDoing">검토 요청</span></span><span class="step-sep"></span>
-        <span class="step off" data-s="done"><i></i><span data-i="sDone">판정 완료</span></span>
-      </div>
-    </details>
     <div class="tabs" id="tabs">
       <button data-tab="now" class="on">지금 상황</button>
       <button data-tab="task">Task<span class="bdg" id="bTask">0</span></button>
@@ -785,6 +800,47 @@ const WIDGET_HTML = `<!DOCTYPE html>
       </div>
       <div class="taskrows" id="taskRows"></div>
     </div>
+    <div class="update" id="update"></div>
+    <section class="inbox" id="inbox" aria-label="전체 프로젝트 PM 수신함">
+      <div class="inbox-head">
+        <div class="inbox-title">전체 프로젝트 · PM 수신함</div>
+        <div class="inbox-sub">선택한 프로젝트 목록과 별개입니다. 아래는 공유 수신함 대기 건입니다.</div>
+        <div class="inbox-count"><b id="inboxN">0</b>건 대기</div>
+      </div>
+      <div class="cards" id="cards"></div>
+    </section>
+    </section><!-- #panel-activity -->
+    <section class="v3-panel" id="panel-more" aria-label="고급 정보">
+    <details class="more-panel" id="morePanel">
+      <summary>파이프라인 · 환경 · 진단</summary>
+      <div class="pipe" id="pipe">
+        <div class="pnode"><b>PM</b><span data-i="pmYou">이 대화</span></div>
+        <span class="edge">→</span>
+        <div class="pnode"><b>Agent Relay</b><span id="pipeRelay">0 delivery</span></div>
+        <span class="edge">→</span>
+        <div class="pnode"><b>Worker</b><span id="pipeWorker">0 active</span></div>
+        <span class="edge">→</span>
+        <div class="pnode"><b>QA</b><span id="pipeQa">0 review</span><span id="pipeQaWait" class="pwait"></span></div>
+        <div class="ploop" id="pipeLoop">↩ 확인 후 계속</div>
+      </div>
+      <div class="env" id="env">
+        <div class="env-title">지금 이 환경</div>
+        <div class="env-row">
+          <div class="env-nums">
+            <div class="eseg amber" id="sgReview"><b id="stReview">0</b><span>검사 중</span></div>
+            <div class="eseg blue" id="sgCoding"><b id="stCoding">0</b><span>코드 작성 중</span></div>
+            <div class="eseg green" id="sgDone"><b id="stDone">0</b><span>완료</span></div>
+            <div class="eseg muted" id="sgGoals"><b id="stGoals">0</b><span>목표</span></div>
+          </div>
+          <div class="env-note" id="stNote">대기 중</div>
+        </div>
+      </div>
+      <div class="steps" id="steps">
+        <span class="step off" data-s="wait"><i></i><span data-i="sWait">대기</span></span><span class="step-sep"></span>
+        <span class="step off" data-s="doing"><i></i><span data-i="sDoing">검토 요청</span></span><span class="step-sep"></span>
+        <span class="step off" data-s="done"><i></i><span data-i="sDone">판정 완료</span></span>
+      </div>
+    </details>
     <div class="tabpane" id="pane-goal">
       <div id="goalCards"></div>
       <div class="kpis" id="goalKpis">
@@ -825,22 +881,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
         <div class="estrows" id="estRows"></div>
       </div>
     </div>
-    <div class="update" id="update"></div>
-    <section class="inbox" id="inbox" aria-label="전체 프로젝트 PM 수신함">
-      <div class="inbox-head">
-        <div class="inbox-title">전체 프로젝트 · PM 수신함</div>
-        <div class="inbox-sub">선택한 프로젝트 목록과 별개입니다. 아래는 공유 수신함 대기 건입니다.</div>
-        <div class="inbox-count"><b id="inboxN">0</b>건 대기</div>
-      </div>
-      <div class="cards" id="cards"></div>
-    </section>
-    </div><!-- #mainView -->
     <details class="dbg">
       <summary>debug · <span class="sub" id="buildTag">__WIDGET_BUILD__</span></summary>
       <div class="sub" id="selfcheck">selfcheck 대기 중…</div>
       <div class="sub" id="diag">dashboard 상태 확인 중…</div>
       <div id="log"></div>
     </details>
+    </section><!-- #panel-more -->
+    </div><!-- #mainView -->
   </div>
   <script>
     (function () {
@@ -1235,6 +1283,38 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (st === 'working' || st === 'running' || st === 'active') return t('working');
         return t('wait');
       }
+      // ---- V3 primary nav (work / activity / more) ----
+      function showV3Panel(name) {
+        var panels = ['work', 'activity', 'more'];
+        for (var i = 0; i < panels.length; i++) {
+          var el = document.getElementById('panel-' + panels[i]);
+          if (el) el.className = 'v3-panel' + (panels[i] === name ? ' on' : '');
+        }
+        var nav = document.getElementById('v3Nav');
+        if (nav) {
+          var nbtns = nav.querySelectorAll('[data-v3]');
+          for (var n = 0; n < nbtns.length; n++) {
+            var on = nbtns[n].getAttribute('data-v3') === name;
+            nbtns[n].classList.toggle('on', on);
+            if (on) nbtns[n].setAttribute('aria-current', 'page');
+            else nbtns[n].removeAttribute('aria-current');
+          }
+        }
+      }
+      try {
+        (function () {
+          var nav = document.getElementById('v3Nav');
+          if (!nav) return;
+          var nbtns = nav.querySelectorAll('[data-v3]');
+          for (var i = 0; i < nbtns.length; i++) {
+            nbtns[i].onclick = (function (btn) {
+              return function () {
+                showV3Panel(btn.getAttribute('data-v3') || 'work');
+              };
+            })(nbtns[i]);
+          }
+        })();
+      } catch (eV3) { /* v3 nav progressive */ }
       // ---- tabs (guarded: a tab failure must never kill init) ----
       try {
         (function () {
@@ -1247,10 +1327,14 @@ const WIDGET_HTML = `<!DOCTYPE html>
               for (var j = 0; j < btns.length; j++) btns[j].className = '';
               btn.className = 'on';
               var panes = ['now', 'task', 'goal', 'proto', 'design'];
+              var tab = btn.getAttribute('data-tab');
               for (var k = 0; k < panes.length; k++) {
                 document.getElementById('pane-' + panes[k]).className =
-                  'tabpane' + (btn.getAttribute('data-tab') === panes[k] ? ' on' : '');
+                  'tabpane' + (tab === panes[k] ? ' on' : '');
               }
+              // Goal/proto/design live under #panel-more; now/task under #panel-activity.
+              if (tab === 'goal' || tab === 'proto' || tab === 'design') showV3Panel('more');
+              else if (tab === 'now' || tab === 'task') showV3Panel('activity');
             };
             })(btns[i]);
           }
@@ -1299,18 +1383,32 @@ const WIDGET_HTML = `<!DOCTYPE html>
         return !runs.length;
       }
 
+      /* Prefer focused READY task; else first runnable READY in recentTasks. */
+      function pickPrimaryReadyTask(view) {
+        if (!view) return null;
+        if (isRunnableReadyTask(view.task)) return view.task;
+        var recent = view.recentTasks || [];
+        for (var i = 0; i < recent.length; i++) {
+          if (isRunnableReadyTask(recent[i])) return recent[i];
+        }
+        return null;
+      }
+
       function renderTaskTab(taskList) {
         var tasks = (taskList || []).slice(0, 30);
         lastTaskListCache = tasks;
         var rows = document.getElementById('taskRows');
         var done = 0, review = 0;
         var cur = -1;
+        var readyIdx = -1;
         for (var i = 0; i < tasks.length; i++) {
           var st = taskStatus(tasks[i]);
           if (st === 'done') done++;
           else if (st === 'review') review++;
           if (cur < 0 && st !== 'done') cur = i;
+          if (readyIdx < 0 && isRunnableReadyTask(tasks[i])) readyIdx = i;
         }
+        if (!selectedTaskId && readyIdx >= 0) cur = readyIdx;
         var left = tasks.length - done - review;
         setNum(document.getElementById('taskN'), tasks.length);
         setNum(document.getElementById('tcDone'), done);
@@ -2066,11 +2164,21 @@ const WIDGET_HTML = `<!DOCTYPE html>
         var pathFull = (p && p.workspacePath)
           ? p.workspacePath
           : (p && p.profileState === 'UNCONFIGURED' ? 'Workspace not configured' : '');
-        setElText('pdPath', pathFull);
         try {
           var pathEl = document.getElementById('pdPath');
-          if (pathEl) pathEl.setAttribute('title', pathFull || '');
-        } catch (ePath) {}
+          var pathBrief = '';
+          if (pathFull) {
+            var segs = String(pathFull).split('/').filter(function (p) { return p.length > 0; });
+            if (segs.length >= 2) pathBrief = 'ASUS · ' + segs[segs.length - 2] + '/' + segs[segs.length - 1];
+            else pathBrief = 'ASUS · ' + summarizePathDisplay(pathFull);
+          }
+          if (pathEl) {
+            pathEl.textContent = pathBrief || pathFull || '';
+            pathEl.setAttribute('title', pathFull || '');
+          }
+        } catch (ePath) {
+          setElText('pdPath', pathFull);
+        }
         var assign = view.assignment;
         var assignLine = '';
         if (assign) {
@@ -2130,9 +2238,9 @@ const WIDGET_HTML = `<!DOCTYPE html>
         }
 
         var countsEl = document.getElementById('pdCounts');
+        var c = view.counts || {};
         if (countsEl) {
           countsEl.innerHTML = '';
-          var c = view.counts || {};
           function addCount(label, n, cls) {
             var span = document.createElement('span');
             span.className = 'c' + (cls ? ' ' + cls : '');
@@ -2144,6 +2252,15 @@ const WIDGET_HTML = `<!DOCTYPE html>
           addCount('대기', c.readyTasks, '');
           addCount('ORPHAN', c.orphanRuns, c.orphanRuns ? 'err' : '');
           addCount('저장 RUNNING', c.persistedRunning, '');
+        }
+        var metricsEl = document.getElementById('v3Metrics');
+        if (metricsEl) {
+          function metric(n, label) {
+            return '<div class="v3-metric"><b>' + (n == null ? 0 : n) + '</b><span>' + label + '</span></div>';
+          }
+          metricsEl.innerHTML = metric(c.actualActiveRuns, '진행 중')
+            + metric(c.readyTasks, '준비됨')
+            + metric(c.verificationPending, '검토 필요');
         }
 
         var warnEl = document.getElementById('pdWarn');
@@ -2194,17 +2311,18 @@ const WIDGET_HTML = `<!DOCTYPE html>
         if (hint) {
           if (legacyBlocked) hint.textContent = '이 프로젝트에서는 작업을 시작할 수 없어요.';
           else if (!view.goal) hint.textContent = 'Goal을 만들면 여기서 작업을 준비할 수 있어요.';
-          else if (view.task && view.task.executionState === 'READY') hint.textContent = '준비된 Task가 있어요. 아래에서 확인하고 시작하세요.';
+          else if (pickPrimaryReadyTask(view)) hint.textContent = '준비된 Task가 있어요. 아래에서 확인하고 시작하세요.';
           else hint.textContent = '';
         }
         // READY Task → show preview so user can pick Agent/model (elig.ok may be false until selection).
         var elig = view && view.runEligibility;
-        if (view && view.task && view.task.executionState === 'READY' && !pendingPreview) {
+        var readyTask = pickPrimaryReadyTask(view);
+        if (view && readyTask && !pendingPreview) {
           pendingPreview = {
             goalId: view.goal && view.goal.goalId,
             goalTitle: view.goal && view.goal.title,
-            taskId: view.task.taskId,
-            taskTitle: view.task.title,
+            taskId: readyTask.taskId,
+            taskTitle: readyTask.title,
             scope: (p && p.workspacePath) || '',
             criteria: [],
             builder: (elig && elig.desiredBuilder) || ((view.assignment && view.assignment.builders) || [])[0] || '',
