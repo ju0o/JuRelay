@@ -401,14 +401,21 @@ const WIDGET_HTML = `<!DOCTYPE html>
   .boot-err { color:var(--err); font-size:12px; margin-top:6px; }
   .boot-note { font-size:11px; color:var(--muted); margin-top:6px; }
   .proj-switch { position:relative; margin-left:4px; }
-  .proj-switch > summary { list-style:none; cursor:pointer; font-size:11px; border:1px solid var(--border);
-                           border-radius:12px; padding:2px 9px; color:var(--muted); user-select:none; }
+  .proj-switch > summary, .proj-switch > button.proj-label { list-style:none; cursor:pointer; font-size:11px;
+                           border:1px solid var(--border); border-radius:12px; padding:2px 9px;
+                           color:var(--muted); user-select:none; background:transparent; font:inherit; }
   .proj-switch > summary::-webkit-details-marker { display:none; }
-  .proj-switch[open] > summary { color:var(--text); border-color:var(--text); }
+  .proj-switch[open] > summary, .proj-switch.open > button.proj-label { color:var(--text); border-color:var(--text); }
+  .proj-switch > button.proj-label:focus-visible { outline:2px solid var(--mut); outline-offset:1px; }
+  /* UX-V3-SWITCH: legacy details variant must hide absolute menu even where UA
+     ::details-content / content-visibility rules are overridden. */
+  details.proj-switch:not([open]) > .proj-menu { display:none !important; }
+  .proj-menu[hidden] { display:none !important; }
   .proj-menu { position:absolute; right:0; top:120%; z-index:20; min-width:220px; max-width:320px;
+               max-width:min(320px, 86vw); max-height:min(340px, 62vh); overflow:auto;
                background:var(--bg); border:1px solid var(--border); border-radius:8px;
                padding:6px; box-shadow:0 8px 24px rgba(0,0,0,.18); }
-  .proj-menu button { display:block; width:100%; text-align:left; border:0; background:transparent;
+  .proj-menu button { display:block; width:100%; min-height:40px; text-align:left; border:0; background:transparent;
                       color:var(--text); padding:8px; border-radius:6px; cursor:pointer; font-size:12px; }
   .proj-menu button:hover, .proj-menu button:focus { background:var(--panel); }
   .proj-menu .cur { font-weight:700; }
@@ -585,10 +592,10 @@ const WIDGET_HTML = `<!DOCTYPE html>
     <div class="hdr">
       <span class="dot waiting pulse" id="dot"></span>
       <span class="app">Agent Relay</span>
-      <details class="proj-switch hide" id="projSwitch">
-        <summary id="projSwitchLabel">Project ▾</summary>
-        <div class="proj-menu" id="projSwitchMenu" role="menu"></div>
-      </details>
+      <div class="proj-switch hide" id="projSwitch">
+        <button type="button" class="proj-label" id="projSwitchLabel" aria-haspopup="menu" aria-expanded="false" aria-controls="projSwitchMenu">Project ▾</button>
+        <div class="proj-menu" id="projSwitchMenu" role="menu" hidden></div>
+      </div>
       <span class="hpill" id="status">PM 대기</span>
       <span class="hfrac"><b id="headDone">0</b> / <span id="headTotal">0</span></span>
       <span class="lang"><button id="langKo" class="on">한국어</button><button id="langEn">EN</button></span>
@@ -3925,6 +3932,27 @@ const WIDGET_HTML = `<!DOCTYPE html>
           setBootErr('프로젝트 저장 실패: ' + String((e && e.message) || e).slice(0, 200));
         }
       }
+      function setProjectSwitchOpen(open) {
+        var sw = document.getElementById('projSwitch');
+        var menu = document.getElementById('projSwitchMenu');
+        var label = document.getElementById('projSwitchLabel');
+        if (!sw || !menu || !label) return;
+        if (sw.tagName === 'DETAILS') {
+          try { sw.open = !!open; } catch (e) {}
+          return;
+        }
+        if (open) menu.removeAttribute('hidden');
+        else menu.setAttribute('hidden', '');
+        sw.classList.toggle('open', !!open);
+        label.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      function isProjectSwitchOpen() {
+        var sw = document.getElementById('projSwitch');
+        var menu = document.getElementById('projSwitchMenu');
+        if (!sw || !menu) return false;
+        if (sw.tagName === 'DETAILS') return !!sw.open;
+        return !menu.hasAttribute('hidden');
+      }
       function renderProjectSwitch(profiles, selectedId) {
         var sw = document.getElementById('projSwitch');
         var menu = document.getElementById('projSwitchMenu');
@@ -3933,15 +3961,19 @@ const WIDGET_HTML = `<!DOCTYPE html>
         var cur = (profiles || []).find(function (p) { return p.projectId === selectedId; });
         label.textContent = (cur && cur.projectName ? cur.projectName : (selectedId || 'Project')) + ' ▾';
         menu.innerHTML = '';
-        (profiles || []).forEach(function (p) {
+        var snapProfiles = (profiles || []).slice();
+        snapProfiles.forEach(function (p) {
           var b = document.createElement('button');
           b.type = 'button';
+          b.setAttribute('role', 'menuitemradio');
+          b.setAttribute('aria-checked', p.projectId === selectedId ? 'true' : 'false');
           b.className = p.projectId === selectedId ? 'cur' : '';
           b.textContent = (p.projectName || p.projectId)
             + (p.profileState === 'LEGACY' || p.legacy ? ' · LEGACY' : '')
             + (p.profileState === 'UNCONFIGURED' ? ' · 설정 필요' : '');
           b.onclick = async function () {
-            try { sw.open = false; } catch (e) {}
+            setProjectSwitchOpen(false);
+            if (p.projectId === selectedId) return; // explicit no-op on current project
             if (p.legacy || p.profileState === 'LEGACY' || p.profileState === 'UNCONFIGURED'
                 || p.profileState === 'PARTIAL'
                 || p.workspaceConflict || !p.workspaceConfigured) {
@@ -3954,25 +3986,91 @@ const WIDGET_HTML = `<!DOCTYPE html>
               return;
             }
             try {
-              await callTool('relay_pm_select_project', { projectId: p.projectId });
-              renderProjectSwitch(profiles, p.projectId);
+              var res = await callTool('relay_pm_select_project', { projectId: p.projectId });
+              var nextId = (res && res.selectedProjectId) || p.projectId;
+              boot.selectedId = nextId;
+              boot.completed = true;
+              showBootstrap(false);
+              renderProjectSwitch(snapProfiles, nextId);
+              setStatus('waiting', t('connected'), (p.projectName || nextId));
+              logLine('project switch ok → ' + nextId);
               poll();
             } catch (e) {
-              logLine('project switch failed: ' + e.message);
+              var msg = '프로젝트 전환 실패: ' + String((e && e.message) || e).slice(0, 200);
+              logLine(msg);
+              var warnEl = document.getElementById('pdWarn');
+              if (warnEl) {
+                warnEl.className = 'pdash-warn err';
+                warnEl.textContent = msg;
+              }
             }
           };
           menu.appendChild(b);
         });
         var reopen = document.createElement('button');
         reopen.type = 'button';
+        reopen.setAttribute('role', 'menuitem');
         reopen.textContent = '프로젝트 다시 준비…';
         reopen.onclick = function () {
-          try { sw.open = false; } catch (e) {}
+          setProjectSwitchOpen(false);
           showBootstrap(true);
           setBootStep('project');
           loadBootProfiles().then(function () { renderBootProjectList(); });
         };
         menu.appendChild(reopen);
+        /* Label toggle + ESC / outside-click / keyboard: explicit user gesture only. */
+        label.onclick = function () {
+          setProjectSwitchOpen(!isProjectSwitchOpen());
+          if (isProjectSwitchOpen()) {
+            var first = menu.querySelector('button');
+            if (first) { try { first.focus(); } catch (e) {} }
+          }
+        };
+        if (!label.getAttribute('data-switch-wired')) {
+          label.setAttribute('data-switch-wired', '1');
+          label.addEventListener('keydown', function (ev) {
+            if (ev.key === 'ArrowDown' || ev.key === 'Enter' || ev.key === ' ') {
+              ev.preventDefault();
+              setProjectSwitchOpen(true);
+              var first = menu.querySelector('button');
+              if (first) { try { first.focus(); } catch (e) {} }
+            } else if (ev.key === 'Escape' && isProjectSwitchOpen()) {
+              ev.preventDefault();
+              setProjectSwitchOpen(false);
+              try { label.focus(); } catch (e) {}
+            }
+          });
+          menu.addEventListener('keydown', function (ev) {
+            var items = menu.querySelectorAll('button');
+            if (!items.length) return;
+            var idx = Array.prototype.indexOf.call(items, document.activeElement);
+            if (ev.key === 'Escape') {
+              ev.preventDefault();
+              setProjectSwitchOpen(false);
+              try { label.focus(); } catch (e) {}
+            } else if (ev.key === 'ArrowDown') {
+              ev.preventDefault();
+              var nx = items[(idx + 1 + items.length) % items.length];
+              if (nx) nx.focus();
+            } else if (ev.key === 'ArrowUp') {
+              ev.preventDefault();
+              var pv = items[(idx - 1 + items.length) % items.length];
+              if (pv) pv.focus();
+            } else if (ev.key === 'Home') {
+              ev.preventDefault(); items[0].focus();
+            } else if (ev.key === 'End') {
+              ev.preventDefault(); items[items.length - 1].focus();
+            }
+          });
+          document.addEventListener('click', function (ev) {
+            if (!isProjectSwitchOpen()) return;
+            var swEl = document.getElementById('projSwitch');
+            if (swEl && !swEl.contains(ev.target)) setProjectSwitchOpen(false);
+          });
+          document.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Escape' && isProjectSwitchOpen()) setProjectSwitchOpen(false);
+          });
+        }
         sw.classList.remove('hide');
       }
       async function maybeStartBootstrap() {
