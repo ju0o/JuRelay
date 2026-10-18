@@ -1,4 +1,26 @@
-# Agent Relay
+# JuRelay
+
+> **JuRelay** turns **ChatGPT into the project PM** for feature-level WBS / Goal / Task planning and final approval. The free, self-hosted MCP bridge connects ChatGPT to your own local AI Workers and QA, while the Widget monitors progress.
+>
+> **Official name:** JuRelay. Historical "Agent Relay" names remain in code/protocol paths for compatibility until a separately approved migration.
+
+## Current planning / source of truth (2026-10-18)
+
+- **[Start here: MCP-first documentation index](docs/rebaseline/README.md)**
+- **[Founder-approved execution and naming decisions](docs/rebaseline/JURELAY-FOUNDER-DECISIONS-2026-10-18.md)**
+- **[Engine architecture v0.4 with 2 Mermaid diagrams](docs/rebaseline/JuRelay_Engine_Rebaseline_v0.4_Architecture.md)**
+
+**Confirmed workflow:** ChatGPT PM → Worker → **QA first-pass** (FAIL loops back to same Task Worker; QA PASS only then goes to ordinary PM review) → JuRelay durable Result/PM Wake → **ChatGPT PM final ACCEPT or CHANGES**. Task units are independently testable **features**, not per-file micro-steps. PM ACCEPT prepares the next READY Task, but does not silently run it.
+
+**JuCrew is a separate CLI multi-agent harness**, not another name for JuRelay and not a required V1 dependency. Code/ChatGPT usage is on the end user's own computer/accounts; "free OSS" does not guarantee free AI model usage.
+
+**Status:** product direction approved. Implementation, production execution, archive/migration and public release remain separate Founder gates. This branch contains experimental MCP-first work and must not be mistaken for certified `main` deployment.
+
+---
+
+## Historical engineering README
+
+The original project notes below retain prior terminology and historical measurements. Refer to the rebaseline index above for *current product direction* and do not treat old descriptions, releases, counts or legacy workflow decisions as current production certification.
 
 > 한 사람이 여러 AI 코딩 에이전트를 굴릴 때, **무엇이 끝났는지 상태로 남는** 로컬 오케스트레이션 런타임.
 > 클라우드 없음 · 외부 DB 없음 · 파일시스템이 상태 저장소.
