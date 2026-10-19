@@ -43,8 +43,10 @@ const gate = await import('../dist/server/backend/qa-gate.js');
 const disp = await import('../dist/server/backend/dispatcher.js');
 const wr = await import('../dist/server/backend/worker-registry.js');
 const pmDel = await import('../dist/server/backend/pm-delivery.js');
+const incidents = await import('../dist/server/backend/incident.js');
 const plans = await import('../dist/server/backend/execution-plan.js');
 const planDispatch = await import('../dist/server/backend/execution-plan-dispatch.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const retryAuth = await import('../dist/server/backend/retry-authorization.js');
 const observation = await import('../dist/server/backend/observation-lock.js');
 const captureSvc = await import('../dist/server/backend/capture-service.js');
@@ -63,6 +65,19 @@ wr.writeWorkerRegistryRecord(ROOT, {
   launchCommand: NODE, launchArgsPrefix: [EXIT_ZERO_FIXTURE],
   capabilities: ['fixture'], observationAdapterId: 'test-fixture',
 });
+
+/** P2-OWNER-R01 formal select + approve for every frozen Plan binding. */
+function approvePlanSelection(plan) {
+  for (const binding of plan.taskBindings) {
+    taskExec.setTaskExecutionConfig(ROOT, project, {
+      projectId: project,
+      taskId: binding.taskId,
+      workerId: binding.workerId,
+      modelId: 'test-model',
+    });
+    taskExec.approveTaskExecution(ROOT, project, binding.taskId, 'OWNER_MCP');
+  }
+}
 
 // Fake semantic QA workers with an invocation marker file.
 const FAKE_QA_DIR = path.join(ROOT, '_fake-qa-workers');
@@ -378,14 +393,16 @@ console.log('\n== SEAM 5b: 3rd FAIL (budget exhausted) → escalate once, re-esc
   check(f3.outcome === 'FAIL_ESCALATED_BUDGET_EXHAUSTED', 'S5b run 3 FAIL → escalation, never Run 4');
   check(gt.getTask(ROOT, project, task.taskId).linkedRuns.length === 3, 'S5b exactly 3 Runs (no 4th)');
   check(prepsFor(task.taskId).length === 2, 'S5b exactly 2 preparations (budget = 2)');
-  check(deliveriesFor(task.taskId).length === 1, 'S5b exactly one escalation Delivery');
+  check(deliveriesFor(task.taskId).length === 0, 'S5b no ordinary Delivery on exhaustion');
+  check(incidents.listIncidents(ROOT, project).filter((i) => i.taskId === task.taskId && i.code === 'QA_BUDGET_EXHAUSTED').length === 1, 'S5b exactly one budget Incident');
   const vers = attemptsFor(task.taskId).map((a) => a.finalQaStatus);
   check(JSON.stringify(vers) === JSON.stringify(['FAIL', 'FAIL', 'FAIL']), 'S5b three terminal FAIL attempts, none invented');
   // Restart after escalation: re-escalation collapses to the same Delivery.
   await simulateRestart();
   const f4 = await gate.reconcileQaGate(ROOT, project, task.taskId);
-  check(f4.outcome === 'FAIL_ESCALATED_BUDGET_EXHAUSTED' && f4.deliveryId === f3.deliveryId, 'S5b duplicate post-escalation reconcile is a no-op');
-  check(deliveriesFor(task.taskId).length === 1 && prepsFor(task.taskId).length === 2, 'S5b counts unchanged after duplicate');
+  check(f4.outcome === 'FAIL_ESCALATED_BUDGET_EXHAUSTED' && f4.incidentId === f3.incidentId, 'S5b duplicate post-escalation reconcile is a no-op');
+  check(deliveriesFor(task.taskId).length === 0 && prepsFor(task.taskId).length === 2, 'S5b counts unchanged after duplicate');
+  check(incidents.listIncidents(ROOT, project).filter((i) => i.taskId === task.taskId && i.code === 'QA_BUDGET_EXHAUSTED').length === 1, 'S5b still one budget Incident');
 }
 
 // ── SEAM 7-post-dispatch: duplicate call with a result-less new Run ──────────
@@ -564,6 +581,7 @@ console.log('\n== PLAN: restart-framed FAIL then PASS never moves activeTaskId =
     planScopeFingerprint: plans.computeExecutionPlanScopeFingerprint(plan),
     taskScopeFingerprints: Object.fromEntries(plan.taskBindings.map((b) => [b.taskId, b.scopeFingerprint])),
   };
+  approvePlanSelection(plan);
   const start = await planDispatch.dispatchExecutionPlanOwnerApproved(ROOT, project, {
     planId: plan.planId, expectedPlanState: 'PLANNED', ownerAuthorization: authz,
   });

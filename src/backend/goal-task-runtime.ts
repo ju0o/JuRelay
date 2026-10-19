@@ -61,6 +61,7 @@ import {
   persistTaskRecord,
   withTaskLinkLock,
 } from './goal-task.js';
+import { getQaAttempt, qaAttemptIdFor, QaAttemptError } from './qa-attempt.js';
 
 export { wouldCreateDependencyCycle } from './goal-task.js';
 
@@ -501,6 +502,116 @@ export function markResultReceived(
   });
 }
 
+export type QaAcceptBlockReason =
+  | 'MISSING_ATTEMPT'
+  | 'CORRUPT_ATTEMPT'
+  | 'UNREADABLE_ATTEMPT'
+  | 'NOT_PASS'
+  | 'IDENTITY_MISMATCH'
+  | 'STALE_RUN'
+  | 'HASH_MISMATCH';
+
+/** Fail-closed refusal for a new ACCEPT. Legacy tasks without a QA contract never throw. */
+export class QaAcceptEligibilityError extends Error {
+  readonly code = 'QA_ACCEPT_BLOCKED' as const;
+  readonly reason: QaAcceptBlockReason;
+  constructor(reason: QaAcceptBlockReason, message: string) {
+    super(message);
+    this.name = 'QaAcceptEligibilityError';
+    this.reason = reason;
+  }
+}
+
+function hasQaContract(task: TaskRecord): boolean {
+  return task.qaContract !== undefined && task.qaContract !== null;
+}
+
+/**
+ * Canonical QA eligibility for a new ACCEPT of one current Run.
+ * No QA contract → allow, matching the legacy delivery rule.
+ * A contract requires the durable attempt `QA-{taskId}-{runId}` to be PASS
+ * and to match project, task, run, attempt id, linked sequence, and any
+ * contract hash present on both records. This function does not mutate.
+ */
+export function assertCurrentRunQaAllowsAccept(
+  dataRoot: string,
+  project: string,
+  task: TaskRecord,
+  runId: string,
+): void {
+  if (!hasQaContract(task)) return;
+  if (task.project !== project) {
+    throw new QaAcceptEligibilityError(
+      'IDENTITY_MISMATCH',
+      `QA ACCEPT blocked: task project ${task.project} does not match ${project}`,
+    );
+  }
+  const currentRunId = resolveCurrentAttemptRunId(task);
+  if (currentRunId !== runId) {
+    throw new QaAcceptEligibilityError(
+      'STALE_RUN',
+      `QA ACCEPT blocked: run ${runId} is not the current attempt (${currentRunId ?? 'none'})`,
+    );
+  }
+  const linked = task.linkedRuns.find((run) => run.runId === runId);
+  if (!linked) {
+    throw new QaAcceptEligibilityError(
+      'IDENTITY_MISMATCH',
+      `QA ACCEPT blocked: run ${runId} is not linked to ${task.taskId}`,
+    );
+  }
+  let expectedAttemptId: string;
+  try {
+    expectedAttemptId = qaAttemptIdFor(task.taskId, runId);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    throw new QaAcceptEligibilityError('IDENTITY_MISMATCH', `QA ACCEPT blocked: ${message}`);
+  }
+  let attempt;
+  try {
+    attempt = getQaAttempt(dataRoot, project, expectedAttemptId);
+  } catch (err) {
+    if (err instanceof QaAttemptError && err.code === 'NOT_FOUND') {
+      throw new QaAcceptEligibilityError('MISSING_ATTEMPT', `QA ACCEPT blocked: no QA attempt ${expectedAttemptId}`);
+    }
+    if (err instanceof QaAttemptError && err.code === 'CORRUPT_RECORD') {
+      throw new QaAcceptEligibilityError('CORRUPT_ATTEMPT', `QA ACCEPT blocked: QA attempt ${expectedAttemptId} is corrupt`);
+    }
+    const message = err instanceof Error ? err.message : String(err);
+    throw new QaAcceptEligibilityError('UNREADABLE_ATTEMPT', `QA ACCEPT blocked: ${message}`);
+  }
+  if (
+    attempt.qaAttemptId !== expectedAttemptId
+    || attempt.project !== project
+    || attempt.taskId !== task.taskId
+    || attempt.runId !== runId
+  ) {
+    throw new QaAcceptEligibilityError(
+      'IDENTITY_MISMATCH',
+      `QA ACCEPT blocked: QA attempt ${attempt.qaAttemptId} does not match ${project}/${task.taskId}/${runId}`,
+    );
+  }
+  if (attempt.qaAttemptNumber !== linked.taskRunSequence) {
+    throw new QaAcceptEligibilityError(
+      'IDENTITY_MISMATCH',
+      `QA ACCEPT blocked: attempt sequence ${attempt.qaAttemptNumber} does not match run sequence ${linked.taskRunSequence}`,
+    );
+  }
+  const taskHash = task.contract?.contract_hash;
+  if (typeof taskHash === 'string' && typeof attempt.contractHash === 'string' && taskHash !== attempt.contractHash) {
+    throw new QaAcceptEligibilityError(
+      'HASH_MISMATCH',
+      `QA ACCEPT blocked: attempt contract hash does not match task contract ${taskHash}`,
+    );
+  }
+  if (attempt.finalQaStatus !== 'PASS') {
+    throw new QaAcceptEligibilityError(
+      'NOT_PASS',
+      `QA ACCEPT blocked: finalQaStatus is ${attempt.finalQaStatus}`,
+    );
+  }
+}
+
 /**
  * Phase I3F-2 canonical Accept Result input.
  * expectedExecutionState/expectedPmState are REQUIRED and fixed by contract —
@@ -564,6 +675,8 @@ export function acceptResult(
         '잘못된 runId: 현재 시도(current attempt)가 아닌 과거/오래된 Run은 accept할 수 없습니다.',
       );
     }
+
+    assertCurrentRunQaAllowsAccept(dataRoot, project, task, rid);
 
     assertLegalPmTransition('VERIFYING', 'ACCEPTED');
 

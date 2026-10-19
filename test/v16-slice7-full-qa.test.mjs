@@ -42,14 +42,15 @@ const gate = await import('../dist/server/backend/qa-gate.js');
 const disp = await import('../dist/server/backend/dispatcher.js');
 const wr = await import('../dist/server/backend/worker-registry.js');
 const pmDel = await import('../dist/server/backend/pm-delivery.js');
+const incidents = await import('../dist/server/backend/incident.js');
 const pmJud = await import('../dist/server/backend/pm-judgment.js');
 const retryPrep = await import('../dist/server/backend/retry-preparation.js');
 const retryDispatch = await import('../dist/server/backend/retry-dispatch.js');
 const retryAuth = await import('../dist/server/backend/retry-authorization.js');
 const plans = await import('../dist/server/backend/execution-plan.js');
 const planDispatch = await import('../dist/server/backend/execution-plan-dispatch.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const planContinuation = await import('../dist/server/backend/execution-plan-continuation.js');
-const vctx = await import('../dist/server/backend/pm-verification-context.js');
 const observation = await import('../dist/server/backend/observation-lock.js');
 const captureSvc = await import('../dist/server/backend/capture-service.js');
 const fsKernel = await import('../dist/server/backend/fs.js');
@@ -68,6 +69,19 @@ wr.writeWorkerRegistryRecord(ROOT, {
   launchCommand: NODE, launchArgsPrefix: [EXIT_ZERO_FIXTURE],
   capabilities: ['fixture'], observationAdapterId: 'test-fixture',
 });
+
+/** P2-OWNER-R01 formal select + approve for every frozen Plan binding. */
+function approvePlanSelection(plan) {
+  for (const binding of plan.taskBindings) {
+    taskExec.setTaskExecutionConfig(ROOT, project, {
+      projectId: project,
+      taskId: binding.taskId,
+      workerId: binding.workerId,
+      modelId: 'test-model',
+    });
+    taskExec.approveTaskExecution(ROOT, project, binding.taskId, 'OWNER_MCP');
+  }
+}
 
 const FAKE_QA_DIR = path.join(ROOT, '_fake-qa-workers');
 fs.mkdirSync(FAKE_QA_DIR, { recursive: true });
@@ -238,11 +252,11 @@ console.log('\n== F2. semantic QA errors twice ⇒ BLOCKED ⇒ escalate, zero re
   check(marks === 6, `F2 three bounded semantic cycles, two invocations each (got ${marks})`);
   check(prepsFor(task.taskId).length === 0, 'F2 BLOCKED consumes no remediation budget');
   check(gt.getTask(ROOT, project, task.taskId).linkedRuns.length === 1, 'F2 no remediation Run on the BLOCKED path');
-  check(deliveriesFor(task.taskId).length === 1, 'F2 escalation Delivery minted only after retry budget');
+  check(deliveriesFor(task.taskId).length === 0, 'F2 no ordinary Delivery after BLOCKED');
+  check(incidents.listIncidents(ROOT, project).filter((i) => i.taskId === task.taskId && i.code === 'QA_BLOCKED').length === 1, 'F2 one QA_BLOCKED Incident');
+  check(gt.getTask(ROOT, project, task.taskId).pmState === 'PENDING', 'F2 BLOCKED does not enter VERIFYING');
   const att = attemptsFor(task.taskId)[0];
   check(att.deterministic.status === 'PASS' && att.semantic === undefined && att.reason, 'F2 deterministic PASS preserved with BLOCKED reason');
-  const packet = vctx.getVerificationContextForDelivery(ROOT, project, pmDel.pmDeliveryIdFor(task.taskId, r1.runId));
-  check(packet.qa?.status === 'BLOCKED' && packet.qa?.escalationReason === 'BLOCKED', 'F2 PM sees qa.status=BLOCKED escalation evidence');
 }
 
 // ── F3. Deterministic BLOCKED (spawn error) → escalate, semantic never runs ───
@@ -263,7 +277,8 @@ console.log('\n== F3. deterministic command spawn error ⇒ BLOCKED, semantic ne
   const res = await gate.reconcileQaGate(ROOT, project, task.taskId);
   check(res.outcome === 'BLOCKED_ESCALATED', 'F3 spawn-error ⇒ BLOCKED escalation (never FAIL)');
   check(fs.readFileSync(marker, 'utf8').length === 0, 'F3 semantic QA Agent never invoked (hard gate)');
-  check(prepsFor(task.taskId).length === 0 && deliveriesFor(task.taskId).length === 1, 'F3 no remediation, one escalation Delivery');
+  check(prepsFor(task.taskId).length === 0 && deliveriesFor(task.taskId).length === 0, 'F3 no remediation, no ordinary Delivery');
+  check(incidents.listIncidents(ROOT, project).filter((i) => i.taskId === task.taskId && i.code === 'QA_BLOCKED').length === 1, 'F3 one QA_BLOCKED Incident');
 }
 
 // ── F4. QA remediation lineage vs GPT CHANGES retry lineage (full loop) ───────
@@ -513,6 +528,7 @@ console.log('\n== F10. disk-corrupted QA contract ⇒ fail closed (no verdict fa
   check(attemptsFor(task.taskId).length === 0, 'F10 no QA attempt minted from a corrupted contract');
   check(prepsFor(task.taskId).length === 0, 'F10 no remediation from a corrupted contract');
   check(deliveriesFor(task.taskId).length === 0, 'F10 no Delivery from a corrupted contract');
+  check(incidents.listIncidents(ROOT, project).filter((i) => i.taskId === task.taskId && i.code === 'QA_CONTRACT_INVALID').length === 1, 'F10 one contract Incident');
   // Restore: the failed reconcile mutated nothing — the Task resumes cleanly.
   raw.qaContract.deterministic[0].kind = 'fileExists';
   writeTaskRaw(task.taskId, raw);
@@ -575,6 +591,7 @@ console.log('\n== F12. authority re-proof: QA FAIL/PASS move nothing; GPT ACCEPT
     planScopeFingerprint: plans.computeExecutionPlanScopeFingerprint(plan),
     taskScopeFingerprints: Object.fromEntries(plan.taskBindings.map((b) => [b.taskId, b.scopeFingerprint])),
   };
+  approvePlanSelection(plan);
   await planDispatch.dispatchExecutionPlanOwnerApproved(ROOT, project, {
     planId: plan.planId, expectedPlanState: 'PLANNED', ownerAuthorization: authz,
   });

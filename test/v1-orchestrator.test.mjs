@@ -19,6 +19,7 @@ const gt = await import('../dist/server/backend/goal-task.js');
 const rt = await import('../dist/server/backend/goal-task-runtime.js');
 const gate = await import('../dist/server/backend/qa-gate.js');
 const pmDel = await import('../dist/server/backend/pm-delivery.js');
+const incidents = await import('../dist/server/backend/incident.js');
 const pmJud = await import('../dist/server/backend/pm-judgment.js');
 const rtp = await import('../dist/server/backend/retry-preparation.js');
 const wr = await import('../dist/server/backend/worker-registry.js');
@@ -162,37 +163,6 @@ async function mintPendingDelivery(project, opts = {}) {
   assert.equal(out.outcome, 'PASS_DELIVERED', `expected QA PASS_DELIVERED for task ${n}, got ${out.outcome}`);
   const deliveryId = `PMD-${t.taskId}-${runId}`;
   return { taskId: t.taskId, goalId: g.goalId, runId, deliveryId, contractHash: (await import('../dist/server/backend/goal-task.js')).getTask(dataRoot, project, t.taskId).contract.contract_hash };
-}
-
-/** Direct construction with NO QA gate (no QA attempt ⇒ no QA-minted VERIFIED
- * record): the Task lands RESULT_RECEIVED + VERIFYING and a TASK_VERIFY Delivery
- * is minted, so the evidence gate judges exactly the records the test plants. */
-async function mintDeliveryWithoutQaGate(project, requiredEvidence, runSeq) {
-  const { goal: g } = await v1Intake.ensureV1ContainerGoal(dataRoot, project);
-  const t = await gt.createTask(dataRoot, project, {
-    goalId: g.goalId, title: `Orch no-qa ${runSeq}`, goal: 'produce correct output', reason: 'orchestrator certification',
-    scope: 'out.txt only', completionCriteria: ['done when out.txt is correct'],
-    executionState: 'RUNNING', pmState: 'PENDING',
-    contract: {
-      goal: 'produce correct output', bounded_scope: 'out.txt only',
-      acceptance_criteria: [{ id: 'AC-SEMANTIC', description: 'output is correct', validationMode: 'SEMANTIC' }],
-      required_evidence: requiredEvidence,
-      qa_route: { deterministic: [{ kind: 'fileExists', path: 'out.txt' }], semantic: { qaWorkerId: 'floor-qa-worker' }, maxQaRemediationAttempts: 0 },
-    },
-  });
-  const ws = path.join(ROOT, 'workspace', `floor-${runSeq}`);
-  const folder = path.join(dataRoot, project, '_runs', `floor-run-${runSeq}`);
-  fs.mkdirSync(ws, { recursive: true });
-  fs.mkdirSync(path.join(folder, 'evidence'), { recursive: true });
-  const runId = `floor-run-${runSeq}`;
-  fs.writeFileSync(path.join(folder, 'meta.json'), JSON.stringify({ tags: [], runId, workspaceRoot: ws, workerId: 'floor-builder' }));
-  await gt.linkRunToTask(dataRoot, project, t.taskId, folder);
-  fs.writeFileSync(path.join(folder, 'result.md'), `orchestrator result text ${runSeq}`);
-  fs.writeFileSync(path.join(folder, 'evidence', 'adapter.json'), '{}');
-  await rt.markResultReceived(dataRoot, project, t.taskId, runId);
-  const delivery = await pmDel.ensurePmDeliveryForTaskVerify(dataRoot, project, t.taskId);
-  assert.ok(delivery, `delivery minted without QA gate for ${project}`);
-  return { taskId: t.taskId, goalId: g.goalId, runId, deliveryId: delivery.deliveryId };
 }
 
 function mkTestDirs(name) {
@@ -606,87 +576,141 @@ test('(r38c-a) prose required_evidence is satisfied by a non-FAIL VERIFIED recor
 });
 
 test('(r38c-b) prose required_evidence with only ADAPTER_OBSERVATION/OBSERVED is refused — reason says "floor: VERIFIED evidence absent"', async () => {
-  const project = 'OrchEvGateFloorAbsent';
-  const d = await mintDeliveryWithoutQaGate(project, [PROSE_EVIDENCE_REQ], 1);
-  await evk.recordAdapterObservation(dataRoot, project, {
-    summary: 'Adapter RESPONSE_COMPLETE observed for Task',
-    taskId: d.taskId, runId: d.runId,
-  });
-  const roleConfig = makeRoleConfig(project);
+  const evidenceGate = await import('../dist/server/orchestrator/evidence-gate.js');
+  const observed = {
+    evidenceId: 'EV-FLOOR-OBSERVED', type: 'ADAPTER_OBSERVATION', trustLevel: 'OBSERVED', status: 'INFO',
+  };
+  const absent = evidenceGate.checkRequiredEvidence(
+    { required_evidence: [PROSE_EVIDENCE_REQ] },
+    [observed],
+  );
+  assert.equal(absent.satisfied, false);
+  assert.deepEqual(evidenceGate.evidenceGateJudgmentRows(absent), [{ requirementId: 'REQ-1', requirement: PROSE_EVIDENCE_REQ, rule: 'floor' }]);
+  const absentText = evidenceGate.describeUnmetRequirement(absent.unmet[0]);
+  assert.match(absentText, /floor: VERIFIED evidence absent/);
+  assert.ok(!/names no machine-checkable/.test(absentText));
+  assert.ok(absent.present.some((record) => record.type === 'ADAPTER_OBSERVATION' && record.trustLevel === 'OBSERVED'));
+  const verified = evidenceGate.checkRequiredEvidence(
+    { required_evidence: [PROSE_EVIDENCE_REQ] },
+    [{ evidenceId: 'EV-FLOOR-PASS', type: 'QA', trustLevel: 'VERIFIED', status: 'PASS' }],
+  );
+  assert.equal(verified.satisfied, true, 'a non-FAIL VERIFIED record still satisfies the floor');
+});
+
+test('(r38c-c) prose required_evidence is refused when the only VERIFIED record bound to the run has status FAIL', async () => {
+  const evidenceGate = await import('../dist/server/orchestrator/evidence-gate.js');
+  const failed = {
+    evidenceId: 'EV-FLOOR-FAIL', type: 'TEST', trustLevel: 'VERIFIED', status: 'FAIL',
+  };
+  const check = evidenceGate.checkRequiredEvidence(
+    { required_evidence: [PROSE_EVIDENCE_REQ] },
+    [failed],
+  );
+  assert.equal(check.satisfied, false);
+  assert.deepEqual(evidenceGate.evidenceGateJudgmentRows(check), [{ requirementId: 'REQ-1', requirement: PROSE_EVIDENCE_REQ, rule: 'floor' }]);
+  assert.match(evidenceGate.describeUnmetRequirement(check.unmet[0]), /floor: VERIFIED evidence absent/);
+  assert.ok(check.present.some((record) => record.type === 'TEST' && record.trustLevel === 'VERIFIED' && record.status === 'FAIL'));
+});
+
+test('(r38c-floor-pass) a real QA PASS satisfies the VERIFIED floor without a planted evidence record', async () => {
+  const project = 'OrchEvGateFloorPassAudit';
+  const d = await mintPendingDelivery(project, { requiredEvidence: [PROSE_EVIDENCE_REQ] });
+  const qaMod = await import('../dist/server/backend/qa-attempt.js');
+  const attempt = qaMod.getQaAttempt(dataRoot, project, qaMod.qaAttemptIdFor(d.taskId, d.runId));
+  assert.equal(attempt.finalQaStatus, 'PASS');
+  const bound = evk.listEvidenceForRun(dataRoot, project, d.runId);
+  assert.ok(bound.some((record) => record.trustLevel === 'VERIFIED' && record.status !== 'FAIL'), 'the QA PASS itself wrote the floor record');
   const pkg = await import('../dist/server/orchestrator/pm-packets.js');
   const packet = pkg.buildPmFinalGatePacket(dataRoot, project, d.deliveryId);
-  assert.equal(packet.context.qa, undefined, 'no QA attempt ⇒ no qa block, legacy-style delivery reaches the evidence gate');
-  const pmReason = 'the raw self-test output is visible in the cited record, so I accept on this basis';
+  assert.equal(packet.context.qa.status, 'PASS');
+  const adapter = new FakePmAdapter('fake-pm', {
+    scripted: [fence('PM_JUDGMENT v1', { decision: 'ACCEPT', retry: 'NONE', reason: 'the QA PASS evidence meets the floor', contract_hash: packet.context.task.contract_hash, context_hash: packet.contextHash })],
+  });
+  const { auditDir, stateFile } = mkTestDirs('evgate-floor-pass-audit');
+  const result = await roleLoop.processFinalGate({ dataRoot, project, roleConfig: makeRoleConfig(project), pmAdapter: adapter, dispatchHook: fakeDispatchHook([]), auditDir, stateFile }, d.deliveryId);
+  assert.equal(result.outcome, 'APPLIED');
+  const judgment = pmJud.getPmJudgment(dataRoot, project, `PMJ-${d.deliveryId}`);
+  assert.deepEqual(judgment.evidenceGate, [{ requirementId: 'REQ-1', requirement: PROSE_EVIDENCE_REQ, rule: 'floor' }]);
+  assert.ok(!auditLines(auditDir).some((line) => line.outcome === 'ACCEPT_REFUSED_EVIDENCE'), 'a real QA PASS does not write a floor refusal');
+  assert.equal(gt.getTask(dataRoot, project, d.taskId).pmState, 'ACCEPTED');
+});
+
+test('(r38c-floor-missing) a real QA PASS with that run evidence removed audits the floor refusal', async () => {
+  const project = 'OrchEvGateFloorMissingAudit';
+  const d = await mintPendingDelivery(project, { requiredEvidence: [PROSE_EVIDENCE_REQ] });
+  const qaMod = await import('../dist/server/backend/qa-attempt.js');
+  const attemptId = qaMod.qaAttemptIdFor(d.taskId, d.runId);
+  assert.equal(qaMod.getQaAttempt(dataRoot, project, attemptId).finalQaStatus, 'PASS');
+  assert.ok(evk.listEvidenceForRun(dataRoot, project, d.runId).some((record) => record.trustLevel === 'VERIFIED' && record.status !== 'FAIL'));
+  for (const record of evk.listEvidenceForRun(dataRoot, project, d.runId)) {
+    fs.rmSync(evk.evidenceFolder(dataRoot, project, record.evidenceId), { recursive: true, force: true });
+  }
+  assert.equal(evk.listEvidenceForRun(dataRoot, project, d.runId).length, 0, 'isolated run evidence is absent');
+  assert.equal(qaMod.getQaAttempt(dataRoot, project, attemptId).finalQaStatus, 'PASS', 'the QA PASS record is unchanged');
+  const pkg = await import('../dist/server/orchestrator/pm-packets.js');
+  const packet = pkg.buildPmFinalGatePacket(dataRoot, project, d.deliveryId);
+  assert.equal(packet.context.qa.status, 'PASS');
+  const pmReason = 'prose looks complete even without a verified record';
   const adapter = new FakePmAdapter('fake-pm', {
     scripted: [fence('PM_JUDGMENT v1', { decision: 'ACCEPT', retry: 'NONE', reason: pmReason, contract_hash: packet.context.task.contract_hash, context_hash: packet.contextHash })],
   });
-  const { auditDir, stateFile } = mkTestDirs('evgate-floor-absent');
-  const result = await roleLoop.processFinalGate({ dataRoot, project, roleConfig, pmAdapter: adapter, dispatchHook: fakeDispatchHook([]), auditDir, stateFile }, d.deliveryId);
+  const { auditDir, stateFile } = mkTestDirs('evgate-floor-missing-audit');
+  const result = await roleLoop.processFinalGate({ dataRoot, project, roleConfig: makeRoleConfig(project), pmAdapter: adapter, dispatchHook: fakeDispatchHook([]), auditDir, stateFile }, d.deliveryId);
   assert.equal(result.outcome, 'ACCEPT_REFUSED_EVIDENCE');
   assert.equal(result.decision, 'CHANGES');
   const judgment = pmJud.getPmJudgment(dataRoot, project, `PMJ-${d.deliveryId}`);
   assert.equal(judgment.decision, 'CHANGES');
-  assert.match(judgment.reason, /floor: VERIFIED evidence absent/, 'reason names the missing floor, not the contract text');
-  assert.ok(!/names no machine-checkable/.test(judgment.reason), 'the r38b phrase describing the contract is gone');
-  assert.deepEqual(judgment.evidenceGate, [{ requirementId: 'REQ-1', requirement: PROSE_EVIDENCE_REQ, rule: 'floor' }], 'applied judgment records the floor rule');
-  assert.notEqual(gt.getTask(dataRoot, project, d.taskId).pmState, 'ACCEPTED', 'the Task is NOT accepted on an OBSERVED-only run');
+  assert.match(judgment.reason, /floor: VERIFIED evidence absent/);
+  assert.ok(judgment.reason.includes(pmReason));
+  assert.deepEqual(judgment.evidenceGate, [{ requirementId: 'REQ-1', requirement: PROSE_EVIDENCE_REQ, rule: 'floor' }]);
+  assert.notEqual(gt.getTask(dataRoot, project, d.taskId).pmState, 'ACCEPTED');
   const refusal = auditLines(auditDir).find((line) => line.outcome === 'ACCEPT_REFUSED_EVIDENCE');
-  assert.ok(refusal, 'refusal audited');
+  assert.ok(refusal, 'floor refusal audit preserved');
   assert.deepEqual(refusal.unmet, ['REQ-1']);
   assert.match(refusal.requirements[0], /floor: VERIFIED evidence absent/);
-  assert.ok(refusal.present.some((s) => /ADAPTER_OBSERVATION\/OBSERVED/.test(s)), 'present records are listed');
-  assert.ok(refusal.rules.includes('REQ-1:floor'), 'audit line records the matching rule');
+  assert.ok(refusal.rules.includes('REQ-1:floor'));
+  assert.equal(refusal.decision, 'ACCEPT');
+  assert.equal(refusal.runId, d.runId);
+  assert.equal(refusal.pmReason, pmReason);
+  assert.deepEqual(refusal.present, []);
 });
 
-test('(r38c-c) prose required_evidence is refused when the only VERIFIED record bound to the run has status FAIL', async () => {
-  const project = 'OrchEvGateFloorFail';
-  const d = await mintDeliveryWithoutQaGate(project, [PROSE_EVIDENCE_REQ], 2);
-  await evk.recordTestEvidence(dataRoot, project, {
-    summary: 'deterministic QA: node scripts/founder-brief.mjs --self-test exited 7',
-    status: 'FAIL', source: { kind: 'qa-gate', tool: 'qa-deterministic-evaluator' },
-    taskId: d.taskId, runId: d.runId,
-  });
-  const roleConfig = makeRoleConfig(project);
-  const pkg = await import('../dist/server/orchestrator/pm-packets.js');
-  const packet = pkg.buildPmFinalGatePacket(dataRoot, project, d.deliveryId);
-  const adapter = new FakePmAdapter('fake-pm', {
-    scripted: [fence('PM_JUDGMENT v1', { decision: 'ACCEPT', retry: 'NONE', reason: 'the failing run is still evidence that the test ran, so I accept', contract_hash: packet.context.task.contract_hash, context_hash: packet.contextHash })],
-  });
-  const { auditDir, stateFile } = mkTestDirs('evgate-floor-fail');
-  const result = await roleLoop.processFinalGate({ dataRoot, project, roleConfig, pmAdapter: adapter, dispatchHook: fakeDispatchHook([]), auditDir, stateFile }, d.deliveryId);
-  assert.equal(result.outcome, 'ACCEPT_REFUSED_EVIDENCE');
-  const judgment = pmJud.getPmJudgment(dataRoot, project, `PMJ-${d.deliveryId}`);
-  assert.equal(judgment.decision, 'CHANGES');
-  assert.match(judgment.reason, /floor: VERIFIED evidence absent/, 'a FAIL-status VERIFIED record never satisfies the floor');
-  assert.deepEqual(judgment.evidenceGate, [{ requirementId: 'REQ-1', requirement: PROSE_EVIDENCE_REQ, rule: 'floor' }]);
-  const refusal = auditLines(auditDir).find((line) => line.outcome === 'ACCEPT_REFUSED_EVIDENCE');
-  assert.ok(refusal, 'refusal audited');
-  assert.ok(refusal.present.some((s) => /:TEST\/VERIFIED\/FAIL/.test(s)), 'the FAIL VERIFIED record is listed as present');
-});
-
-test('(r38c-d) explicit TEST/VERIFIED token requirement keeps the round-38b rule, recorded as rule=token (unsatisfied and satisfied)', async () => {
-  // Unsatisfied: token rule refuses with the r38b wording (a TEST record is
-  // required; OBSERVED alone never suffices).
+test('(r38c-d) explicit TEST/VERIFIED token requirement keeps the round-38b rule on a real QA PASS run (unsatisfied and satisfied)', async () => {
+  const tokenRequirement = 'TEST/VERIFIED machine-proof of the --self-test run';
   const projectA = 'OrchEvGateTokenUnsatisfied';
-  const da = await mintDeliveryWithoutQaGate(projectA, ['TEST/VERIFIED machine-proof of the --self-test run'], 3);
+  const da = await mintPendingDelivery(projectA, { requiredEvidence: [tokenRequirement] });
   await evk.recordAdapterObservation(dataRoot, projectA, { summary: 'Adapter RESPONSE_COMPLETE observed', taskId: da.taskId, runId: da.runId });
   const pkg = await import('../dist/server/orchestrator/pm-packets.js');
   const roleConfig = makeRoleConfig(projectA);
   const packetA = pkg.buildPmFinalGatePacket(dataRoot, projectA, da.deliveryId);
+  assert.equal(packetA.context.qa.status, 'PASS', 'the delivery run has a real QA PASS');
+  assert.equal(packetA.context.attempt.runId, da.runId, 'the packet is bound to that run');
   const adapterA = new FakePmAdapter('fake-pm', {
     scripted: [fence('PM_JUDGMENT v1', { decision: 'ACCEPT', retry: 'NONE', reason: 'observed record is enough for me', contract_hash: packetA.context.task.contract_hash, context_hash: packetA.contextHash })],
   });
   const { auditDir, stateFile } = mkTestDirs('evgate-token-unsatisfied');
   const refused = await roleLoop.processFinalGate({ dataRoot, project: projectA, roleConfig, pmAdapter: adapterA, dispatchHook: fakeDispatchHook([]), auditDir, stateFile }, da.deliveryId);
   assert.equal(refused.outcome, 'ACCEPT_REFUSED_EVIDENCE');
+  assert.equal(refused.decision, 'CHANGES');
   const refusedJudgment = pmJud.getPmJudgment(dataRoot, projectA, `PMJ-${da.deliveryId}`);
+  assert.equal(refusedJudgment.decision, 'CHANGES');
   assert.match(refusedJudgment.reason, /requires TEST\/VERIFIED/, 'token requirements still refuse with the r38b wording');
   assert.ok(!/floor: VERIFIED evidence absent/.test(refusedJudgment.reason), 'token rule does not use the floor wording');
-  assert.deepEqual(refusedJudgment.evidenceGate, [{ requirementId: 'REQ-1', requirement: 'TEST/VERIFIED machine-proof of the --self-test run', rule: 'token' }], 'applied judgment records the token rule');
+  assert.deepEqual(refusedJudgment.evidenceGate, [{ requirementId: 'REQ-1', requirement: tokenRequirement, rule: 'token' }], 'applied judgment records the token rule');
+  assert.notEqual(gt.getTask(dataRoot, projectA, da.taskId).pmState, 'ACCEPTED');
+  const refusal = auditLines(auditDir).find((line) => line.outcome === 'ACCEPT_REFUSED_EVIDENCE');
+  assert.ok(refusal, 'refusal audited');
+  assert.deepEqual(refusal.unmet, ['REQ-1']);
+  assert.match(refusal.requirements[0], /requires TEST\/VERIFIED/);
+  assert.ok(refusal.rules.includes('REQ-1:token'));
+  assert.equal(refusal.decision, 'ACCEPT');
+  assert.equal(refusal.runId, da.runId);
+  assert.equal(refusal.pmReason, 'observed record is enough for me');
+  assert.ok(refusal.present.some((row) => /ADAPTER_OBSERVATION\/OBSERVED/.test(row)));
+  assert.ok(!refusal.present.some((row) => /TEST\/VERIFIED\/PASS/.test(row)), 'the missing token is not invented');
 
-  // Satisfied: a TEST/VERIFIED PASS record bound to the run unblocks ACCEPT.
   const projectB = 'OrchEvGateTokenSatisfied';
-  const db = await mintDeliveryWithoutQaGate(projectB, ['TEST/VERIFIED machine-proof of the --self-test run'], 4);
+  const db = await mintPendingDelivery(projectB, { requiredEvidence: [tokenRequirement] });
   await evk.recordTestEvidence(dataRoot, projectB, {
     summary: 'deterministic QA: node scripts/founder-brief.mjs --self-test exited 0',
     status: 'PASS', source: { kind: 'qa-gate', tool: 'qa-deterministic-evaluator' },
@@ -694,6 +718,7 @@ test('(r38c-d) explicit TEST/VERIFIED token requirement keeps the round-38b rule
   });
   const roleConfigB = makeRoleConfig(projectB);
   const packetB = pkg.buildPmFinalGatePacket(dataRoot, projectB, db.deliveryId);
+  assert.equal(packetB.context.attempt.runId, db.runId);
   const adapterB = new FakePmAdapter('fake-pm', {
     scripted: [fence('PM_JUDGMENT v1', { decision: 'ACCEPT', retry: 'NONE', reason: 'the required TEST/VERIFIED record is bound', contract_hash: packetB.context.task.contract_hash, context_hash: packetB.contextHash })],
   });
@@ -703,7 +728,49 @@ test('(r38c-d) explicit TEST/VERIFIED token requirement keeps the round-38b rule
   assert.equal(accepted.decision, 'ACCEPT');
   assert.equal(gt.getTask(dataRoot, projectB, db.taskId).pmState, 'ACCEPTED');
   const acceptedJudgment = pmJud.getPmJudgment(dataRoot, projectB, `PMJ-${db.deliveryId}`);
-  assert.deepEqual(acceptedJudgment.evidenceGate, [{ requirementId: 'REQ-1', requirement: 'TEST/VERIFIED machine-proof of the --self-test run', rule: 'token' }], 'applied judgment records the token rule');
+  assert.deepEqual(acceptedJudgment.evidenceGate, [{ requirementId: 'REQ-1', requirement: tokenRequirement, rule: 'token' }], 'applied judgment records the token rule');
+});
+
+test('(r38c-qa-omitted) a QA-contracted delivery whose packet has no QA block is not treated as PASS', async () => {
+  const project = 'OrchQaPacketOmitted';
+  const { goal: g } = await v1Intake.ensureV1ContainerGoal(dataRoot, project);
+  const task = await gt.createTask(dataRoot, project, {
+    goalId: g.goalId, title: 'no qa packet', goal: 'produce correct output', reason: 'orchestrator certification',
+    scope: 'out.txt only', completionCriteria: ['done'], executionState: 'RUNNING', pmState: 'PENDING',
+    contract: {
+      goal: 'produce correct output', bounded_scope: 'out.txt only',
+      acceptance_criteria: [{ id: 'AC-01', description: 'output exists', validationMode: 'DETERMINISTIC' }],
+      required_evidence: ['TEST/VERIFIED machine-proof of the --self-test run'],
+      qa_route: { deterministic: [{ kind: 'fileExists', criterionId: 'AC-01', path: 'out.txt' }] },
+    },
+  });
+  const runId = 'qa-omitted-run';
+  const folder = path.join(dataRoot, project, '_runs', 'qa-omitted');
+  fs.mkdirSync(path.join(folder, 'evidence'), { recursive: true });
+  fs.writeFileSync(path.join(folder, 'meta.json'), JSON.stringify({ tags: [], runId, workspaceRoot: ROOT, workerId: 'floor-builder' }));
+  await gt.linkRunToTask(dataRoot, project, task.taskId, folder);
+  fs.writeFileSync(path.join(folder, 'result.md'), 'result without qa');
+  await rt.markResultReceived(dataRoot, project, task.taskId, runId);
+  const deliveryId = `PMD-${task.taskId}-${runId}`;
+  const delFolder = path.join(dataRoot, project, '_relay', 'pm-deliveries', deliveryId);
+  fs.mkdirSync(delFolder, { recursive: true });
+  const now = new Date().toISOString();
+  const planted = JSON.stringify({ schemaVersion: 1, deliveryId, project, kind: 'TASK_VERIFY', taskId: task.taskId, runId, status: 'PENDING', createdAt: now, updatedAt: now, source: { kind: 'pm-work', workKind: 'TASK_VERIFY' } }, null, 2) + '\n';
+  fs.writeFileSync(path.join(delFolder, 'delivery.json'), planted);
+  const pkg = await import('../dist/server/orchestrator/pm-packets.js');
+  const packet = pkg.buildPmFinalGatePacket(dataRoot, project, deliveryId);
+  assert.equal(packet.context.qa, undefined);
+  assert.ok(!packet.allowedActions.includes('ACCEPT'));
+  const adapter = new FakePmAdapter('fake-pm', {
+    scripted: [fence('PM_JUDGMENT v1', { decision: 'ACCEPT', retry: 'NONE', reason: 'packet omission should not pass', contract_hash: packet.context.task.contract_hash, context_hash: packet.contextHash })],
+  });
+  const { auditDir, stateFile } = mkTestDirs('qa-packet-omitted');
+  const result = await roleLoop.processFinalGate({ dataRoot, project, roleConfig: makeRoleConfig(project), pmAdapter: adapter, dispatchHook: fakeDispatchHook([]), auditDir, stateFile }, deliveryId);
+  assert.equal(result.outcome, 'BLOCKED');
+  assert.match(result.reason, /omission is not PASS/);
+  assert.notEqual(gt.getTask(dataRoot, project, task.taskId).pmState, 'ACCEPTED');
+  assert.equal(fs.readFileSync(path.join(delFolder, 'delivery.json'), 'utf8'), planted);
+  assert.equal(events.listEvents(dataRoot, project, { taskId: task.taskId, type: 'TASK_RESULT_ACCEPTED' }).events.length, 0);
 });
 
 test('(r38c-e) a contract with no required_evidence still applies ACCEPT unchanged — no evidenceGate rows on the judgment', async () => {
@@ -1110,7 +1177,7 @@ test('(P1-3) default worker selector matches actl-managed adapter identity and r
   assert.throws(() => selectBuilderWorker(fixtureRoot, 'actl-managed:builder-1'), /ambiguous/);
 });
 
-test('dispatch-failed Run without Result enters the PM gate and prepares a same-Task retry', async () => {
+test('contracted worker failure before QA does not mint TASK_VERIFY and records one Incident', async () => {
   const project = 'OrchFailedRunRecovery';
   const { goal } = await v1Intake.ensureV1ContainerGoal(dataRoot, project);
   const task = await gt.createTask(dataRoot, project, {
@@ -1127,37 +1194,25 @@ test('dispatch-failed Run without Result enters the PM gate and prepares a same-
   await rt.transitionTaskExecution(dataRoot, project, task.taskId, { expectedExecutionState: 'DISPATCHED', to: 'FAILED', reason: 'dispatch failed: pane unavailable' });
   await events.recordRuntimeError(dataRoot, project, { summary: 'dispatch failed: pane unavailable', goalId: goal.goalId, taskId: task.taskId, runId, source: { kind: 'test', subsystem: 'dispatch' }, details: { error: 'pane unavailable' } });
 
-  const { auditDir, stateFile } = mkTestDirs('failed-run-recovery');
-  const adapter = new FakePmAdapter('fake-pm', { scripted: [fence('PM_JUDGMENT v1', { decision: 'OWNER_REQUIRED', retry: 'NONE', reason: 'owner review required', contract_hash: task.contract.contract_hash, context_hash: 'unused' })] });
-  const cfg = { dataRoot, project, roleConfig: makeRoleConfig(project), pmAdapter: adapter, dispatchHook: fakeDispatchHook([]), auditDir, stateFile };
-  const pkg = await import('../dist/server/orchestrator/pm-packets.js');
-  await pmDel.ensurePmDeliveryForFailedRun(dataRoot, project, task.taskId, runId);
-  const beforePacket = pkg.buildPmFinalGatePacket(dataRoot, project, `PMD-${task.taskId}-${runId}`);
-  const first = await roleLoop.runOnce(cfg);
-  assert.equal(first.steps.length, 1);
-  const deliveries = pmDel.listPendingPmDeliveries(dataRoot, project);
-  assert.equal(deliveries.length, 1);
-  const packet = pkg.buildPmFinalGatePacket(dataRoot, project, deliveries[0].deliveryId);
-  assert.equal(beforePacket.contextHash, packet.contextHash, 'read/send/re-read keeps failed-run context hash stable');
-  assert.match(packet.text, /Run FAILED before producing a Result — reason: pane unavailable/);
-  assert.match(packet.text, /## QA\nnot run/);
-  assert.match(packet.text, /retries remaining 1 of 1/);
-  assert.deepEqual(packet.allowedActions, ['CHANGES', 'OWNER_REQUIRED']);
-
-  const judgment = await pmJud.submitPmJudgment(dataRoot, project, { deliveryId: deliveries[0].deliveryId, decision: 'CHANGES', reason: 'retry after dispatch failure', retryInstruction: 'retry the same task' });
-  assert.equal(judgment.judgment.decision, 'CHANGES');
-  const prepared = await rtp.prepareRetryForJudgment(dataRoot, project, deliveries[0].deliveryId);
-  assert.equal(prepared.preparation.status, 'READY');
-  assert.equal(prepared.task.taskId, task.taskId);
-  assert.equal(prepared.task.executionState, 'READY');
-  assert.equal(gt.listTasks(dataRoot, project).length, 1);
-  assert.equal(pmDel.listPmDeliveries(dataRoot, project).length, 1);
-  const newerFolder = path.join(dataRoot, project, '_runs', 'failed-2');
-  fs.mkdirSync(newerFolder, { recursive: true });
-  fs.writeFileSync(path.join(newerFolder, 'meta.json'), JSON.stringify({ tags: [], runId: 'failed-dispatch-run-2', goalId: goal.goalId, taskId: task.taskId }));
-  await gt.linkRunToTask(dataRoot, project, task.taskId, newerFolder);
-  const changedPacket = pkg.buildPmFinalGatePacket(dataRoot, project, deliveries[0].deliveryId);
-  assert.notEqual(changedPacket.contextHash, packet.contextHash, 'a newly linked Run changes the stale-check hash');
+  const first = await pmDel.ensurePmDeliveryForFailedRun(dataRoot, project, task.taskId, runId);
+  assert.equal(first, null);
+  assert.equal(pmDel.listPmDeliveries(dataRoot, project).length, 0);
+  const rows = incidents.listIncidents(dataRoot, project).filter((row) => row.taskId === task.taskId);
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].code, 'WORKER_FAILED_UNCLASSIFIED');
+  assert.equal(rows[0].status, 'OPEN');
+  assert.equal(rows[0].source, 'dispatcher');
+  assert.deepEqual(rows[0].evidenceRefs, ['cause:unclassified']);
+  assert.equal(JSON.stringify(rows[0]).includes('pane unavailable'), false);
+  const after = gt.getTask(dataRoot, project, task.taskId);
+  assert.equal(after.executionState, 'FAILED');
+  assert.equal(after.pmState, 'PENDING');
+  const second = await pmDel.ensurePmDeliveryForFailedRun(dataRoot, project, task.taskId, runId);
+  assert.equal(second, null);
+  const again = incidents.listIncidents(dataRoot, project).filter((row) => row.taskId === task.taskId);
+  assert.equal(again.length, 1);
+  assert.equal(again[0].incidentId, rows[0].incidentId);
+  assert.equal(pmDel.listPendingPmDeliveries(dataRoot, project).length, 0);
 });
 
 test('in-flight RESERVED retry Run does not mint another failed-run Delivery or PM turn', async () => {
@@ -1193,7 +1248,17 @@ test('failed-run PM changes honor max_pm_changes and stop at OWNER_REQUIRED', as
   await gt.linkRunToTask(dataRoot, project, task.taskId, folder);
   await rt.transitionTaskExecution(dataRoot, project, task.taskId, { expectedExecutionState: 'READY', to: 'DISPATCHED' });
   await rt.transitionTaskExecution(dataRoot, project, task.taskId, { expectedExecutionState: 'DISPATCHED', to: 'FAILED', reason: 'dispatch failed' });
-  await pmDel.ensurePmDeliveryForFailedRun(dataRoot, project, task.taskId, runId);
+  // A delivery that already exists still enters the PM CHANGES budget. A new contracted failure does not mint one.
+  const deliveryId = `PMD-${task.taskId}-${runId}`;
+  const delFolder = path.join(dataRoot, project, '_relay', 'pm-deliveries', deliveryId);
+  fs.mkdirSync(delFolder, { recursive: true });
+  const plantedAt = new Date().toISOString();
+  const planted = JSON.stringify({ schemaVersion: 1, deliveryId, project, kind: 'TASK_VERIFY', taskId: task.taskId, runId, status: 'PENDING', createdAt: plantedAt, updatedAt: plantedAt, source: { kind: 'pm-work', workKind: 'TASK_VERIFY' } }, null, 2) + '\n';
+  fs.writeFileSync(path.join(delFolder, 'delivery.json'), planted);
+  const returned = await pmDel.ensurePmDeliveryForFailedRun(dataRoot, project, task.taskId, runId);
+  assert.equal(returned.deliveryId, deliveryId);
+  assert.equal(fs.readFileSync(path.join(delFolder, 'delivery.json'), 'utf8'), planted);
+  assert.equal(incidents.listIncidents(dataRoot, project).filter((row) => row.taskId === task.taskId).length, 0);
   const { auditDir, stateFile } = mkTestDirs('failed-run-budget');
   const pkg = await import('../dist/server/orchestrator/pm-packets.js');
   const packet = pkg.buildPmFinalGatePacket(dataRoot, project, `PMD-${task.taskId}-${runId}`);
@@ -1303,8 +1368,9 @@ test('exhausted FAILED Task is audited once and bootstrap creates one replacemen
 // terminal state, and the same cycle still processes every remaining delivery.
 
 /** Terminal Task (FAILED | CANCELLED) with a PENDING TASK_VERIFY delivery.
- * FAILED uses the certified failed-run mint; CANCELLED has no certified mint
- * path, so the PENDING fixture is written directly (test-only construction). */
+ * The delivery file is planted. A QA-contracted pre-QA failure no longer
+ * mints one; supersede still applies to a delivery that is already on disk.
+ */
 async function mintTerminalDelivery(project, terminalState) {
   const { goal } = await v1Intake.ensureV1ContainerGoal(dataRoot, project);
   const task = await gt.createTask(dataRoot, project, {
@@ -1321,18 +1387,18 @@ async function mintTerminalDelivery(project, terminalState) {
     await rt.transitionTaskExecution(dataRoot, project, task.taskId, { expectedExecutionState: 'READY', to: 'DISPATCHED', reason: 'test dispatch' });
   }
   await rt.transitionTaskExecution(dataRoot, project, task.taskId, { expectedExecutionState: terminalState === 'FAILED' ? 'DISPATCHED' : 'READY', to: terminalState, reason: `test ${terminalState}` });
-  let delivery;
+  const deliveryId = `PMD-${task.taskId}-${runId}`;
+  const delFolder = path.join(dataRoot, project, '_relay', 'pm-deliveries', deliveryId);
+  fs.mkdirSync(delFolder, { recursive: true });
+  const now = new Date().toISOString();
+  fs.writeFileSync(path.join(delFolder, 'delivery.json'), JSON.stringify({ schemaVersion: 1, deliveryId, project, kind: 'TASK_VERIFY', taskId: task.taskId, runId, status: 'PENDING', createdAt: now, updatedAt: now, source: { kind: 'pm-work', workKind: 'TASK_VERIFY' } }, null, 2) + '\n');
+  const delivery = pmDel.getPmDelivery(dataRoot, project, deliveryId);
+  assert.ok(delivery, `${terminalState} delivery present`);
   if (terminalState === 'FAILED') {
-    delivery = await pmDel.ensurePmDeliveryForFailedRun(dataRoot, project, task.taskId, runId);
-  } else {
-    const deliveryId = `PMD-${task.taskId}-${runId}`;
-    const delFolder = path.join(dataRoot, project, '_relay', 'pm-deliveries', deliveryId);
-    fs.mkdirSync(delFolder, { recursive: true });
-    const now = new Date().toISOString();
-    fs.writeFileSync(path.join(delFolder, 'delivery.json'), JSON.stringify({ schemaVersion: 1, deliveryId, project, kind: 'TASK_VERIFY', taskId: task.taskId, runId, status: 'PENDING', createdAt: now, updatedAt: now, source: { kind: 'pm-work', workKind: 'TASK_VERIFY' } }, null, 2) + '\n');
-    delivery = pmDel.getPmDelivery(dataRoot, project, deliveryId);
+    const returned = await pmDel.ensurePmDeliveryForFailedRun(dataRoot, project, task.taskId, runId);
+    assert.equal(returned.deliveryId, deliveryId);
+    assert.equal(incidents.listIncidents(dataRoot, project).filter((row) => row.taskId === task.taskId).length, 0);
   }
-  assert.ok(delivery, `${terminalState} delivery minted`);
   return { taskId: task.taskId, runId, deliveryId: delivery.deliveryId };
 }
 
@@ -1464,19 +1530,23 @@ async function mintStrandedRun(project, opts = {}) {
   const n = ++seq;
   const { goal } = await v1Intake.ensureV1ContainerGoal(dataRoot, project);
   const qaGated = opts.qaGated ?? false;
-  const contract = {
-    goal: 'recover stranded result', bounded_scope: 'out.txt only',
-    acceptance_criteria: [{ id: 'AC-01', description: 'output exists', validationMode: 'DETERMINISTIC' }],
-    required_evidence: [],
-    qa_route: qaGated
-      ? { deterministic: [{ kind: 'fileExists', criterionId: 'AC-01', path: 'out.txt' }], maxQaRemediationAttempts: 1 }
-      : { deterministic: [{ kind: 'fileExists', criterionId: 'AC-01', path: 'out.txt' }] },
-    retry_policy: { same_task_only: true, max_qa_remediations: 1, max_pm_changes: 1 },
-  };
-  const task = await gt.createTask(dataRoot, project, {
+  // buildTaskContract always derives qaContract from qa_route. The default
+  // stranded shape is the legacy no-contract recovery path. Only an explicit
+  // qaGated fixture enters the QA gate (r40-d).
+  const taskInput = {
     goalId: goal.goalId, title: `stranded ${n}`, goal: 'recover me', reason: 'round 40', scope: 'out.txt only',
-    completionCriteria: ['done'], executionState: 'DISPATCHED', pmState: 'PENDING', contract,
-  });
+    completionCriteria: ['done'], executionState: 'DISPATCHED', pmState: 'PENDING',
+  };
+  if (qaGated) {
+    taskInput.contract = {
+      goal: 'recover stranded result', bounded_scope: 'out.txt only',
+      acceptance_criteria: [{ id: 'AC-01', description: 'output exists', validationMode: 'DETERMINISTIC' }],
+      required_evidence: [],
+      qa_route: { deterministic: [{ kind: 'fileExists', criterionId: 'AC-01', path: 'out.txt' }], maxQaRemediationAttempts: 1 },
+      retry_policy: { same_task_only: true, max_qa_remediations: 1, max_pm_changes: 1 },
+    };
+  }
+  const task = await gt.createTask(dataRoot, project, taskInput);
   const runId = `stranded-run-${n}${opts.remediation ? '-rem' : ''}`;
   const folder = path.join(dataRoot, project, '_runs', `stranded-${n}`);
   const workspaceRoot = path.join(ROOT, 'workspace', `stranded-${n}`);
@@ -1511,16 +1581,12 @@ function strandedRecoveredSteps(auditDir) {
 async function mintTwoRunStrandedTask(project) {
   const n = ++seq;
   const { goal } = await v1Intake.ensureV1ContainerGoal(dataRoot, project);
-  const contract = {
-    goal: 'recover stranded result', bounded_scope: 'out.txt only',
-    acceptance_criteria: [{ id: 'AC-01', description: 'output exists', validationMode: 'DETERMINISTIC' }],
-    required_evidence: [],
-    qa_route: { deterministic: [{ kind: 'fileExists', criterionId: 'AC-01', path: 'out.txt' }] },
-    retry_policy: { same_task_only: true, max_qa_remediations: 1, max_pm_changes: 1 },
-  };
+  // Legacy two-run recovery. A TASK_CONTRACT would attach qaContract and the
+  // QA gate would evaluate only the newest run, so the older Result would
+  // never receive a PASS. QA-gated recovery is r40-d.
   const task = await gt.createTask(dataRoot, project, {
     goalId: goal.goalId, title: `two-stranded ${n}`, goal: 'recover me', reason: 'round 41b', scope: 'out.txt only',
-    completionCriteria: ['done'], executionState: 'DISPATCHED', pmState: 'PENDING', contract,
+    completionCriteria: ['done'], executionState: 'DISPATCHED', pmState: 'PENDING',
   });
   const taskId = task.taskId;
   async function linkRun(tag, withResult) {

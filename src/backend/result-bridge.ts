@@ -211,7 +211,8 @@ export async function promoteObservedResult(
   // post-commit — must never fail or roll back the promotion above).
   // V1.6 Slice 4: QA-gated Tasks run the gate here instead — the gate owns
   // the PENDING → VERIFYING transition and mints the ordinary Delivery
-  // itself on PASS / budget-exhausted FAIL / BLOCKED (plan §8, §16).
+  // itself on QA PASS. Budget exhaustion, BLOCKED, and a damaged contract
+  // become an Incident and do not mint a Delivery.
   // Best-effort like the Delivery mint: promotion above already committed,
   // and reconcileQaGate recovers any gate work left incomplete.
   if (qaGated) {

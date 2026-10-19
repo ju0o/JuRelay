@@ -9,12 +9,12 @@ const ROOT = fs.mkdtempSync(path.join(os.tmpdir(), 'arl-wbs67-')); const PROJECT
 const gt = await import('../dist/server/backend/goal-task.js'); const rt = await import('../dist/server/backend/goal-task-runtime.js');
 const qa = await import('../dist/server/backend/qa-attempt.js'); const qrp = await import('../dist/server/backend/qa-remediation-preparation.js');
 const gate = await import('../dist/server/backend/qa-gate.js'); const pm = await import('../dist/server/backend/pm-delivery.js');
+const incidents = await import('../dist/server/backend/incident.js');
 const pmJud = await import('../dist/server/backend/pm-judgment.js');
 const wr = await import('../dist/server/backend/worker-registry.js'); const obs = await import('../dist/server/backend/observation-lock.js');
 const disp = await import('../dist/server/backend/dispatcher.js'); const capture = await import('../dist/server/backend/capture-service.js');
 const fsKernel = await import('../dist/server/backend/fs.js'); const fixture = await import('../dist/server/integrations/test-fixture/watch.js'); fixture.ensureTestFixtureAdapterRegistered();
 const roleLoop = await import('../dist/server/orchestrator/role-loop.js');
-const packets = await import('../dist/server/orchestrator/pm-packets.js');
 const QA = path.resolve('scripts/fake-qa-worker.mjs'); const BUILDER = path.resolve('scripts/fake-builder-worker.mjs');
 const fence = (header, object) => `\`\`\`json\n${header}\n${JSON.stringify(object)}\n\`\`\``;
 let sequence = 0;
@@ -50,8 +50,10 @@ test('QA worker crash retries semantically, then escalates with a reason after t
   await assert.rejects(() => gate.runOrResumeQaGate(ROOT, PROJECT, task.taskId), /semantic retry 2\/3/);
   const result = await gate.runOrResumeQaGate(ROOT, PROJECT, task.taskId); assert.equal(result.outcome, 'BLOCKED_ESCALATED');
   const attempt = qa.listQaAttemptsForTask(ROOT, PROJECT, task.taskId)[0]; assert.equal(attempt.finalQaStatus, 'BLOCKED'); assert.ok(attempt.reason);
-  const deliveries = pm.listPmDeliveries(ROOT, PROJECT).filter(d => d.taskId === task.taskId); assert.equal(deliveries.length, 1); assert.equal(deliveries[0].status, 'PENDING');
-  const packet = packets.buildPmFinalGatePacket(ROOT, PROJECT, deliveries[0].deliveryId); assert.deepEqual(packet.allowedActions, ['CHANGES', 'OWNER_REQUIRED']); assert.match(packet.text, /status: BLOCKED/); assert.match(packet.text, /reason:/); });
+  const deliveries = pm.listPmDeliveries(ROOT, PROJECT).filter(d => d.taskId === task.taskId); assert.equal(deliveries.length, 0);
+  const found = incidents.listIncidents(ROOT, PROJECT).filter(i => i.taskId === task.taskId && i.code === 'QA_BLOCKED');
+  assert.equal(found.length, 1);
+  assert.equal(gt.getTask(ROOT, PROJECT, task.taskId).pmState, 'PENDING'); });
 test('semantic BLOCKED is retried on the next cycle and can reach PASS before Delivery', async () => { reset(); const { task, builderId } = await setup({ qaWorker: 'blocked-then-pass' }); await linkResult(task.taskId, 6, builderId, 'correct result', undefined, true);
   await assert.rejects(() => gate.runOrResumeQaGate(ROOT, PROJECT, task.taskId), /semantic retry 1\/3/);
   const second = await gate.runOrResumeQaGate(ROOT, PROJECT, task.taskId); assert.equal(second.outcome, 'PASS_DELIVERED');
@@ -61,12 +63,11 @@ test('PM ACCEPT is re-asked and blocked when the delivered QA verdict is not PAS
   await assert.rejects(() => gate.runOrResumeQaGate(ROOT, PROJECT, task.taskId), /semantic retry 1\/3/);
   await assert.rejects(() => gate.runOrResumeQaGate(ROOT, PROJECT, task.taskId), /semantic retry 2\/3/);
   await gate.runOrResumeQaGate(ROOT, PROJECT, task.taskId);
-  const delivery = pm.listPmDeliveries(ROOT, PROJECT).find(d => d.taskId === task.taskId); const packet = packets.buildPmFinalGatePacket(ROOT, PROJECT, delivery.deliveryId);
-  const responses = [fence('PM_JUDGMENT v1', { decision: 'ACCEPT', retry: 'NONE', reason: 'accept', contract_hash: packet.context.task.contract_hash, context_hash: packet.contextHash }), fence('PM_JUDGMENT v1', { decision: 'ACCEPT', retry: 'NONE', reason: 'accept again', contract_hash: packet.context.task.contract_hash, context_hash: packet.contextHash })]; let sends = 0;
-  const adapter = { id: 'qa-blocked-pm', capabilities: () => ({ freeTier: true, persistentSession: true, structuredInput: true, structuredOutput: true, readWorkspace: true, writeWorkspace: false, shell: false, subscriptionAuth: false }), health: async () => ({ ok: true }), authMode: async () => ({ mode: 'free' }), ensureSession: async () => ({ sessionId: 'pm-session', created: true }), send: async () => ({ requestId: `r-${++sends}` }), collect: async (_s, id) => ({ text: id.startsWith('r-1') ? '' : responses.shift() }), interrupt: async () => {}, sessionIdentity: (sessionId) => ({ adapterId: 'qa-blocked-pm', sessionId }) };
-  const roleConfig = { schema_version: 'role-config.v1', project: PROJECT, assignments: [{ roleId: 'pm', runtimeAdapterId: 'qa-blocked-pm', model: 'nemotron-3.5-lightning-free', workspace: { project: PROJECT, workspaceRoot: ROOT }, sessionPolicy: 'persistent', permissionProfile: 'read-only', capabilityRequirements: {}, zeroExtraBilling: true, fallbackChain: [], enabled: true }], graph: [] };
-  const out = await roleLoop.processFinalGate({ dataRoot: ROOT, project: PROJECT, roleConfig, pmAdapter: adapter, dispatchHook: async () => {}, auditDir: path.join(ROOT, 'pm-audit'), stateFile: path.join(ROOT, 'pm-state.json') }, delivery.deliveryId);
-  assert.equal(out.outcome, 'BLOCKED'); assert.equal(pmJud.listPmJudgments(ROOT, PROJECT).length, 0); });
+  const delivery = pm.listPmDeliveries(ROOT, PROJECT).find(d => d.taskId === task.taskId);
+  assert.equal(delivery, undefined);
+  assert.equal(gt.getTask(ROOT, PROJECT, task.taskId).pmState, 'PENDING');
+  assert.equal(incidents.listIncidents(ROOT, PROJECT).filter(i => i.taskId === task.taskId && i.code === 'QA_BLOCKED').length, 1);
+  assert.equal(pmJud.listPmJudgments(ROOT, PROJECT).length, 0); });
 
 test('runOnce resumes a READY QA remediation preparation through the orchestrator dispatch seam exactly once', async () => {
   reset(); const { task, builderId } = await setup(); await linkResult(task.taskId, 5, builderId, 'wrong result');

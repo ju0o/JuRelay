@@ -58,6 +58,63 @@ export const GOAL_LOOP_MAX_ATTEMPTS_PER_TASK_DEFAULT = 3;
 export const GOAL_LOOP_RESULT_WAIT_MS_DEFAULT = 120000;
 export const GOAL_LOOP_RESULT_POLL_MS = 2000;
 
+export interface AutoReviewPassInput {
+  dataRoot: string;
+  project: string;
+  goalId: string;
+  taskId: string;
+  runId: string;
+  deliveryId: string | null;
+  reason: string;
+}
+
+/**
+ * Apply one automatic PASS review.
+ * A QA-contracted Task never falls through to acceptTaskResult when the PM
+ * judgment does not apply. A Task with no QA contract keeps the historical
+ * direct-accept fallback.
+ */
+export async function applyAutoReviewPass(
+  input: AutoReviewPassInput,
+): Promise<{ applied: true } | { applied: false; blocked: string }> {
+  const before = getTask(input.dataRoot, input.project, input.taskId);
+  const contracted = before.qaContract !== undefined && before.qaContract !== null;
+  if (input.deliveryId) {
+    try {
+      await submitPmJudgment(input.dataRoot, input.project, {
+        deliveryId: input.deliveryId,
+        decision: 'ACCEPT',
+        reason: input.reason,
+      });
+    } catch (err) {
+      if (contracted) {
+        const message = err instanceof Error ? err.message : String(err);
+        return { applied: false, blocked: `PM judgment was not applied: ${message}` };
+      }
+    }
+  } else if (contracted) {
+    return { applied: false, blocked: 'QA-contracted task has no PM delivery; direct ACCEPT fallback is refused' };
+  }
+  const after = getTask(input.dataRoot, input.project, input.taskId);
+  if (after.pmState !== 'ACCEPTED') {
+    if (contracted) {
+      return { applied: false, blocked: 'PM judgment did not accept the QA-contracted task; direct ACCEPT fallback is refused' };
+    }
+    await acceptTaskResult({
+      dataRoot: input.dataRoot,
+      project: input.project,
+      goalId: input.goalId,
+      taskId: input.taskId,
+      runId: input.runId,
+      reason: bound(`AUTO ChatGPT PASS: ${input.reason}`, 500),
+      expectedExecutionState: after.executionState,
+      expectedPmState: after.pmState,
+      callerSurface: 'PM_MCP',
+    });
+  }
+  return { applied: true };
+}
+
 export type GoalLoopStatus =
   | 'RUNNING'
   | 'GOAL_COMPLETE'
@@ -462,26 +519,16 @@ export async function startGoalLoop(input: GoalLoopStartInput): Promise<GoalLoop
 
       if (review.verdict === 'PASS') {
         try {
-          const t = getTask(dataRoot, project, task.taskId);
-          if (deliveryId) {
-            try {
-              await submitPmJudgment(dataRoot, project, { deliveryId, decision: 'ACCEPT', reason: bound(review.reason, 1000) });
-            } catch { /* fall back to canonical accept below */ }
-          }
-          const after = getTask(dataRoot, project, task.taskId);
-          if (after.pmState !== 'ACCEPTED') {
-            await acceptTaskResult({
-              dataRoot,
-              project,
-              goalId: goal.goalId,
-              taskId: task.taskId,
-              runId,
-              reason: bound(`AUTO ChatGPT PASS: ${review.reason}`, 500),
-              expectedExecutionState: after.executionState,
-              expectedPmState: after.pmState,
-              callerSurface: 'PM_MCP',
-            });
-          }
+          const applied = await applyAutoReviewPass({
+            dataRoot,
+            project,
+            goalId: goal.goalId,
+            taskId: task.taskId,
+            runId,
+            deliveryId,
+            reason: bound(review.reason, 1000),
+          });
+          if (!applied.applied) return finish('STOPPED_BLOCKED', applied.blocked);
         } catch (e) {
           return finish('STOPPED_FAILED', `PASS apply failed: ${e instanceof Error ? e.message : String(e)}`);
         }

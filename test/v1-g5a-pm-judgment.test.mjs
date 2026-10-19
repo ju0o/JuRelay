@@ -84,6 +84,7 @@ const pmJud = await import('../dist/server/backend/pm-judgment.js');
 const evk = await import('../dist/server/backend/event.js');const captureSvc = await import('../dist/server/backend/capture-service.js');
 const bridgeMod = await import('../dist/server/backend/pm-host-bridge.js');
 const pmTools = await import('../dist/server/mcp/pm-tools.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const testFix = await import('../dist/server/integrations/test-fixture/watch.js');
 testFix.ensureTestFixtureAdapterRegistered();
 
@@ -111,6 +112,17 @@ wr.writeWorkerRegistryRecord(TEST_ROOT, {
   capabilities: ['fixture'],
   observationAdapterId: 'test-fixture',
 });
+
+/** P2-OWNER-R01 formal select + approve. Does not bypass the selection gate. */
+function approveSelection(taskId, workerId = 'v1-g5a-worker') {
+  taskExec.setTaskExecutionConfig(TEST_ROOT, project, {
+    projectId: project,
+    taskId,
+    workerId,
+    modelId: 'test-model',
+  });
+  return taskExec.approveTaskExecution(TEST_ROOT, project, taskId, 'OWNER_MCP');
+}
 
 const CONTRACT = {
   title: 'V1 G5A judgment task',
@@ -141,6 +153,7 @@ function responseComplete(sessionId, text) {
 
 async function driveToResultReceived(title, sessionId, text) {
   const inc = await get('relay_pm_create_task').handler({ ...CONTRACT, title });
+  approveSelection(inc.task.taskId);
   const res = await get('relay_pm_dispatch_owner_approved').handler({
     taskId: inc.task.taskId, workerId: 'v1-g5a-worker', workspaceRoot: WORKSPACE, expectedExecutionState: 'READY',
   });

@@ -20,7 +20,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { relayDir, writeJsonAtomic, getTask } from './goal-task.js';
-import { resolveCurrentAttemptRunId } from './goal-task-runtime.js';
+import { assertCurrentRunQaAllowsAccept, QaAcceptEligibilityError, resolveCurrentAttemptRunId } from './goal-task-runtime.js';
 import {
   acknowledgePmDelivery,
   getPmDelivery,
@@ -684,9 +684,23 @@ export function submitPmJudgment(
       resolved = resolveJudicable(dataRoot, project, deliveryId);
     } catch (err) {
       if (err instanceof PmJudgmentError && err.code === 'CONFLICT') {
-        persistRejected(dataRoot, project, deliveryId, decision, 'STALE_OR_WRONG_STATE');
+        persistRejected(dataRoot, project, deliveryId, decision, 'STALE_OR_WRONG_STATE', reason);
       }
       throw err;
+    }
+
+    // New ACCEPT intent is refused before it is stored. CHANGES stays open.
+    // An already-recorded judgment returned above and is not re-checked.
+    if (decision === 'ACCEPT') {
+      try {
+        assertCurrentRunQaAllowsAccept(dataRoot, project, resolved.task, resolved.runId);
+      } catch (err) {
+        if (err instanceof QaAcceptEligibilityError) {
+          persistRejected(dataRoot, project, deliveryId, decision, err.reason, reason);
+          throw new PmJudgmentError('CONFLICT', err.message);
+        }
+        throw err;
+      }
     }
 
     const ts = nowIso();
@@ -751,6 +765,7 @@ function persistRejected(
   deliveryId: string,
   decision: PmJudgmentDecision,
   failureCode: string,
+  reason?: string,
 ): PmJudgmentRecord {
   const judgmentId = pmJudgmentIdFor(deliveryId);
   const folder = pmJudgmentFolder(dataRoot, project, judgmentId);
@@ -774,6 +789,7 @@ function persistRejected(
     runId,
     decision,
     status: 'REJECTED',
+    ...(reason !== undefined ? { reason } : {}),
     retryInstructionPresent: false,
     createdAt: ts,
     updatedAt: ts,

@@ -24,7 +24,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getTask } from './goal-task.js';
-import { resolveCurrentAttemptRunId } from './goal-task-runtime.js';
+import { assertCurrentRunQaAllowsAccept, QaAcceptEligibilityError, resolveCurrentAttemptRunId } from './goal-task-runtime.js';
 import { getPmDelivery } from './pm-delivery.js';
 import {
   getTaskEvidenceSummary,
@@ -356,12 +356,26 @@ export function getVerificationContextForDelivery(
   const summary = getTaskEvidenceSummary(dataRoot, project, task.taskId);
   const selected = selectExactRunEvidence(dataRoot, project, task.taskId, delivery.runId, warnings);
 
-  // 7. Advisory review actions — current valid verification only.
+  // 7. Advisory review actions. ACCEPT is offered only when the canonical
+  // QA eligibility check passes. A failure is a warning, not a silent allow,
+  // and this read does not replace acceptResult().
+  let qaAcceptAllowed = true;
+  if (task.qaContract !== undefined && task.qaContract !== null) {
+    try {
+      assertCurrentRunQaAllowsAccept(dataRoot, project, task, delivery.runId);
+    } catch (err) {
+      qaAcceptAllowed = false;
+      const detail = err instanceof QaAcceptEligibilityError
+        ? `${err.reason}: ${err.message}`
+        : (err instanceof Error ? err.message : String(err));
+      warnings.push(`QA contract has no current valid PASS. ACCEPT is not offered. ${detail}`);
+    }
+  }
   const reviewActions: VerificationReviewAction[] =
     isCurrentAttempt
     && task.executionState === 'RESULT_RECEIVED'
     && task.pmState === 'VERIFYING'
-      ? ['ACCEPT_RESULT', 'REQUEST_CHANGES']
+      ? (qaAcceptAllowed ? ['ACCEPT_RESULT', 'REQUEST_CHANGES'] : ['REQUEST_CHANGES'])
       : ['NO_JUDGMENT'];
 
   // V1.6 additive, optional QA block — present only for QA-gated Tasks.

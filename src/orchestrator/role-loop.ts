@@ -1,14 +1,15 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { getTask, createTask, listTasks } from '../backend/goal-task.js';
-import { transitionTaskExecution, markResultReceived, markQaResultReceived } from '../backend/goal-task-runtime.js';
+import { transitionTaskExecution, markResultReceived, markQaResultReceived, assertCurrentRunQaAllowsAccept } from '../backend/goal-task-runtime.js';
 import { listPendingPmDeliveries, getPmDelivery, listPmDeliveries, ensurePmDeliveryForFailedRun, ensurePmDeliveryForTaskVerifyRun, ensurePmDeliveryForTaskVerify, ignorePmDelivery, PmDeliveryError } from '../backend/pm-delivery.js';
 import { listActiveDispatches } from '../backend/dispatcher.js';
-import { submitPmJudgment, listPmJudgments, JUDGMENT_REASON_MAX_CHARS, JUDGMENT_RETRY_INSTRUCTION_MAX_CHARS, type PmJudgmentEvidenceGate } from '../backend/pm-judgment.js';
+import { submitPmJudgment, listPmJudgments, JUDGMENT_REASON_MAX_CHARS, JUDGMENT_RETRY_INSTRUCTION_MAX_CHARS } from '../backend/pm-judgment.js';
 import { listEvidenceForRun } from '../backend/evidence.js';
 import { prepareRetryForJudgment } from '../backend/retry-preparation.js';
 import { reconcileReadyRetryDispatches } from '../backend/retry-dispatch.js';
 import { reconcileQaGate, type QaRemediationDispatchHook } from '../backend/qa-gate.js';
+import { getQaAttempt, qaAttemptIdFor } from '../backend/qa-attempt.js';
 import { listQaRemediationPreparations } from '../backend/qa-remediation-preparation.js';
 import { ensureV1ContainerGoal } from '../backend/v1-intake.js';
 import { buildTaskContract } from '../backend/task-contract.js';
@@ -18,15 +19,16 @@ import type { RoleConfig, RoleAssignment } from '../roles/role-config.js';
 import type { RoleRuntimeAdapter, InputEnvelope } from '../integrations/core/role-runtime.js';
 import { readRoleSession, roleSessionPath, writeRoleSession } from '../integrations/core/role-runtime.js';
 import {
-  EVIDENCE_TRUST_LEVELS,
-  EVIDENCE_TYPES,
-  type EvidenceRecord,
-  type EvidenceTrustLevel,
-  type EvidenceType,
   type TaskRecord,
   type TaskExecutionState,
 } from '../shared/types.js';
 import { buildPmBootstrapPacket, buildPmFinalGatePacket, listClosedTerminalTasks, type PmFinalGatePacket } from './pm-packets.js';
+import {
+  checkRequiredEvidence,
+  describeUnmetRequirement,
+  evidenceGateJudgmentRows,
+  type EvidenceGateCheck,
+} from './evidence-gate.js';
 import { parsePmTaskDecision, parsePmJudgment, type PmTaskDecision, type PmJudgment } from './pm-schemas.js';
 import { parseAutonomousPmAction, type AutonomousPmAction } from './autonomous-actions.js';
 
@@ -114,161 +116,8 @@ function parseBootstrapDecision(text: string): PmTaskDecision {
   }
 }
 
-// ── evidence gate for ACCEPT (round 38b / 38c) ────────────────────────────────
-//
-// LIVE P0 (JuControler-Private-planning TASK-0002, DEC-2026-149): the automatic
-// PM judged the SAME evidence class CHANGES, CHANGES, then ACCEPT, because
-// ACCEPT-without-machine-verification was reachable by retry pressure alone — its
-// accepting reason claimed the cited record held raw self-test output, while the
-// record (ADAPTER_OBSERVATION, trust OBSERVED, status INFO) only said
-// "Adapter RESPONSE_COMPLETE observed for Task … Run …". Before an ACCEPT /
-// ACCEPT_AND_NEXT decision is applied, the gate now mechanically checks the
-// frozen contract's `required_evidence` (task-contract.v1, string[]) against the
-// Evidence records actually bound to the accepted run.
-//
-// LIVE TASK-0003 (audit line 04:16:36Z): real task-contract.v1 `required_evidence`
-// entries are PROSE written by the planning PM — e.g. "node
-// scripts/founder-brief.mjs --self-test 실행 결과(PASS 마커, exit 0)". The pure-token
-// rule below refused EVERY such task forever, i.e. the same class of release
-// blocker as accepting-without-verification, only mirrored. Round 38c therefore
-// applies ONE of TWO rules per requirement:
-//   - `token`: the requirement names a machine-checkable `<TYPE>/<TRUSTLEVEL>`
-//     token (a type from EVIDENCE_TYPES and a level from EVIDENCE_TRUST_LEVELS,
-//     case-insensitive, e.g. "TEST/VERIFIED") — round 38b behaviour unchanged:
-//     at least one non-FAIL record bound to the run must match the exact TYPE
-//     and at least that trust level.
-//   - `floor`: the requirement names no such token (the normal prose case) —
-//     default floor: at least one record bound to the run has trustLevel
-//     VERIFIED (or higher, ACCEPTED) and status is not FAIL. The QA-minted
-//     VERIFIED record (src/backend/qa-evidence.ts) satisfies an ordinary prose
-//     requirement, yet an ADAPTER_OBSERVATION/OBSERVED-only run never can.
-// The gate can only REFUSE, never upgrade: nothing here promotes VERIFIED (or
-// anything else) to ACCEPTED automatically. The applied judgment (and the audit
-// line on refusal) records which rule matched per requirement (`token`/`floor`).
-
-const EVIDENCE_TRUST_RANK: Record<string, number> = { CLAIMED: 0, OBSERVED: 1, VERIFIED: 2, ACCEPTED: 3 };
-
-/** Round 38c default floor for prose requirements: VERIFIED, or higher (ACCEPTED). */
-const DEFAULT_EVIDENCE_FLOOR_TRUST: EvidenceTrustLevel = 'VERIFIED';
-
-type EvidenceGateRuleKind = 'token' | 'floor';
-
-interface RequiredEvidenceSpec {
-  /** 0-based index into contract.required_evidence (audit id = REQ-<index+1>). */
-  requirementIndex: number;
-  requirement: string;
-  type: EvidenceType;
-  trustLevel: EvidenceTrustLevel;
-}
-
-interface EvidenceGateRequirement {
-  requirementIndex: number;
-  requirement: string;
-  /** Which rule matched this requirement: explicit TYPE/TRUST token, or the VERIFIED floor. */
-  rule: EvidenceGateRuleKind;
-}
-
-interface EvidenceGateUnmet {
-  requirementIndex: number;
-  requirement: string;
-  parsed?: RequiredEvidenceSpec;
-}
-
-interface EvidenceGateCheck {
-  satisfied: boolean;
-  /** Every contract requirement + the rule that matched it (satisfied or not). */
-  known: EvidenceGateRequirement[];
-  unmet: EvidenceGateUnmet[];
-  present: EvidenceRecord[];
-}
-
-/** Read the minimum acceptable `<TYPE>/<TRUSTLEVEL>` the requirement text names. */
-function parseRequiredEvidenceSpec(requirement: string, index: number): RequiredEvidenceSpec | null {
-  const tokenRe = /([A-Za-z][A-Za-z0-9_]*)\s*\/\s*([A-Za-z][A-Za-z0-9_]*)/g;
-  let m: RegExpExecArray | null;
-  while ((m = tokenRe.exec(requirement)) !== null) {
-    const type = (m[1] ?? '').toUpperCase();
-    const trust = (m[2] ?? '').toUpperCase();
-    if ((EVIDENCE_TYPES as readonly string[]).includes(type) && (EVIDENCE_TRUST_LEVELS as readonly string[]).includes(trust)) {
-      return { requirementIndex: index, requirement, type: type as EvidenceType, trustLevel: trust as EvidenceTrustLevel };
-    }
-  }
-  return null;
-}
-
-function trustLevelAtLeast(actual: EvidenceTrustLevel, required: EvidenceTrustLevel): boolean {
-  const a = EVIDENCE_TRUST_RANK[actual];
-  const r = EVIDENCE_TRUST_RANK[required];
-  return a !== undefined && r !== undefined && a >= r;
-}
-
-function evidenceSatisfiesRequired(record: EvidenceRecord, spec: RequiredEvidenceSpec): boolean {
-  return record.type === spec.type
-    && trustLevelAtLeast(record.trustLevel, spec.trustLevel)
-    && record.status !== 'FAIL';
-}
-
-/** Round 38c default floor for a prose (no-token) requirement: any non-FAIL
- * record at VERIFIED trust or higher (ACCEPTED). Never satisfied by OBSERVED. */
-function evidenceSatisfiesDefaultFloor(record: EvidenceRecord): boolean {
-  return record.status !== 'FAIL' && trustLevelAtLeast(record.trustLevel, DEFAULT_EVIDENCE_FLOOR_TRUST);
-}
-
-/**
- * Round 38b: every token-named requirement needs a non-FAIL record bound to the
- * run matching its type + trust level. Round 38c: a requirement naming NO
- * machine-checkable `<TYPE>/<TRUSTLEVEL>` token (the normal prose case) falls
- * back to the default floor — any non-FAIL VERIFIED-or-higher record bound to
- * the run satisfies it. Empty/absent `required_evidence` → behaviour unchanged.
- */
-function checkRequiredEvidence(
-  contract: TaskRecord['contract'] | undefined,
-  runEvidence: EvidenceRecord[],
-): EvidenceGateCheck {
-  const required = contract?.required_evidence;
-  if (!Array.isArray(required) || required.length === 0) {
-    return { satisfied: true, known: [], unmet: [], present: runEvidence };
-  }
-  const unmet: EvidenceGateUnmet[] = [];
-  const known: EvidenceGateRequirement[] = [];
-  required.forEach((requirement, index) => {
-    const spec = parseRequiredEvidenceSpec(requirement, index);
-    if (spec) {
-      // Requirement names a machine-checkable TYPE/TRUSTLEVEL token — round 38b
-      // behaviour unchanged (type + trust level must both match).
-      known.push({ requirementIndex: index, requirement, rule: 'token' });
-      if (!runEvidence.some((e) => evidenceSatisfiesRequired(e, spec))) {
-        unmet.push({ requirementIndex: index, requirement, parsed: spec });
-      }
-      return;
-    }
-    // Prose requirement (the normal task-contract.v1 case): apply the default
-    // floor instead of refusing forever. Still fails on an
-    // ADAPTER_OBSERVATION/OBSERVED-only run and on a FAIL-status record.
-    known.push({ requirementIndex: index, requirement, rule: 'floor' });
-    if (!runEvidence.some((e) => evidenceSatisfiesDefaultFloor(e))) {
-      unmet.push({ requirementIndex: index, requirement });
-    }
-  });
-  return { satisfied: unmet.length === 0, known, unmet, present: runEvidence };
-}
-
-function describeUnmetRequirement(u: EvidenceGateUnmet): string {
-  const id = `REQ-${u.requirementIndex + 1}`;
-  return u.parsed
-    ? `${id} "${u.requirement}" (requires ${u.parsed.type}/${u.parsed.trustLevel})`
-    : `${id} "${u.requirement}" (floor: VERIFIED evidence absent)`;
-}
-
-/** RequirementId + rule rows persisted on the APPLIED judgment (and audit line)
- * so a reviewer can see which rule matched per requirement. */
-function evidenceGateJudgmentRows(check: EvidenceGateCheck): PmJudgmentEvidenceGate[] {
-  return check.known.map((k) => ({
-    requirementId: `REQ-${k.requirementIndex + 1}`,
-    requirement: k.requirement,
-    rule: k.rule,
-  }));
-}
+// Evidence classification lives in evidence-gate.ts. This loop only applies
+// the refusal: ACCEPT is rewritten to CHANGES, with the same audit fields.
 
 /**
  * Apply the refusal: the PM's ACCEPT is NOT applied; the outcome is rewritten
@@ -921,11 +770,27 @@ async function handleAcceptAndNext(
 
 async function applyFinalGateJudgment(cfg: RoleLoopConfig, deliveryId: string, packet: PmFinalGatePacket, judgment: PmJudgment, adapter: RoleRuntimeAdapter, sessionId: string): Promise<Record<string, unknown>> {
   const currentTask = getTask(cfg.dataRoot, cfg.project, packet.context.task.taskId);
-  if ((judgment.decision === 'ACCEPT' || judgment.decision === 'ACCEPT_AND_NEXT')
-    && packet.context.qa !== undefined && packet.context.qa.status !== 'PASS') {
-    const reason = `ACCEPT requires QA PASS; latest QA status is ${packet.context.qa.status}${packet.context.qa.reason ? `: ${packet.context.qa.reason}` : ''}`;
-    audit(cfg.auditDir, { step: 'final-gate', deliveryId, outcome: 'BLOCKED', reason });
-    return { outcome: 'BLOCKED', reason };
+  if (judgment.decision === 'ACCEPT' || judgment.decision === 'ACCEPT_AND_NEXT') {
+    const contracted = currentTask.qaContract !== undefined && currentTask.qaContract !== null;
+    if (contracted && packet.context.qa === undefined) {
+      const reason = 'ACCEPT requires a durable QA PASS; the PM packet has no QA block and that omission is not PASS';
+      audit(cfg.auditDir, { step: 'final-gate', deliveryId, outcome: 'BLOCKED', reason });
+      return { outcome: 'BLOCKED', reason };
+    }
+    if (packet.context.qa !== undefined && packet.context.qa.status !== 'PASS') {
+      const reason = `ACCEPT requires QA PASS; latest QA status is ${packet.context.qa.status}${packet.context.qa.reason ? `: ${packet.context.qa.reason}` : ''}`;
+      audit(cfg.auditDir, { step: 'final-gate', deliveryId, outcome: 'BLOCKED', reason });
+      return { outcome: 'BLOCKED', reason };
+    }
+    if (contracted) {
+      try {
+        assertCurrentRunQaAllowsAccept(cfg.dataRoot, cfg.project, currentTask, packet.context.attempt.runId);
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : String(err);
+        audit(cfg.auditDir, { step: 'final-gate', deliveryId, outcome: 'BLOCKED', reason });
+        return { outcome: 'BLOCKED', reason };
+      }
+    }
   }
   if (judgment.decision === 'ACCEPT_AND_NEXT' && typeof judgment.next_task_contract?.task_id === 'string' && listTasks(cfg.dataRoot, cfg.project).some((task) => task.taskId === judgment.next_task_contract!.task_id)) {
     audit(cfg.auditDir, { step: 'final-gate', deliveryId, outcome: 'CONTRACT_FROZEN', reason: `next_task_contract.task_id ${judgment.next_task_contract.task_id} already exists` });
@@ -1190,6 +1055,18 @@ function hasDeliveryForRun(cfg: RoleLoopConfig, taskId: string, runId: string): 
   return listPmDeliveries(cfg.dataRoot, cfg.project).some((d) => d.taskId === taskId && d.runId === runId);
 }
 
+/** A terminal FAIL or BLOCKED attempt, or a corrupt attempt file, must not
+ * be reminted as an ordinary Delivery on later recovery cycles. */
+function qaAttemptBlocksOrdinaryRecovery(cfg: RoleLoopConfig, task: TaskRecord, runId: string): boolean {
+  if (!task.qaContract) return false;
+  try {
+    const status = getQaAttempt(cfg.dataRoot, cfg.project, qaAttemptIdFor(task.taskId, runId)).finalQaStatus;
+    return status === 'FAIL' || status === 'BLOCKED';
+  } catch (err) {
+    return (err as { code?: string })?.code === 'CORRUPT_RECORD';
+  }
+}
+
 /** Emit the mandated audit line + cycle step for a recovered Run (so a
  * recovering cycle is always ACTED, never IDLE). */
 function recordRecoveredStep(cfg: RoleLoopConfig, steps: Array<Record<string, unknown>>, item: Record<string, unknown>): void {
@@ -1220,7 +1097,7 @@ async function recoverRunWithResult(
   try {
     if (task.qaContract) {
       // QA-gated Tasks stay PENDING — the QA gate owns the PENDING → VERIFYING
-      // transition and mints the Delivery on PASS / budget-exhausted FAIL.
+      // transition and mints the Delivery on PASS only.
       await markQaResultReceived(cfg.dataRoot, cfg.project, taskId, runId, { expectedExecutionState: task.executionState });
     } else {
       await markResultReceived(cfg.dataRoot, cfg.project, taskId, runId, { expectedExecutionState: task.executionState });
@@ -1252,9 +1129,19 @@ async function recoverRunWithResult(
     try {
       const delivery = await ensurePmDeliveryForTaskVerifyRun(cfg.dataRoot, cfg.project, taskId, runId);
       if (!delivery) {
+        const current = getTask(cfg.dataRoot, cfg.project, taskId);
+        if (current.qaContract) {
+          try {
+            const status = getQaAttempt(cfg.dataRoot, cfg.project, qaAttemptIdFor(taskId, runId)).finalQaStatus;
+            if (status === 'FAIL' || status === 'BLOCKED') {
+              recordRecoveredStep(cfg, steps, { outcome: 'RECOVERED_RESULT', taskId, runId, folder });
+              return;
+            }
+          } catch { /* missing or corrupt attempt: do not mint a Delivery */ }
+        }
         recordRecoveredStep(cfg, steps, {
           outcome: 'BLOCKED_RUNTIME', taskId, runId, folder,
-          reason: 'per-run Delivery was not minted by the certified API (run not linked / no result file / task already accepted)',
+          reason: 'per-run Delivery was not minted by the certified API (run not linked / no result file / task already accepted / QA is not PASS)',
         });
         return;
       }
@@ -1338,6 +1225,7 @@ async function recoverStrandedDispatchedRuns(
       // Idempotency anchor: any Delivery (any status) for this exact attempt
       // means it was already admitted/recovered — never mint a second one.
       if (hasDeliveryForRun(cfg, task.taskId, run.runId)) continue;
+      if (qaAttemptBlocksOrdinaryRecovery(cfg, task, run.runId)) continue;
 
       const hasResult = hasRunResultFile(run.folder);
       let binding: ReturnType<typeof readRuntimeBinding>;

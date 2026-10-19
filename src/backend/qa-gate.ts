@@ -27,8 +27,10 @@
  *     CHANGES_REQUESTED, never imports execution-plan-continuation. The only
  *     Task mutations it performs are markQaResultReceived-adjacent NONE
  *     (the bridge owns receipt), RESULT_RECEIVED+PENDING → READY+PENDING
- *     (remediation retry), and PENDING → VERIFYING (escalation review
- *     state). GPT PM ACCEPT remains the sole Plan-advancement authority.
+ *     (remediation retry), and PENDING → VERIFYING only after QA PASS.
+ *     Budget exhaustion, QA BLOCKED, and a damaged QA contract record an
+ *     Incident and do not mint a Delivery or enter VERIFYING. GPT PM ACCEPT
+ *     remains the sole Plan-advancement authority.
  *   - QA FAIL authorizes remediation of the SAME Task only. Never a
  *     replacement Task, never a mutated contract/binding, never a Plan move.
  *   - QA remediation lineage (QRP-…/qaRemediationPreparationId/
@@ -46,7 +48,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { getTask } from './goal-task.js';
+import { getTask, taskFolder } from './goal-task.js';
 import {
   requestQaRemediationRetry,
   resolveCurrentAttemptRunId,
@@ -73,6 +75,7 @@ import {
 import {
   deriveQaEvaluationContract,
   QaContractError,
+  validateTaskQaContractFields,
   type DerivedQaEvaluationContract,
 } from './qa-contract.js';
 import {
@@ -84,6 +87,7 @@ import {
   QaSemanticEvaluatorError,
 } from './qa-semantic-evaluator.js';
 import { ensurePmDeliveryForTaskVerify } from './pm-delivery.js';
+import { ensureIncident, type IncidentCode } from './incident.js';
 import { recordOutcome } from './auto-advance.js';
 import { emitWake } from './wake-queue.js';
 import { dispatchTask, validateWorkspaceRoot, DispatcherError } from './dispatcher.js';
@@ -139,6 +143,7 @@ export interface ReconcileQaGateResult {
   remediationRunId?: string;
   alreadyDispatched?: boolean;
   deliveryId?: string | null;
+  incidentId?: string | null;
   sourceSeatReleased?: { runId: string; reservationId: string };
 }
 
@@ -279,12 +284,14 @@ function wrapGateError(err: unknown, fallback: QaGateError['code'] = 'INVALID_ST
   throw new QaGateError(fallback, `QA gate: ${msg}`);
 }
 
-// ── escalation (PASS / budget-exhausted FAIL / BLOCKED verdict) ──────────────
+// ── escalation ───────────────────────────────────────────────────────────────
 //
-// Treated the same as PASS for delivery purposes (plan §8): pmState
-// PENDING → VERIFYING (the existing idempotent "ensure review state"
-// transition), then the ordinary Delivery is minted. Never ACCEPTs, never
-// touches CHANGES_REQUESTED, never advances a Plan.
+// QA PASS: pmState PENDING → VERIFYING, then one ordinary TASK_VERIFY
+// Delivery. Never ACCEPTs, never touches CHANGES_REQUESTED, never advances
+// a Plan.
+//
+// Budget-exhausted FAIL, QA BLOCKED, and a damaged QA contract: write one
+// Incident and leave pmState unchanged. No TASK_VERIFY Delivery.
 
 async function ensureQaReviewState(dataRoot: string, project: string, task: TaskRecord): Promise<TaskRecord> {
   const fresh = requireTask(dataRoot, project, task.taskId);
@@ -333,6 +340,96 @@ async function escalateWithDelivery(
     finalQaStatus: attempt.finalQaStatus as Extract<QaFinalStatus, 'PASS' | 'FAIL' | 'BLOCKED'>,
     deliveryId,
   };
+}
+
+function stateToken(value: unknown): string {
+  return typeof value === 'string' && /^[A-Z_]{1,40}$/.test(value) ? value : 'UNKNOWN';
+}
+
+async function recordQaIncident(
+  dataRoot: string,
+  project: string,
+  task: TaskRecord,
+  attempt: QaAttemptRecord,
+  code: IncidentCode,
+  outcome: ReconcileQaGateOutcome,
+): Promise<ReconcileQaGateResult> {
+  const fresh = requireTask(dataRoot, project, task.taskId);
+  const evidenceRefs = attempt.qaAttemptId
+    ? [`qa-attempt:${attempt.qaAttemptId}`]
+    : ['qa-contract:invalid'];
+  let incidentId: string | null = null;
+  try {
+    const incident = await ensureIncident(dataRoot, project, {
+      taskId: fresh.taskId,
+      runId: attempt.runId,
+      code,
+      source: 'qa-gate',
+      executionState: stateToken(fresh.executionState),
+      pmState: stateToken(fresh.pmState),
+      ...(attempt.qaAttemptId ? { qaAttemptId: attempt.qaAttemptId } : {}),
+      evidenceRefs,
+    });
+    incidentId = incident.incidentId;
+  } catch (err) {
+    wrapGateError(err);
+  }
+  return {
+    outcome,
+    taskId: fresh.taskId,
+    runId: attempt.runId,
+    qaAttemptId: attempt.qaAttemptId,
+    finalQaStatus: attempt.finalQaStatus as Extract<QaFinalStatus, 'PASS' | 'FAIL' | 'BLOCKED'>,
+    deliveryId: null,
+    incidentId,
+  };
+}
+
+/** Disk-damaged QA contract cannot load as a Task. Record the Incident, then
+ * let the original fail-closed error propagate. No Delivery is minted. */
+async function recordUnreadableQaContractIncident(dataRoot: string, project: string, taskId: string): Promise<void> {
+  try {
+    const raw = JSON.parse(fs.readFileSync(path.join(taskFolder(dataRoot, project, taskId), 'task.json'), 'utf8')) as {
+      scope?: unknown;
+      acceptanceCriteria?: unknown;
+      qaContract?: unknown;
+      executionState?: unknown;
+      pmState?: unknown;
+      linkedRuns?: Array<{ runId?: unknown; taskRunSequence?: unknown }>;
+    };
+    if (!raw || typeof raw !== 'object' || raw.qaContract === undefined) return;
+    try {
+      validateTaskQaContractFields({
+        scope: raw.scope,
+        acceptanceCriteria: raw.acceptanceCriteria,
+        qaContract: raw.qaContract,
+      });
+      return;
+    } catch (err) {
+      if (!(err instanceof QaContractError)) return;
+    }
+    let runId = '';
+    let best = -1;
+    for (const run of Array.isArray(raw.linkedRuns) ? raw.linkedRuns : []) {
+      if (!run || typeof run.runId !== 'string' || typeof run.taskRunSequence !== 'number') continue;
+      if (run.taskRunSequence >= best) {
+        best = run.taskRunSequence;
+        runId = run.runId;
+      }
+    }
+    if (!runId) return;
+    await ensureIncident(dataRoot, project, {
+      taskId,
+      runId,
+      code: 'QA_CONTRACT_INVALID',
+      source: 'qa-gate',
+      executionState: stateToken(raw.executionState),
+      pmState: stateToken(raw.pmState),
+      evidenceRefs: ['qa-contract:invalid'],
+    });
+  } catch {
+    // Keep the original Task-load error authoritative.
+  }
 }
 
 // ── evaluation (seams 1–2) ───────────────────────────────────────────────────
@@ -704,7 +801,7 @@ async function handleTerminalFail(
   if (task.pmState !== 'PENDING') {
     const used = countQaRemediationsForTask(dataRoot, project, task.taskId);
     if (task.pmState === 'VERIFYING' && used >= derived.maxQaRemediationAttempts) {
-      return escalateWithDelivery(dataRoot, project, task, 'FAIL_ESCALATED_BUDGET_EXHAUSTED', attempt);
+      return recordQaIncident(dataRoot, project, task, attempt, 'QA_BUDGET_EXHAUSTED', 'FAIL_ESCALATED_BUDGET_EXHAUSTED');
     }
     throw new QaGateError(
       'CONFLICT',
@@ -756,7 +853,7 @@ async function handleTerminalFail(
   // BEFORE creating anything. Exhausted ⇒ escalate, never Run 4 (plan §12).
   const used = countQaRemediationsForTask(dataRoot, project, task.taskId);
   if (used >= derived.maxQaRemediationAttempts) {
-    return escalateWithDelivery(dataRoot, project, task, 'FAIL_ESCALATED_BUDGET_EXHAUSTED', attempt);
+    return recordQaIncident(dataRoot, project, task, attempt, 'QA_BUDGET_EXHAUSTED', 'FAIL_ESCALATED_BUDGET_EXHAUSTED');
   }
 
   // Create the preparation from authoritative QA failure — every identity
@@ -892,7 +989,13 @@ async function adoptMaterializedRemediationRuns(
 }
 
 async function reconcileQaGateInner(dataRoot: string, project: string, taskId: string, options?: ReconcileQaGateOptions): Promise<ReconcileQaGateResult> {
-  const task = requireTask(dataRoot, project, taskId);
+  let task: TaskRecord;
+  try {
+    task = requireTask(dataRoot, project, taskId);
+  } catch (err) {
+    if (err instanceof QaGateError) await recordUnreadableQaContractIncident(dataRoot, project, taskId);
+    throw err;
+  }
 
   // Backward-compatibility seam: Tasks without a QA contract behave exactly
   // as before (the bridge mints the Delivery unconditionally). The gate is
@@ -946,7 +1049,7 @@ async function reconcileQaGateInner(dataRoot: string, project: string, taskId: s
         updatedAt: new Date().toISOString(),
         completedAt: new Date().toISOString(),
       };
-      return escalateWithDelivery(dataRoot, project, task, 'BLOCKED_ESCALATED', pseudoAttempt);
+      return recordQaIncident(dataRoot, project, task, pseudoAttempt, 'QA_CONTRACT_INVALID', 'BLOCKED_ESCALATED');
     }
     wrapGateError(err);
   }
@@ -1007,7 +1110,7 @@ async function reconcileQaGateInner(dataRoot: string, project: string, taskId: s
       return handleTerminalFail(dataRoot, project, freshTask, terminal, derived!, options);
     case 'BLOCKED':
       // QA BLOCKED is never automatic remediation (release-blocking rule).
-      return escalateWithDelivery(dataRoot, project, freshTask, 'BLOCKED_ESCALATED', terminal);
+      return recordQaIncident(dataRoot, project, freshTask, terminal, 'QA_BLOCKED', 'BLOCKED_ESCALATED');
     default:
       throw new QaGateError(
         'INVALID_STATE',
@@ -1038,7 +1141,7 @@ export function reconcileQaGate(dataRoot: string, project: string, taskId: strin
             taskId: tid,
             kind: verdict === 'PASS' ? 'qa-pass' : 'qa-fail',
           });
-          if (decision.humanRequired) {
+          if (decision.humanRequired && result.outcome !== 'FAIL_ESCALATED_BUDGET_EXHAUSTED') {
             let goalId = '';
             try { goalId = requireTask(dataRoot, project, tid).goalId; } catch { /* no goal, no id */ }
             emitWake(dataRoot, project, {

@@ -3,9 +3,11 @@
  * relay_pm_get_verification_context (plan §12, §16). Runs against compiled
  * server modules under dist/server.
  *
- * Proves GPT PM receives bounded, authoritative, durable QA evidence that
- * distinguishes QA PASS / QA FAIL (budget exhausted) / QA BLOCKED — WITHOUT
- * transferring any PM acceptance authority to QA:
+ * Proves the verification-context reader reports bounded QA evidence for a
+ * Delivery that already exists. Ordinary minting is QA PASS only: a FAIL,
+ * BLOCKED, or still-PENDING attempt does not mint. A historical Delivery
+ * file remains readable and still distinguishes PASS / FAIL / BLOCKED,
+ * without transferring any PM acceptance authority to QA:
  *   - the `qa` block is a PURE READ (no QA/prep/Delivery/Task/Event/Evidence
  *     writes, no QA Agent spawn);
  *   - QA PASS never ACCEPTs the Task and never advances a Plan (regression);
@@ -42,6 +44,7 @@ const pmDel = await import('../dist/server/backend/pm-delivery.js');
 const vctx = await import('../dist/server/backend/pm-verification-context.js');
 const plans = await import('../dist/server/backend/execution-plan.js');
 const planDispatch = await import('../dist/server/backend/execution-plan-dispatch.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const retryAuth = await import('../dist/server/backend/retry-authorization.js');
 const wr = await import('../dist/server/backend/worker-registry.js');
 const testFix = await import('../dist/server/integrations/test-fixture/watch.js');
@@ -58,6 +61,19 @@ wr.writeWorkerRegistryRecord(ROOT, {
 });
 
 const project = 'V16Slice5';
+
+/** P2-OWNER-R01 formal select + approve for every frozen Plan binding. */
+function approvePlanSelection(plan) {
+  for (const binding of plan.taskBindings) {
+    taskExec.setTaskExecutionConfig(ROOT, project, {
+      projectId: project,
+      taskId: binding.taskId,
+      workerId: binding.workerId,
+      modelId: 'test-model',
+    });
+    taskExec.approveTaskExecution(ROOT, project, binding.taskId, 'OWNER_MCP');
+  }
+}
 
 let goalCache = null;
 async function goal() {
@@ -93,8 +109,8 @@ async function makeTask({ withQa = true, criteria, contract } = {}) {
 }
 
 // Move a Task into RESULT_RECEIVED+PENDING then to VERIFYING (what the QA gate
-// does on escalation) and mint the ordinary Delivery, exactly like
-// escalateWithDelivery does. Returns the deliveryId.
+// does on PASS) and mint the ordinary Delivery, exactly like
+// escalateWithDelivery does. Returns the deliveryId. PASS or no-contract only.
 async function escalate(taskId, runId) {
   await gtr.markQaResultReceived(ROOT, project, taskId, runId);
   await gtr.transitionTaskPm(ROOT, project, taskId, {
@@ -102,6 +118,22 @@ async function escalate(taskId, runId) {
   });
   const d = await pmDel.ensurePmDeliveryForTaskVerify(ROOT, project, taskId);
   return d.deliveryId;
+}
+
+// A Delivery that already exists on disk (pre-RB-03A FAIL/BLOCKED escalation,
+// or a stale in-flight record). The reader must still describe it. This does
+// not call the PASS-only mint.
+function plantLegacyDelivery(taskId, runId) {
+  const deliveryId = pmDel.pmDeliveryIdFor(taskId, runId);
+  const folder = path.join(ROOT, project, '_relay', 'pm-deliveries', deliveryId);
+  fs.mkdirSync(folder, { recursive: true });
+  const now = new Date().toISOString();
+  fs.writeFileSync(path.join(folder, 'delivery.json'), JSON.stringify({
+    schemaVersion: 1, deliveryId, project, kind: 'TASK_VERIFY', taskId, runId,
+    status: 'PENDING', createdAt: now, updatedAt: now,
+    source: { kind: 'pm-work', workKind: 'TASK_VERIFY' },
+  }, null, 2) + '\n');
+  return deliveryId;
 }
 
 // Build a durable terminal QaAttemptRecord for a run via the QA kernel.
@@ -180,14 +212,19 @@ async function buildDelivery({ withQa = true } = {}) {
 
 // ── 4. QA FAIL budget-exhausted ⇒ status FAIL, escalationReason BUDGET_EXHAUSTED ─
 {
-  console.log('\n[4] QA FAIL (remediation exhausted) → escalation evidence');
+  console.log('\n[4] QA FAIL (remediation exhausted) → historical Delivery still readable; ordinary mint closed');
   const t = await makeTask();
   // Run 1 FAIL with a prior FAIL (remediation #1) then delivered-run FAIL (#2)
-  // — simulate the exhausted-budget escalation the QA gate would produce.
+  // — the reader shape of an exhausted-budget escalation. RB-03A does not mint
+  // that Delivery; a file already on disk stays readable.
   await recordTerminalAttempt(t.taskId, t.runId, 2, {
     deterministic: 'PASS', semantic: 'FAIL', failed: ['AC-01'], instruction: 'fix it',
   });
-  const deliveryId = await escalate(t.taskId, t.runId);
+  await gtr.markQaResultReceived(ROOT, project, t.taskId, t.runId);
+  const refused = await pmDel.ensurePmDeliveryForTaskVerifyRun(ROOT, project, t.taskId, t.runId);
+  check(refused === null, 'FAIL run does not mint an ordinary Delivery');
+  check(gt.getTask(ROOT, project, t.taskId).pmState === 'PENDING', 'FAIL admission stays PENDING');
+  const deliveryId = plantLegacyDelivery(t.taskId, t.runId);
   const packet = vctx.getVerificationContextForDelivery(ROOT, project, deliveryId);
   check(packet.qa.status === 'FAIL', 'qa.status = FAIL');
   check(packet.qa.escalationReason === 'BUDGET_EXHAUSTED', 'qa.escalationReason = BUDGET_EXHAUSTED');
@@ -198,14 +235,18 @@ async function buildDelivery({ withQa = true } = {}) {
 
 // ── 5. QA BLOCKED ⇒ status BLOCKED, escalationReason BLOCKED ───────────────
 {
-  console.log('\n[5] QA BLOCKED → escalation evidence');
+  console.log('\n[5] QA BLOCKED → historical Delivery still readable; ordinary mint closed');
   const t = await makeTask();
   await qa.createQaAttempt(ROOT, project, { taskId: t.taskId, runId: t.runId, qaAttemptNumber: 1, criteriaValidationModes: { 'AC-01': 'DETERMINISTIC' } });
   const attempts = qa.listQaAttemptsForTask(ROOT, project, t.taskId);
   await qa.recordDeterministicEvidence(ROOT, project, attempts[0].qaAttemptId, {
     status: 'BLOCKED', checks: [{ checkIndex: 0, kind: 'command', status: 'BLOCKED', detail: 'spawn error' }],
   });
-  const deliveryId = await escalate(t.taskId, t.runId);
+  await gtr.markQaResultReceived(ROOT, project, t.taskId, t.runId);
+  const refused = await pmDel.ensurePmDeliveryForTaskVerifyRun(ROOT, project, t.taskId, t.runId);
+  check(refused === null, 'BLOCKED run does not mint an ordinary Delivery');
+  check(gt.getTask(ROOT, project, t.taskId).pmState === 'PENDING', 'BLOCKED admission stays PENDING');
+  const deliveryId = plantLegacyDelivery(t.taskId, t.runId);
   const packet = vctx.getVerificationContextForDelivery(ROOT, project, deliveryId);
   check(packet.qa.status === 'BLOCKED', 'qa.status = BLOCKED');
   check(packet.qa.escalationReason === 'BLOCKED', 'qa.escalationReason = BLOCKED');
@@ -279,6 +320,7 @@ async function buildDelivery({ withQa = true } = {}) {
     planScopeFingerprint: plans.computeExecutionPlanScopeFingerprint(plan),
     taskScopeFingerprints: Object.fromEntries(plan.taskBindings.map((b) => [b.taskId, b.scopeFingerprint])),
   };
+  approvePlanSelection(plan);
   const start = await planDispatch.dispatchExecutionPlanOwnerApproved(ROOT, project, {
     planId: plan.planId, expectedPlanState: 'PLANNED', ownerAuthorization: authz,
   });
@@ -314,7 +356,10 @@ async function buildDelivery({ withQa = true } = {}) {
   await qa.createQaAttempt(ROOT, project, {
     taskId: t.taskId, runId: t.runId, qaAttemptNumber: 2, criteriaValidationModes: { 'AC-01': 'DETERMINISTIC' },
   });
-  const deliveryId = await escalate(t.taskId, t.runId);
+  await gtr.markQaResultReceived(ROOT, project, t.taskId, t.runId);
+  const refused = await pmDel.ensurePmDeliveryForTaskVerifyRun(ROOT, project, t.taskId, t.runId);
+  check(refused === null, 'PENDING QA attempt does not mint an ordinary Delivery');
+  const deliveryId = plantLegacyDelivery(t.taskId, t.runId);
   const packet = vctx.getVerificationContextForDelivery(ROOT, project, deliveryId);
   check(packet.qa === undefined, 'no `qa` block when no terminal verdict for the delivered run');
   check(packet.warnings.some((w) => w.includes('QA records exist for this Task')), 'omission surfaced as warning, not silent');

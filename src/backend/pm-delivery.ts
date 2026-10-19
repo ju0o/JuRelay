@@ -36,6 +36,16 @@ import {
   listTasks,
 } from './goal-task.js';
 import { resolveCurrentAttemptRunId } from './goal-task-runtime.js';
+import { getQaAttempt, qaAttemptIdFor } from './qa-attempt.js';
+import { listEvents } from './event.js';
+import {
+  ensureIncident,
+  incidentFolder,
+  incidentIdFor,
+  PRE_QA_WORKER_INCIDENT_CODES,
+} from './incident.js';
+import type { IncidentCode } from './incident.js';
+import type { TaskRecord } from '../shared/types.js';
 
 /** PM Delivery record schema version (starts at 1). */
 export const PM_DELIVERY_SCHEMA_VERSION = 1;
@@ -152,6 +162,23 @@ function requireNonEmptyString(value: unknown, field: string): string {
 
 function nowIso(): string {
   return new Date().toISOString();
+}
+
+/** Legacy Tasks without a QA contract keep the pre-RB-03A mint. A QA-gated
+ * Task may mint an ordinary TASK_VERIFY delivery only for a PASS attempt.
+ * A missing or corrupt attempt fails closed and mints nothing. */
+function qaContractAllowsOrdinaryDelivery(
+  dataRoot: string,
+  project: string,
+  task: { taskId: string; qaContract?: unknown },
+  runId: string,
+): boolean {
+  if (task.qaContract === undefined || task.qaContract === null) return true;
+  try {
+    return getQaAttempt(dataRoot, project, qaAttemptIdFor(task.taskId, runId)).finalQaStatus === 'PASS';
+  } catch {
+    return false;
+  }
 }
 
 export function isPmDeliveryStatus(v: unknown): v is PmDeliveryStatus {
@@ -363,7 +390,7 @@ export function ensurePmDeliveryForTaskVerify(
   if (!runId) return Promise.resolve(null);
   const deliveryId = pmDeliveryIdFor(tid, runId);
 
-  return withDeliveryLock(dataRoot, project, deliveryId, (): PmDeliveryRecord => {
+  return withDeliveryLock(dataRoot, project, deliveryId, (): PmDeliveryRecord | null => {
     // Re-read inside the lock: a concurrent retry may have displaced the attempt.
     const current = getTask(dataRoot, project, tid);
     if (current.executionState !== 'RESULT_RECEIVED' || current.pmState !== 'VERIFYING') {
@@ -381,6 +408,7 @@ export function ensurePmDeliveryForTaskVerify(
       // return it unchanged. Terminal states are never reset.
       return readDeliveryRecord(dataRoot, project, deliveryId);
     }
+    if (!qaContractAllowsOrdinaryDelivery(dataRoot, project, current, runId)) return null;
     const ts = nowIso();
     const record: PmDeliveryRecord = {
       schemaVersion: PM_DELIVERY_SCHEMA_VERSION,
@@ -443,6 +471,7 @@ export function ensurePmDeliveryForTaskVerifyRun(
     ) {
       return null;
     }
+    if (!qaContractAllowsOrdinaryDelivery(dataRoot, project, task, rid)) return null;
     const ts = nowIso();
     const record: PmDeliveryRecord = {
       schemaVersion: PM_DELIVERY_SCHEMA_VERSION,
@@ -463,9 +492,90 @@ export function ensurePmDeliveryForTaskVerifyRun(
 }
 
 /**
- * Canonical recovery delivery for a dispatch/runtime failure before Result.
- * The delivery keeps TASK_VERIFY identity so the existing PM judgment and
- * retry path can recover the same Task; it never fabricates a Result.
+ * Classify a pre-QA worker failure from dispatcher tokens only.
+ * A process-start token and an after-start exit token are different codes.
+ * Missing tokens, or both kinds at once, stay unclassified.
+ * Event text is never copied into the Incident.
+ */
+function classifyPreQaWorkerFailure(
+  dataRoot: string,
+  project: string,
+  task: TaskRecord,
+  runId: string,
+): { code: IncidentCode; evidenceRefs: string[] } {
+  const launch = new Set<string>();
+  const execution = new Set<string>();
+  const reason = task.lastTransitionReason ?? '';
+  if (reason.startsWith('spawn failure:')) launch.add('transition:spawn-failure');
+  else if (reason.startsWith('capture arm failure:')) launch.add('transition:capture-arm');
+  else if (reason.startsWith('worker process exit code=')) execution.add('transition:process-exit');
+
+  let events: ReturnType<typeof listEvents>['events'] = [];
+  try {
+    events = listEvents(dataRoot, project, { runId }).events;
+  } catch {
+    events = [];
+  }
+  for (const event of events) {
+    if (event.runId !== runId) continue;
+    const subsystem = event.source?.subsystem;
+    const summary = event.summary ?? '';
+    const failedType = event.type === 'RUN_FAILED' || event.type === 'RUNTIME_ERROR';
+    if (failedType && subsystem === 'capture-arm') launch.add('event:capture-arm');
+    else if (failedType && subsystem === 'spawn' && summary.startsWith('LAUNCH_FAILED:')) launch.add('event:spawn');
+    else if (event.type === 'RUN_FAILED' && subsystem === 'process-exit') execution.add('event:process-exit');
+  }
+
+  if (launch.size > 0 && execution.size > 0) {
+    return { code: 'WORKER_FAILED_UNCLASSIFIED', evidenceRefs: ['cause:conflict'] };
+  }
+  if (launch.size > 0) return { code: 'WORKER_LAUNCH_FAILED', evidenceRefs: [...launch].sort() };
+  if (execution.size > 0) return { code: 'WORKER_EXECUTION_FAILED', evidenceRefs: [...execution].sort() };
+  return { code: 'WORKER_FAILED_UNCLASSIFIED', evidenceRefs: ['cause:unclassified'] };
+}
+
+/** One Incident per Task Run. A later call returns the stored code and does not add another. */
+async function recordPreQaWorkerFailure(
+  dataRoot: string,
+  project: string,
+  task: TaskRecord,
+  runId: string,
+): Promise<void> {
+  for (const code of PRE_QA_WORKER_INCIDENT_CODES) {
+    const incidentId = incidentIdFor(task.taskId, runId, code);
+    const file = path.join(incidentFolder(dataRoot, project, incidentId), 'incident.json');
+    if (!fs.existsSync(file)) continue;
+    await ensureIncident(dataRoot, project, {
+      taskId: task.taskId,
+      runId,
+      code,
+      source: 'dispatcher',
+      executionState: task.executionState,
+      pmState: task.pmState,
+    });
+    return;
+  }
+  const classified = classifyPreQaWorkerFailure(dataRoot, project, task, runId);
+  await ensureIncident(dataRoot, project, {
+    taskId: task.taskId,
+    runId,
+    code: classified.code,
+    source: 'dispatcher',
+    executionState: task.executionState,
+    pmState: task.pmState,
+    evidenceRefs: classified.evidenceRefs,
+  });
+}
+
+/**
+ * Recovery record for a dispatch/runtime failure before a Result.
+ *
+ * A Task with no QA contract keeps the legacy TASK_VERIFY mint. A Task with
+ * a QA contract does not receive a new ordinary TASK_VERIFY, because QA has
+ * not passed; the failure is one Incident instead. An already stored
+ * delivery file is returned unchanged and does not gain an Incident.
+ * A QA attempt that already exists, or a corrupt attempt file, stays closed
+ * and is not relabeled as a worker failure.
  */
 export function ensurePmDeliveryForFailedRun(
   dataRoot: string,
@@ -476,15 +586,38 @@ export function ensurePmDeliveryForFailedRun(
   const tid = requireNonEmptyString(taskId, 'taskId');
   const rid = requireNonEmptyString(runId, 'runId');
   const deliveryId = pmDeliveryIdFor(tid, rid);
-  return withDeliveryLock(dataRoot, project, deliveryId, (): PmDeliveryRecord | null => {
+  return withDeliveryLock<PmDeliveryRecord | null>(dataRoot, project, deliveryId, async () => {
     const folder = pmDeliveryFolder(dataRoot, project, deliveryId);
     const file = deliveryJsonPath(folder);
     if (fs.existsSync(file)) return readDeliveryRecord(dataRoot, project, deliveryId);
     const task = getTask(dataRoot, project, tid);
+    let contractedWithoutAttempt = false;
+    if (task.qaContract !== undefined && task.qaContract !== null) {
+      try {
+        getQaAttempt(dataRoot, project, qaAttemptIdFor(tid, rid));
+        return null;
+      } catch (err) {
+        const code = (err as { code?: string })?.code;
+        if (code !== 'NOT_FOUND') return null;
+        contractedWithoutAttempt = true;
+      }
+    }
     const currentRunId = resolveCurrentAttemptRunId(task);
-    if (task.executionState !== 'FAILED' || task.pmState !== 'PENDING' || currentRunId !== rid) return null;
     const linked = task.linkedRuns.find((r) => r.runId === rid);
-    if (!linked || fs.existsSync(path.join(linked.folder, 'result.md')) || fs.existsSync(path.join(linked.folder, 'agent-result.md'))) return null;
+    const hasResult = !!linked && (
+      fs.existsSync(path.join(linked.folder, 'result.md'))
+      || fs.existsSync(path.join(linked.folder, 'agent-result.md'))
+    );
+    const failedCurrentWithoutResult = task.executionState === 'FAILED'
+      && task.pmState === 'PENDING'
+      && currentRunId === rid
+      && !!linked
+      && !hasResult;
+    if (!failedCurrentWithoutResult) return null;
+    if (contractedWithoutAttempt) {
+      await recordPreQaWorkerFailure(dataRoot, project, task, rid);
+      return null;
+    }
     const ts = nowIso();
     const record: PmDeliveryRecord = {
       schemaVersion: PM_DELIVERY_SCHEMA_VERSION, deliveryId, project, kind: 'TASK_VERIFY',

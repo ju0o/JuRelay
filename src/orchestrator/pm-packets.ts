@@ -3,6 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { listEvents } from '../backend/event.js';
 import { getTask, listTasks } from '../backend/goal-task.js';
+import { assertCurrentRunQaAllowsAccept } from '../backend/goal-task-runtime.js';
 import { listPmDeliveries } from '../backend/pm-delivery.js';
 import { listGoals } from '../backend/goal-task.js';
 import { getTaskEvidenceSummary } from '../backend/evidence.js';
@@ -208,9 +209,9 @@ function buildRetryHistory(dataRoot: string, project: string, task: TaskRecord):
 
 /**
  * WBS-8 bounded final-gate packet for one pending TASK_VERIFY delivery.
- * Pure read. `getVerificationContextForDelivery` already enforces the
- * QA-PASS-or-legacy invariant upstream (V1_PACKETS_DESIGN.md §2) — every
- * delivery reachable here is already eligible for PM judgment.
+ * Pure read. ACCEPT is listed only when the advisory context offers it and
+ * the same QA eligibility predicate used by acceptResult() passes. This
+ * packet does not apply a judgment.
  */
 export function buildPmFinalGatePacket(dataRoot: string, project: string, deliveryId: string): PmFinalGatePacket {
   let context = getVerificationContextForDelivery(dataRoot, project, deliveryId);
@@ -224,9 +225,20 @@ export function buildPmFinalGatePacket(dataRoot: string, project: string, delive
   const usedChanges = listPmJudgments(dataRoot, project).filter((j) => j.taskId === task.taskId && j.decision === 'CHANGES').length;
   const canAct = context.reviewActions.includes('ACCEPT_RESULT');
   const qaBlocksAcceptance = context.qa !== undefined && context.qa.status !== 'PASS';
-  const allowedActions = failedNoResult || qaBlocksAcceptance
-    ? ['CHANGES', 'OWNER_REQUIRED']
-    : canAct ? ['ACCEPT', 'CHANGES', 'OWNER_REQUIRED', 'ACCEPT_AND_NEXT'] : ['OWNER_REQUIRED'];
+  let durableAccept = true;
+  if (task.qaContract !== undefined && task.qaContract !== null) {
+    try {
+      assertCurrentRunQaAllowsAccept(dataRoot, project, task, context.attempt.runId);
+    } catch {
+      durableAccept = false;
+    }
+  }
+  const acceptOffered = canAct && durableAccept && !qaBlocksAcceptance && !failedNoResult;
+  const allowedActions = acceptOffered
+    ? ['ACCEPT', 'CHANGES', 'OWNER_REQUIRED', 'ACCEPT_AND_NEXT']
+    : (failedNoResult || qaBlocksAcceptance || canAct)
+      ? ['CHANGES', 'OWNER_REQUIRED']
+      : ['OWNER_REQUIRED'];
   const structured = {
     schemaVersion: 'pm-final-gate-packet.v1' as const,
     project,

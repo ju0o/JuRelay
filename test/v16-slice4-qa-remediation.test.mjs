@@ -41,11 +41,13 @@ const gate = await import('../dist/server/backend/qa-gate.js');
 const disp = await import('../dist/server/backend/dispatcher.js');
 const wr = await import('../dist/server/backend/worker-registry.js');
 const pmDel = await import('../dist/server/backend/pm-delivery.js');
+const incidents = await import('../dist/server/backend/incident.js');
 const bridge = await import('../dist/server/backend/result-bridge.js');
 const observation = await import('../dist/server/backend/observation-lock.js');
 const captureSvc = await import('../dist/server/backend/capture-service.js');
 const plans = await import('../dist/server/backend/execution-plan.js');
 const planDispatch = await import('../dist/server/backend/execution-plan-dispatch.js');
+const taskExec = await import('../dist/server/backend/task-execution-config.js');
 const retryAuth = await import('../dist/server/backend/retry-authorization.js');
 const qaPrompt = await import('../dist/server/backend/qa-remediation-prompt.js');
 const fsKernel = await import('../dist/server/backend/fs.js');
@@ -63,6 +65,19 @@ wr.writeWorkerRegistryRecord(ROOT, {
   launchCommand: NODE, launchArgsPrefix: [EXIT_ZERO_FIXTURE],
   capabilities: ['fixture'], observationAdapterId: 'test-fixture',
 });
+
+/** P2-OWNER-R01 formal select + approve for every frozen Plan binding. */
+function approvePlanSelection(plan) {
+  for (const binding of plan.taskBindings) {
+    taskExec.setTaskExecutionConfig(ROOT, project, {
+      projectId: project,
+      taskId: binding.taskId,
+      workerId: binding.workerId,
+      modelId: 'test-model',
+    });
+    taskExec.approveTaskExecution(ROOT, project, binding.taskId, 'OWNER_MCP');
+  }
+}
 
 let idCounter = 0;
 let goalCache = null;
@@ -149,6 +164,9 @@ async function completeCurrentRunAndReconcile(taskId, { resultText = 'fixture re
 function deliveriesFor(taskId) {
   return pmDel.listPmDeliveries(ROOT, project).filter((d) => d.taskId === taskId);
 }
+function incidentsFor(taskId) {
+  return incidents.listIncidents(ROOT, project).filter((d) => d.taskId === taskId);
+}
 function prepsFor(taskId) {
   return qrp.listQaRemediationPreparations(ROOT, project).filter((p) => p.taskId === taskId);
 }
@@ -157,6 +175,7 @@ async function resetLocal() {
   disp._resetDispatcherStateForTests();
   await captureSvc._resetCaptureServiceForTests();
   pmDel._resetPmDeliveryLocksForTests();
+  incidents._resetIncidentLocksForTests();
   qa._resetQaAttemptLocksForTests();
   qrp._resetQaRemediationPreparationLocksForTests();
   gate._resetQaGateLocksForTests();
@@ -350,8 +369,9 @@ console.log('\n== E. deterministic BLOCKED → escalate, no remediation ==');
   check(res.outcome === 'BLOCKED_ESCALATED', `E1 outcome BLOCKED_ESCALATED (got ${res.outcome})`);
   check(res.finalQaStatus === 'BLOCKED', 'E2 finalQaStatus BLOCKED');
   const t = gt.getTask(ROOT, project, task.taskId);
-  check(t.pmState === 'VERIFYING' && t.linkedRuns.length === 1, 'E3 escalated to VERIFYING, no remediation Run');
-  check(deliveriesFor(task.taskId).length === 1, 'E4 Delivery minted with BLOCKED (escalation)');
+  check(t.pmState === 'PENDING' && t.linkedRuns.length === 1, 'E3 stays PENDING, no remediation Run');
+  check(deliveriesFor(task.taskId).length === 0, 'E4 no ordinary Delivery on BLOCKED');
+  check(incidentsFor(task.taskId).length === 1 && incidentsFor(task.taskId)[0].code === 'QA_BLOCKED', 'E4b one QA_BLOCKED Incident');
   check(prepsFor(task.taskId).length === 0, 'E5 BLOCKED never creates a preparation');
 
   // Semantic BLOCKED (unparseable agent output ×2) also escalates, never remediates.
@@ -376,8 +396,9 @@ console.log('\n== E. deterministic BLOCKED → escalate, no remediation ==');
   }
   check(res2?.outcome === 'BLOCKED_ESCALATED', `E6 semantic-garbage → BLOCKED_ESCALATED after bounded retries (got ${res2?.outcome})`);
   const t2 = gt.getTask(ROOT, project, task2.taskId);
-  check(t2.linkedRuns.length === 1 && t2.pmState === 'VERIFYING', 'E7 semantic BLOCKED: no remediation, escalated');
-  check(deliveriesFor(task2.taskId).length === 1, 'E8 semantic BLOCKED: Delivery minted');
+  check(t2.linkedRuns.length === 1 && t2.pmState === 'PENDING', 'E7 semantic BLOCKED: no remediation, stays PENDING');
+  check(deliveriesFor(task2.taskId).length === 0, 'E8 semantic BLOCKED: no ordinary Delivery');
+  check(incidentsFor(task2.taskId).filter((i) => i.code === 'QA_BLOCKED').length === 1, 'E8b one QA_BLOCKED Incident');
 }
 
 // ── F. Retry budget: 3 FAILs → 3 Runs, never a 4th ───────────────────────────
@@ -396,8 +417,9 @@ console.log('\n== F. remediation budget (2) enforced ==');
   check(r3.outcome === 'FAIL_ESCALATED_BUDGET_EXHAUSTED', `F3 Run3 FAIL → escalated, no Run4 (got ${r3.outcome})`);
   const t = gt.getTask(ROOT, project, task.taskId);
   check(t.linkedRuns.length === 3, `F4 exactly 3 linked Runs (got ${t.linkedRuns.length})`);
-  check(t.pmState === 'VERIFYING', 'F5 exhausted task escalated to VERIFYING');
-  check(deliveriesFor(task.taskId).length === 1, 'F6 exactly one Delivery minted on exhaustion');
+  check(t.pmState === 'PENDING', 'F5 exhausted task stays PENDING');
+  check(deliveriesFor(task.taskId).length === 0, 'F6 no ordinary Delivery on exhaustion');
+  check(incidentsFor(task.taskId).filter((i) => i.code === 'QA_BUDGET_EXHAUSTED').length === 1, 'F6b one budget Incident');
   check(prepsFor(task.taskId).length === 2, 'F7 exactly 2 preparations (budget = 2)');
   const attempts = qa.listQaAttemptsForTask(ROOT, project, task.taskId);
   check(attempts.length === 3 && attempts.every((a) => a.finalQaStatus === 'FAIL'), 'F8 three FAIL attempts, one per Run');
@@ -632,6 +654,7 @@ console.log('\n== K. QA never ACCEPTs, never advances a Plan ==');
     planScopeFingerprint: plans.computeExecutionPlanScopeFingerprint(plan),
     taskScopeFingerprints: Object.fromEntries(plan.taskBindings.map((b) => [b.taskId, b.scopeFingerprint])),
   };
+  approvePlanSelection(plan);
   const start = await planDispatch.dispatchExecutionPlanOwnerApproved(ROOT, project, {
     planId: plan.planId, expectedPlanState: 'PLANNED', ownerAuthorization: authz,
   });
